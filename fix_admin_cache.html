@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Correção de Cache Admin BGAPP</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: rgba(255,255,255,0.95); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: #333;
+        }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .status { 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 10px 0; 
+            font-weight: 500;
+        }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #cce7ff; border: 1px solid #99d6ff; color: #004085; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        
+        button { 
+            background: linear-gradient(45deg, #007bff, #0056b3); 
+            color: white; 
+            border: none; 
+            padding: 15px 25px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 10px 5px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .step-icon {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        .admin-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .admin-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Correção de Cache Admin BGAPP</h1>
+        
+        <div class="info">
+            <strong>🎯 Objetivo:</strong> Limpar cache e garantir que o admin use os endpoints corrigidos do worker
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Problema Detectado:</strong> O admin estava a tentar aceder ao endpoint <code>/services</code> que não existia no worker, causando erro 404.
+        </div>
+        
+        <div class="success">
+            <strong>✅ Correção Aplicada:</strong> Worker atualizado com endpoint <code>/services</code> funcional.
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div id="steps">
+            <div class="step">
+                <div class="step-icon">🔍</div>
+                <div>A verificar estado atual do cache...</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="startFix()" id="startBtn">🚀 Iniciar Correção Automática</button>
+            <button onclick="manualTest()" id="testBtn">🧪 Teste Manual</button>
+        </div>
+        
+        <div id="results"></div>
+        
+        <div style="text-align: center; margin: 30px 0;" id="adminLinkContainer" style="display: none;">
+            <a href="https://arcasadeveloping.org/BGAPP/admin" class="admin-link" target="_blank">
+                🎛️ Abrir Admin Panel Corrigido
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const WORKER_URL = 'https://bgapp-api-worker.majearcasa.workers.dev';
+        let currentStep = 0;
+        
+        const steps = [
+            { icon: '🔍', text: 'Verificando estado atual do cache...' },
+            { icon: '🧹', text: 'Limpando Service Workers...' },
+            { icon: '💾', text: 'Removendo dados de cache...' },
+            { icon: '🗑️', text: 'Limpando localStorage e sessionStorage...' },
+            { icon: '🔄', text: 'Testando conectividade com worker...' },
+            { icon: '✅', text: 'Verificando endpoints corrigidos...' },
+            { icon: '🎉', text: 'Correção concluída com sucesso!' }
+        ];
+        
+        function updateProgress(percentage) {
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+        
+        function addStep(icon, text, status = 'info') {
+            const stepsDiv = document.getElementById('steps');
+            const step = document.createElement('div');
+            step.className = `step`;
+            step.innerHTML = `
+                <div class="step-icon">${icon}</div>
+                <div>${text}</div>
+            `;
+            stepsDiv.appendChild(step);
+        }
+        
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const result = document.createElement('div');
+            result.className = `status ${type}`;
+            result.innerHTML = message;
+            resultsDiv.appendChild(result);
+        }
+        
+        async function clearServiceWorkers() {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const registration of registrations) {
+                    await registration.unregister();
+                }
+                return registrations.length;
+            }
+            return 0;
+        }
+        
+        async function clearCaches() {
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const cacheName of cacheNames) {
+                    await caches.delete(cacheName);
+                }
+                return cacheNames.length;
+            }
+            return 0;
+        }
+        
+        async function clearStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+        }
+        
+        async function testWorkerEndpoint() {
+            try {
+                const response = await fetch(`${WORKER_URL}/services`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                return { success: true, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function startFix() {
+            const startBtn = document.getElementById('startBtn');
+            const testBtn = document.getElementById('testBtn');
+            startBtn.disabled = true;
+            testBtn.disabled = true;
+            
+            document.getElementById('steps').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+            
+            try {
+                // Step 1: Check current state
+                addStep('🔍', 'Verificando estado atual...');
+                updateProgress(10);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Step 2: Clear Service Workers
+                addStep('🧹', 'Removendo Service Workers...');
+                updateProgress(25);
+                const swCount = await clearServiceWorkers();
+                showResult(`✅ ${swCount} Service Workers removidos`, 'success');
+                
+                // Step 3: Clear Caches
+                addStep('💾', 'Limpando caches...');
+                updateProgress(40);
+                const cacheCount = await clearCaches();
+                showResult(`✅ ${cacheCount} caches removidos`, 'success');
+                
+                // Step 4: Clear Storage
+                addStep('🗑️', 'Limpando storage local...');
+                updateProgress(60);
+                await clearStorage();
+                showResult(`✅ localStorage e sessionStorage limpos`, 'success');
+                
+                // Step 5: Test Worker Connectivity
+                addStep('🔄', 'Testando conectividade com worker...');
+                updateProgress(80);
+                const testResult = await testWorkerEndpoint();
+                
+                if (testResult.success) {
+                    showResult(`✅ Endpoint /services funcionando corretamente!<br>
+                               📊 Serviços online: ${testResult.data.summary.online}/${testResult.data.summary.total}`, 'success');
+                    
+                    addStep('🎉', 'Correção concluída com sucesso!');
+                    updateProgress(100);
+                    
+                    showResult(`🎉 <strong>Admin Panel Corrigido!</strong><br>
+                               O erro 404 no endpoint /services foi resolvido.<br>
+                               Pode agora aceder ao admin panel normalmente.`, 'success');
+                    
+                    document.getElementById('adminLinkContainer').style.display = 'block';
+                    
+                } else {
+                    showResult(`❌ Erro ao testar worker: ${testResult.error}`, 'error');
+                    addStep('❌', 'Erro na verificação do worker');
+                }
+                
+            } catch (error) {
+                showResult(`❌ Erro durante correção: ${error.message}`, 'error');
+                addStep('❌', 'Erro durante o processo');
+            }
+            
+            startBtn.disabled = false;
+            testBtn.disabled = false;
+        }
+        
+        async function manualTest() {
+            document.getElementById('results').innerHTML = '';
+            showResult('🧪 Executando teste manual...', 'info');
+            
+            const testResult = await testWorkerEndpoint();
+            
+            if (testResult.success) {
+                showResult(`✅ <strong>Teste Manual Bem-sucedido!</strong><br>
+                           Endpoint: <code>${WORKER_URL}/services</code><br>
+                           Status: HTTP 200 OK<br>
+                           Serviços: ${testResult.data.summary.online}/${testResult.data.summary.total} online`, 'success');
+            } else {
+                showResult(`❌ <strong>Teste Manual Falhado</strong><br>
+                           Endpoint: <code>${WORKER_URL}/services</code><br>
+                           Erro: ${testResult.error}`, 'error');
+            }
+        }
+        
+        // Auto-start on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                showResult('🔧 Página carregada. Prima "Iniciar Correção Automática" para resolver o problema.', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

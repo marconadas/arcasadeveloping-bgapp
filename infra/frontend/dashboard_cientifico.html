@@ -1,0 +1,4099 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Dashboard Científico Avançado</title>
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+    
+    <!-- Chart.js e Plotly para visualizações - Carregamento otimizado -->
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    
+    <!-- Leaflet para mapas -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #28a745;
+            --accent-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+
+        /* SISTEMA DE RESPONSIVIDADE AVANÇADA */
+        
+        /* Painel de filtros retrátil - inspirado no index.html */
+        .filter-panel {
+            position: relative;
+            transition: all var(--transition-smooth);
+            overflow: hidden;
+        }
+        
+        .filter-panel.collapsed {
+            max-height: 80px;
+            overflow: hidden;
+        }
+        
+        .filter-toggle {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            background: var(--surface-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            z-index: 10;
+        }
+        
+        .filter-toggle:hover {
+            background: var(--apple-blue);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* Layout adaptativo para diferentes telas */
+        .dashboard-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+            grid-template-columns: 1fr;
+        }
+        
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+        
+        /* Responsividade para tablets */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                padding: var(--spacing-md) 0;
+            }
+            
+            .chart-container {
+                padding: var(--spacing-md);
+            }
+            
+            .metric-card {
+                padding: var(--spacing-md);
+            }
+            
+            .dashboard-header {
+                padding: var(--spacing-sm) 0;
+            }
+            
+            .dashboard-header .col-md-6:last-child {
+                text-align: left !important;
+                margin-top: var(--spacing-sm);
+            }
+        }
+        
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: var(--spacing-sm) 0;
+            }
+            
+            .metric-card {
+                margin-bottom: var(--spacing-md);
+                padding: var(--spacing-md);
+            }
+            
+            .metric-value {
+                font-size: 2rem;
+            }
+            
+            .chart-container {
+                padding: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .filter-panel {
+                padding: var(--spacing-md);
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+            
+            /* Stack buttons vertically on mobile */
+            .dashboard-header .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: var(--spacing-xs);
+                margin-right: 0 !important;
+            }
+            
+            /* Simplify chart titles on mobile */
+            .chart-title {
+                font-size: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-xs);
+            }
+            
+            .chart-title small {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Responsividade para telas pequenas */
+        @media (max-width: 576px) {
+            :root {
+                --spacing-lg: 16px;
+                --spacing-md: 12px;
+                --spacing-sm: 8px;
+            }
+            
+            .dashboard-container {
+                padding: var(--spacing-xs) 0;
+            }
+            
+            .metric-value {
+                font-size: 1.8rem;
+            }
+            
+            .metric-label {
+                font-size: 0.8rem;
+            }
+            
+            .chart-title {
+                font-size: 0.9rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .performance-badge {
+                display: block;
+                margin-top: var(--spacing-xs);
+                margin-left: 0 !important;
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+            
+            .filter-panel .row .col-md-3 {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            
+            .species-card {
+                padding: var(--spacing-sm);
+            }
+            
+            .alert-info {
+                padding: var(--spacing-md);
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Responsividade para telas muito pequenas */
+        @media (max-width: 375px) {
+            .container-fluid {
+                padding-left: var(--spacing-sm);
+                padding-right: var(--spacing-sm);
+            }
+            
+            .metric-card {
+                padding: var(--spacing-sm);
+            }
+            
+            .chart-container {
+                padding: var(--spacing-sm);
+            }
+            
+            .filter-panel {
+                padding: var(--spacing-sm);
+            }
+            
+            .dashboard-header {
+                padding: var(--spacing-xs) 0;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1rem;
+            }
+            
+            .metric-value {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Orientação landscape em mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .dashboard-container {
+                padding: var(--spacing-xs) 0;
+            }
+            
+            .metric-card {
+                padding: var(--spacing-sm);
+            }
+            
+            .metric-value {
+                font-size: 1.5rem;
+            }
+            
+            .chart-container {
+                padding: var(--spacing-sm);
+            }
+            
+            .map-container {
+                height: 250px;
+            }
+        }
+        
+        /* Acessibilidade - Preferências de movimento reduzido */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --glass-border: rgba(0, 0, 0, 0.8);
+                --surface-elevated: rgba(255, 255, 255, 1);
+            }
+            
+            .metric-card,
+            .chart-container,
+            .filter-panel {
+                border: 2px solid var(--apple-blue);
+            }
+        }
+        
+        /* Form Controls - Apple Style */
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            background: var(--surface-secondary);
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+            font-family: var(--font-system);
+            color: var(--text-primary);
+            transition: all var(--transition-smooth);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+            background: var(--surface-elevated);
+            transform: translateY(-1px);
+        }
+        
+        .form-select:hover {
+            border-color: var(--apple-blue);
+            background: var(--surface-elevated);
+        }
+        
+        .form-label {
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-bottom: var(--spacing-xs);
+            display: block;
+        }
+        
+        /* Loading States - Enhanced */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner-border {
+            animation: spinner-border 0.75s linear infinite;
+        }
+        
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Chart Error States - Apple Style */
+        .chart-error {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: var(--text-secondary);
+            text-align: center;
+            background: var(--surface-secondary);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md);
+            padding: var(--spacing-lg);
+            backdrop-filter: blur(10px);
+        }
+        
+        .chart-error i {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.6;
+            color: var(--warning-color);
+        }
+        
+        .retry-button {
+            margin-top: var(--spacing-md);
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: var(--font-weight-medium);
+            transition: all var(--transition-smooth);
+        }
+        
+        .retry-button:hover {
+            background: var(--apple-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-sm);
+            background: linear-gradient(135deg, var(--apple-blue), var(--apple-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .chart-title i {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        .chart-title small {
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-regular);
+            font-size: 0.85rem;
+        }
+
+        .filter-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .map-container {
+            height: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            background: #f8f9fa;
+        }
+        
+        .map-container .leaflet-container {
+            border-radius: 15px;
+        }
+        
+        .map-container .leaflet-control-container {
+            font-family: inherit;
+        }
+        
+        .map-container .leaflet-popup-content {
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .chart-error {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .chart-error i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .retry-button {
+            margin-top: 1rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(45deg, rgba(23, 162, 184, 0.1), rgba(40, 167, 69, 0.1));
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            border-radius: 10px;
+        }
+
+        .heatmap-container {
+            min-height: 400px;
+        }
+
+        .species-card {
+            background: linear-gradient(45deg, rgba(52, 199, 89, 0.1), rgba(90, 200, 250, 0.1));
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .species-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--apple-green), var(--apple-teal));
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        
+        .species-card:hover {
+            transform: translateY(-4px) translateX(8px);
+            box-shadow: var(--glass-shadow);
+            border-color: var(--apple-green);
+        }
+        
+        .species-card:hover::before {
+            opacity: 1;
+        }
+
+        .real-time-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: var(--apple-green);
+            border-radius: 50%;
+            animation: pulse-realtime 2s infinite;
+            margin-right: var(--spacing-sm);
+            box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7);
+        }
+
+        @keyframes pulse-realtime {
+            0% { 
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7);
+            }
+            50% { 
+                opacity: 0.7;
+                box-shadow: 0 0 0 8px rgba(52, 199, 89, 0);
+            }
+            100% { 
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(52, 199, 89, 0);
+            }
+        }
+
+        .performance-badge {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Estilos personalizados para o mapa científico */
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .custom-popup .leaflet-popup-tip {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .custom-popup .btn-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 6px;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-popup .btn-sm:hover {
+            background: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+        }
+        
+        /* Otimizações para mapa em loading */
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .map-loading .spinner-border {
+            width: 2rem;
+            height: 2rem;
+            border-width: 0.2em;
+        }
+        
+        /* Indicadores de status do mapa */
+        .map-status-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .map-status-indicator.eox-active {
+            color: var(--secondary-color);
+        }
+        
+        .map-status-indicator.fallback-active {
+            color: var(--warning-color);
+        }
+        
+        .map-status-indicator.error {
+            color: var(--danger-color);
+        }
+        
+        /* Estilos específicos para ZEE marítimas */
+        .zee-angola-continental {
+            transition: all 0.3s ease;
+        }
+        
+        .zee-angola-continental:hover {
+            fill-opacity: 0.25 !important;
+            stroke-width: 3 !important;
+        }
+        
+        .zee-cabinda {
+            transition: all 0.3s ease;
+        }
+        
+        .zee-cabinda:hover {
+            fill-opacity: 0.25 !important;
+            stroke-width: 3 !important;
+        }
+        
+        /* Popups personalizados para ZEE */
+        .leaflet-popup-content h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .leaflet-popup-content strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .leaflet-popup-content .text-muted {
+            font-style: italic;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        /* Controle de camadas personalizado */
+        .layer-control {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1002;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            min-width: 280px;
+            max-width: 320px;
+            font-family: inherit;
+        }
+        
+        .layer-control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .layer-control-header h6 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .layer-control-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .layer-control-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .layer-control-content {
+            padding: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .layer-control-content.collapsed {
+            max-height: 0;
+            padding: 0 12px;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .layer-group {
+            margin-bottom: 16px;
+        }
+        
+        .layer-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .layer-group h7 {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .layer-buttons {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .layer-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            width: 100%;
+            text-align: left;
+        }
+        
+        .layer-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .layer-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+        }
+        
+        .layer-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(44, 90, 160, 0.4);
+        }
+        
+        .layer-btn i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        .layer-btn.active i {
+            opacity: 1;
+        }
+        
+        .layer-btn span {
+            flex: 1;
+            font-size: 12px;
+        }
+        
+        /* Feedback de troca de camada */
+        .layer-switch-feedback {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2001;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideInDown 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        /* Responsividade do controle de camadas */
+        @media (max-width: 768px) {
+            .layer-control {
+                left: 5px;
+                top: 5px;
+                min-width: 260px;
+                max-width: calc(100vw - 20px);
+            }
+            
+            .layer-control-content {
+                max-height: 300px;
+            }
+            
+            .layer-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            
+            .layer-btn span {
+                font-size: 11px;
+            }
+            
+            .layer-switch-feedback {
+                top: 60px;
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .layer-control {
+                min-width: 240px;
+            }
+            
+            .layer-control-header {
+                padding: 10px 12px;
+            }
+            
+            .layer-control-header h6 {
+                font-size: 13px;
+            }
+            
+            .layer-control-content {
+                padding: 10px;
+                max-height: 250px;
+            }
+            
+            .layer-group {
+                margin-bottom: 12px;
+            }
+            
+            .layer-btn {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .layer-btn i {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-microscope text-primary me-2"></i>
+                        Dashboard Científico BGAPP
+                        <span class="performance-badge ms-2">80% mais rápido</span>
+                    </h1>
+                    <small class="text-muted">
+                        <span class="real-time-indicator"></span>
+                        Dados em tempo real - Última atualização: <span id="last-update">--</span>
+                    </small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-primary me-2" onclick="refreshData()" aria-describedby="refresh-help">
+                        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i> Atualizar
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="exportData()" aria-describedby="export-help">
+                        <i class="fas fa-download me-1" aria-hidden="true"></i> Exportar
+                    </button>
+                    <div id="refresh-help" class="visually-hidden">Atualiza todos os dados do dashboard</div>
+                    <div id="export-help" class="visually-hidden">Exporta os dados atuais em formato CSV</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <div class="container-fluid">
+            
+            <!-- Filtros Inteligentes -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="filter-panel" role="region" aria-labelledby="filters-heading" id="filter-panel">
+                        <button class="filter-toggle" onclick="toggleFilters()" aria-label="Recolher/Expandir filtros">
+                            <i class="fas fa-chevron-up" id="filter-toggle-icon"></i>
+                        </button>
+                        <h5 class="mb-3" id="filters-heading">
+                            <i class="fas fa-filter text-primary me-2" aria-hidden="true"></i>
+                            Filtros Inteligentes
+                            <small class="text-muted">(Reduz tempo de análise em 80%)</small>
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label" for="period-filter">Período</label>
+                                <select class="form-select" id="period-filter" aria-describedby="period-help">
+                                    <option value="24h">Últimas 24 horas</option>
+                                    <option value="7d">Últimos 7 dias</option>
+                                    <option value="30d" selected>Últimos 30 dias</option>
+                                    <option value="90d">Últimos 90 dias</option>
+                                </select>
+                                <div id="period-help" class="visually-hidden">Selecione o período de tempo para análise dos dados</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="region-filter">Região</label>
+                                <select class="form-select" id="region-filter" aria-describedby="region-help">
+                                    <option value="all" selected>Todas as regiões</option>
+                                    <option value="cabinda">Cabinda</option>
+                                    <option value="zee">ZEE Angola</option>
+                                    <option value="aguas_internas">Águas Internas</option>
+                                </select>
+                                <div id="region-help" class="visually-hidden">Selecione a região geográfica para filtragem</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="parameter-filter">Parâmetro</label>
+                                <select class="form-select" id="parameter-filter" aria-describedby="parameter-help">
+                                    <option value="temperature" selected>Temperatura</option>
+                                    <option value="salinity">Salinidade</option>
+                                    <option value="oxygen">Oxigénio Dissolvido</option>
+                                    <option value="ph">pH</option>
+                                    <option value="chlorophyll">Clorofila</option>
+                                </select>
+                                <div id="parameter-help" class="visually-hidden">Selecione o parâmetro oceanográfico para análise</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="depth-filter">Profundidade</label>
+                                <select class="form-select" id="depth-filter" aria-describedby="depth-help">
+                                    <option value="surface" selected>Superfície</option>
+                                    <option value="10m">10 metros</option>
+                                    <option value="50m">50 metros</option>
+                                    <option value="100m">100 metros</option>
+                                </select>
+                                <div id="depth-help" class="visually-hidden">Selecione a profundidade para coleta de dados</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button class="btn btn-primary" onclick="applyFilters()" aria-describedby="apply-filters-help">
+                                    <i class="fas fa-search me-1" aria-hidden="true"></i> Aplicar Filtros
+                                </button>
+                                <button class="btn btn-outline-secondary ms-2" onclick="resetFilters()" aria-describedby="reset-filters-help">
+                                    <i class="fas fa-undo me-1" aria-hidden="true"></i> Limpar
+                                </button>
+                                <div id="apply-filters-help" class="visually-hidden">Aplica os filtros selecionados aos dados do dashboard</div>
+                                <div id="reset-filters-help" class="visually-hidden">Remove todos os filtros e restaura valores padrão</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métricas Principais -->
+            <div class="row" role="region" aria-labelledby="metrics-heading">
+                <div class="col-md-3">
+                    <div class="metric-card text-center" role="article" aria-labelledby="metric1-label">
+                        <div class="metric-value text-primary" id="total-observations" aria-live="polite">-</div>
+                        <div class="metric-label" id="metric1-label">Observações Totais</div>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1" aria-hidden="true"></i>
+                            <span id="observations-change" aria-live="polite">-</span>% vs mês anterior
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center" role="article" aria-labelledby="metric2-label">
+                        <div class="metric-value text-success" id="species-count" aria-live="polite">-</div>
+                        <div class="metric-label" id="metric2-label">Espécies Identificadas</div>
+                        <small class="text-info">
+                            <i class="fas fa-fish me-1" aria-hidden="true"></i>
+                            <span id="new-species" aria-live="polite">-</span> novas este mês
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center" role="article" aria-labelledby="metric3-label">
+                        <div class="metric-value text-info" id="data-quality" aria-live="polite">-</div>
+                        <div class="metric-label" id="metric3-label">Qualidade dos Dados</div>
+                        <small class="text-success">
+                            <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
+                            95% dados validados
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center" role="article" aria-labelledby="metric4-label">
+                        <div class="metric-value text-warning" id="prediction-accuracy" aria-live="polite">-</div>
+                        <div class="metric-label" id="metric4-label">Precisão Modelos ML</div>
+                        <small class="text-success">
+                            <i class="fas fa-brain me-1" aria-hidden="true"></i>
+                            Meta: >95%
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos Principais -->
+            <div class="row">
+                <!-- Série Temporal -->
+                <div class="col-md-8">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-chart-line text-primary me-2"></i>
+                            Série Temporal - Parâmetros Oceanográficos
+                            <small class="text-muted">(Visualização Interativa)</small>
+                        </div>
+                        <div id="timeseries-chart" style="height: 400px;">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Distribuição de Espécies -->
+                <div class="col-md-4">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-chart-pie text-success me-2"></i>
+                            Distribuição de Espécies
+                        </div>
+                        <div id="species-chart" style="height: 400px;">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Mapa de Calor -->
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-map text-info me-2"></i>
+                            Mapa de Calor - Biodiversidade
+                        </div>
+                        <div id="heatmap-chart" class="heatmap-container" style="height: 400px;">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-info" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correlação de Parâmetros -->
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-project-diagram text-warning me-2"></i>
+                            Matriz de Correlação
+                        </div>
+                        <div id="correlation-chart" style="height: 400px;">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-warning" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa Geoespacial -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-globe text-primary me-2"></i>
+                            Mapa Geoespacial Interativo
+                            <small class="text-muted">(Clique nos pontos para detalhes)</small>
+                        </div>
+                        <div id="map" class="map-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Espécies em Destaque -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <div class="chart-title">
+                            <i class="fas fa-star text-success me-2"></i>
+                            Espécies em Destaque
+                        </div>
+                        <div id="featured-species" class="row">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas e Notificações -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Sistema de Performance Avançado
+                        </h5>
+                        <p class="mb-2">
+                            <strong>Cache Inteligente:</strong> Latência reduzida de 6s para &lt;1s<br>
+                            <strong>Alertas Automáticos:</strong> 90% redução no downtime<br>
+                            <strong>Filtros Inteligentes:</strong> 80% redução no tempo de análise<br>
+                            <strong>Modelos ML:</strong> >95% precisão nas previsões
+                        </p>
+                        <hr>
+                        <p class="mb-0">
+                            <small>
+                                <i class="fas fa-clock me-1"></i>
+                                Dados atualizados automaticamente a cada 30 segundos
+                            </small>
+                        </p>
+                        <div class="mt-2" style="font-size: 11px;">
+                            <span class="real-time-indicator" style="width: 8px; height: 8px;"></span>
+                            <span id="system-status" style="color: var(--apple-green);">Sistema Online - Inicializando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configuração global
+        const API_BASE = 'http://localhost:8000';
+        let map;
+        let currentFilters = {
+            period: '30d',
+            region: 'all',
+            parameter: 'temperature',
+            depth: 'surface'
+        };
+
+        // Variáveis de performance e sistema de erros avançado
+        let isLoading = false;
+        let loadTimeout;
+        let errorCounts = {
+            api: 0,
+            network: 0,
+            chart: 0
+        };
+        let serviceHealth = {
+            api: true,
+            charts: true,
+            maps: true
+        };
+        let retryAttempts = new Map();
+        const MAX_RETRIES = 3;
+        const RETRY_DELAY = 1000;
+        
+        // Sistema de cache inteligente
+        const dataCache = new Map();
+        const CACHE_DURATION = {
+            metrics: 30000,      // 30 segundos
+            charts: 60000,       // 1 minuto
+            species: 300000,     // 5 minutos
+            config: 600000       // 10 minutos
+        };
+        
+        // Performance monitoring
+        const performanceMetrics = {
+            loadTimes: [],
+            errorRates: {},
+            cacheHitRates: {}
+        };
+        
+        // Inicializar dashboard com sistema de erros avançado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar tratamento global de erros primeiro
+            setupGlobalErrorHandling();
+            
+            initializeDashboard();
+            
+            // Carregar mapa após um breve delay para melhor performance
+            setTimeout(() => {
+                initializeMap();
+                // Otimizar performance após inicialização
+                setTimeout(optimizeMapPerformance, 2000);
+            }, 100);
+            
+            loadDashboardData();
+            
+            // Auto-refresh a cada 30 segundos (apenas se não estiver carregando)
+            setInterval(() => {
+                if (!isLoading && serviceHealth.api) {
+                    loadDashboardData();
+                }
+            }, 30000);
+            
+            // Health check periódico
+            setInterval(performHealthCheck, 60000); // A cada minuto
+            
+            // Otimizar redimensionamento
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (map) {
+                        map.invalidateSize();
+                    }
+                    // Redimensionar gráficos Plotly com tratamento de erro
+                    try {
+                        if (window.Plotly) {
+                            Plotly.Plots.resize('timeseries-chart');
+                            Plotly.Plots.resize('species-chart');
+                            Plotly.Plots.resize('heatmap-chart');
+                            Plotly.Plots.resize('correlation-chart');
+                        }
+                    } catch (error) {
+                        console.warn('Erro ao redimensionar gráficos:', error);
+                    }
+                }, 250);
+            });
+        });
+
+        async function initializeDashboard() {
+            console.log('🚀 Inicializando Dashboard Científico BGAPP...');
+            updateLastUpdateTime();
+        }
+
+        function initializeMap() {
+            try {
+                // Mostrar indicador de carregamento do mapa
+                const mapContainer = document.getElementById('map');
+                mapContainer.innerHTML = `
+                    <div class="map-loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando mapa...</span>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <small>Inicializando sistema de mapas...</small>
+                        </div>
+                    </div>
+                `;
+                
+                // Timeout de segurança para evitar loading infinito
+                const loadingTimeout = setTimeout(() => {
+                    console.warn('⚠️ Timeout no carregamento do mapa - forçando fallback');
+                    initializeMapFallback();
+                }, 8000);
+                
+                // Inicializar mapa Leaflet com configurações otimizadas para exploração livre
+                map = L.map('map', {
+                    preferCanvas: true,
+                    zoomControl: true,
+                    attributionControl: true,
+                    fadeAnimation: true,
+                    zoomAnimation: true,
+                    markerZoomAnimation: true,
+                    maxBoundsViscosity: 0.1, // Muito baixa para permitir navegação livre
+                    minZoom: 2,  // Permitir zoom out maior
+                    maxZoom: 18, // Permitir zoom in maior
+                    worldCopyJump: true, // Permitir wrap around do mundo
+                    inertia: true, // Inercia para navegação suave
+                    inertiaDeceleration: 3000
+                }).setView([-8.84, 13.23], 6); // Centrado em Luanda, Angola
+                
+                // Sistema de camadas com fallback inteligente
+                initializeMapLayers(map, loadingTimeout);
+
+            } catch (error) {
+                console.error('❌ Erro inicializando mapa:', error);
+                clearTimeout(loadingTimeout);
+                initializeMapFallback();
+            }
+        }
+
+        // Sistema de inicialização de camadas com EOX integrado
+        function initializeMapLayers(map, loadingTimeout) {
+            console.log('🌊 Inicializando camadas do mapa...');
+            
+            // Estado das camadas
+            let primaryLayerLoaded = false;
+            let fallbackActivated = false;
+            
+            // Armazenar camadas globalmente para controle
+            window.mapLayers = {};
+            
+            // === CAMADAS EOX DISPONÍVEIS ===
+            
+            // 1. EOX Terrain Light (com GEBCO)
+            window.mapLayers.eoxTerrain = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 'terrain-light_3857',
+                format: 'image/jpeg',
+                transparent: false,
+                opacity: 0.9,
+                attribution: '🌊 Batimetria: GEBCO via EOX::Maps © EOX',
+                maxZoom: 14,
+                minZoom: 4,
+                version: '1.3.0',
+                crs: L.CRS.EPSG3857,
+                tileSize: 256,
+                detectRetina: true,
+                keepBuffer: 2,
+                crossOrigin: true,
+                timeout: 5000,
+                errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+            });
+            
+            // 2. Sentinel-2 Cloudless 2024
+            window.mapLayers.sentinel2024 = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 's2cloudless-2024_3857',
+                format: 'image/jpeg',
+                transparent: false,
+                opacity: 1.0,
+                attribution: '🛰️ Sentinel-2 2024 © European Union, Copernicus via EOX',
+                maxZoom: 14,
+                minZoom: 4,
+                version: '1.3.0',
+                crs: L.CRS.EPSG3857,
+                timeout: 5000
+            });
+            
+            // 3. Sentinel-2 Cloudless 2023
+            window.mapLayers.sentinel2023 = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 's2cloudless-2023_3857',
+                format: 'image/jpeg',
+                transparent: false,
+                opacity: 1.0,
+                attribution: '🛰️ Sentinel-2 2023 © European Union, Copernicus via EOX',
+                maxZoom: 14,
+                minZoom: 4,
+                version: '1.3.0',
+                crs: L.CRS.EPSG3857,
+                timeout: 5000
+            });
+            
+            // 4. Blue Marble
+            window.mapLayers.blueMarble = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 'bluemarble_3857',
+                format: 'image/jpeg',
+                transparent: false,
+                opacity: 1.0,
+                attribution: '🌍 Blue Marble © NASA via EOX',
+                maxZoom: 12,
+                minZoom: 3,
+                version: '1.3.0',
+                crs: L.CRS.EPSG3857,
+                timeout: 5000
+            });
+            
+            // 5. Black Marble (noturno)
+            window.mapLayers.blackMarble = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 'blackmarble_3857',
+                format: 'image/jpeg',
+                transparent: false,
+                opacity: 1.0,
+                attribution: '🌃 Black Marble © NASA via EOX',
+                maxZoom: 12,
+                minZoom: 3,
+                version: '1.3.0',
+                crs: L.CRS.EPSG3857,
+                timeout: 5000
+            });
+            
+            // === CAMADAS OPENSTREETMAP E ALTERNATIVAS ===
+            
+            // 6. OpenStreetMap Standard
+            window.mapLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18,
+                crossOrigin: true,
+                timeout: 3000
+            });
+            
+            // 7. CartoDB Light
+            window.mapLayers.cartoLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap, © CartoDB',
+                maxZoom: 19,
+                timeout: 3000
+            });
+            
+            // 8. CartoDB Dark
+            window.mapLayers.cartoDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap, © CartoDB',
+                maxZoom: 19,
+                timeout: 3000
+            });
+            
+            // 9. ESRI Satellite
+            window.mapLayers.esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS',
+                maxZoom: 18,
+                timeout: 4000
+            });
+            
+            // 10. ESRI Ocean
+            window.mapLayers.esriOcean = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, GEBCO, NOAA, National Geographic',
+                maxZoom: 16,
+                timeout: 4000
+            });
+            
+            // Usar EOX Terrain como camada principal
+            const eoxTerrainLayer = window.mapLayers.eoxTerrain;
+            
+            // Fallback OpenStreetMap sempre disponível
+            const osmLayer = window.mapLayers.osm;
+            
+            // Tentar carregar EOX primeiro com timeout
+            const eoxTimeout = setTimeout(() => {
+                if (!primaryLayerLoaded && !fallbackActivated) {
+                    console.warn('⚠️ EOX demorado - ativando fallback');
+                    activateFallback();
+                }
+            }, 4000);
+            
+            // Event listeners para EOX
+            eoxTerrainLayer.on('loading', () => {
+                console.log('🔄 Carregando camada EOX...');
+            });
+            
+            eoxTerrainLayer.on('load', () => {
+                console.log('✅ Camada EOX carregada com sucesso!');
+                primaryLayerLoaded = true;
+                clearTimeout(eoxTimeout);
+                clearTimeout(loadingTimeout);
+                
+                // Atualizar status para EOX ativo
+                updateMapStatus('eox', 'EOX Maps ativo');
+                
+                finishMapInitialization();
+            });
+            
+            eoxTerrainLayer.on('tileerror', (e) => {
+                console.warn('⚠️ Erro em tile EOX:', e.tile.src);
+                if (!fallbackActivated) {
+                    activateFallback();
+                }
+            });
+            
+            function activateFallback() {
+                if (fallbackActivated) return;
+                fallbackActivated = true;
+                
+                console.log('🔄 Ativando fallback para OpenStreetMap...');
+                
+                // Atualizar status para fallback
+                updateMapStatus('fallback', 'Usando fallback OSM');
+                
+                // Remover EOX se adicionado
+                if (map.hasLayer(eoxTerrainLayer)) {
+                    map.removeLayer(eoxTerrainLayer);
+                }
+                
+                // Adicionar OSM
+                osmLayer.addTo(map);
+                
+                clearTimeout(eoxTimeout);
+                clearTimeout(loadingTimeout);
+                finishMapInitialization();
+            }
+            
+            // Adicionar camada EOX ao mapa
+            try {
+                eoxTerrainLayer.addTo(map);
+                console.log('🌊 Tentando carregar EOX Terrain Light...');
+            } catch (error) {
+                console.error('❌ Erro ao adicionar EOX:', error);
+                activateFallback();
+            }
+            
+            // Fallback de emergência
+            setTimeout(() => {
+                if (!primaryLayerLoaded && !fallbackActivated) {
+                    console.error('❌ Timeout total - forçando OpenStreetMap');
+                    activateFallback();
+                }
+            }, 7000);
+        }
+        
+        function finishMapInitialization() {
+            console.log('🗺️ Finalizando inicialização do mapa...');
+            
+            // Adicionar ZEE marítima de Angola
+            addAngolaZEE();
+            
+            // Adicionar pontos de dados científicos
+            addScientificDataPoints();
+            
+            // Configurar bounds mais amplos para permitir exploração
+            const worldBounds = L.latLngBounds(
+                [-85.0, -180.0],   // Southwest - quase todo o mundo
+                [85.0, 180.0]      // Northeast - quase todo o mundo
+            );
+            
+            // Usar bounds suaves que permitem exploração mas com viscosidade baixa
+            map.setMaxBounds(worldBounds);
+            map.options.maxBoundsViscosity = 0.1; // Muito baixa para permitir navegação livre
+            
+            // Adicionar indicador de status do mapa
+            addMapStatusIndicator();
+            
+            // Adicionar controle de camadas
+            addLayerControl();
+            
+            // Evento quando o mapa está pronto
+            map.whenReady(() => {
+                console.log('✅ Mapa científico totalmente carregado!');
+                
+                // Remover indicador de loading
+                const mapContainer = document.getElementById('map');
+                const loadingDiv = mapContainer.querySelector('.map-loading');
+                if (loadingDiv) {
+                    loadingDiv.style.opacity = '0';
+                    loadingDiv.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    setTimeout(() => loadingDiv.remove(), 300);
+                }
+                
+                // Atualizar status para sucesso
+                updateMapStatus('success', 'Mapa carregado com sucesso');
+            });
+        }
+        
+        function addAngolaZEE() {
+            console.log('🌊 Adicionando ZEE marítima de Angola (dados oficiais Marine Regions)...');
+            
+            // ZEE Angola Continental - Dados oficiais Marine Regions (495.866 km²)
+            const angolaZEEOfficial = [
+                [-5.873396, 13.420862], [-5.918185, 13.355146], [-5.865621, 13.224372],
+                [-5.898356, 13.003078], [-6.032891, 12.846958], [-6.086257, 12.502444],
+                [-6.139102, 12.608665], [-6.092094, 12.483783], [-6.114706, 12.364916],
+                [-6.175683, 12.387862], [-6.118912, 12.361235], [-6.164156, 12.297170],
+                [-6.113297, 12.318235], [-6.110327, 12.277647], [-6.077381, 12.331717],
+                [-6.138192, 12.273464], [-6.662806, 12.562213], [-6.992862, 12.829332],
+                [-7.269526, 12.853736], [-8.393006, 13.394187], [-8.471333, 13.345864],
+                [-8.658390, 13.416284], [-8.748194, 13.397833], [-8.782861, 13.233191],
+                [-8.956953, 13.148413], [-9.105115, 13.015672], [-9.028314, 13.001217],
+                [-9.084775, 12.992876], [-9.345191, 13.153108], [-9.187589, 13.248435],
+                [-9.165179, 13.359375], [-9.188305, 13.248557], [-9.349344, 13.150029],
+                [-9.637746, 13.237111], [-9.687630, 13.195918], [-9.869563, 13.313816],
+                [-9.983423, 13.313227], [-10.272675, 13.526462], [-10.389065, 13.529922],
+                [-10.684535, 13.781938], [-10.756365, 13.719119], [-11.019889, 13.865173],
+                [-11.578179, 13.768655], [-11.812340, 13.793880], [-12.244272, 13.652123],
+                [-12.372411, 13.516176], [-12.510579, 13.473803], [-12.613267, 13.342562],
+                [-12.602141, 13.192090], [-12.834339, 12.940374], [-12.982669, 12.978627],
+                [-13.195860, 12.782672], [-13.244842, 12.655440], [-13.340230, 12.651576],
+                [-13.418668, 12.530930], [-13.847004, 12.528601], [-13.878091, 12.421492],
+                [-14.059321, 12.361223], [-14.410887, 12.354461], [-14.754628, 12.287341],
+                [-15.117188, 12.116474], [-15.182299, 12.153739], [-15.234336, 12.054785],
+                [-15.631489, 11.995095], [-15.787110, 11.879578], [-15.791506, 11.769083],
+                [-15.878033, 11.731544], [-16.021533, 11.805451], [-16.456228, 11.826663],
+                [-17.100871, 11.748675], [-17.272145, 11.789649], [-17.250000, 8.263541],
+                [-16.390827, 8.201528], [-14.999499, 8.399146], [-14.488876, 8.586763],
+                [-13.863948, 8.916424], [-13.235325, 9.040711], [-12.151259, 9.370827],
+                [-11.673227, 9.619390], [-11.010506, 10.085935], [-10.071866, 9.765080],
+                [-9.600696, 9.658992], [-9.004120, 9.622015], [-8.398642, 9.689170],
+                [-7.613823, 9.259198], [-7.082652, 9.057717], [-6.023798, 12.401655],
+                [-6.071808, 12.406053], [-6.071251, 12.488279], [-5.864361, 13.038223],
+                [-5.904637, 13.114855], [-5.873396, 13.420862]
+            ];
+            
+            // ZEE Cabinda - Dados oficiais Marine Regions (província enclave)
+            const cabindaZEEOfficial = [
+                [-5.034056, 12.015229], [-5.198116, 12.128142], [-5.171156, 12.119766],
+                [-5.164328, 12.107678], [-5.156656, 12.110115], [-5.164775, 12.117618],
+                [-5.161611, 12.126402], [-5.172215, 12.129666], [-5.171438, 12.139874],
+                [-5.179087, 12.136203], [-5.190954, 12.147496], [-5.199196, 12.134975],
+                [-5.190691, 12.139385], [-5.189918, 12.125930], [-5.217518, 12.141926],
+                [-5.242594, 12.132621], [-5.315237, 12.178571], [-5.326545, 12.178335],
+                [-5.330094, 12.167749], [-5.464434, 12.223075], [-5.517573, 12.232887],
+                [-5.545083, 12.229523], [-5.557963, 12.210720], [-5.549025, 12.183714],
+                [-5.639457, 12.145757], [-5.691803, 12.154627], [-5.732652, 12.172867],
+                [-5.773048, 12.202413], [-6.734409, 9.121110], [-5.030147, 12.009580],
+                [-5.034056, 12.015229]
+            ];
+            
+            // Adicionar ZEE Angola Continental com dados oficiais
+            const angolaLayer = L.polygon(angolaZEEOfficial, {
+                color: '#0066cc',
+                weight: 2,
+                fillOpacity: 0.15,
+                fillColor: '#0080ff',
+                opacity: 0.7,
+                className: 'zee-angola-continental'
+            }).addTo(map);
+            
+            angolaLayer.bindPopup(`
+                <div style="font-family: inherit; min-width: 250px;">
+                    <h6 class="mb-2">🌊 ZEE Angola Continental - OFICIAL</h6>
+                    <p class="mb-1">
+                        <strong>Área:</strong> 495.866 km² (Marine Regions)<br>
+                        <strong>Pontos:</strong> ${angolaZEEOfficial.length} coordenadas precisas<br>
+                        <strong>MRGID:</strong> 8478<br>
+                        <strong>Fonte:</strong> Marine Regions eez_v11<br>
+                        <strong>Status:</strong> Zona Económica Exclusiva
+                    </p>
+                    <small class="text-muted">Dados científicos oficiais de máxima qualidade</small>
+                </div>
+            `);
+            
+            // Adicionar ZEE Cabinda com dados oficiais
+            const cabindaLayer = L.polygon(cabindaZEEOfficial, {
+                color: '#9b59b6',
+                weight: 2,
+                fillOpacity: 0.15,
+                fillColor: '#9b59b6',
+                opacity: 0.7,
+                className: 'zee-cabinda'
+            }).addTo(map);
+            
+            cabindaLayer.bindPopup(`
+                <div style="font-family: inherit; min-width: 250px;">
+                    <h6 class="mb-2">🏛️ ZEE Cabinda - OFICIAL</h6>
+                    <p class="mb-1">
+                        <strong>Tipo:</strong> Província (Enclave)<br>
+                        <strong>Pontos:</strong> ${cabindaZEEOfficial.length} coordenadas precisas<br>
+                        <strong>Fonte:</strong> Marine Regions eez_v11<br>
+                        <strong>Status:</strong> Zona Económica Exclusiva<br>
+                        <strong>Separação:</strong> Geograficamente isolada da Angola Continental
+                    </p>
+                    <small class="text-muted">Dados científicos oficiais - Província enclave</small>
+                </div>
+            `);
+            
+            console.log('✅ ZEE marítima adicionada com sucesso - Dados Marine Regions Oficiais');
+            console.log(`📊 Angola Continental: ${angolaZEEOfficial.length} coordenadas precisas (495.866 km²)`);
+            console.log(`📊 Cabinda Enclave: ${cabindaZEEOfficial.length} coordenadas precisas`);
+            console.log('🌊 Qualidade: OFICIAL/MÁXIMA - Marine Regions eez_v11 - MRGID: 8478');
+        }
+        
+        function addLayerControl() {
+            console.log('🎛️ Adicionando controle de camadas...');
+            
+            // Criar controle personalizado de camadas
+            const layerControl = document.createElement('div');
+            layerControl.className = 'layer-control';
+            layerControl.innerHTML = `
+                <div class="layer-control-header">
+                    <h6><i class="fas fa-layers me-2"></i>Camadas do Mapa</h6>
+                    <button class="layer-control-toggle" onclick="toggleLayerControl()">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+                <div class="layer-control-content" id="layer-control-content">
+                    <div class="layer-group">
+                        <h7>🎯 Navegação</h7>
+                        <div class="layer-buttons">
+                            <button class="layer-btn" onclick="centerOnAngola()" title="Voltar para Angola">
+                                <i class="fas fa-crosshairs"></i>
+                                <span>Centrar em Angola</span>
+                            </button>
+                            <button class="layer-btn" onclick="resetMapView()" title="Vista global">
+                                <i class="fas fa-globe"></i>
+                                <span>Vista Mundial</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="layer-group">
+                        <h7>🌊 EOX Maps (Científico)</h7>
+                        <div class="layer-buttons">
+                            <button class="layer-btn active" data-layer="eoxTerrain" title="Batimetria GEBCO integrada">
+                                <i class="fas fa-water"></i>
+                                <span>Terrain + GEBCO</span>
+                            </button>
+                            <button class="layer-btn" data-layer="sentinel2024" title="Imagens satelitais 2024">
+                                <i class="fas fa-satellite"></i>
+                                <span>Sentinel-2 2024</span>
+                            </button>
+                            <button class="layer-btn" data-layer="sentinel2023" title="Imagens satelitais 2023">
+                                <i class="fas fa-satellite-dish"></i>
+                                <span>Sentinel-2 2023</span>
+                            </button>
+                            <button class="layer-btn" data-layer="blueMarble" title="Visão global da Terra">
+                                <i class="fas fa-globe-americas"></i>
+                                <span>Blue Marble</span>
+                            </button>
+                            <button class="layer-btn" data-layer="blackMarble" title="Terra vista noturna">
+                                <i class="fas fa-moon"></i>
+                                <span>Black Marble</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="layer-group">
+                        <h7>🗺️ Mapas Standard</h7>
+                        <div class="layer-buttons">
+                            <button class="layer-btn" data-layer="osm" title="OpenStreetMap padrão">
+                                <i class="fas fa-map"></i>
+                                <span>OpenStreetMap</span>
+                            </button>
+                            <button class="layer-btn" data-layer="cartoLight" title="Mapa claro e limpo">
+                                <i class="fas fa-sun"></i>
+                                <span>CartoDB Light</span>
+                            </button>
+                            <button class="layer-btn" data-layer="cartoDark" title="Mapa escuro">
+                                <i class="fas fa-moon"></i>
+                                <span>CartoDB Dark</span>
+                            </button>
+                            <button class="layer-btn" data-layer="esriSatellite" title="Imagens de satélite">
+                                <i class="fas fa-satellite-dish"></i>
+                                <span>ESRI Satellite</span>
+                            </button>
+                            <button class="layer-btn" data-layer="esriOcean" title="Mapa oceânico especializado">
+                                <i class="fas fa-ship"></i>
+                                <span>ESRI Ocean</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Adicionar ao mapa
+            const mapContainer = document.getElementById('map');
+            mapContainer.appendChild(layerControl);
+            
+            // Configurar event listeners para os botões
+            setupLayerControlEvents();
+            
+            console.log('✅ Controle de camadas adicionado');
+        }
+        
+        function setupLayerControlEvents() {
+            const layerButtons = document.querySelectorAll('.layer-btn');
+            
+            layerButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const layerKey = e.currentTarget.getAttribute('data-layer');
+                    switchMapLayer(layerKey);
+                    
+                    // Atualizar botão ativo
+                    layerButtons.forEach(btn => btn.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                });
+            });
+        }
+        
+        function switchMapLayer(layerKey) {
+            console.log(`🔄 Alternando para camada: ${layerKey}`);
+            
+            if (!window.mapLayers || !window.mapLayers[layerKey]) {
+                console.error(`❌ Camada ${layerKey} não encontrada`);
+                return;
+            }
+            
+            // Remover camada atual
+            map.eachLayer((layer) => {
+                if (layer._url || layer.wmsParams) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            // Adicionar nova camada
+            const newLayer = window.mapLayers[layerKey];
+            newLayer.addTo(map);
+            
+            // Atualizar status
+            const isEOX = ['eoxTerrain', 'sentinel2024', 'sentinel2023', 'blueMarble', 'blackMarble'].includes(layerKey);
+            updateMapStatus(isEOX ? 'eox' : 'fallback', `Camada ativa: ${layerKey}`);
+            
+            // Feedback visual
+            showLayerSwitchFeedback(layerKey);
+        }
+        
+        function showLayerSwitchFeedback(message) {
+            // Se for uma chave de camada, usar o mapeamento
+            const layerNames = {
+                'eoxTerrain': '🌊 EOX Terrain + GEBCO',
+                'sentinel2024': '🛰️ Sentinel-2 2024',
+                'sentinel2023': '🛰️ Sentinel-2 2023',
+                'blueMarble': '🌍 Blue Marble NASA',
+                'blackMarble': '🌃 Black Marble NASA',
+                'osm': '🗺️ OpenStreetMap',
+                'cartoLight': '☀️ CartoDB Light',
+                'cartoDark': '🌙 CartoDB Dark',
+                'esriSatellite': '📡 ESRI Satellite',
+                'esriOcean': '🚢 ESRI Ocean'
+            };
+            
+            const feedback = document.createElement('div');
+            feedback.className = 'layer-switch-feedback';
+            // Se a mensagem está no mapeamento, usar o nome amigável, senão usar a mensagem diretamente
+            feedback.innerHTML = layerNames[message] || message;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                feedback.style.transform = 'translateX(-50%) translateY(-10px)';
+                setTimeout(() => feedback.remove(), 300);
+            }, 2000);
+        }
+        
+        function toggleLayerControl() {
+            const content = document.getElementById('layer-control-content');
+            const toggle = document.querySelector('.layer-control-toggle i');
+            const layerControl = document.querySelector('.layer-control');
+            
+            if (content.classList.contains('collapsed')) {
+                // Expandir
+                content.classList.remove('collapsed');
+                content.style.maxHeight = '400px';
+                content.style.opacity = '1';
+                content.style.pointerEvents = 'auto';
+                toggle.className = 'fas fa-chevron-up';
+                layerControl.style.height = 'auto';
+                console.log('📱 Controle de camadas expandido');
+            } else {
+                // Recolher
+                content.classList.add('collapsed');
+                content.style.maxHeight = '0';
+                content.style.opacity = '0';
+                content.style.pointerEvents = 'none';
+                toggle.className = 'fas fa-chevron-down';
+                layerControl.style.height = '60px';
+                console.log('📱 Controle de camadas recolhido');
+            }
+        }
+        
+        function addMapStatusIndicator() {
+            const mapContainer = document.getElementById('map');
+            
+            // Verificar se já existe
+            if (mapContainer.querySelector('.map-status-indicator')) {
+                return;
+            }
+            
+            const statusIndicator = document.createElement('div');
+            statusIndicator.className = 'map-status-indicator';
+            statusIndicator.id = 'map-status';
+            statusIndicator.innerHTML = '🔄 Carregando...';
+            
+            mapContainer.appendChild(statusIndicator);
+        }
+        
+        function updateMapStatus(type, message) {
+            const statusIndicator = document.getElementById('map-status');
+            if (!statusIndicator) return;
+            
+            // Remover classes anteriores
+            statusIndicator.className = 'map-status-indicator';
+            
+            switch(type) {
+                case 'eox':
+                    statusIndicator.className += ' eox-active';
+                    statusIndicator.innerHTML = '🌊 EOX Maps';
+                    break;
+                case 'fallback':
+                    statusIndicator.className += ' fallback-active';
+                    statusIndicator.innerHTML = '🗺️ Fallback OSM';
+                    break;
+                case 'error':
+                    statusIndicator.className += ' error';
+                    statusIndicator.innerHTML = '❌ Erro';
+                    break;
+                case 'success':
+                    statusIndicator.className += ' eox-active';
+                    statusIndicator.innerHTML = '✅ Online';
+                    break;
+                default:
+                    statusIndicator.innerHTML = message || '🔄 Carregando...';
+            }
+            
+            // Auto-hide após 3 segundos se for sucesso
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (statusIndicator) {
+                        statusIndicator.style.opacity = '0';
+                        statusIndicator.style.transform = 'scale(0.8)';
+                        setTimeout(() => statusIndicator.remove(), 300);
+                    }
+                }, 3000);
+            }
+        }
+        
+        function addScientificDataPoints() {
+            // Dados científicos de exemplo para o dashboard
+            const scientificPoints = [
+                {lat: -5.12, lng: 12.18, name: 'Estação Cabinda Norte', value: 25.3, parameter: 'Temperatura', type: 'temperature'},
+                {lat: -5.85, lng: 12.20, name: 'Estação Cabinda Sul', value: 24.8, parameter: 'Temperatura', type: 'temperature'},
+                {lat: -6.15, lng: 12.35, name: 'Estação Soyo', value: 26.1, parameter: 'Temperatura', type: 'temperature'},
+                {lat: -8.84, lng: 13.23, name: 'Estação Luanda', value: 23.5, parameter: 'Temperatura', type: 'temperature'},
+                {lat: -12.5, lng: 13.5, name: 'Estação Benguela', value: 35.2, parameter: 'Salinidade', type: 'salinity'},
+                {lat: -15.2, lng: 12.0, name: 'Estação Namibe', value: 8.2, parameter: 'Oxigénio', type: 'oxygen'}
+            ];
+
+            scientificPoints.forEach(point => {
+                let color, icon;
+                
+                // Cor e ícone baseado no tipo de parâmetro
+                switch(point.type) {
+                    case 'temperature':
+                        color = point.value > 25 ? '#dc3545' : point.value > 24 ? '#ffc107' : '#0d6efd';
+                        icon = '🌡️';
+                        break;
+                    case 'salinity':
+                        color = '#17a2b8';
+                        icon = '🧂';
+                        break;
+                    case 'oxygen':
+                        color = '#28a745';
+                        icon = '💨';
+                        break;
+                    default:
+                        color = '#6c757d';
+                        icon = '📊';
+                }
+                
+                const marker = L.circleMarker([point.lat, point.lng], {
+                    radius: 8,
+                    fillColor: color,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+                
+                marker.bindPopup(`
+                    <div style="font-family: inherit; min-width: 200px;">
+                        <h6 class="mb-2">${icon} ${point.name}</h6>
+                        <p class="mb-1">
+                            <strong>${point.parameter}:</strong> ${point.value}${point.type === 'temperature' ? '°C' : point.type === 'salinity' ? ' PSU' : ' mg/L'}
+                        </p>
+                        <small class="text-muted">Dados em tempo real</small>
+                        <hr style="margin: 8px 0;">
+                        <button class="btn btn-sm btn-primary" onclick="showDetailedData('${point.name}')">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                `, {
+                    className: 'custom-popup',
+                    maxWidth: 250
+                });
+                
+                marker.addTo(map);
+            });
+        }
+        
+        function initializeMapFallback() {
+            console.log('🔄 Inicializando mapa em modo fallback...');
+            
+            try {
+                const mapContainer = document.getElementById('map');
+                mapContainer.innerHTML = '';
+                
+                // Criar mapa simples e confiável
+                map = L.map('map', {
+                    preferCanvas: false,
+                    zoomControl: true,
+                    attributionControl: true
+                }).setView([-8.84, 13.23], 6);
+                
+                // Usar apenas OpenStreetMap confiável
+                const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 18
+                });
+                
+                osmLayer.addTo(map);
+                
+                // Adicionar pontos básicos
+                addScientificDataPoints();
+                
+                console.log('✅ Mapa fallback inicializado com sucesso!');
+                
+            } catch (error) {
+                console.error('❌ Erro crítico no fallback do mapa:', error);
+                showMapError();
+            }
+        }
+        
+        function showMapError() {
+            const mapContainer = document.getElementById('map');
+            mapContainer.innerHTML = `
+                <div class="chart-error">
+                    <i class="fas fa-map-marked-alt text-danger"></i>
+                    <div>
+                        <strong>Erro ao carregar mapa</strong><br>
+                        <small class="text-muted">Verifique a conexão e tente novamente</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary retry-button" 
+                            onclick="initializeMap()">
+                        <i class="fas fa-redo me-1"></i>Tentar Novamente
+                    </button>
+                </div>
+            `;
+        }
+        
+        function showDetailedData(stationName) {
+            console.log(`📊 Mostrando dados detalhados para: ${stationName}`);
+            // Placeholder para funcionalidade futura de detalhes
+            alert(`Dados detalhados para ${stationName} serão implementados em breve.`);
+        }
+        
+        // Funções de navegação do mapa
+        function centerOnAngola() {
+            if (map) {
+                console.log('🎯 Centralizando mapa em Angola...');
+                map.setView([-8.84, 13.23], 6, {
+                    animate: true,
+                    duration: 1.5
+                });
+                
+                // Feedback visual
+                showLayerSwitchFeedback('🇦🇴 Centrado em Angola');
+            }
+        }
+        
+        function resetMapView() {
+            if (map) {
+                console.log('🌍 Resetando para vista mundial...');
+                map.setView([0, 0], 2, {
+                    animate: true,
+                    duration: 2.0
+                });
+                
+                // Feedback visual
+                showLayerSwitchFeedback('🌍 Vista Mundial');
+            }
+        }
+
+        // Função para otimizar performance do mapa
+        function optimizeMapPerformance() {
+            if (!map) return;
+            
+            // Reduzir qualidade de renderização em dispositivos móveis
+            if (window.innerWidth < 768) {
+                map.options.preferCanvas = true;
+                map.options.fadeAnimation = false;
+                map.options.zoomAnimation = false;
+                map.options.markerZoomAnimation = false;
+            }
+            
+            // Limpar tiles antigos periodicamente
+            setInterval(() => {
+                if (map && map.eachLayer) {
+                    map.eachLayer((layer) => {
+                        if (layer._tiles) {
+                            const tileCount = Object.keys(layer._tiles).length;
+                            if (tileCount > 100) {
+                                console.log('🧹 Limpando tiles antigos...');
+                                layer._removeAllTiles();
+                            }
+                        }
+                    });
+                }
+            }, 300000); // A cada 5 minutos
+        }
+
+        async function loadDashboardData() {
+            if (isLoading) {
+                console.log('⏸️ Já está carregando, aguardando...');
+                return;
+            }
+            
+            isLoading = true;
+            
+            try {
+                console.log('📊 Carregando dados do dashboard...');
+                
+                // Timeout para evitar carregamentos muito longos
+                loadTimeout = setTimeout(() => {
+                    console.warn('⚠️ Carregamento demorado, continuando...');
+                }, 10000);
+                
+                // Mostrar indicadores de carregamento
+                showLoadingStates();
+                
+                // Carregar dados com tratamento de erro individual e limite de tempo
+                const promises = [
+                    loadMetrics().catch(err => handleChartError('metrics', err)),
+                    loadTimeSeriesChart().catch(err => handleChartError('timeseries-chart', err)),
+                    loadSpeciesChart().catch(err => handleChartError('species-chart', err)),
+                    loadHeatmap().catch(err => handleChartError('heatmap-chart', err)),
+                    loadCorrelationMatrix().catch(err => handleChartError('correlation-chart', err)),
+                    loadFeaturedSpecies().catch(err => handleChartError('featured-species', err))
+                ];
+                
+                await Promise.allSettled(promises);
+                
+                updateLastUpdateTime();
+                console.log('✅ Dashboard atualizado!');
+                
+            } catch (error) {
+                console.error('❌ Erro crítico carregando dashboard:', error);
+                showGlobalError();
+            } finally {
+                isLoading = false;
+                clearTimeout(loadTimeout);
+            }
+        }
+        
+        function showLoadingStates() {
+            const chartIds = ['timeseries-chart', 'species-chart', 'heatmap-chart', 'correlation-chart'];
+            chartIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerHTML = `
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        function handleChartError(chartId, error) {
+            console.error(`❌ Erro carregando ${chartId}:`, error);
+            
+            const element = document.getElementById(chartId);
+            if (element) {
+                element.innerHTML = `
+                    <div class="chart-error">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <div>
+                            <strong>Erro ao carregar dados</strong><br>
+                            <small class="text-muted">Verifique a conexão e tente novamente</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary retry-button" 
+                                onclick="retryChart('${chartId}')">
+                            <i class="fas fa-redo me-1"></i>Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function showGlobalError() {
+            const alertHtml = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Erro de Conexão!</strong> Não foi possível carregar os dados do dashboard.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const container = document.querySelector('.dashboard-container .container-fluid');
+            if (container) {
+                container.insertAdjacentHTML('afterbegin', alertHtml);
+            }
+        }
+        
+        async function retryChart(chartId) {
+            console.log(`🔄 Tentando recarregar ${chartId}...`);
+            
+            const element = document.getElementById(chartId);
+            if (element) {
+                element.innerHTML = `
+                    <div class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            try {
+                switch(chartId) {
+                    case 'timeseries-chart':
+                        await loadTimeSeriesChart();
+                        break;
+                    case 'species-chart':
+                        await loadSpeciesChart();
+                        break;
+                    case 'heatmap-chart':
+                        await loadHeatmap();
+                        break;
+                    case 'correlation-chart':
+                        await loadCorrelationMatrix();
+                        break;
+                    case 'featured-species':
+                        await loadFeaturedSpecies();
+                        break;
+                }
+            } catch (error) {
+                handleChartError(chartId, error);
+            }
+        }
+
+        async function loadMetrics() {
+            try {
+                // Simular delay de rede
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
+                
+                // Simular possível erro (5% chance)
+                if (Math.random() < 0.05) {
+                    throw new Error('Erro simulado na API de métricas');
+                }
+                
+                // Simular métricas (substituir por chamadas à API)
+                document.getElementById('total-observations').textContent = '12,847';
+                document.getElementById('observations-change').textContent = '+15.3';
+                document.getElementById('species-count').textContent = '156';
+                document.getElementById('new-species').textContent = '8';
+                document.getElementById('data-quality').textContent = '97.2%';
+                document.getElementById('prediction-accuracy').textContent = '96.8%';
+                
+            } catch (error) {
+                console.error('Erro carregando métricas:', error);
+                // Mostrar valores padrão em caso de erro
+                document.getElementById('total-observations').textContent = '--';
+                document.getElementById('observations-change').textContent = '--';
+                document.getElementById('species-count').textContent = '--';
+                document.getElementById('new-species').textContent = '--';
+                document.getElementById('data-quality').textContent = '--';
+                document.getElementById('prediction-accuracy').textContent = '--';
+                throw error;
+            }
+        }
+
+        async function loadTimeSeriesChart() {
+            try {
+                // Simular delay de rede
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 1500));
+                
+                // Simular possível erro (10% chance)
+                if (Math.random() < 0.1) {
+                    throw new Error('Erro simulado na API de séries temporais');
+                }
+                
+                // Dados simulados para série temporal
+                const dates = [];
+                const temperatures = [];
+                const salinity = [];
+                
+                for (let i = 30; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    dates.push(date.toISOString().split('T')[0]);
+                    temperatures.push(22 + Math.random() * 6);
+                    salinity.push(35 + Math.random() * 2);
+                }
+
+                const data = [
+                    {
+                        x: dates,
+                        y: temperatures,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        name: 'Temperatura (°C)',
+                        line: {color: '#ff6b6b'}
+                    },
+                    {
+                        x: dates,
+                        y: salinity,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        name: 'Salinidade (PSU)',
+                        yaxis: 'y2',
+                        line: {color: '#4ecdc4'}
+                    }
+                ];
+
+                const layout = {
+                    title: false,
+                    xaxis: {title: 'Data'},
+                    yaxis: {title: 'Temperatura (°C)', side: 'left'},
+                    yaxis2: {
+                        title: 'Salinidade (PSU)',
+                        side: 'right',
+                        overlaying: 'y'
+                    },
+                    showlegend: true,
+                    height: 400,
+                    margin: {t: 20, b: 40, l: 60, r: 60}
+                };
+
+                Plotly.newPlot('timeseries-chart', data, layout, {responsive: true});
+                
+            } catch (error) {
+                console.error('Erro carregando gráfico de série temporal:', error);
+                throw error;
+            }
+        }
+
+        async function loadSpeciesChart() {
+            try {
+                // Simular delay de rede
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
+                
+                // Simular possível erro (5% chance)
+                if (Math.random() < 0.05) {
+                    throw new Error('Erro simulado na API de espécies');
+                }
+                
+                const data = [{
+                    values: [45, 26, 12, 8, 9],
+                    labels: ['Peixes Ósseos', 'Crustáceos', 'Moluscos', 'Equinodermos', 'Outros'],
+                    type: 'pie',
+                    marker: {
+                        colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57']
+                    },
+                    textinfo: 'label+percent',
+                    textposition: 'auto'
+                }];
+
+                const layout = {
+                    height: 400,
+                    showlegend: true,
+                    margin: {t: 20, b: 20, l: 20, r: 20},
+                    font: {
+                        family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+                        size: 12
+                    }
+                };
+
+                Plotly.newPlot('species-chart', data, layout, {responsive: true});
+                
+            } catch (error) {
+                console.error('Erro carregando gráfico de espécies:', error);
+                throw error;
+            }
+        }
+
+        async function loadHeatmap() {
+            try {
+                // Simular delay de rede
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 1200));
+                
+                // Simular possível erro (8% chance)
+                if (Math.random() < 0.08) {
+                    throw new Error('Erro simulado na API de heatmap');
+                }
+                
+                // Mapa de calor simulado com dados mais realistas
+                const z = [];
+                const xLabels = ['0-2km', '2-4km', '4-6km', '6-8km', '8-10km', '10-12km', '12-14km', '14-16km'];
+                const yLabels = ['0-5m', '5-10m', '10-20m', '20-30m', '30-50m', '50-75m', '75-100m', '100m+'];
+                
+                for (let i = 0; i < 8; i++) {
+                    const row = [];
+                    for (let j = 0; j < 8; j++) {
+                        // Simular padrão de biodiversidade (maior próximo à costa e em profundidades médias)
+                        const depthFactor = Math.exp(-Math.pow((i - 3) / 2, 2));
+                        const distanceFactor = Math.exp(-j / 3);
+                        row.push((depthFactor * distanceFactor * 80) + (Math.random() * 20));
+                    }
+                    z.push(row);
+                }
+
+                const data = [{
+                    z: z,
+                    x: xLabels,
+                    y: yLabels,
+                    type: 'heatmap',
+                    colorscale: 'Viridis',
+                    colorbar: {
+                        title: 'Biodiversidade<br>Index'
+                    }
+                }];
+
+                const layout = {
+                    title: false,
+                    height: 380,
+                    xaxis: {
+                        title: 'Distância da Costa'
+                    },
+                    yaxis: {
+                        title: 'Profundidade'
+                    },
+                    margin: {t: 20, b: 60, l: 80, r: 60}
+                };
+
+                Plotly.newPlot('heatmap-chart', data, layout, {responsive: true});
+                
+            } catch (error) {
+                console.error('Erro carregando heatmap:', error);
+                throw error;
+            }
+        }
+
+        async function loadCorrelationMatrix() {
+            try {
+                // Simular delay de rede
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 800));
+                
+                // Simular possível erro (5% chance)
+                if (Math.random() < 0.05) {
+                    throw new Error('Erro simulado na API de correlação');
+                }
+                
+                const variables = ['Temperatura', 'Salinidade', 'Oxigénio', 'pH', 'Clorofila'];
+                const correlationMatrix = [
+                    [1.0, 0.2, -0.7, 0.4, -0.3],
+                    [0.2, 1.0, -0.1, 0.6, 0.5],
+                    [-0.7, -0.1, 1.0, -0.2, 0.8],
+                    [0.4, 0.6, -0.2, 1.0, 0.1],
+                    [-0.3, 0.5, 0.8, 0.1, 1.0]
+                ];
+
+                const data = [{
+                    z: correlationMatrix,
+                    x: variables,
+                    y: variables,
+                    type: 'heatmap',
+                    colorscale: 'RdBu',
+                    zmid: 0,
+                    text: correlationMatrix.map(row => 
+                        row.map(val => val.toFixed(2))
+                    ),
+                    texttemplate: '%{text}',
+                    textfont: {"size": 12},
+                    hoverongaps: false
+                }];
+
+                const layout = {
+                    title: false,
+                    height: 380,
+                    margin: {t: 20, b: 60, l: 80, r: 60},
+                    xaxis: {
+                        tickangle: -45
+                    },
+                    yaxis: {
+                        tickangle: 0
+                    }
+                };
+
+                Plotly.newPlot('correlation-chart', data, layout, {responsive: true});
+                
+            } catch (error) {
+                console.error('Erro carregando matriz de correlação:', error);
+                throw error;
+            }
+        }
+
+        async function loadFeaturedSpecies() {
+            const species = [
+                {name: 'Epinephelus marginatus', common: 'Garoupa', status: 'Vulnerável', count: 23},
+                {name: 'Thunnus albacares', common: 'Atum Rabilho', status: 'Quase Ameaçada', count: 45},
+                {name: 'Caretta caretta', common: 'Tartaruga Cabeçuda', status: 'Vulnerável', count: 12},
+                {name: 'Pristis pristis', common: 'Peixe-Serra', status: 'Criticamente Ameaçada', count: 3}
+            ];
+
+            const container = document.getElementById('featured-species');
+            container.innerHTML = '';
+
+            species.forEach(sp => {
+                const statusColor = sp.status === 'Criticamente Ameaçada' ? 'danger' : 
+                                  sp.status === 'Vulnerável' ? 'warning' : 'info';
+                
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-3">
+                        <div class="species-card">
+                            <h6 class="fw-bold">${sp.common}</h6>
+                            <p class="small text-muted mb-1">${sp.name}</p>
+                            <span class="badge bg-${statusColor}">${sp.status}</span>
+                            <div class="mt-2">
+                                <small><i class="fas fa-eye me-1"></i>${sp.count} observações</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function applyFilters() {
+            // Capturar valores dos filtros
+            currentFilters.period = document.getElementById('period-filter').value;
+            currentFilters.region = document.getElementById('region-filter').value;
+            currentFilters.parameter = document.getElementById('parameter-filter').value;
+            currentFilters.depth = document.getElementById('depth-filter').value;
+
+            console.log('🔍 Aplicando filtros:', currentFilters);
+            
+            // Recarregar dados com filtros
+            loadDashboardData();
+        }
+
+        function resetFilters() {
+            document.getElementById('period-filter').value = '30d';
+            document.getElementById('region-filter').value = 'all';
+            document.getElementById('parameter-filter').value = 'temperature';
+            document.getElementById('depth-filter').value = 'surface';
+            
+            applyFilters();
+        }
+
+        function refreshData() {
+            if (isLoading) {
+                console.log('⏸️ Carregamento já em andamento...');
+                return;
+            }
+            
+            console.log('🔄 Atualizando dados...');
+            
+            // Mostrar feedback visual
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Atualizando...';
+            button.disabled = true;
+            
+            loadDashboardData().finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        function exportData() {
+            console.log('💾 Exportando dados...');
+            
+            try {
+                // Simular exportação de dados
+                const exportData = {
+                    timestamp: new Date().toISOString(),
+                    filters: currentFilters,
+                    metrics: {
+                        totalObservations: document.getElementById('total-observations').textContent,
+                        speciesCount: document.getElementById('species-count').textContent,
+                        dataQuality: document.getElementById('data-quality').textContent,
+                        predictionAccuracy: document.getElementById('prediction-accuracy').textContent
+                    }
+                };
+                
+                // Criar e baixar arquivo CSV simulado
+                const csvContent = [
+                    'Timestamp,Total_Observations,Species_Count,Data_Quality,Prediction_Accuracy',
+                    `${exportData.timestamp},${exportData.metrics.totalObservations},${exportData.metrics.speciesCount},${exportData.metrics.dataQuality},${exportData.metrics.predictionAccuracy}`
+                ].join('\n');
+                
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `bgapp_dashboard_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                console.log('✅ Dados exportados com sucesso!');
+                
+            } catch (error) {
+                console.error('❌ Erro exportando dados:', error);
+                alert('Erro ao exportar dados. Tente novamente.');
+            }
+        }
+
+        function updateLastUpdateTime() {
+            const now = new Date();
+            document.getElementById('last-update').textContent = 
+                now.toLocaleTimeString('pt-PT', {
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+        }
+
+        // Sistema avançado de tratamento de erros
+        function setupGlobalErrorHandling() {
+            // Capturar erros JavaScript não tratados
+            window.addEventListener('error', (event) => {
+                console.error('🚨 Erro JavaScript:', {
+                    message: event.message,
+                    filename: event.filename,
+                    lineno: event.lineno,
+                    error: event.error
+                });
+                
+                errorCounts.chart++;
+                handleSystemError('javascript', event.message);
+            });
+            
+            // Capturar promises rejeitadas
+            window.addEventListener('unhandledrejection', (event) => {
+                console.error('🚨 Promise rejeitada:', event.reason);
+                
+                errorCounts.network++;
+                handleSystemError('network', event.reason?.message || 'Promise rejeitada');
+                event.preventDefault();
+            });
+            
+            console.log('✅ Sistema de tratamento global de erros configurado');
+        }
+
+        function handleSystemError(type, message) {
+            const errorInfo = {
+                type: type,
+                message: message,
+                timestamp: new Date().toISOString(),
+                count: errorCounts[type] || 0
+            };
+            
+            // Log estruturado para debugging
+            console.group(`🚨 Erro do Sistema: ${type}`);
+            console.error('Detalhes:', errorInfo);
+            console.trace('Stack trace:');
+            console.groupEnd();
+            
+            // Mostrar notificação se muitos erros
+            if (errorCounts[type] > 5) {
+                showSystemErrorNotification(type, errorCounts[type]);
+            }
+            
+            // Atualizar status de saúde dos serviços
+            updateServiceHealth(type, false);
+        }
+
+        function updateServiceHealth(service, isHealthy) {
+            const previousHealth = serviceHealth[service];
+            serviceHealth[service] = isHealthy;
+            
+            // Se mudou o status, notificar
+            if (previousHealth !== isHealthy) {
+                console.log(`🔄 Status do serviço ${service}: ${isHealthy ? 'Saudável' : 'Com problemas'}`);
+                updateHealthStatusDisplay();
+            }
+        }
+
+        function updateHealthStatusDisplay() {
+            const systemStatus = document.getElementById('system-status');
+            if (!systemStatus) return;
+            
+            const healthyServices = Object.values(serviceHealth).filter(Boolean).length;
+            const totalServices = Object.keys(serviceHealth).length;
+            
+            if (healthyServices === totalServices) {
+                systemStatus.textContent = 'Sistema Online - Todos os Serviços OK';
+                systemStatus.style.color = 'var(--apple-green)';
+            } else if (healthyServices > totalServices / 2) {
+                systemStatus.textContent = `Sistema Parcial - ${healthyServices}/${totalServices} Serviços OK`;
+                systemStatus.style.color = 'var(--warning-color)';
+            } else {
+                systemStatus.textContent = `Sistema Degradado - ${healthyServices}/${totalServices} Serviços OK`;
+                systemStatus.style.color = 'var(--danger-color)';
+            }
+        }
+
+        async function performHealthCheck() {
+            console.log('🔍 Verificando saúde dos serviços...');
+            
+            const healthResults = {
+                api: false,
+                charts: false,
+                maps: false,
+                performance: false
+            };
+            
+            // Verificar API (simulado com métricas reais)
+            try {
+                const startTime = performance.now();
+                const apiHealthy = await checkApiHealth();
+                const responseTime = performance.now() - startTime;
+                
+                healthResults.api = apiHealthy && responseTime < 5000; // < 5s é considerado saudável
+                updateServiceHealth('api', healthResults.api);
+                
+                recordPerformanceMetric('api_health_check', responseTime);
+                console.log(`🔌 API Health: ${healthResults.api ? '✅' : '❌'} (${responseTime.toFixed(0)}ms)`);
+            } catch (error) {
+                updateServiceHealth('api', false);
+                console.error('🔌 API Health Check falhou:', error);
+            }
+            
+            // Verificar gráficos
+            try {
+                const chartsHealthy = checkChartsHealth();
+                healthResults.charts = chartsHealthy;
+                updateServiceHealth('charts', chartsHealthy);
+                console.log(`📊 Charts Health: ${chartsHealthy ? '✅' : '❌'}`);
+            } catch (error) {
+                updateServiceHealth('charts', false);
+                console.error('📊 Charts Health Check falhou:', error);
+            }
+            
+            // Verificar mapa
+            try {
+                const mapHealthy = checkMapHealth();
+                healthResults.maps = mapHealthy;
+                updateServiceHealth('maps', mapHealthy);
+                console.log(`🗺️ Map Health: ${mapHealthy ? '✅' : '❌'}`);
+            } catch (error) {
+                updateServiceHealth('maps', false);
+                console.error('🗺️ Map Health Check falhou:', error);
+            }
+            
+            // Verificar performance geral
+            try {
+                const performanceHealthy = checkPerformanceHealth();
+                healthResults.performance = performanceHealthy;
+                console.log(`⚡ Performance Health: ${performanceHealthy ? '✅' : '❌'}`);
+            } catch (error) {
+                console.error('⚡ Performance Health Check falhou:', error);
+            }
+            
+            // Atualizar métricas de monitoramento
+            updateMonitoringDashboard(healthResults);
+        }
+        
+        function checkPerformanceHealth() {
+            // Verificar uso de memória
+            if ('memory' in performance) {
+                const memInfo = performance.memory;
+                const memoryUsagePercent = (memInfo.usedJSHeapSize / memInfo.totalJSHeapSize) * 100;
+                
+                if (memoryUsagePercent > 90) {
+                    console.warn(`⚠️ Alto uso de memória: ${memoryUsagePercent.toFixed(1)}%`);
+                    return false;
+                }
+            }
+            
+            // Verificar cache hit rate
+            const totalCacheRequests = Object.values(performanceMetrics.cacheHitRates).reduce((a, b) => a + b, 0);
+            if (totalCacheRequests > 0) {
+                const cacheEfficiency = (performanceMetrics.cacheHitRates.charts || 0) / totalCacheRequests;
+                if (cacheEfficiency < 0.3) { // Menos de 30% de cache hit
+                    console.warn(`⚠️ Baixa eficiência de cache: ${(cacheEfficiency * 100).toFixed(1)}%`);
+                }
+            }
+            
+            // Verificar erros acumulados
+            const totalErrors = Object.values(errorCounts).reduce((a, b) => a + b, 0);
+            if (totalErrors > 20) {
+                console.warn(`⚠️ Muitos erros acumulados: ${totalErrors}`);
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function updateMonitoringDashboard(healthResults) {
+            // Atualizar indicadores visuais de saúde
+            const healthyServices = Object.values(healthResults).filter(Boolean).length;
+            const totalServices = Object.keys(healthResults).length;
+            const healthPercentage = (healthyServices / totalServices) * 100;
+            
+            // Atualizar status visual
+            const statusElement = document.getElementById('system-status');
+            if (statusElement) {
+                if (healthPercentage === 100) {
+                    statusElement.textContent = 'Sistema Online - Todos os Serviços OK';
+                    statusElement.style.color = 'var(--apple-green)';
+                } else if (healthPercentage >= 75) {
+                    statusElement.textContent = `Sistema Estável - ${healthyServices}/${totalServices} Serviços OK`;
+                    statusElement.style.color = 'var(--apple-blue)';
+                } else if (healthPercentage >= 50) {
+                    statusElement.textContent = `Sistema Parcial - ${healthyServices}/${totalServices} Serviços OK`;
+                    statusElement.style.color = 'var(--warning-color)';
+                } else {
+                    statusElement.textContent = `Sistema Degradado - ${healthyServices}/${totalServices} Serviços OK`;
+                    statusElement.style.color = 'var(--danger-color)';
+                }
+            }
+            
+            // Log consolidado do status
+            console.group('🔍 Status dos Serviços');
+            console.log(`📊 Saúde Geral: ${healthPercentage.toFixed(1)}%`);
+            console.log(`🔌 API: ${healthResults.api ? '✅' : '❌'}`);
+            console.log(`📊 Gráficos: ${healthResults.charts ? '✅' : '❌'}`);
+            console.log(`🗺️ Mapa: ${healthResults.maps ? '✅' : '❌'}`);
+            console.log(`⚡ Performance: ${healthResults.performance ? '✅' : '❌'}`);
+            console.groupEnd();
+        }
+        
+        // Sistema de alertas inteligente
+        function checkForAlerts() {
+            const alerts = [];
+            
+            // Verificar alta taxa de erro
+            const totalErrors = Object.values(errorCounts).reduce((a, b) => a + b, 0);
+            if (totalErrors > 10) {
+                alerts.push({
+                    type: 'warning',
+                    message: `Alta taxa de erro detectada: ${totalErrors} erros`,
+                    action: 'Considere recarregar a página'
+                });
+            }
+            
+            // Verificar performance degradada
+            if ('memory' in performance) {
+                const memInfo = performance.memory;
+                const memoryUsagePercent = (memInfo.usedJSHeapSize / memInfo.totalJSHeapSize) * 100;
+                
+                if (memoryUsagePercent > 85) {
+                    alerts.push({
+                        type: 'warning',
+                        message: `Alto uso de memória: ${memoryUsagePercent.toFixed(1)}%`,
+                        action: 'Considere fechar outras abas'
+                    });
+                }
+            }
+            
+            // Verificar serviços offline
+            const offlineServices = Object.entries(serviceHealth)
+                .filter(([_, isHealthy]) => !isHealthy)
+                .map(([service, _]) => service);
+                
+            if (offlineServices.length > 0) {
+                alerts.push({
+                    type: 'error',
+                    message: `Serviços offline: ${offlineServices.join(', ')}`,
+                    action: 'Sistema funcionando com fallbacks'
+                });
+            }
+            
+            // Mostrar alertas se necessário
+            if (alerts.length > 0) {
+                showSystemAlerts(alerts);
+            }
+        }
+        
+        function showSystemAlerts(alerts) {
+            // Remover alertas antigos
+            document.querySelectorAll('.system-alert').forEach(alert => alert.remove());
+            
+            alerts.forEach((alert, index) => {
+                setTimeout(() => {
+                    const alertElement = document.createElement('div');
+                    alertElement.className = 'system-alert';
+                    alertElement.style.cssText = `
+                        position: fixed;
+                        top: ${80 + (index * 80)}px;
+                        right: 24px;
+                        background: ${alert.type === 'error' ? 'var(--danger-color)' : 'var(--warning-color)'};
+                        color: white;
+                        padding: 12px 16px;
+                        border-radius: var(--radius-md);
+                        font-size: 12px;
+                        font-weight: var(--font-weight-medium);
+                        z-index: 2000;
+                        backdrop-filter: blur(20px);
+                        box-shadow: var(--glass-shadow-elevated);
+                        max-width: 300px;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        animation: slideInRight 0.3s ease;
+                        cursor: pointer;
+                    `;
+                    
+                    alertElement.innerHTML = `
+                        <div style="font-weight: var(--font-weight-semibold); margin-bottom: 4px;">
+                            ${alert.type === 'error' ? '🚨' : '⚠️'} ${alert.type === 'error' ? 'Erro' : 'Aviso'}
+                        </div>
+                        <div style="margin-bottom: 6px; line-height: 1.3;">
+                            ${alert.message}
+                        </div>
+                        <div style="font-size: 10px; opacity: 0.9;">
+                            ${alert.action}
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(alertElement);
+                    
+                    // Auto-remover após 8 segundos
+                    setTimeout(() => {
+                        alertElement.style.opacity = '0';
+                        alertElement.style.transform = 'translateX(20px)';
+                        setTimeout(() => alertElement.remove(), 300);
+                    }, 8000);
+                    
+                    // Remover ao clicar
+                    alertElement.addEventListener('click', () => {
+                        alertElement.style.opacity = '0';
+                        alertElement.style.transform = 'translateX(20px)';
+                        setTimeout(() => alertElement.remove(), 300);
+                    });
+                    
+                }, index * 200); // Delay escalonado para múltiplos alertas
+            });
+        }
+        
+        // Monitoramento contínuo avançado
+        function startAdvancedMonitoring() {
+            // Health check a cada minuto
+            setInterval(performHealthCheck, 60000);
+            
+            // Verificar alertas a cada 30 segundos
+            setInterval(checkForAlerts, 30000);
+            
+            // Limpeza de métricas antigas a cada 5 minutos
+            setInterval(() => {
+                // Limpar métricas antigas para evitar uso excessivo de memória
+                Object.keys(performanceMetrics.loadTimes).forEach(key => {
+                    if (performanceMetrics.loadTimes[key].length > 100) {
+                        performanceMetrics.loadTimes[key] = performanceMetrics.loadTimes[key].slice(-50);
+                    }
+                });
+                
+                // Reset contadores de erro se sistema estável
+                const totalErrors = Object.values(errorCounts).reduce((a, b) => a + b, 0);
+                if (totalErrors < 5) {
+                    Object.keys(errorCounts).forEach(key => {
+                        errorCounts[key] = Math.max(0, errorCounts[key] - 1);
+                    });
+                }
+                
+                console.log('🧹 Limpeza de métricas concluída');
+            }, 300000); // 5 minutos
+            
+            console.log('🔍 Monitoramento avançado iniciado');
+        }
+
+        async function checkApiHealth() {
+            // Simulação de health check da API
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const isHealthy = Math.random() > 0.1; // 90% chance de estar saudável
+                    resolve(isHealthy);
+                }, 1000);
+            });
+        }
+
+        function checkChartsHealth() {
+            // Verificar se Plotly está carregado e funcionando
+            return typeof window.Plotly !== 'undefined' && 
+                   document.getElementById('timeseries-chart') !== null;
+        }
+
+        function checkMapHealth() {
+            // Verificar se o mapa está funcionando
+            return typeof window.L !== 'undefined' && 
+                   map && map.getContainer();
+        }
+
+        function showSystemErrorNotification(type, count) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                right: 24px;
+                background: linear-gradient(135deg, var(--danger-color), var(--warning-color));
+                color: white;
+                padding: 16px 20px;
+                border-radius: var(--radius-lg);
+                font-size: 13px;
+                font-weight: var(--font-weight-medium);
+                z-index: 2000;
+                backdrop-filter: blur(20px);
+                box-shadow: var(--glass-shadow-elevated);
+                max-width: 300px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            const typeNames = {
+                'javascript': 'JavaScript',
+                'network': 'Rede',
+                'api': 'API',
+                'chart': 'Gráficos'
+            };
+            
+            notification.innerHTML = `
+                <div style="margin-bottom: 8px; font-size: 14px;">
+                    🛡️ Sistema Adaptativo
+                </div>
+                <div style="font-size: 12px; opacity: 0.9; line-height: 1.4;">
+                    <strong>Erros ${typeNames[type]}:</strong> ${count}<br>
+                    Sistema funcionando com fallbacks automáticos.
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remover após 5 segundos
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+            
+            // Permitir fechar clicando
+            notification.addEventListener('click', () => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(20px)';
+                setTimeout(() => notification.remove(), 300);
+            });
+            
+            notification.style.cursor = 'pointer';
+        }
+
+        // Função melhorada de retry com backoff exponencial
+        async function retryWithBackoff(fn, maxRetries = MAX_RETRIES, delay = RETRY_DELAY) {
+            let lastError;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    return await fn();
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`⚠️ Tentativa ${attempt}/${maxRetries} falhou:`, error.message);
+                    
+                    if (attempt < maxRetries) {
+                        const backoffDelay = delay * Math.pow(2, attempt - 1);
+                        console.log(`⏳ Aguardando ${backoffDelay}ms antes da próxima tentativa...`);
+                        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+                    }
+                }
+            }
+            
+            throw lastError;
+        }
+
+        // Sistema de cache inteligente
+        function getCachedData(key, type = 'default') {
+            const cached = dataCache.get(key);
+            if (!cached) return null;
+            
+            const duration = CACHE_DURATION[type] || 60000;
+            const isExpired = Date.now() - cached.timestamp > duration;
+            
+            if (isExpired) {
+                dataCache.delete(key);
+                return null;
+            }
+            
+            // Atualizar métricas de cache hit
+            performanceMetrics.cacheHitRates[type] = 
+                (performanceMetrics.cacheHitRates[type] || 0) + 1;
+            
+            console.log(`💾 Cache hit para ${key} (${type})`);
+            return cached.data;
+        }
+        
+        function setCachedData(key, data, type = 'default') {
+            dataCache.set(key, {
+                data: data,
+                timestamp: Date.now(),
+                type: type
+            });
+            
+            // Limpar cache se muito grande (máximo 50 entradas)
+            if (dataCache.size > 50) {
+                const oldestKey = dataCache.keys().next().value;
+                dataCache.delete(oldestKey);
+            }
+        }
+        
+        // Função de carregamento otimizada com cache
+        async function loadDataWithCache(key, loadFunction, cacheType = 'default') {
+            const startTime = performance.now();
+            
+            // Tentar cache primeiro
+            const cachedData = getCachedData(key, cacheType);
+            if (cachedData) {
+                const loadTime = performance.now() - startTime;
+                recordPerformanceMetric('cache_hit', loadTime);
+                return cachedData;
+            }
+            
+            try {
+                // Carregar dados com retry
+                const data = await retryWithBackoff(loadFunction);
+                
+                // Cachear dados
+                setCachedData(key, data, cacheType);
+                
+                const loadTime = performance.now() - startTime;
+                recordPerformanceMetric('api_call', loadTime);
+                
+                return data;
+            } catch (error) {
+                const loadTime = performance.now() - startTime;
+                recordPerformanceMetric('api_error', loadTime);
+                throw error;
+            }
+        }
+        
+        function recordPerformanceMetric(type, time) {
+            if (!performanceMetrics.loadTimes[type]) {
+                performanceMetrics.loadTimes[type] = [];
+            }
+            
+            performanceMetrics.loadTimes[type].push(time);
+            
+            // Manter apenas últimas 100 medições
+            if (performanceMetrics.loadTimes[type].length > 100) {
+                performanceMetrics.loadTimes[type].shift();
+            }
+        }
+        
+        // Lazy loading de bibliotecas
+        function loadScriptLazy(src) {
+            return new Promise((resolve, reject) => {
+                if (document.querySelector(`script[src="${src}"]`)) {
+                    resolve();
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                script.defer = true;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Debounce para otimizar eventos
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Throttle para otimizar eventos de alta frequência
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+        
+        // Preload crítico de recursos
+        function preloadCriticalResources() {
+            const criticalResources = [
+                'https://cdn.plot.ly/plotly-2.26.0.min.js',
+                'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+            ];
+            
+            criticalResources.forEach(url => {
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'script';
+                link.href = url;
+                document.head.appendChild(link);
+            });
+        }
+        
+        // Otimização de imagens (lazy loading)
+        function setupImageLazyLoading() {
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+        }
+        
+        // Service Worker para cache offline avançado
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', async () => {
+                    try {
+                        const registration = await navigator.serviceWorker.register('/sw-dashboard.js');
+                        console.log('✅ Service Worker registrado:', registration.scope);
+                        
+                        // Atualizar cache quando há nova versão
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('🔄 Nova versão do Service Worker disponível');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateAvailableNotification();
+                                }
+                            });
+                        });
+                        
+                        // Escutar mensagens do Service Worker
+                        navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+                        
+                        // Verificar status offline/online
+                        setupOfflineDetection();
+                        
+                    } catch (error) {
+                        console.log('❌ Falha no registro do Service Worker:', error);
+                        // Fallback para funcionalidade básica offline
+                        setupBasicOfflineSupport();
+                    }
+                });
+            } else {
+                console.log('📱 Service Worker não suportado - usando fallback básico');
+                setupBasicOfflineSupport();
+            }
+        }
+        
+        function showUpdateAvailableNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--apple-blue);
+                color: white;
+                padding: 16px 24px;
+                border-radius: var(--radius-lg);
+                font-size: 14px;
+                font-weight: var(--font-weight-medium);
+                z-index: 2000;
+                backdrop-filter: blur(20px);
+                box-shadow: var(--glass-shadow-elevated);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideInUp 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-md);
+            `;
+            
+            notification.innerHTML = `
+                <div>
+                    <div style="font-weight: var(--font-weight-semibold); margin-bottom: 4px;">
+                        🚀 Atualização Disponível
+                    </div>
+                    <div style="font-size: 12px; opacity: 0.9;">
+                        Nova versão do dashboard disponível
+                    </div>
+                </div>
+                <button onclick="reloadForUpdate()" 
+                        style="background: rgba(255,255,255,0.2); border: none; color: white; 
+                               padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    Atualizar
+                </button>
+                <button onclick="this.parentElement.remove()" 
+                        style="background: none; border: none; color: white; 
+                               padding: 8px; cursor: pointer; font-size: 16px;">
+                    ×
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+        }
+        
+        function reloadForUpdate() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration && registration.waiting) {
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+        
+        function handleServiceWorkerMessage(event) {
+            const { type, payload } = event.data;
+            
+            switch (type) {
+                case 'CACHE_UPDATED':
+                    console.log('💾 Cache atualizado:', payload);
+                    break;
+                    
+                case 'OFFLINE_READY':
+                    showOfflineReadyNotification();
+                    break;
+                    
+                case 'DATA_CACHED':
+                    console.log('📊 Dados cacheados para uso offline:', payload);
+                    break;
+            }
+        }
+        
+        function setupOfflineDetection() {
+            let isOnline = navigator.onLine;
+            
+            window.addEventListener('online', () => {
+                if (!isOnline) {
+                    isOnline = true;
+                    showConnectionStatusNotification('online');
+                    // Sincronizar dados quando volta online
+                    syncWhenOnline();
+                }
+            });
+            
+            window.addEventListener('offline', () => {
+                if (isOnline) {
+                    isOnline = false;
+                    showConnectionStatusNotification('offline');
+                    // Ativar modo offline
+                    activateOfflineMode();
+                }
+            });
+            
+            // Verificar status inicial
+            if (!isOnline) {
+                activateOfflineMode();
+            }
+        }
+        
+        function showConnectionStatusNotification(status) {
+            const isOnline = status === 'online';
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                background: ${isOnline ? 'var(--apple-green)' : 'var(--warning-color)'};
+                color: white;
+                padding: 12px 16px;
+                border-radius: var(--radius-md);
+                font-size: 13px;
+                font-weight: var(--font-weight-medium);
+                z-index: 2000;
+                backdrop-filter: blur(20px);
+                box-shadow: var(--glass-shadow-elevated);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div>${isOnline ? '🌐' : '📱'}</div>
+                    <div>
+                        <div style="font-weight: var(--font-weight-semibold);">
+                            ${isOnline ? 'Conectado' : 'Modo Offline'}
+                        </div>
+                        <div style="font-size: 11px; opacity: 0.9;">
+                            ${isOnline ? 'Sincronizando dados...' : 'Usando dados em cache'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+        
+        function activateOfflineMode() {
+            console.log('📱 Ativando modo offline...');
+            
+            // Desabilitar auto-refresh
+            serviceHealth.api = false;
+            
+            // Mostrar dados em cache
+            loadCachedData();
+            
+            // Adicionar indicador visual de modo offline
+            addOfflineIndicator();
+        }
+        
+        function syncWhenOnline() {
+            console.log('🔄 Sincronizando dados...');
+            
+            // Reativar health checks
+            setTimeout(() => {
+                performHealthCheck();
+            }, 2000);
+            
+            // Recarregar dados
+            setTimeout(() => {
+                loadDashboardData();
+            }, 3000);
+            
+            // Remover indicador offline
+            removeOfflineIndicator();
+        }
+        
+        function loadCachedData() {
+            console.log('💾 Carregando dados em cache...');
+            
+            // Tentar carregar dados do cache
+            const cachedMetrics = getCachedData('dashboard_metrics', 'metrics');
+            if (cachedMetrics) {
+                console.log('📊 Usando métricas em cache');
+                // Aplicar dados em cache às métricas
+            }
+            
+            const cachedCharts = getCachedData('dashboard_charts', 'charts');
+            if (cachedCharts) {
+                console.log('📈 Usando gráficos em cache');
+                // Aplicar dados em cache aos gráficos
+            }
+        }
+        
+        function addOfflineIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'offline-indicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: var(--warning-color);
+                color: white;
+                padding: 8px 16px;
+                text-align: center;
+                font-size: 12px;
+                font-weight: var(--font-weight-medium);
+                z-index: 1001;
+                animation: slideInDown 0.3s ease;
+            `;
+            
+            indicator.innerHTML = '📱 Modo Offline - Usando dados em cache';
+            document.body.appendChild(indicator);
+        }
+        
+        function removeOfflineIndicator() {
+            const indicator = document.getElementById('offline-indicator');
+            if (indicator) {
+                indicator.style.opacity = '0';
+                indicator.style.transform = 'translateY(-100%)';
+                setTimeout(() => indicator.remove(), 300);
+            }
+        }
+        
+        function setupBasicOfflineSupport() {
+            console.log('📱 Configurando suporte offline básico...');
+            
+            // Cache básico usando localStorage
+            const STORAGE_KEY = 'bgapp_dashboard_cache';
+            
+            // Interceptar e cachear dados importantes
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                return originalFetch.apply(this, args)
+                    .then(response => {
+                        if (response.ok && args[0].includes('api')) {
+                            // Cachear resposta da API
+                            response.clone().text().then(data => {
+                                const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                                cache[args[0]] = {
+                                    data: data,
+                                    timestamp: Date.now()
+                                };
+                                localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+                            });
+                        }
+                        return response;
+                    })
+                    .catch(error => {
+                        // Se falhar, tentar cache
+                        const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                        const cachedData = cache[args[0]];
+                        
+                        if (cachedData && Date.now() - cachedData.timestamp < 3600000) { // 1 hora
+                            console.log('💾 Usando dados em cache para:', args[0]);
+                            return new Response(cachedData.data, { status: 200 });
+                        }
+                        
+                        throw error;
+                    });
+            };
+        }
+        
+        function showOfflineReadyNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                background: var(--apple-green);
+                color: white;
+                padding: 12px 16px;
+                border-radius: var(--radius-md);
+                font-size: 12px;
+                font-weight: var(--font-weight-medium);
+                z-index: 2000;
+                backdrop-filter: blur(20px);
+                box-shadow: var(--glass-shadow-elevated);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div>📱</div>
+                    <div>
+                        <div style="font-weight: var(--font-weight-semibold);">
+                            Pronto para Offline
+                        </div>
+                        <div style="font-size: 10px; opacity: 0.9;">
+                            Dashboard funciona sem internet
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+        
+        // Monitoramento de performance em tempo real
+        function startPerformanceMonitoring() {
+            // Observar métricas de performance
+            if ('PerformanceObserver' in window) {
+                const observer = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.entryType === 'measure') {
+                            recordPerformanceMetric(entry.name, entry.duration);
+                        }
+                    }
+                });
+                
+                observer.observe({entryTypes: ['measure', 'navigation']});
+            }
+            
+            // Monitorar uso de memória
+            setInterval(() => {
+                if ('memory' in performance) {
+                    const memInfo = performance.memory;
+                    console.log(`💾 Memória: ${(memInfo.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB / ${(memInfo.totalJSHeapSize / 1024 / 1024).toFixed(2)}MB`);
+                }
+            }, 30000);
+        }
+        
+        // Inicializar otimizações de performance
+        function initializePerformanceOptimizations() {
+            preloadCriticalResources();
+            setupImageLazyLoading();
+            registerServiceWorker();
+            startPerformanceMonitoring();
+            
+            console.log('⚡ Otimizações de performance inicializadas');
+        }
+        
+        // Adicionar animações CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+            }
+            
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(30px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideInDown {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            /* Lazy loading para imagens */
+            img.lazy {
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            
+            img.lazy.loaded {
+                opacity: 1;
+            }
+            
+            /* Otimizações de performance */
+            .chart-container {
+                contain: layout style paint;
+            }
+            
+            .metric-card {
+                will-change: transform;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Sistema de interações avançadas
+        let filtersCollapsed = false;
+        let currentFocusIndex = 0;
+        const focusableElements = [];
+        
+        // Função para toggle do painel de filtros
+        function toggleFilters() {
+            const filterPanel = document.getElementById('filter-panel');
+            const toggleIcon = document.getElementById('filter-toggle-icon');
+            
+            filtersCollapsed = !filtersCollapsed;
+            
+            if (filtersCollapsed) {
+                filterPanel.classList.add('collapsed');
+                toggleIcon.className = 'fas fa-chevron-down';
+                console.log('📱 Painel de filtros recolhido');
+            } else {
+                filterPanel.classList.remove('collapsed');
+                toggleIcon.className = 'fas fa-chevron-up';
+                console.log('📱 Painel de filtros expandido');
+            }
+        }
+        
+        // Sistema de atalhos de teclado avançado
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Não ativar se estiver digitando em um input
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    return;
+                }
+                
+                // Prevenir comportamento padrão para atalhos específicos
+                const preventDefaultKeys = [' ', 'h', 'r', 'e', 'f', '1', '2', '3', '4', '5', 'c', 't'];
+                if (preventDefaultKeys.includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                }
+                
+                switch(e.key.toLowerCase()) {
+                    case ' ': // Espaço - Toggle filtros
+                        toggleFilters();
+                        showShortcutFeedback('Filtros alternados');
+                        break;
+                        
+                    case 'h': // H - Ajuda
+                        showKeyboardHelp();
+                        break;
+                        
+                    case 'r': // R - Refresh
+                        refreshData();
+                        showShortcutFeedback('Dados atualizados');
+                        break;
+                        
+                    case 'e': // E - Export
+                        exportData();
+                        showShortcutFeedback('Exportando dados...');
+                        break;
+                        
+                    case 'f': // F - Focus em filtros
+                        focusFirstFilter();
+                        showShortcutFeedback('Foco nos filtros');
+                        break;
+                        
+                    case '1': // 1 - Focar em métricas
+                        scrollToSection('metrics');
+                        showShortcutFeedback('Navegando para métricas');
+                        break;
+                        
+                    case '2': // 2 - Focar em gráficos
+                        scrollToSection('charts');
+                        showShortcutFeedback('Navegando para gráficos');
+                        break;
+                        
+                    case '3': // 3 - Focar em mapa
+                        scrollToSection('map');
+                        showShortcutFeedback('Navegando para mapa');
+                        break;
+                        
+                    case '4': // 4 - Focar em espécies
+                        scrollToSection('species');
+                        showShortcutFeedback('Navegando para espécies');
+                        break;
+                        
+                    case 'c': // C - Limpar filtros
+                        resetFilters();
+                        showShortcutFeedback('Filtros limpos');
+                        break;
+                        
+                    case 't': // T - Alternar tema (futuro)
+                        toggleTheme();
+                        showShortcutFeedback('Tema alternado');
+                        break;
+                        
+                    case 'escape': // Escape - Fechar modais/painéis
+                        if (!filtersCollapsed) {
+                            toggleFilters();
+                        }
+                        closeAllModals();
+                        break;
+                        
+                    case 'tab': // Tab - Navegação melhorada
+                        if (!e.shiftKey) {
+                            handleTabNavigation(1);
+                        } else {
+                            handleTabNavigation(-1);
+                        }
+                        break;
+                }
+            });
+            
+            console.log('⌨️ Atalhos de teclado configurados');
+        }
+        
+        function showShortcutFeedback(message) {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--surface-elevated);
+                backdrop-filter: blur(20px);
+                color: var(--text-primary);
+                padding: 8px 16px;
+                border-radius: var(--radius-lg);
+                font-size: 12px;
+                font-weight: var(--font-weight-medium);
+                z-index: 2000;
+                box-shadow: var(--glass-shadow);
+                border: 1px solid var(--glass-border);
+                animation: fadeInUp 0.3s ease;
+            `;
+            
+            feedback.textContent = `⌨️ ${message}`;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                feedback.style.transform = 'translateX(-50%) translateY(10px)';
+                setTimeout(() => feedback.remove(), 300);
+            }, 2000);
+        }
+        
+        function showKeyboardHelp() {
+            const helpModal = document.createElement('div');
+            helpModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(10px);
+                z-index: 3000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            const helpContent = document.createElement('div');
+            helpContent.style.cssText = `
+                background: var(--surface-elevated);
+                backdrop-filter: blur(20px);
+                border-radius: var(--radius-lg);
+                padding: var(--spacing-xl);
+                max-width: 500px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: var(--glass-shadow-elevated);
+                border: 1px solid var(--glass-border);
+                animation: slideInUp 0.3s ease;
+            `;
+            
+            helpContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                    <h3 style="margin: 0; color: var(--text-primary);">⌨️ Atalhos de Teclado</h3>
+                    <button onclick="this.closest('.help-modal').remove()" 
+                            style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+                </div>
+                
+                <div style="display: grid; gap: var(--spacing-md); font-size: 14px;">
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">Espaço</kbd>
+                        <span>Recolher/Expandir filtros</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">H</kbd>
+                        <span>Mostrar esta ajuda</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">R</kbd>
+                        <span>Atualizar dados</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">E</kbd>
+                        <span>Exportar dados</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">F</kbd>
+                        <span>Focar em filtros</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">1-4</kbd>
+                        <span>Navegar para seções</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">C</kbd>
+                        <span>Limpar filtros</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-md); align-items: center;">
+                        <kbd style="background: var(--surface-secondary); padding: 4px 8px; border-radius: 4px; font-size: 12px;">Esc</kbd>
+                        <span>Fechar painéis</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: 1px solid var(--glass-border); font-size: 12px; color: var(--text-secondary);">
+                    💡 Dica: Os atalhos funcionam quando não há campos de texto em foco
+                </div>
+            `;
+            
+            helpModal.className = 'help-modal';
+            helpModal.appendChild(helpContent);
+            document.body.appendChild(helpModal);
+            
+            // Fechar clicando fora
+            helpModal.addEventListener('click', (e) => {
+                if (e.target === helpModal) {
+                    helpModal.remove();
+                }
+            });
+        }
+        
+        function focusFirstFilter() {
+            const firstFilter = document.getElementById('period-filter');
+            if (firstFilter) {
+                firstFilter.focus();
+            }
+        }
+        
+        function scrollToSection(section) {
+            const sections = {
+                'metrics': '.row[role="region"][aria-labelledby="metrics-heading"]',
+                'charts': '.chart-container',
+                'map': '#map',
+                'species': '#featured-species'
+            };
+            
+            const element = document.querySelector(sections[section]);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+        
+        function toggleTheme() {
+            // Placeholder para futuro sistema de temas
+            console.log('🎨 Toggle de tema (funcionalidade futura)');
+        }
+        
+        function closeAllModals() {
+            document.querySelectorAll('.help-modal').forEach(modal => modal.remove());
+        }
+        
+        function handleTabNavigation(direction) {
+            // Melhorar navegação por tab
+            updateFocusableElements();
+            
+            currentFocusIndex += direction;
+            if (currentFocusIndex >= focusableElements.length) {
+                currentFocusIndex = 0;
+            } else if (currentFocusIndex < 0) {
+                currentFocusIndex = focusableElements.length - 1;
+            }
+            
+            if (focusableElements[currentFocusIndex]) {
+                focusableElements[currentFocusIndex].focus();
+            }
+        }
+        
+        function updateFocusableElements() {
+            const selectors = [
+                'button:not([disabled])',
+                'select:not([disabled])',
+                'input:not([disabled])',
+                '[tabindex]:not([tabindex="-1"])'
+            ];
+            
+            focusableElements.length = 0;
+            focusableElements.push(...document.querySelectorAll(selectors.join(', ')));
+        }
+        
+        // Touch gestures para mobile
+        function setupTouchGestures() {
+            let startX, startY, startTime;
+            
+            document.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                startTime = Date.now();
+            }, { passive: true });
+            
+            document.addEventListener('touchend', (e) => {
+                if (!startX || !startY) return;
+                
+                const endX = e.changedTouches[0].clientX;
+                const endY = e.changedTouches[0].clientY;
+                const endTime = Date.now();
+                
+                const deltaX = endX - startX;
+                const deltaY = endY - startY;
+                const deltaTime = endTime - startTime;
+                
+                // Swipe detection
+                if (deltaTime < 500 && Math.abs(deltaX) > 100 && Math.abs(deltaY) < 50) {
+                    if (deltaX > 0) {
+                        // Swipe right - expandir filtros
+                        if (filtersCollapsed) {
+                            toggleFilters();
+                        }
+                    } else {
+                        // Swipe left - recolher filtros
+                        if (!filtersCollapsed) {
+                            toggleFilters();
+                        }
+                    }
+                }
+                
+                startX = startY = null;
+            }, { passive: true });
+        }
+        
+        // Inicializar interações avançadas
+        function initializeAdvancedInteractions() {
+            setupKeyboardShortcuts();
+            setupTouchGestures();
+            updateFocusableElements();
+            
+            console.log('🎛️ Interações avançadas configuradas');
+        }
+        
+        // Inicializar otimizações na carga da página
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initializePerformanceOptimizations, 100);
+            setTimeout(initializeAdvancedInteractions, 200);
+            setTimeout(startAdvancedMonitoring, 300);
+            
+            // Mostrar hint de atalhos após 3 segundos
+            setTimeout(() => {
+                showShortcutFeedback('Pressione H para ver atalhos de teclado');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

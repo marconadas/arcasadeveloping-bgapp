@@ -1,0 +1,4 @@
+[console_scripts]
+cmems = bgapp.ingest.cmems_chla:main
+modis = bgapp.ingest.modis_ndvi:main
+obis = bgapp.ingest.obis:main

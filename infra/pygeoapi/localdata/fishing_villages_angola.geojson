@@ -1,0 +1,316 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1167,
+          -5.25
+        ]
+      },
+      "properties": {
+        "id": "landana",
+        "name": "Vila de Landana",
+        "zone": "zona_norte",
+        "population": 1200,
+        "main_activity": "pesca_artisanal",
+        "boats": 35,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.83,
+        "last_updated": "2025-08-31T19:33:39.833074"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.2833,
+          -5.5333
+        ]
+      },
+      "properties": {
+        "id": "cacongo",
+        "name": "Vila de Cacongo",
+        "zone": "zona_norte",
+        "population": 850,
+        "main_activity": "pesca_artisanal",
+        "boats": 28,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.833090"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.2167,
+          -8.9333
+        ]
+      },
+      "properties": {
+        "id": "mussulo",
+        "name": "Vila do Mussulo",
+        "zone": "zona_norte",
+        "population": 2100,
+        "main_activity": "pesca_artisanal",
+        "boats": 65,
+        "infrastructure": [
+          "market",
+          "fuel_station"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.833095"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.3,
+          -9.55
+        ]
+      },
+      "properties": {
+        "id": "cabo_ledo",
+        "name": "Vila do Cabo Ledo",
+        "zone": "zona_centro",
+        "population": 950,
+        "main_activity": "pesca_artisanal",
+        "boats": 32,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.833098"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.7667,
+          -10.7167
+        ]
+      },
+      "properties": {
+        "id": "porto_amboim",
+        "name": "Vila de Porto Amboim",
+        "zone": "zona_centro",
+        "population": 3200,
+        "main_activity": "pesca_semi_industrial",
+        "boats": 85,
+        "infrastructure": [
+          "market",
+          "fuel_station",
+          "cold_storage"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.833101"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.8417,
+          -11.2056
+        ]
+      },
+      "properties": {
+        "id": "sumbe",
+        "name": "Vila do Sumbe",
+        "zone": "zona_centro",
+        "population": 1800,
+        "main_activity": "pesca_artisanal",
+        "boats": 52,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.83,
+        "last_updated": "2025-08-31T19:33:39.833109"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.25,
+          -12.8
+        ]
+      },
+      "properties": {
+        "id": "baia_azul",
+        "name": "Vila da Baía Azul",
+        "zone": "zona_sul",
+        "population": 1100,
+        "main_activity": "pesca_artisanal",
+        "boats": 38,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.833112"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.3167,
+          -12.5667
+        ]
+      },
+      "properties": {
+        "id": "baia_farta",
+        "name": "Vila da Baía Farta",
+        "zone": "zona_sul",
+        "population": 2500,
+        "main_activity": "pesca_semi_industrial",
+        "boats": 72,
+        "infrastructure": [
+          "market",
+          "fuel_station",
+          "cold_storage"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.833115"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5333,
+          -13.85
+        ]
+      },
+      "properties": {
+        "id": "lucira",
+        "name": "Vila de Lucira",
+        "zone": "zona_sul",
+        "population": 1600,
+        "main_activity": "pesca_artisanal",
+        "boats": 45,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.67,
+        "last_updated": "2025-08-31T19:33:39.833118"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.0167,
+          -15.3833
+        ]
+      },
+      "properties": {
+        "id": "bentiaba",
+        "name": "Vila de Bentiaba",
+        "zone": "zona_sul",
+        "population": 800,
+        "main_activity": "pesca_artisanal",
+        "boats": 25,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": false,
+        "electricity": false,
+        "water_supply": false,
+        "school": false,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.0,
+        "last_updated": "2025-08-31T19:33:39.833121"
+      }
+    }
+  ],
+  "metadata": {
+    "title": "Vilas Pescatórias de Angola",
+    "description": "Comunidades costeiras dedicadas à atividade pesqueira",
+    "source": "BGAPP Angola Fisheries Infrastructure Generator",
+    "total_villages": 10,
+    "zones": [
+      "zona_norte",
+      "zona_centro",
+      "zona_sul"
+    ],
+    "generation_date": "2025-08-31T19:33:39.833124",
+    "coordinate_system": "EPSG:4326"
+  }
+}
