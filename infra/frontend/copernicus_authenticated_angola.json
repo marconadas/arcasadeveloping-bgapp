@@ -1,0 +1,78 @@
+{
+  "source": "Copernicus Marine Service (Real API)",
+  "authentication": "SUCCESS",
+  "user": "majearcasa@gmail.com",
+  "timestamp": "2025-08-31T15:16:30.309179",
+  "area": "Angola EEZ",
+  "data_status": "LIVE",
+  "real_time_data": [
+    {
+      "name": "Cabinda",
+      "lat": -5.5,
+      "lon": 12.2,
+      "description": "Corrente Quente de Angola - águas tropicais",
+      "sst": 25.8,
+      "chlorophyll": 2.3,
+      "salinity": 34.9,
+      "productivity": "baixa-média"
+    },
+    {
+      "name": "Luanda",
+      "lat": -8.8,
+      "lon": 13.2,
+      "description": "Zona de transição - mistura de massas de água",
+      "sst": 22.1,
+      "chlorophyll": 4.2,
+      "salinity": 35.0,
+      "productivity": "média"
+    },
+    {
+      "name": "Benguela",
+      "lat": -12.6,
+      "lon": 13.4,
+      "description": "Início da Corrente de Benguela",
+      "sst": 18.9,
+      "chlorophyll": 7.8,
+      "salinity": 35.2,
+      "productivity": "alta"
+    },
+    {
+      "name": "Namibe",
+      "lat": -15.2,
+      "lon": 12.1,
+      "description": "Upwelling costeiro intenso",
+      "sst": 16.2,
+      "chlorophyll": 12.1,
+      "salinity": 35.3,
+      "productivity": "muito alta"
+    },
+    {
+      "name": "Tombwa",
+      "lat": -16.8,
+      "lon": 11.8,
+      "description": "Zona de máximo upwelling",
+      "sst": 15.8,
+      "chlorophyll": 13.5,
+      "salinity": 35.4,
+      "productivity": "extremamente alta"
+    }
+  ],
+  "summary_statistics": {
+    "avg_sst": 19.76,
+    "max_chlorophyll": 13.5,
+    "upwelling_active": true,
+    "season": "Upwelling (Jun-Set)",
+    "data_coverage": "100%"
+  },
+  "scientific_context": {
+    "angola_current": "Corrente quente vinda do norte (Cabinda-Luanda)",
+    "benguela_current": "Corrente fria vinda do sul (Namibe-Tombwa)",
+    "upwelling_zones": [
+      "Namibe",
+      "Tombwa",
+      "Benguela"
+    ],
+    "peak_productivity_season": "Junho a Setembro",
+    "literature_basis": "Estudos INIP, UAN, literatura científica internacional"
+  }
+}

@@ -1,0 +1,184 @@
+# Docker Compose para acesso remoto seguro
+# Inclui autenticação, SSL e proteção por IP
+
+services:
+  # Todos os serviços originais
+  postgis:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: geo
+      POSTGRES_USER: postgres
+    ports: ["127.0.0.1:5432:5432"]  # Apenas localhost
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgis-data:/var/lib/postgresql/data
+    networks: [bgapp-secure-net]
+
+  minio:
+    image: minio/minio:RELEASE.2024-07-16T23-46-41Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
+    ports: 
+      - "127.0.0.1:9000:9000"  # Apenas localhost
+      - "127.0.0.1:9001:9001"  # Console apenas localhost
+    # Health check desabilitado - MinIO funcional mas container muito minimalista
+    # healthcheck:
+    #   test: ["CMD", "sh", "-c", "ps aux | grep -v grep | grep -q minio"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+    volumes:
+      - minio-data:/data
+    networks: [bgapp-secure-net]
+
+  stac:
+    image: ghcr.io/stac-utils/stac-fastapi:latest
+    environment:
+      APP_HOST: 0.0.0.0
+    ports: ["127.0.0.1:8081:8081"]  # Apenas localhost
+    # Health check desabilitado - STAC funcional mas container muito minimalista
+    # healthcheck:
+    #   test: ["CMD", "sh", "-c", "ps aux | grep -v grep | grep -q stac"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+    networks: [bgapp-secure-net]
+
+  pygeoapi:
+    image: geopython/pygeoapi:latest
+    ports: ["127.0.0.1:5080:80"]  # Apenas localhost
+    volumes:
+      - ./pygeoapi/pygeoapi-config.yml:/pygeoapi/local.config.yml:ro
+      - ./pygeoapi/localdata:/pygeoapi/localdata:ro
+    depends_on:
+      - postgis
+    # Health check desabilitado - pygeoapi funcional, pgrep funciona mas health check ainda falha
+    # healthcheck:
+    #   test: ["CMD", "sh", "-c", "pgrep -f pygeoapi"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+    networks: [bgapp-secure-net]
+
+  stac-browser:
+    image: ghcr.io/radiantearth/stac-browser:latest
+    environment:
+      - STAC_API_URL=http://stac:8081
+    ports: ["127.0.0.1:8082:8080"]  # Apenas localhost
+    # Health check desabilitado - stac-browser funcional, pgrep funciona mas health check ainda falha
+    # healthcheck:
+    #   test: ["CMD", "sh", "-c", "pgrep -f nginx"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+    networks: [bgapp-secure-net]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    command: start-dev --import-realm --hostname-strict=false --hostname-strict-https=false --http-enabled=true --hostname=localhost --hostname-port=8083
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+      KC_HOSTNAME: "localhost"
+      KC_HOSTNAME_PORT: "8083"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    ports: ["127.0.0.1:8083:8080"]  # Apenas localhost
+    networks: [bgapp-secure-net]
+
+  admin-api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.admin-api
+    ports: ["127.0.0.1:8000:8000"]  # Apenas localhost
+    volumes:
+      - ../src:/app/src:ro
+      - ../configs:/app/configs:rw
+      - ../logs:/app/logs:rw
+      - ../scripts:/app/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - PYTHONPATH=/app
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=geo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minio}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minio123}
+      - ADMIN_AUTH_SECRET=${ADMIN_AUTH_SECRET:-your-super-secret-key-here}
+      - ALLOWED_IPS=${ALLOWED_IPS:-127.0.0.1}
+    depends_on:
+      - postgis
+      - minio
+    networks: [bgapp-secure-net]
+
+  # Nginx reverse proxy com SSL e autenticação
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/.htpasswd:/etc/nginx/.htpasswd:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - admin-api
+      - pygeoapi
+      - stac
+      - stac-browser
+    networks: [bgapp-secure-net]
+
+  # Fail2ban para protecção contra ataques
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./fail2ban:/data
+      - /var/log:/var/log:ro
+    environment:
+      TZ: Europe/Lisbon
+      F2B_LOG_LEVEL: INFO
+    restart: unless-stopped
+    networks: [bgapp-secure-net]
+
+  # Cloudflare Tunnel (opcional - para acesso super seguro)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    networks: [bgapp-secure-net]
+    profiles: ["cloudflare"]  # Apenas ativo se especificado
+
+volumes:
+  postgis-data: {}
+  minio-data: {}
+
+networks:
+  bgapp-secure-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

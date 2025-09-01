@@ -1,0 +1,165 @@
+server:
+  url: http://localhost:5080
+  mimetype: application/json; charset=UTF-8
+  encoding: utf-8
+  languages: [pt, en]
+  cors: true
+  pretty_print: true
+  limit: 1000
+
+metadata:
+  identification:
+    title: BGAPP pygeoapi
+    description: API OGC de exemplo para AOI e ocorrências
+    url: http://localhost:5080
+    keywords:
+      - OGC API
+      - BGAPP
+      - AOI
+      - Ocorrências
+    keywords_type: theme
+    terms_of_service: https://example.org/terms
+  provider:
+    name: BGAPP
+    url: https://example.org
+  contact:
+    name: Admin
+    position: DevOps
+    address: Rua Exemplo 123
+    city: Cidade
+    stateorprovince: Estado
+    postalcode: 0000-000
+    country: PT
+    email: admin@example.org
+    url: https://example.org
+    phone: +351-000-000-000
+    fax: ""
+  license:
+    name: CC-BY 4.0
+    url: https://creativecommons.org/licenses/by/4.0/
+
+logging:
+  level: INFO
+
+resources:
+  aoi:
+    type: collection
+    title: "Zona Econômica Exclusiva de Angola (ZEE)"
+    description: "ZEE oficial de Angola baseada em dados do Marine Regions (WFS eez_v11)"
+    keywords: [ZEE, Angola, Marine Regions, oficial, EEZ]
+    extents:
+      spatial:
+        bbox: [8.0, -20.0, 18.0, -4.0]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/aoi.geojson
+
+  occurrences:
+    type: collection
+    title: "Ocorrências (OBIS/GBIF) — exemplo"
+    description: "FeatureCollection local com ocorrências para teste"
+    keywords: [Ocorrências, OBIS, GBIF, demo]
+    extents:
+      spatial:
+        bbox: [-180.0, -90.0, 180.0, 90.0]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/occurrences.geojson
+
+  mcda:
+    type: collection
+    title: "Adequação (MCDA demo)"
+    description: "Mapa de adequação derivado de AHP (demo)"
+    keywords: [MCDA, AHP, adequação]
+    extents:
+      spatial:
+        bbox: [-10.0, 36.5, -6.0, 42.5]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/mcda.geojson
+
+  aguas_internas:
+    type: collection
+    title: "Águas Internas de Angola"
+    description: "Estuários, rios tidais, baías e mangais costeiros de Angola (conforme UNCLOS)"
+    keywords: [águas internas, estuários, rios, mangais, UNCLOS, Angola]
+    extents:
+      spatial:
+        bbox: [8.1559051, -18.922632, 13.794773, -4.2610419]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/aguas_internas_optimized.geojson
+
+  fishing_ports:
+    type: collection
+    title: "Portos Pesqueiros de Angola"
+    description: "Infraestruturas portuárias dedicadas à atividade pesqueira em Angola"
+    keywords: [portos pesqueiros, infraestrutura, pesca, Angola, ZEE]
+    extents:
+      spatial:
+        bbox: [11.9167, -15.7833, 13.7667, -5.2500]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/fishing_ports_angola.geojson
+
+  fishing_villages:
+    type: collection
+    title: "Vilas Pescatórias de Angola"
+    description: "Comunidades costeiras dedicadas à atividade pesqueira em Angola"
+    keywords: [vilas pescatórias, comunidades, pesca artisanal, Angola, costa]
+    extents:
+      spatial:
+        bbox: [12.0167, -15.3833, 13.8417, -5.2500]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/fishing_villages_angola.geojson
+
+  fishing_infrastructure:
+    type: collection
+    title: "Infraestruturas Pesqueiras Complementares"
+    description: "Fábricas de processamento, estaleiros e mercados de apoio à atividade pesqueira"
+    keywords: [infraestrutura pesqueira, processamento, estaleiros, mercados, Angola]
+    extents:
+      spatial:
+        bbox: [12.0167, -15.3833, 13.5600, -8.8050]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/fishing_infrastructure_angola.geojson
+
+  fishing_all_infrastructure:
+    type: collection
+    title: "Todas as Infraestruturas Pesqueiras de Angola"
+    description: "Conjunto completo de infraestruturas pesqueiras: portos, vilas, fábricas, estaleiros e mercados"
+    keywords: [infraestrutura pesqueira, portos, vilas, processamento, Angola, consolidado]
+    extents:
+      spatial:
+        bbox: [11.9167, -15.7833, 13.8417, -5.2500]
+        crs: 4326
+    providers:
+      - type: feature
+        name: GeoJSON
+        data: /pygeoapi/localdata/fishing_all_infrastructure_angola.geojson
+
+  coverage_demo:
+    type: coverage
+    title: "COG demo (Uluru)"
+    description: "Coverage remoto de demonstração"
+    keywords: [coverage, COG, demo]
+    providers:
+      - type: coverage
+        name: rasterio
+        data: https://s3.amazonaws.com/cog-examples/uluru.tif

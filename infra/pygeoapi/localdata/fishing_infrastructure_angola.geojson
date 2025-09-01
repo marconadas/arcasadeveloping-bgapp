@@ -1,0 +1,175 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.25,
+          -8.82
+        ]
+      },
+      "properties": {
+        "name": "Fábrica de Conservas de Luanda",
+        "coordinates": [
+          13.25,
+          -8.82
+        ],
+        "zone": "zona_norte",
+        "type": "canning_factory",
+        "capacity_daily_tons": 25,
+        "products": [
+          "canned_sardines",
+          "canned_tuna"
+        ],
+        "employees": 180,
+        "category": "processing_plant",
+        "last_updated": "2025-08-31T19:33:39.833665"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.56,
+          -12.36
+        ]
+      },
+      "properties": {
+        "name": "Fábrica de Farinha de Peixe - Lobito",
+        "coordinates": [
+          13.56,
+          -12.36
+        ],
+        "zone": "zona_centro",
+        "type": "fishmeal_plant",
+        "capacity_daily_tons": 40,
+        "products": [
+          "fishmeal",
+          "fish_oil"
+        ],
+        "employees": 85,
+        "category": "processing_plant",
+        "last_updated": "2025-08-31T19:33:39.833670"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.24,
+          -8.805
+        ]
+      },
+      "properties": {
+        "name": "Estaleiro Naval de Luanda",
+        "coordinates": [
+          13.24,
+          -8.805
+        ],
+        "zone": "zona_norte",
+        "type": "shipyard",
+        "capacity_boats": 15,
+        "services": [
+          "construction",
+          "major_repair",
+          "maintenance"
+        ],
+        "employees": 120,
+        "category": "shipyard",
+        "last_updated": "2025-08-31T19:33:39.833672"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.41,
+          -12.58
+        ]
+      },
+      "properties": {
+        "name": "Estaleiro de Benguela",
+        "coordinates": [
+          13.41,
+          -12.58
+        ],
+        "zone": "zona_sul",
+        "type": "repair_yard",
+        "capacity_boats": 8,
+        "services": [
+          "repair",
+          "maintenance"
+        ],
+        "employees": 45,
+        "category": "shipyard",
+        "last_updated": "2025-08-31T19:33:39.833674"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.232,
+          -8.813
+        ]
+      },
+      "properties": {
+        "name": "Mercado do Peixe de Luanda",
+        "coordinates": [
+          13.232,
+          -8.813
+        ],
+        "zone": "zona_norte",
+        "type": "wholesale_market",
+        "area_m2": 5000,
+        "vendors": 150,
+        "daily_volume_tons": 80,
+        "category": "fish_market",
+        "last_updated": "2025-08-31T19:33:39.833676"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.548,
+          -12.352
+        ]
+      },
+      "properties": {
+        "name": "Mercado do Peixe de Lobito",
+        "coordinates": [
+          13.548,
+          -12.352
+        ],
+        "zone": "zona_centro",
+        "type": "wholesale_market",
+        "area_m2": 3500,
+        "vendors": 95,
+        "daily_volume_tons": 45,
+        "category": "fish_market",
+        "last_updated": "2025-08-31T19:33:39.833678"
+      }
+    }
+  ],
+  "metadata": {
+    "title": "Infraestruturas Pesqueiras Complementares de Angola",
+    "description": "Fábricas, estaleiros e mercados de apoio à atividade pesqueira",
+    "source": "BGAPP Angola Fisheries Infrastructure Generator",
+    "total_facilities": 6,
+    "categories": [
+      "processing_plant",
+      "shipyard",
+      "fish_market"
+    ],
+    "generation_date": "2025-08-31T19:33:39.833680",
+    "coordinate_system": "EPSG:4326"
+  }
+}

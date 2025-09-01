@@ -1,0 +1,40 @@
+{
+  "realm": "bgapp",
+  "enabled": true,
+  "sslRequired": "none",
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "clients": [
+    {
+      "clientId": "frontend",
+      "enabled": true,
+      "publicClient": true,
+      "redirectUris": ["http://localhost:8085/*"],
+      "webOrigins": ["http://localhost:8085"],
+      "standardFlowEnabled": true
+    },
+    {
+      "clientId": "oauth2-proxy",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "devsecret",
+      "redirectUris": [
+        "http://localhost:8086/oauth2/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:8086"
+      ],
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": false
+    }
+  ],
+  "users": [
+    {
+      "username": "demo",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{"type": "password", "value": "demo", "temporary": false}],
+      "realmRoles": ["offline_access", "default-roles-bgapp"]
+    }
+  ]
+}

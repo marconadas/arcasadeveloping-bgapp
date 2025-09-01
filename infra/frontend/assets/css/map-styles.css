@@ -1,0 +1,394 @@
+/* BGAPP - Estilos do Mapa Meteorológico */
+/* Versão: 2.0 - Janeiro 2025 */
+
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #3498db;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --error-color: #e74c3c;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --bg-overlay: rgba(255,255,255,0.95);
+  --border-radius: 8px;
+  --transition: all 0.2s ease;
+  --shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Reset e Base */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Toolbar Principal */
+#toolbar {
+  padding: 12px;
+  background: var(--bg-overlay);
+  position: absolute;
+  z-index: 1000;
+  top: 8px;
+  left: 8px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  min-width: 280px;
+  max-width: 320px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+#toolbar:hover {
+  background: rgba(255,255,255,0.98);
+  transform: translateY(-1px);
+}
+
+#toolbar h1, #toolbar h3 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Seções do Toolbar */
+.toolbar-section {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.toolbar-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.toolbar-section h2, .toolbar-section h4 {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Grupos de Botões */
+.btn-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Botões */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: var(--transition);
+  background: var(--secondary-color);
+  color: white;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  outline: none;
+}
+
+.btn:hover {
+  background: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.btn.active, .btn[aria-pressed="true"] {
+  background: var(--error-color);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* Botões por Categoria */
+.btn.meteo {
+  background: #e67e22;
+}
+
+.btn.meteo:hover {
+  background: #d35400;
+}
+
+.btn.ocean {
+  background: #16a085;
+}
+
+.btn.ocean:hover {
+  background: #138d75;
+}
+
+.btn.control {
+  background: #95a5a6;
+}
+
+.btn.control:hover {
+  background: #7f8c8d;
+}
+
+.btn.animate {
+  background: #9b59b6;
+}
+
+.btn.animate:hover {
+  background: #8e44ad;
+}
+
+/* Mapa */
+#map {
+  height: 100%;
+  width: 100%;
+  background: #f8f9fa;
+}
+
+#map:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Legenda */
+.legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-overlay);
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  max-width: 200px;
+  display: none;
+  backdrop-filter: blur(10px);
+}
+
+.legend.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.legend h3, .legend h4 {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.legend-item {
+  margin-bottom: 8px;
+}
+
+.legend-scale {
+  margin: 4px 0;
+}
+
+/* Indicadores de Status */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.status-online {
+  background: var(--success-color);
+}
+
+.status-loading {
+  background: var(--warning-color);
+  animation: pulse 1.5s infinite;
+}
+
+.status-error {
+  background: var(--error-color);
+}
+
+/* Animações */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Controles do Leaflet */
+.leaflet-control-timedimension {
+  background: var(--bg-overlay);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+}
+
+.leaflet-control-layers {
+  background: var(--bg-overlay);
+  backdrop-filter: blur(10px);
+}
+
+/* Inputs */
+input[type="date"] {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+input[type="date"]:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Loading Screen */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#progress-bar {
+  height: 100%;
+  background: white;
+  width: 0%;
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  #toolbar {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: calc(100% - 16px);
+    margin: 8px;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  .btn-group {
+    justify-content: center;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  #toolbar {
+    margin: 4px;
+    width: calc(100% - 8px);
+    padding: 8px;
+  }
+
+  #toolbar h1, #toolbar h3 {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .legend {
+    bottom: 10px;
+    right: 10px;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  #toolbar {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+
+/* Modo Escuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-overlay: rgba(33, 37, 41, 0.95);
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+  }
+
+  #map {
+    background: #212529;
+  }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .btn {
+    border: 2px solid currentColor;
+  }
+
+  .status-indicator {
+    border: 2px solid #000;
+  }
+}

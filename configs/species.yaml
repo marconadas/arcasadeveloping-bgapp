@@ -1,0 +1,54 @@
+# Espécies Marinhas da Costa Angolana
+marine:
+  # Mamíferos Marinhos
+  - Tursiops truncatus  # Golfinho-roaz (Boto comum)
+  - Delphinus delphis   # Golfinho-comum
+  - Grampus griseus     # Golfinho-de-risso
+  - Megaptera novaeangliae  # Baleia-jubarte
+  - Balaenoptera musculus   # Baleia-azul
+  
+  # Peixes Pelágicos
+  - Thunnus albacares   # Atum-amarelo (Albacora-laje)
+  - Katsuwonus pelamis  # Bonito-listrado (Gaiado)
+  - Scomber japonicus   # Cavala
+  - Sardina pilchardus  # Sardinha
+  - Engraulis encrasicolus  # Anchova
+  
+  # Peixes Demersais
+  - Merluccius capensis     # Pescada-do-cabo
+  - Dentex angolensis       # Dentão-angolano
+  - Pseudotolithus senegalensis  # Corvina-senegalesa
+  - Argyrosomus inodorus    # Corvina-real
+  
+  # Crustáceos
+  - Penaeus notialis    # Camarão-rosa
+  - Parapenaeus longirostris  # Camarão-vermelho
+  - Portunus validus    # Caranguejo-nadador
+  
+  # Moluscos
+  - Octopus vulgaris    # Polvo-comum
+  - Loligo vulgaris     # Lula-comum
+  - Sepia officinalis   # Choco-comum
+
+# Aves Marinhas da Costa Angolana
+birds:
+  - Pelecanus onocrotalus   # Pelicano-branco
+  - Sula capensis          # Ganso-do-cabo
+  - Phalacrocorax capensis # Cormorão-do-cabo
+  - Larus dominicanus      # Gaivota-dominicana
+  - Sterna hirundo         # Andorinha-do-mar-comum
+  - Fregata magnificens    # Fragata-magnífica
+  - Ardea cinerea          # Garça-cinzenta
+
+# Tartarugas Marinhas
+reptiles:
+  - Caretta caretta        # Tartaruga-cabeçuda
+  - Chelonia mydas         # Tartaruga-verde
+  - Dermochelys coriacea   # Tartaruga-de-couro
+  - Eretmochelys imbricata # Tartaruga-de-pente
+
+# Espécies Endémicas ou Regionais
+endemic:
+  - Dentex angolensis      # Dentão-angolano (endémico)
+  - Chrysoblephus anglicus # Pargo-inglês (regional)
+  - Argyrozona argyrozona  # Pargo-prateado (regional)

@@ -1,0 +1,145 @@
+{
+  "timestamp": "2025-09-01T12:55:17.283119",
+  "target_domain": "arcasadeveloping.org",
+  "services": {
+    "Cloudflare": {
+      "tests": [
+        {
+          "url": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css",
+          "status": 200,
+          "response_time_ms": 145.97,
+          "success": true,
+          "content_length": 14806,
+          "content_type": "text/css; charset=utf-8",
+          "valid_content": true
+        }
+      ],
+      "success_rate": 100.0,
+      "avg_response_time_ms": 145.97,
+      "status": "OPERATIONAL"
+    },
+    "Leaflet CDN": {
+      "tests": [
+        {
+          "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+          "status": 200,
+          "response_time_ms": 144.79,
+          "success": true,
+          "content_length": 14806,
+          "content_type": "text/css",
+          "valid_content": true
+        },
+        {
+          "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+          "status": 200,
+          "response_time_ms": 21.84,
+          "success": true,
+          "content_length": 147552,
+          "content_type": "text/javascript; charset=utf-8",
+          "valid_content": true
+        }
+      ],
+      "success_rate": 100.0,
+      "avg_response_time_ms": 83.31,
+      "status": "OPERATIONAL"
+    },
+    "CartoDB": {
+      "tests": [
+        {
+          "url": "https://a.basemaps.cartocdn.com/light_all/0/0/0.png",
+          "status": 200,
+          "response_time_ms": 155.41,
+          "success": true,
+          "content_length": 8019,
+          "content_type": "image/png",
+          "valid_content": true
+        },
+        {
+          "url": "https://b.basemaps.cartocdn.com/dark_all/0/0/0.png",
+          "status": 200,
+          "response_time_ms": 35.43,
+          "success": true,
+          "content_length": 6166,
+          "content_type": "image/png",
+          "valid_content": true
+        }
+      ],
+      "success_rate": 100.0,
+      "avg_response_time_ms": 95.42,
+      "status": "OPERATIONAL"
+    },
+    "OpenStreetMap": {
+      "tests": [
+        {
+          "url": "https://a.tile.openstreetmap.org/0/0/0.png",
+          "status": 200,
+          "response_time_ms": 156.41,
+          "success": true,
+          "content_length": 6929,
+          "content_type": "image/png",
+          "valid_content": true
+        },
+        {
+          "url": "https://b.tile.openstreetmap.org/0/0/0.png",
+          "status": 200,
+          "response_time_ms": 34.28,
+          "success": true,
+          "content_length": 6929,
+          "content_type": "image/png",
+          "valid_content": true
+        },
+        {
+          "url": "https://c.tile.openstreetmap.org/0/0/0.png",
+          "status": 200,
+          "response_time_ms": 31.24,
+          "success": true,
+          "content_length": 6929,
+          "content_type": "image/png",
+          "valid_content": true
+        }
+      ],
+      "success_rate": 100.0,
+      "avg_response_time_ms": 73.98,
+      "status": "OPERATIONAL"
+    },
+    "ESRI": {
+      "tests": [
+        {
+          "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/0/0/0",
+          "status": 200,
+          "response_time_ms": 222.1,
+          "success": true,
+          "content_length": 14401,
+          "content_type": "image/jpeg",
+          "valid_content": true
+        }
+      ],
+      "success_rate": 100.0,
+      "avg_response_time_ms": 222.1,
+      "status": "OPERATIONAL"
+    },
+    "EOX Maps": {
+      "tests": [
+        {
+          "url": "https://tiles.maps.eox.at/wms?service=WMS&request=GetCapabilities&version=1.3.0",
+          "status": 200,
+          "response_time_ms": 257.3,
+          "success": false,
+          "content_length": 71699,
+          "content_type": "text/xml",
+          "valid_content": false
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    }
+  },
+  "summary": {
+    "total_services": 6,
+    "operational": 5,
+    "degraded": 0,
+    "down": 1
+  },
+  "deployment_recommendation": "PROCEED_WITH_MONITORING - Most services operational"
+}

@@ -1,0 +1,100 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ZEE Cabinda (Simplificada)",
+        "description": "Versão simplificada para visualização rápida",
+        "country": "Angola",
+        "territory": "Cabinda",
+        "display_version": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.5,
+              -4.2
+            ],
+            [
+              12.3,
+              -4.2
+            ],
+            [
+              12.3,
+              -5.6
+            ],
+            [
+              8.5,
+              -5.6
+            ],
+            [
+              8.5,
+              -4.2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ZEE Angola Continental (Simplificada)",
+        "description": "Versão simplificada respeitando fronteiras terrestres",
+        "country": "Angola",
+        "territory": "Continental",
+        "display_version": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.0,
+              -6.0
+            ],
+            [
+              12.4,
+              -6.0
+            ],
+            [
+              13.8,
+              -8.0
+            ],
+            [
+              13.9,
+              -12.0
+            ],
+            [
+              13.0,
+              -15.0
+            ],
+            [
+              11.7,
+              -17.3
+            ],
+            [
+              8.0,
+              -17.3
+            ],
+            [
+              8.0,
+              -6.0
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "title": "ZEE Angola Simplificada - Respeitando Fronteiras",
+    "description": "Versão simplificada que não invade territórios vizinhos",
+    "precision": "medium",
+    "purpose": "display_optimization",
+    "unclos_compliant": true,
+    "terrestrial_boundaries_respected": true,
+    "generation_date": "2025-08-31T19:59:18.248037"
+  }
+}

@@ -1,0 +1,27 @@
+name = "bgapp-api-worker"
+main = "api-worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Configurações para produção
+[env.production]
+name = "bgapp-api-worker"
+
+# Variáveis de ambiente
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org"
+RATE_LIMIT_REQUESTS = "1000"
+RATE_LIMIT_WINDOW = "3600"
+
+# KV Namespaces para cache (desabilitado temporariamente)
+# [[env.production.kv_namespaces]]
+# binding = "BGAPP_CACHE"
+# id = "bgapp_cache_worker"
+# preview_id = "bgapp_cache_worker_preview"
+
+# Configurações de performance
+[build]
+command = ""
