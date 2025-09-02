@@ -28,6 +28,8 @@ class SecuritySettings(BaseSettings):
     rate_limit_requests: int = Field(default=1000, env="RATE_LIMIT_REQUESTS")  # Mais permissivo
     rate_limit_window: int = Field(default=300, env="RATE_LIMIT_WINDOW")  # 5 minutos
     
+    model_config = {"extra": "allow"}
+    
     @validator('jwt_secret_key')
     def validate_secret_key(cls, v):
         if v == "change-this-secret-key-in-production":
@@ -46,6 +48,8 @@ class DatabaseSettings(BaseSettings):
     postgres_password: str = Field(default="postgres", env="POSTGRES_PASSWORD")
     postgres_pool_size: int = 10
     postgres_max_overflow: int = 20
+    
+    model_config = {"extra": "allow"}
     
     # Connection string
     @property
@@ -72,6 +76,8 @@ class ExternalServicesSettings(BaseSettings):
     obis_api_url: str = "https://api.obis.org"
     gbif_api_url: str = "https://api.gbif.org/v1"
     erddap_api_url: str = "https://coastwatch.pfeg.noaa.gov/erddap"
+    
+    model_config = {"extra": "allow"}
     
     @validator('copernicus_username')
     def validate_copernicus_credentials(cls, v, values):
@@ -100,6 +106,8 @@ class APISettings(BaseSettings):
     max_page_size: int = 1000
     default_page_size: int = 100
     max_query_complexity: int = 10
+    
+    model_config = {"extra": "allow"}
 
 class LoggingSettings(BaseSettings):
     """Configurações de logging"""
@@ -114,6 +122,8 @@ class LoggingSettings(BaseSettings):
     enable_request_logging: bool = True
     enable_performance_logging: bool = True
     enable_security_logging: bool = True
+    
+    model_config = {"extra": "allow"}
 
 class AppSettings(BaseSettings):
     """Configurações principais da aplicação"""
@@ -139,19 +149,12 @@ class AppSettings(BaseSettings):
     api: APISettings = APISettings()
     logging: LoggingSettings = LoggingSettings()
     
-    class Config:
-        env_file = ".env"
-        env_nested_delimiter = "__"
-        case_sensitive = False
-        
-        # Environment variable mapping
-        fields = {
-            'security': {'env': 'SECURITY'},
-            'database': {'env': 'DATABASE'},
-            'external_services': {'env': 'EXTERNAL'},
-            'api': {'env': 'API'},
-            'logging': {'env': 'LOGGING'}
-        }
+    model_config = {
+        "env_file": ".env",
+        "env_nested_delimiter": "__",
+        "case_sensitive": False,
+        "extra": "allow"  # Permitir campos extras para compatibilidade
+    }
 
 # Instância global das configurações
 settings = AppSettings()

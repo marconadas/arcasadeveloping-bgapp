@@ -32,6 +32,9 @@ const CACHE_STRATEGIES = {
 
 // Configuração de rotas e estratégias
 const ROUTE_STRATEGIES = [
+    // NÃO interceptar APIs externas - deixar o browser lidar com CORS
+    { pattern: /^https?:\/\/.*:8000\//, strategy: CACHE_STRATEGIES.NETWORK_ONLY }, // Admin API
+    { pattern: /^https?:\/\/.*:5080\//, strategy: CACHE_STRATEGIES.NETWORK_ONLY }, // pygeoapi
     { pattern: /\/api\//, strategy: CACHE_STRATEGIES.NETWORK_FIRST, cacheName: API_CACHE, maxAge: 300000 }, // 5 min
     { pattern: /\.(js|css|png|jpg|jpeg|gif|svg|ico)$/, strategy: CACHE_STRATEGIES.CACHE_FIRST, cacheName: STATIC_CACHE },
     { pattern: /\/admin/, strategy: CACHE_STRATEGIES.STALE_WHILE_REVALIDATE, cacheName: DYNAMIC_CACHE },
@@ -88,14 +91,42 @@ self.addEventListener('fetch', event => {
     const request = event.request;
     const url = new URL(request.url);
     
+    console.log('🔍 Fetch interceptado:', url.href.substring(0, 80) + '...');
+    
     // Ignorar requisições não-HTTP
     if (!request.url.startsWith('http')) {
         return;
     }
     
+    // NÃO interceptar requisições para localhost:8000 (Admin API)
+    if (url.port === '8000') {
+        console.log('🔄 Admin API (8000) - deixando passar:', url.href.substring(0, 60));
+        return; // Deixar passar sem interceptar
+    }
+    
+    // Interceptar apenas PyGeoAPI (5080) com resiliência
+    const isPyGeoAPI = url.port === '5080';
+    
+    if (isPyGeoAPI) {
+        console.log('🛡️ PyGeoAPI detectado - aplicando resiliência:', url.href.substring(0, 60));
+        event.respondWith(handleCriticalAPIRequest(request));
+        return;
+    }
+    
+    // NÃO interceptar outras requisições cross-origin para APIs externas (CORS)
+    const isExternalAPI = url.hostname !== self.location.hostname && 
+                         (url.port === '8000' || 
+                          url.pathname.startsWith('/services') || 
+                          url.pathname.startsWith('/auth'));
+    
+    if (isExternalAPI) {
+        console.log('🌐 Network Only:', url.href.substring(0, 60) + '...');
+        return; // Deixar o browser lidar com CORS
+    }
+    
     // Encontrar estratégia para a rota
     const routeConfig = ROUTE_STRATEGIES.find(config => 
-        config.pattern.test(url.pathname)
+        config.pattern.test(url.href) || config.pattern.test(url.pathname)
     );
     
     if (routeConfig) {
@@ -103,13 +134,16 @@ self.addEventListener('fetch', event => {
             handleRequest(request, routeConfig)
         );
     } else {
-        // Estratégia padrão: Network First
-        event.respondWith(
-            handleRequest(request, {
-                strategy: CACHE_STRATEGIES.NETWORK_FIRST,
-                cacheName: DYNAMIC_CACHE
-            })
-        );
+        // Para recursos locais, usar estratégia padrão
+        if (url.hostname === self.location.hostname) {
+            event.respondWith(
+                handleRequest(request, {
+                    strategy: CACHE_STRATEGIES.NETWORK_FIRST,
+                    cacheName: DYNAMIC_CACHE
+                })
+            );
+        }
+        // Caso contrário, não interceptar (deixar browser lidar)
     }
 });
 
@@ -118,29 +152,79 @@ async function handleRequest(request, config) {
     const { strategy, cacheName, maxAge } = config;
     
     try {
+        let response;
         switch (strategy) {
             case CACHE_STRATEGIES.NETWORK_FIRST:
-                return await networkFirst(request, cacheName, maxAge);
+                response = await networkFirst(request, cacheName, maxAge);
+                break;
             
             case CACHE_STRATEGIES.CACHE_FIRST:
-                return await cacheFirst(request, cacheName);
+                response = await cacheFirst(request, cacheName);
+                break;
             
             case CACHE_STRATEGIES.STALE_WHILE_REVALIDATE:
-                return await staleWhileRevalidate(request, cacheName);
+                response = await staleWhileRevalidate(request, cacheName);
+                break;
             
             case CACHE_STRATEGIES.NETWORK_ONLY:
-                return await fetch(request);
+                response = await fetch(request);
+                break;
             
             case CACHE_STRATEGIES.CACHE_ONLY:
-                return await cacheOnly(request, cacheName);
+                response = await cacheOnly(request, cacheName);
+                break;
             
             default:
-                return await networkFirst(request, cacheName);
+                response = await networkFirst(request, cacheName);
+                break;
         }
+        
+        // Validar response antes de retornar
+        return validateResponse(response, request);
+        
     } catch (error) {
         console.error('❌ BGAPP SW: Error handling request:', error);
         return await getOfflineFallback(request);
     }
+}
+
+// Função para validar Response objects
+function validateResponse(response, request) {
+    try {
+        // Verificar se é um Response válido
+        if (!response || typeof response !== 'object') {
+            console.warn('⚠️ BGAPP SW: Invalid response object for:', request.url);
+            return createErrorResponse('Invalid response object', 500);
+        }
+        
+        // Verificar se tem as propriedades necessárias de Response
+        if (typeof response.ok !== 'boolean' || typeof response.status !== 'number') {
+            console.warn('⚠️ BGAPP SW: Response missing required properties for:', request.url);
+            return createErrorResponse('Malformed response', 500);
+        }
+        
+        return response;
+    } catch (error) {
+        console.error('❌ BGAPP SW: Response validation failed:', error);
+        return createErrorResponse('Response validation failed', 500);
+    }
+}
+
+// Criar response de erro estruturada
+function createErrorResponse(message, status = 503) {
+    return new Response(JSON.stringify({
+        error: true,
+        message: message,
+        timestamp: new Date().toISOString(),
+        serviceWorker: true
+    }), {
+        status: status,
+        statusText: message,
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-Service-Worker': 'BGAPP-v1.2.0'
+        }
+    });
 }
 
 // Estratégia Network First
@@ -168,19 +252,18 @@ async function networkFirst(request, cacheName, maxAge) {
         return networkResponse;
     } catch (error) {
         console.log('🌐 BGAPP SW: Network failed, trying cache');
-        const cachedResponse = await getCachedResponse(request, cacheName, maxAge);
-        if (cachedResponse) {
-            return cachedResponse;
+        
+        try {
+            const cachedResponse = await getCachedResponse(request, cacheName, maxAge);
+            if (cachedResponse) {
+                return validateResponse(cachedResponse, request);
+            }
+        } catch (cacheError) {
+            console.warn('⚠️ BGAPP SW: Cache access failed:', cacheError);
         }
+        
         // Se não há cache, retornar erro estruturado
-        return new Response(JSON.stringify({
-            error: 'Network and cache failed',
-            message: error.message,
-            timestamp: new Date().toISOString()
-        }), {
-            status: 503,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return createErrorResponse(`Network and cache failed: ${error.message}`, 503);
     }
 }
 
@@ -204,9 +287,10 @@ async function cacheFirst(request, cacheName) {
             }
         }
         
-        return networkResponse;
+        return validateResponse(networkResponse, request);
     } catch (error) {
-        return await getOfflineFallback(request);
+        console.warn('⚠️ BGAPP SW: Cache first network fallback failed:', error);
+        return createErrorResponse(`Cache first failed: ${error.message}`, 503);
     }
 }
 
@@ -234,49 +318,172 @@ async function staleWhileRevalidate(request, cacheName) {
     
     // Retornar cache imediatamente se disponível
     if (cachedResponse) {
-        return cachedResponse;
+        return validateResponse(cachedResponse, request);
     }
     
     // Se não há cache, aguardar network
-    const result = await networkUpdate;
-    if (result) {
-        return result;
+    try {
+        const result = await networkUpdate;
+        if (result) {
+            return validateResponse(result, request);
+        }
+    } catch (networkError) {
+        console.warn('⚠️ BGAPP SW: Network update failed in staleWhileRevalidate:', networkError);
     }
     
     // Fallback se tudo falhar
-    return await getOfflineFallback(request);
+    return createErrorResponse('Stale while revalidate failed', 503);
 }
 
 // Estratégia Cache Only
 async function cacheOnly(request, cacheName) {
-    const cachedResponse = await getCachedResponse(request, cacheName);
-    
-    if (cachedResponse) {
-        return cachedResponse;
+    try {
+        const cachedResponse = await getCachedResponse(request, cacheName);
+        
+        if (cachedResponse) {
+            return validateResponse(cachedResponse, request);
+        }
+        
+        return createErrorResponse('No cached response available', 404);
+    } catch (error) {
+        console.error('❌ BGAPP SW: Cache only failed:', error);
+        return createErrorResponse(`Cache only failed: ${error.message}`, 503);
     }
-    
-    throw new Error('No cached response available');
 }
 
 // Obter resposta do cache
 async function getCachedResponse(request, cacheName, maxAge) {
-    const cache = await caches.open(cacheName);
-    const cachedResponse = await cache.match(request);
-    
-    if (!cachedResponse) {
-        return null;
-    }
-    
-    // Verificar se expirou (se maxAge definido)
-    if (maxAge) {
-        const cachedAt = cachedResponse.headers.get('sw-cached-at');
-        if (cachedAt && Date.now() - parseInt(cachedAt) > maxAge) {
-            await cache.delete(request);
+    try {
+        const cache = await caches.open(cacheName);
+        const cachedResponse = await cache.match(request);
+        
+        if (!cachedResponse) {
             return null;
         }
+        
+        // Verificar se expirou (se maxAge definido)
+        if (maxAge) {
+            const cachedAt = cachedResponse.headers.get('sw-cached-at');
+            if (cachedAt && Date.now() - parseInt(cachedAt) > maxAge) {
+                try {
+                    await cache.delete(request);
+                } catch (deleteError) {
+                    console.warn('⚠️ BGAPP SW: Failed to delete expired cache:', deleteError);
+                }
+                return null;
+            }
+        }
+        
+        return cachedResponse;
+    } catch (error) {
+        console.error('❌ BGAPP SW: Cache access failed:', error);
+        return null;
+    }
+}
+
+// Handler para APIs críticas com resiliência
+async function handleCriticalAPIRequest(request) {
+    const url = new URL(request.url);
+    console.log('🔧 Default handling:', url.href.substring(0, 60) + '...');
+    
+    try {
+        // Tentar serviço primário primeiro
+        const primaryResponse = await fetch(request.clone());
+        
+        if (primaryResponse.ok) {
+            // Cache resposta bem-sucedida
+            const cache = await caches.open(API_CACHE);
+            await cache.put(request, primaryResponse.clone());
+            return primaryResponse;
+        }
+        
+        // Se falhar, tentar fallback para admin-api
+        if (url.port === '5080') {
+            console.log('🔄 Tentando fallback admin-api...');
+            const fallbackUrl = buildFallbackUrl(url);
+            const fallbackResponse = await fetch(fallbackUrl);
+            
+            if (fallbackResponse.ok) {
+                const cache = await caches.open(API_CACHE);
+                await cache.put(request, fallbackResponse.clone());
+                return fallbackResponse;
+            }
+        }
+        
+        // Tentar cache como último recurso
+        const cache = await caches.open(API_CACHE);
+        const cachedResponse = await cache.match(request);
+        
+        if (cachedResponse) {
+            console.log('💾 Cache First:', url.href.substring(0, 60) + '...');
+            return cachedResponse;
+        }
+        
+        // Resposta mock se tudo falhar
+        return createMockAPIResponse(url);
+        
+    } catch (error) {
+        console.error('❌ Erro em API crítica:', error);
+        
+        // Tentar cache expirado
+        const cache = await caches.open(API_CACHE);
+        const cachedResponse = await cache.match(request);
+        
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        
+        return createMockAPIResponse(url);
+    }
+}
+
+// Construir URL de fallback para admin-api
+function buildFallbackUrl(originalUrl) {
+    const adminApiBase = 'http://localhost:8085/admin-api';
+    
+    if (originalUrl.pathname.includes('/collections')) {
+        return `${adminApiBase}/collections`;
+    } else if (originalUrl.pathname.includes('/openapi')) {
+        return `${adminApiBase}/openapi`;
+    } else {
+        return `${adminApiBase}${originalUrl.pathname}`;
+    }
+}
+
+// Criar resposta mock para APIs
+function createMockAPIResponse(url) {
+    let mockData;
+    
+    if (url.pathname.includes('/collections')) {
+        mockData = {
+            collections: [],
+            links: [],
+            message: "Dados temporariamente indisponíveis - modo offline"
+        };
+    } else if (url.pathname.includes('/connectors')) {
+        mockData = {
+            connectors: {},
+            message: "Conectores temporariamente indisponíveis"
+        };
+    } else {
+        mockData = {
+            error: true,
+            message: "API temporariamente indisponível",
+            offline: true,
+            timestamp: new Date().toISOString()
+        };
     }
     
-    return cachedResponse;
+    console.log('🔄 Resposta mock para:', url.pathname);
+    
+    return new Response(JSON.stringify(mockData), {
+        status: 200,
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-Mock': 'true',
+            'X-Service-Worker': 'BGAPP-v1.2.0'
+        }
+    });
 }
 
 // Fallback offline
@@ -296,19 +503,11 @@ async function getOfflineFallback(request) {
     
     // Para APIs, retornar dados em cache ou erro estruturado
     if (url.pathname.startsWith('/api/')) {
-        return new Response(JSON.stringify({
-            error: 'Offline',
-            message: 'Dados não disponíveis offline',
-            offline: true,
-            timestamp: new Date().toISOString()
-        }), {
-            status: 503,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return createErrorResponse('Dados não disponíveis offline', 503);
     }
     
     // Para outros recursos, retornar erro
-    return new Response('Offline', { status: 503 });
+    return createErrorResponse('Recurso não disponível offline', 503);
 }
 
 // Background Sync para quando voltar online

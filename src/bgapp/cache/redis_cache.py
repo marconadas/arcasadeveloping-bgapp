@@ -39,6 +39,7 @@ class RedisCache:
     def __init__(self, config: CacheConfig = None):
         self.config = config or CacheConfig()
         self.redis_pool = None
+        self.redis = None  # Inicializar redis como None
         self.stats = CacheStats()
         self._connection_retries = 3
         

@@ -14,9 +14,18 @@ import {
   MapPin,
   Calendar,
   FileText,
-  ExternalLink
+  ExternalLink,
+  BarChart3,
+  Globe,
+  Zap
 } from 'lucide-react'
 
+import { HeroSection } from '../components/ui/HeroSection'
+import { MetricCard } from '../components/ui/MetricCard'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
+import { InteractiveDashboard } from '../components/ui/InteractiveDashboard'
 import type { Stats, NewsItem } from '../types'
 
 const Home: React.FC = () => {
@@ -106,110 +115,83 @@ const Home: React.FC = () => {
 
   return (
     <div className="overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center ocean-gradient">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
+      {/* Modern Hero Section */}
+      <HeroSection
+        title={t('hero.title')}
+        subtitle={t('hero.subtitle')}
+        description="Promovendo o desenvolvimento sustentável dos recursos marinhos de Angola através de políticas inovadoras, tecnologia avançada e parcerias estratégicas."
+        badge="🇦🇴 República de Angola"
+        primaryCTA={{
+          text: t('hero.cta'),
+          href: '/servicos',
+          onClick: () => window.location.href = '/minpermar-site/servicos'
+        }}
+        secondaryCTA={{
+          text: t('hero.learnMore'),
+          href: '/sobre',
+          onClick: () => window.location.href = '/minpermar-site/sobre'
+        }}
+        stats={[
+          { label: 'Pescadores Registados', value: formatNumber(stats.fishermenRegistered) },
+          { label: 'Fazendas de Aquicultura', value: formatNumber(stats.aquacultureFarms) },
+          { label: 'Áreas Protegidas', value: stats.protectedAreas.toString() },
+          { label: 'Produção Anual (t)', value: (stats.annualProduction / 1000).toFixed(0) + 'K' }
+        ]}
+      />
 
-        <div className="container relative z-10">
-          <div className="text-center text-white">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-6 text-shadow-lg">
-                {t('hero.title')}
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-4xl mx-auto text-shadow">
-                {t('hero.subtitle')}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  to="/servicos"
-                  className="btn btn-primary bg-white text-ocean-blue-700 hover:bg-blue-50 px-8 py-4 text-lg font-semibold"
-                >
-                  {t('hero.cta')}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-                <Link
-                  to="/sobre"
-                  className="btn btn-outline border-white text-white hover:bg-white hover:text-ocean-blue-700 px-8 py-4 text-lg font-semibold"
-                >
-                  {t('hero.learnMore')}
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-white">
+      {/* Enhanced Stats Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="text-3xl lg:text-4xl font-bold text-ocean-blue-700 mb-2">
-                {formatNumber(stats.fishermenRegistered)}
-              </div>
-              <div className="text-gray-600">{t('stats.fishermenRegistered')}</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-center"
-            >
-              <div className="text-3xl lg:text-4xl font-bold text-ocean-green-600 mb-2">
-                {formatNumber(stats.aquacultureFarms)}
-              </div>
-              <div className="text-gray-600">{t('stats.aquacultureFarms')}</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">
-                {formatNumber(stats.protectedAreas)}
-              </div>
-              <div className="text-gray-600">{t('stats.protectedAreas')}</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="text-center"
-            >
-              <div className="text-3xl lg:text-4xl font-bold text-purple-600 mb-2">
-                {formatNumber(stats.annualProduction)}
-              </div>
-              <div className="text-gray-600">{t('stats.annualProduction')}</div>
-            </motion.div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-gray-900 mb-4">
+              Impacto em Números
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Dados em tempo real que demonstram o crescimento e desenvolvimento do setor marítimo angolano
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <MetricCard
+              title={t('stats.fishermenRegistered')}
+              value={stats.fishermenRegistered}
+              change={12.5}
+              changeLabel="vs. ano anterior"
+              icon={<Users className="h-6 w-6" />}
+              trend="up"
+              color="blue"
+              description="Pescadores licenciados"
+            />
+            <MetricCard
+              title={t('stats.aquacultureFarms')}
+              value={stats.aquacultureFarms}
+              change={8.3}
+              changeLabel="crescimento mensal"
+              icon={<Fish className="h-6 w-6" />}
+              trend="up"
+              color="green"
+              description="Fazendas ativas"
+            />
+            <MetricCard
+              title={t('stats.protectedAreas')}
+              value={stats.protectedAreas}
+              change={2.1}
+              changeLabel="novas áreas"
+              icon={<Shield className="h-6 w-6" />}
+              trend="up"
+              color="blue"
+              description="Zonas protegidas"
+            />
+            <MetricCard
+              title={t('stats.annualProduction')}
+              value={`${(stats.annualProduction / 1000).toFixed(0)}K t`}
+              change={15.7}
+              changeLabel="aumento anual"
+              icon={<BarChart3 className="h-6 w-6" />}
+              trend="up"
+              color="green"
+              description="Produção total"
+            />
           </div>
         </div>
       </section>
@@ -423,6 +405,13 @@ const Home: React.FC = () => {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Interactive Dashboard Section */}
+      <section className="section-padding bg-gradient-to-b from-gray-50 to-white">
+        <div className="container">
+          <InteractiveDashboard />
         </div>
       </section>
     </div>

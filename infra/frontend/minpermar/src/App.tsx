@@ -1,8 +1,9 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import Header from './components/Layout/Header'
+import EnhancedHeader from './components/Layout/EnhancedHeader'
 import Footer from './components/Layout/Footer'
+import { NotificationSystem, useNotifications } from './components/ui/NotificationSystem'
 
 // Pages
 import Home from './pages/Home'
@@ -29,9 +30,35 @@ import Terms from './pages/legal/Terms'
 import Accessibility from './pages/legal/Accessibility'
 
 const App: React.FC = () => {
+  const { notifications, removeNotification, success, info } = useNotifications()
+
+  // Demonstração de notificações
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      success(
+        'Bem-vindo ao MINPERMAR',
+        'Portal oficial do Ministério das Pescas e Recursos Marinhos de Angola',
+        { duration: 8000 }
+      )
+    }, 2000)
+
+    const timer2 = setTimeout(() => {
+      info(
+        'Sistema Atualizado',
+        'Nova versão com funcionalidades avançadas disponível',
+        { duration: 6000 }
+      )
+    }, 4000)
+
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(timer2)
+    }
+  }, [success, info])
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <EnhancedHeader />
       
       <main className="flex-grow">
         <Routes>
@@ -61,6 +88,12 @@ const App: React.FC = () => {
       </main>
       
       <Footer />
+      
+      {/* Global Notification System */}
+      <NotificationSystem
+        notifications={notifications}
+        onRemove={removeNotification}
+      />
     </div>
   )
 }

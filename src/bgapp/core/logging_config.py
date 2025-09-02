@@ -17,6 +17,13 @@ from .secure_config import get_settings
 
 settings = get_settings()
 
+# Importar sanitizador de logs
+try:
+    from .log_sanitizer import create_sanitizing_filter, get_log_sanitizer
+    LOG_SANITIZATION_ENABLED = True
+except ImportError:
+    LOG_SANITIZATION_ENABLED = False
+
 class SecurityFilter(logging.Filter):
     """Filtro para logs de segurança"""
     
@@ -104,7 +111,7 @@ def setup_logging():
     
     if settings.logging.log_format == "json":
         json_formatter = jsonlogger.JsonFormatter(
-            fmt='%(timestamp)s %(level)s %(name)s %(message)s %(username)s %(request_id)s',
+            fmt='%(timestamp)s %(level)s %(name)s %(message)s %(user_id)s %(request_id)s',
             datefmt='%Y-%m-%dT%H:%M:%S'
         )
         console_handler.setFormatter(json_formatter)
@@ -136,6 +143,12 @@ def setup_logging():
         
         if settings.logging.enable_performance_logging:
             file_handler.addFilter(PerformanceFilter())
+        
+        # Adicionar filtro de sanitização
+        if LOG_SANITIZATION_ENABLED:
+            sanitizing_filter = create_sanitizing_filter()
+            file_handler.addFilter(sanitizing_filter)
+            console_handler.addFilter(sanitizing_filter)
         
         logging.getLogger().addHandler(file_handler)
     
@@ -197,6 +210,12 @@ class BGAPPLogger:
     def api_request(self, method: str, path: str, status_code: int, 
                    duration: float, username: str = None, **kwargs):
         """Log de request API"""
+        # Usar hash do utilizador em vez do username
+        user_id = None
+        if username and LOG_SANITIZATION_ENABLED:
+            sanitizer = get_log_sanitizer()
+            user_id = sanitizer.create_user_hash(username)
+        
         self.logger.info(
             "API_REQUEST",
             event_type="api_request",
@@ -204,20 +223,26 @@ class BGAPPLogger:
             path=path,
             status_code=status_code,
             duration=duration,
-            username=username,
+            user_id=user_id,
             **kwargs
         )
     
     def database_query(self, query_type: str, table: str = None, 
                       duration: float = None, username: str = None, **kwargs):
         """Log de query de base de dados"""
+        # Usar hash do utilizador em vez do username
+        user_id = None
+        if username and LOG_SANITIZATION_ENABLED:
+            sanitizer = get_log_sanitizer()
+            user_id = sanitizer.create_user_hash(username)
+        
         self.logger.info(
             "DATABASE_QUERY",
             event_type="database_query",
             query_type=query_type,
             table=table,
             duration=duration,
-            username=username,
+            user_id=user_id,
             **kwargs
         )
 

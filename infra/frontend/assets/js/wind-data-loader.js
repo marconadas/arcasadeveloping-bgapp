@@ -578,6 +578,15 @@ class BGAPPWindDataLoader {
     async _registerServiceWorker() {
         try {
             if ('serviceWorker' in navigator) {
+                // Verificar se estamos no contexto MinPerMar
+                const isMinPerMar = window.location.pathname.includes('/minpermar') || 
+                                    window.location.pathname.includes('minpermar-site');
+                
+                if (isMinPerMar) {
+                    console.log("BGAPP Wind Data Loader - Service Worker desabilitado no MinPerMar");
+                    return;
+                }
+                
                 await navigator.serviceWorker.register('/sw-wind-cache.js');
                 console.log("BGAPP Wind Data Loader - Service Worker registrado para cache offline");
             }
