@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { bgappApi } from '@/lib/api-complete';
+import SpatialMapModal from './spatial-map-modal';
 
 /**
  * 🗺️ QGIS Spatial Analysis Component
@@ -117,6 +118,15 @@ export default function QGISSpatialAnalysis() {
   const [activeAnalysis, setActiveAnalysis] = useState<string>('buffer');
   const [processing, setProcessing] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [mapModal, setMapModal] = useState<{
+    isOpen: boolean;
+    data?: {
+      type: 'buffer' | 'hotspot' | 'connectivity';
+      name: string;
+      coordinates?: [number, number];
+      properties?: Record<string, any>;
+    };
+  }>({ isOpen: false });
 
   // Fetch spatial analysis data
   const fetchSpatialData = useCallback(async () => {
@@ -274,6 +284,23 @@ export default function QGISSpatialAnalysis() {
     } finally {
       setProcessing(false);
     }
+  };
+
+  // Open map modal with specific data
+  const openMapModal = (type: 'buffer' | 'hotspot' | 'connectivity', name: string, properties?: Record<string, any>) => {
+    setMapModal({
+      isOpen: true,
+      data: {
+        type,
+        name,
+        properties
+      }
+    });
+  };
+
+  // Close map modal
+  const closeMapModal = () => {
+    setMapModal({ isOpen: false });
   };
 
   useEffect(() => {
@@ -498,7 +525,12 @@ export default function QGISSpatialAnalysis() {
                       ))}
                     </div>
                     
-                    <Button size="sm" variant="outline" className="w-full">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => openMapModal('buffer', zone.source_name, zone.properties)}
+                    >
                       🗺️ Ver no Mapa
                     </Button>
                   </CardContent>
@@ -614,7 +646,18 @@ export default function QGISSpatialAnalysis() {
                     </div>
                     
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => openMapModal('hotspot', hotspot.location_name, {
+                          hotspot_type: hotspot.hotspot_type,
+                          intensity_score: hotspot.intensity_score,
+                          confidence_level: hotspot.confidence_level,
+                          area_influence_km2: hotspot.area_influence_km2,
+                          coordinates: [hotspot.latitude, hotspot.longitude]
+                        })}
+                      >
                         🗺️ Ver no Mapa
                       </Button>
                       <Button size="sm" variant="outline" className="flex-1">
@@ -648,6 +691,13 @@ export default function QGISSpatialAnalysis() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal de Mapa Interativo */}
+      <SpatialMapModal
+        isOpen={mapModal.isOpen}
+        onClose={closeMapModal}
+        data={mapModal.data}
+      />
     </div>
   );
 }

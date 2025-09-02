@@ -194,7 +194,9 @@ class MLMapOverlays {
       weight: 2,
       opacity: 0.9,
       fillOpacity: 0.7,
-      className: 'ml-predictive-marker'
+      className: 'ml-predictive-marker',
+      pane: 'markerPane',
+      zIndex: 1000
     });
   }
 

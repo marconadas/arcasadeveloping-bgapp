@@ -20,16 +20,20 @@ class EnhancedCoastlineSystem {
                 angola: {
                     color: '#0066cc',
                     weight: 2,
-                    fillOpacity: 0.15,
+                    fillOpacity: 0.08,
                     fillColor: '#0080ff',
-                    opacity: 0.7
+                    opacity: 0.6,
+                    pane: 'overlayPane',
+                    zIndex: 1
                 },
                 cabinda: {
                     color: '#9b59b6',
                     weight: 2,
-                    fillOpacity: 0.15,
+                    fillOpacity: 0.08,
                     fillColor: '#9b59b6',
-                    opacity: 0.7
+                    opacity: 0.6,
+                    pane: 'overlayPane',
+                    zIndex: 1
                 }
             },
             coastline: {

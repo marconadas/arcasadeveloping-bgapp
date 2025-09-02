@@ -567,3 +567,186 @@ INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
 INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
 INFO:__main__:Serving system metrics...
 INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     127.0.0.1:49609 - "OPTIONS /ml/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49609 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     127.0.0.1:49623 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "OPTIONS /ml/filters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49623 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "OPTIONS /ml/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49623 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49623 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49653 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49832 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     127.0.0.1:49832 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49852 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49852 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49852 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49852 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49852 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     127.0.0.1:58537 - "OPTIONS /ml/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58537 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     127.0.0.1:58537 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "OPTIONS /ml/filters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58555 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "OPTIONS /ml/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58555 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "GET /ml/filters HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58555 - "GET /ml/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58619 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /plugins/config HTTP/1.0" 404 Not Found
+INFO:     127.0.0.1:58619 - "GET /ml/health HTTP/1.1" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:__main__:Serving dashboard overview...
+INFO:     127.0.0.1:60573 - "GET /api/dashboard/overview HTTP/1.1" 200 OK
+INFO:__main__:Serving system health status...
+INFO:     127.0.0.1:60575 - "GET /admin-dashboard/system-health HTTP/1.1" 200 OK
+INFO:__main__:Serving oceanographic data...
+INFO:     127.0.0.1:60576 - "GET /admin-dashboard/oceanographic-data HTTP/1.1" 200 OK
+INFO:__main__:Serving fisheries statistics...
+INFO:     127.0.0.1:60578 - "GET /admin-dashboard/fisheries-stats HTTP/1.1" 200 OK
+INFO:__main__:Serving Copernicus real-time data (simulated)...
+INFO:     127.0.0.1:60579 - "GET /admin-dashboard/copernicus-advanced/real-time-data HTTP/1.1" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:__main__:Serving admin-api services status...
+INFO:     127.0.0.1:60872 - "GET /admin-api/services/status HTTP/1.1" 200 OK
+INFO:__main__:Serving admin-api services status...
+INFO:     127.0.0.1:60872 - "GET /admin-api/services/status HTTP/1.1" 200 OK
+INFO:__main__:Serving admin-api services status...
+INFO:     127.0.0.1:60893 - "GET /admin-api/services/status HTTP/1.1" 200 OK
+INFO:__main__:Serving async tasks...
+INFO:     127.0.0.1:60911 - "GET /admin-api/async/tasks HTTP/1.1" 200 OK
+INFO:__main__:Serving async tasks...
+INFO:     127.0.0.1:60916 - "GET /admin-api/async/tasks HTTP/1.1" 200 OK
+INFO:__main__:Serving ML models...
+INFO:     127.0.0.1:60916 - "GET /admin-api/models HTTP/1.1" 200 OK
+INFO:__main__:Serving ML dashboard...
+INFO:     127.0.0.1:60918 - "GET /admin-api/ml/dashboard HTTP/1.1" 200 OK
+INFO:__main__:Serving ML models...
+INFO:     127.0.0.1:60918 - "GET /admin-api/models HTTP/1.1" 200 OK
+INFO:__main__:Serving auth dashboard...
+INFO:     127.0.0.1:61008 - "GET /admin-api/auth/dashboard HTTP/1.1" 200 OK
+INFO:__main__:Serving backup dashboard...
+INFO:     127.0.0.1:61011 - "GET /admin-api/backup/dashboard HTTP/1.1" 200 OK
+INFO:__main__:Serving auth dashboard...
+INFO:     127.0.0.1:61011 - "GET /admin-api/auth/dashboard HTTP/1.1" 200 OK
+INFO:__main__:Serving alerts dashboard...
+INFO:     127.0.0.1:61031 - "GET /admin-api/alerts/dashboard HTTP/1.1" 200 OK
+INFO:__main__:Serving alerts dashboard...
+INFO:     127.0.0.1:61031 - "GET /admin-api/alerts/dashboard HTTP/1.1" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     127.0.0.1:61633 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61633 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK
+INFO:     151.101.64.223:0 - "GET /realtime/data HTTP/1.0" 404 Not Found
+INFO:     151.101.64.223:0 - "GET /services/status HTTP/1.0" 200 OK
+INFO:__main__:Serving system metrics...
+INFO:     151.101.64.223:0 - "GET /metrics HTTP/1.0" 200 OK

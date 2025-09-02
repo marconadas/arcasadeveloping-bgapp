@@ -18,6 +18,11 @@ import QGISAdvancedPanel from '../bgapp-native/qgis-advanced/qgis-advanced-panel
 import DataConnectorsManager from '../bgapp-native/data-processing/data-connectors-manager'
 import ScientificInterfacesHub from '../bgapp-native/scientific-tools/scientific-interfaces-hub'
 
+// 🗺️ QGIS Specific Components - Implementações Completas
+import QGISSpatialAnalysis from './qgis-spatial-analysis'
+import QGISTemporalVisualization from './qgis-temporal-visualization'
+import QGISBiomassCalculator from './qgis-biomass-calculator'
+
 // 🔧 Enhanced Components
 import SmartIFrameWrapper from '../iframe-enhanced/smart-iframe-wrapper'
 import {
@@ -68,9 +73,6 @@ export function DashboardContent({ section }: DashboardContentProps) {
       
       // 🗺️ QGIS ADVANCED SYSTEM  
       case 'qgis-advanced':
-      case 'spatial-analysis':
-      case 'temporal-visualization':
-      case 'biomass-calculator':
       case 'mcda-analysis':
         return <QGISAdvancedPanel />
       
@@ -84,15 +86,18 @@ export function DashboardContent({ section }: DashboardContentProps) {
       case 'scientific-interfaces':
         return <ScientificInterfacesHub />
       
-      // 🗺️ QGIS ROUTES EM FALTA - SILICON VALLEY FIX
+      // 🗺️ QGIS ROUTES ESPECÍFICAS - IMPLEMENTAÇÕES COMPLETAS
       case 'qgis-spatial-analysis':
-        return <QGISAdvancedPanel />
+      case 'spatial-analysis':
+        return <QGISSpatialAnalysis />
       
       case 'qgis-temporal-visualization':
-        return <QGISAdvancedPanel />
+      case 'temporal-visualization':
+        return <QGISTemporalVisualization />
       
       case 'qgis-biomass-calculator':
-        return <QGISAdvancedPanel />
+      case 'biomass-calculator':
+        return <QGISBiomassCalculator />
       
       case 'qgis-migration-overlay':
         return <QGISAdvancedPanel />
@@ -952,14 +957,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         </div>
       
       // 🔥 ROUTES MASSIVAS EM FALTA - SILICON VALLEY + BERLIN DEV GODS POWER
-      case 'qgis-spatial-analysis':
-        return <QGISAdvancedPanel />
-      
-      case 'qgis-temporal-visualization':
-        return <QGISAdvancedPanel />
-      
-      case 'qgis-biomass-calculator':
-        return <QGISAdvancedPanel />
+      // ✅ QGIS routes já implementadas acima com componentes específicos
       
       case 'qgis-migration-overlay':
         return <QGISAdvancedPanel />
