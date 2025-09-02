@@ -547,6 +547,26 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
     }
     
+    /* CORREÇÃO CRÍTICA - FORÇAR TODOS OS MARCADORES PARA CIMA DA ZEE */
+    .leaflet-marker-pane {
+      z-index: 2000 !important;
+    }
+    
+    .leaflet-marker-pane svg,
+    .leaflet-marker-pane canvas {
+      z-index: 2000 !important;
+    }
+    
+    /* Garantir que polígonos ZEE ficam no fundo */
+    .leaflet-overlay-pane svg {
+      z-index: 1 !important;
+    }
+    
+    /* Forçar marcadores circulares para cima */
+    .leaflet-marker-pane .leaflet-marker-icon {
+      z-index: 2000 !important;
+    }
+    
     /* Posicionar controles de zoom no canto inferior esquerdo */
     .leaflet-top.leaflet-left {
       top: auto !important;
@@ -940,10 +960,12 @@
           const angolaLayer = L.polygon(angolaZEEOfficial, {
             color: '#0066cc',
             weight: 2.5,
-            fillOpacity: 0.15,
+            fillOpacity: 0.08,
             fillColor: '#0080ff',
-            opacity: 0.85,
-            smoothFactor: 0.5
+            opacity: 0.7,
+            smoothFactor: 0.5,
+            pane: 'overlayPane',
+            zIndex: 1
           }).addTo(app.map);
           
           angolaLayer.bindPopup(`
@@ -961,10 +983,12 @@
           const cabindaLayer = L.polygon(cabindaZEEOfficial, {
             color: '#9b59b6',
             weight: 2.5,
-            fillOpacity: 0.15,
+            fillOpacity: 0.08,
             fillColor: '#9b59b6',
-            opacity: 0.85,
-            smoothFactor: 0.5
+            opacity: 0.7,
+            smoothFactor: 0.5,
+            pane: 'overlayPane',
+            zIndex: 1
           }).addTo(app.map);
           
           cabindaLayer.bindPopup(`
@@ -1017,9 +1041,11 @@
       const angolaLayer = L.polygon(angolaZEE, {
         color: '#0066cc',
         weight: 2,
-        fillOpacity: 0.2,
+        fillOpacity: 0.08,
         fillColor: '#0080ff',
-        opacity: 0.8
+        opacity: 0.6,
+        pane: 'overlayPane',
+        zIndex: 1
       }).addTo(app.map);
       
       angolaLayer.bindPopup(`
@@ -1035,9 +1061,11 @@
       const cabindaLayer = L.polygon(cabindaZEE, {
         color: '#9b59b6',
         weight: 2,
-        fillOpacity: 0.2,
+        fillOpacity: 0.08,
         fillColor: '#9b59b6',
-        opacity: 0.8
+        opacity: 0.6,
+        pane: 'overlayPane',
+        zIndex: 1
       }).addTo(app.map);
       
       cabindaLayer.bindPopup(`
@@ -1414,7 +1442,9 @@
           fillOpacity: fillOpacity,
           opacity: opacity,
           weight: 3,
-          stroke: true
+          stroke: true,
+          pane: 'markerPane',
+          zIndex: 1000
         }).addTo(app.map);
         
         // Popup melhorado com dados Copernicus completos
@@ -2631,7 +2661,9 @@
           color: point.color,
           weight: 2,
           opacity: 0.8,
-          fillOpacity: 0.6
+          fillOpacity: 0.6,
+          pane: 'markerPane',
+          zIndex: 1000
         }).bindPopup(`🌡️ SST: ${point.temp}°C`).addTo(temperatureLayer);
       });
       
@@ -2666,7 +2698,9 @@
           color: point.color,
           weight: 2,
           opacity: 0.8,
-          fillOpacity: 0.6
+          fillOpacity: 0.6,
+          pane: 'markerPane',
+          zIndex: 1000
         }).bindPopup(`🌱 Chl-a: ${point.chl} mg/m³`).addTo(chlorophyllLayer);
       });
       
@@ -2701,7 +2735,9 @@
             className: 'current-arrow',
             iconSize: [20, 20],
             iconAnchor: [10, 10]
-          })
+          }),
+          pane: 'markerPane',
+          zIndexOffset: 1000
         }).bindPopup(`🌊 Corrente: ${vector.speed} m/s`).addTo(currentsLayer);
       });
       
@@ -2736,7 +2772,9 @@
             className: 'vessel-icon',
             iconSize: [20, 20],
             iconAnchor: [10, 10]
-          })
+          }),
+          pane: 'markerPane',
+          zIndexOffset: 1000
         }).bindPopup(`🚢 ${vessel.name}<br>Tipo: ${vessel.type}`).addTo(vesselsLayer);
       });
       
@@ -2771,7 +2809,9 @@
             className: 'observation-icon',
             iconSize: [16, 16],
             iconAnchor: [8, 8]
-          })
+          }),
+          pane: 'markerPane',
+          zIndexOffset: 1000
         }).bindPopup(`🐟 ${obs.species}<br>Tipo: ${obs.type}`).addTo(observationsLayer);
       });
       
@@ -2905,7 +2945,10 @@
         setTimeout(() => app.map.panTo([-12.5, 13.5]), 1500);
         
         // Adicionar marcador de teste
-        const testMarker = L.marker([-10, 13])
+        const testMarker = L.marker([-10, 13], {
+          pane: 'markerPane',
+          zIndexOffset: 1000
+        })
           .addTo(app.map)
           .bindPopup('🧪 Teste de funcionalidade!')
           .openPopup();
@@ -2971,7 +3014,9 @@
         color: color,
         fillColor: color,
         fillOpacity: 0.3,
-        weight: 2
+        weight: 2,
+        pane: 'overlayPane',
+        zIndex: 500
       }).bindPopup(`
         <div style="font-size: 12px;">
           <strong>⬆️ Zona de Upwelling ${zone.name}</strong><br>
@@ -3017,7 +3062,9 @@
           className: 'copernicus-station-icon',
           iconSize: [24, 24],
           iconAnchor: [12, 12]
-        })
+        }),
+        pane: 'markerPane',
+        zIndexOffset: 1000
       }).bindPopup(`
         <div style="font-size: 12px;">
           <strong>🛰️ Estação Copernicus</strong><br>
@@ -3079,7 +3126,9 @@
           radius: 8,
           color: color,
           fillColor: color,
-          fillOpacity: 0.7
+          fillOpacity: 0.7,
+          pane: 'markerPane',
+          zIndex: 1000
         }).bindPopup(`
           <div style="font-size: 12px;">
             <strong>🏔️ Profundidade</strong><br>

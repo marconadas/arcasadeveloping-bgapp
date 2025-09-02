@@ -466,7 +466,9 @@ class BGAPPLeafletNativeAnimations {
     addWeatherStations(stations) {
         stations.forEach(station => {
             const marker = L.marker([station.lat, station.lng], {
-                icon: this.animatedIcons.station
+                icon: this.animatedIcons.station,
+                pane: 'markerPane',
+                zIndexOffset: 1000
             }).bindPopup(`
                 <div style="text-align: center;">
                     <strong>${station.name}</strong><br>
@@ -524,7 +526,9 @@ class BGAPPLeafletNativeAnimations {
         });
         
         return L.marker([windPoint.latitude, windPoint.longitude], {
-            icon: windIcon
+            icon: windIcon,
+            pane: 'markerPane',
+            zIndexOffset: 1000
         }).bindTooltip(`Vento: ${speed.toFixed(1)} m/s`);
     }
 

@@ -240,3 +240,6 @@
 .dark .skeleton {
   background-color: rgb(51 65 85);
 }
+
+/* Leaflet CSS for maps */
+@import 'leaflet/dist/leaflet.css';

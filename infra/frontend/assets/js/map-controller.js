@@ -167,12 +167,14 @@ class BGAPPMapController {
     // ZEE Angola Continental
     if (typeof angolaZEEOfficial !== 'undefined') {
       const angolaLayer = L.polygon(angolaZEEOfficial, {
-        color: '#0066cc',
-        weight: 2,
-        fillOpacity: 0.15,
-        fillColor: '#0080ff',
-        opacity: 0.7
-      }).addTo(this.map);
+              color: '#0066cc',
+      weight: 2,
+      fillOpacity: 0.08,
+      fillColor: '#0080ff',
+      opacity: 0.6,
+      pane: 'overlayPane',
+      zIndex: 1
+    }).addTo(this.map);
 
       angolaLayer.bindPopup('🌊 ZEE Angola - OFICIAL<br>📏 495.866 km² (Marine Regions)');
       angolaLayer.on('popupopen', () => {
@@ -187,9 +189,11 @@ class BGAPPMapController {
       const cabindaLayer = L.polygon(cabindaZEEOfficial, {
         color: '#9b59b6',
         weight: 2,
-        fillOpacity: 0.15,
+        fillOpacity: 0.08,
         fillColor: '#9b59b6',
-        opacity: 0.7
+        opacity: 0.6,
+        pane: 'overlayPane',
+        zIndex: 1
       }).addTo(this.map);
 
       cabindaLayer.bindPopup('🏛️ ZEE Cabinda - OFICIAL<br>📍 Marine Regions');

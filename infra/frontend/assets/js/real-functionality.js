@@ -343,7 +343,9 @@ class DataVisualization {
         color: '#ffffff',
         weight: 1,
         opacity: 0.8,
-        fillOpacity: 0.7
+        fillOpacity: 0.7,
+        pane: 'markerPane',
+        zIndex: 1000
       });
       
       // Popup com informações
@@ -440,7 +442,9 @@ class DataVisualization {
         color: config.color,
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.8
+        fillOpacity: 0.8,
+        pane: 'markerPane',
+        zIndex: 1000
       });
       
       // Popup com informações

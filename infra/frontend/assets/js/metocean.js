@@ -37,7 +37,12 @@ async function loadOccurrences(dateMinStr) {
     const filtered = { type: 'FeatureCollection', features };
     if (appState.occLayer) { map.removeLayer(appState.occLayer); }
     appState.occLayer = L.geoJSON(filtered, {
-      pointToLayer: (f, latlng) => L.circleMarker(latlng, {radius: 4, color: '#e74c3c'})
+      pointToLayer: (f, latlng) => L.circleMarker(latlng, {
+        radius: 4, 
+        color: '#e74c3c',
+        pane: 'markerPane',
+        zIndex: 1000
+      })
     }).addTo(map);
   } catch (error) {
     console.warn('Erro ao carregar ocorrências:', error);
