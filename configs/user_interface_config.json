@@ -1,0 +1,32 @@
+{
+  "branding": {
+    "name": "MARÍTIMO ANGOLA",
+    "logo_enabled": true,
+    "primary_color": "#1e3a8a",
+    "accent_color": "#dc2626",
+    "theme": "light"
+  },
+  "dashboard": {
+    "auto_refresh_seconds": 30,
+    "default_language": "pt",
+    "date_format": "DD/MM/YYYY",
+    "time_format": "24h"
+  },
+  "maps": {
+    "default_map_type": "folium",
+    "default_zoom": 6,
+    "center_coordinates": [
+      -12.5,
+      13.5
+    ],
+    "show_zee_boundaries": true,
+    "show_fishing_zones": true,
+    "show_ports": true
+  },
+  "features": {
+    "biologist_interface_enabled": true,
+    "fisherman_interface_enabled": true,
+    "advanced_analytics_enabled": true,
+    "copernicus_integration_enabled": true
+  }
+}

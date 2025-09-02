@@ -1,0 +1,249 @@
+{
+  "timestamp": "2025-09-01T21:59:27.178251",
+  "services": {
+    "frontend": {
+      "status_code": 200,
+      "response_time": 0.011491060256958008,
+      "accessible": true,
+      "content_check": true
+    },
+    "admin_frontend": {
+      "status_code": 200,
+      "response_time": 0.00889277458190918,
+      "accessible": true,
+      "content_check": true
+    },
+    "admin_api": {
+      "status_code": 200,
+      "response_time": 0.07626605033874512,
+      "accessible": true,
+      "content_check": true
+    },
+    "pygeoapi": {
+      "status_code": 200,
+      "response_time": 0.015656232833862305,
+      "accessible": true,
+      "content_check": true
+    },
+    "minio": {
+      "status_code": 200,
+      "response_time": 0.003220081329345703,
+      "accessible": true,
+      "content_check": true
+    },
+    "stac": {
+      "status_code": 200,
+      "response_time": 0.003681182861328125,
+      "accessible": true,
+      "content_check": true
+    }
+  },
+  "containers": {
+    "infra-admin-api-1": {
+      "status": "exited",
+      "health": "no-health-check",
+      "ports": {},
+      "created": "2025-09-01T20:46:07.213809424Z",
+      "image": "infra-admin-api:latest"
+    },
+    "infra-frontend-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8085"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8085"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:45:21.854613583Z",
+      "image": "nginx:alpine"
+    },
+    "infra-keycloak-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8083"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8083"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:45:05.888109673Z",
+      "image": "quay.io/keycloak/keycloak:24.0"
+    },
+    "infra-pygeoapi-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5080"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5080"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:45:05.887496506Z",
+      "image": "geopython/pygeoapi:latest"
+    },
+    "infra-stac-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8081"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8081"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:45:05.887204006Z",
+      "image": "python:3.11-slim"
+    },
+    "infra-stac-browser-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8082"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8082"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:45:05.886582256Z",
+      "image": "ghcr.io/radiantearth/stac-browser:latest"
+    },
+    "infra-minio-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "9000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9000"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9000"
+          }
+        ],
+        "9001/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9001"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9001"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:44:13.968831885Z",
+      "image": "minio/minio:RELEASE.2024-07-16T23-46-41Z"
+    },
+    "infra-postgis-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5432"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5432"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:44:13.968740844Z",
+      "image": "postgis/postgis:16-3.4"
+    },
+    "infra-redis-1": {
+      "status": "running",
+      "health": "no-health-check",
+      "ports": {
+        "6379/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6379"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "6379"
+          }
+        ]
+      },
+      "created": "2025-09-01T20:44:13.968709385Z",
+      "image": "redis:7-alpine"
+    }
+  },
+  "network": {
+    "ports": {
+      "8085": true,
+      "8000": true,
+      "5080": true,
+      "5432": true,
+      "9000": true,
+      "8081": true,
+      "8083": true
+    }
+  },
+  "routing": {
+    "index_root": {
+      "accessible": true,
+      "status_code": 200,
+      "url": "http://localhost:8085/"
+    },
+    "admin_direct": {
+      "accessible": true,
+      "status_code": 200,
+      "url": "http://localhost:8085/admin.html"
+    },
+    "admin_bgapp_path": {
+      "accessible": true,
+      "status_code": 200,
+      "url": "http://localhost:8085/BGAPP/admin.html"
+    },
+    "api_status": {
+      "accessible": true,
+      "status_code": 200,
+      "url": "http://localhost:8000/admin-api/services/status"
+    },
+    "pygeoapi_collections": {
+      "accessible": true,
+      "status_code": 200,
+      "url": "http://localhost:5080/collections"
+    }
+  },
+  "issues": [
+    "Container infra-admin-api-1 n\u00e3o est\u00e1 rodando: exited"
+  ],
+  "fixes_applied": [
+    "Script healthcheck.sh criado",
+    "Servi\u00e7o auto_recovery.py criado"
+  ]
+}

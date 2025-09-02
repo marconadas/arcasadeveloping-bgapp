@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <meta name="theme-color" content="#2563eb">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Marine Angola | Painel Administrativo Ubiquiti v1.2.0</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Marine Angola - BGAPP: Painel administrativo com design system Ubiquiti para gestão completa da plataforma oceanográfica">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    
+    <!-- CSS: Sistema Ubiquiti PRIMEIRO, depois legado -->
+    <link rel="stylesheet" href="assets/css/ubiquiti-design-system.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome-fallback.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/admin-inline.css">
+    
+    <style>
+        /* Integração específica para admin panel */
+        .admin-container {
+            font-family: var(--ubq-font-body);
+        }
+        
+        /* Melhorar compatibilidade com sidebar existente */
+        .sidebar {
+            backdrop-filter: blur(10px);
+            border-radius: 0 var(--ubq-radius-lg) var(--ubq-radius-lg) 0;
+        }
+        
+        /* Integrar métricas existentes com sistema Ubiquiti */
+        .metric-card {
+            transition: var(--ubq-transition-base);
+            border-radius: var(--ubq-radius-lg);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--ubq-shadow-lg);
+        }
+        
+        /* Melhorar cards existentes */
+        .card {
+            border-radius: var(--ubq-radius-lg);
+            border: 1px solid var(--ubq-border-primary);
+            transition: var(--ubq-transition-base);
+        }
+        
+        .card:hover {
+            box-shadow: var(--ubq-shadow-md);
+        }
+        
+        /* Integrar botões de acesso rápido */
+        .quick-access-btn {
+            border-radius: var(--ubq-radius-md);
+            transition: var(--ubq-transition-base);
+            border: 1px solid var(--ubq-border-primary);
+        }
+        
+        .quick-access-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--ubq-shadow-sm);
+        }
+        
+        /* Status indicators com cores Ubiquiti */
+        .status-indicator.status-online {
+            background: var(--ubq-success);
+        }
+        
+        .status-indicator.status-warning {
+            background: var(--ubq-warning);
+        }
+        
+        .status-indicator.status-error {
+            background: var(--ubq-error);
+        }
+        
+        /* Toast compatibility */
+        .toast {
+            border-radius: var(--ubq-radius-lg);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Melhorias da auditoria UI/UX */
+        .external-icon {
+            margin-left: auto;
+            font-size: 12px;
+            opacity: 0.6;
+            transition: var(--ubq-transition-fast);
+        }
+        
+        .nav-link:hover .external-icon {
+            opacity: 1;
+            transform: translateX(2px);
+        }
+        
+        /* Skeleton loading para métricas */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: var(--ubq-radius-sm);
+            height: 1.5em;
+            display: block;
+        }
+        
+        .ubq-theme-dark .skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+        }
+        
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Loading states para botões */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-loading .btn-text {
+            opacity: 0;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Melhor tema toggle */
+        .theme-toggle-container {
+            padding: var(--ubq-space-5);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .theme-toggle-btn {
+            width: 100%;
+            color: rgba(255,255,255,0.9) !important;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .theme-toggle-btn:hover {
+            background: rgba(255,255,255,0.2) !important;
+            color: white !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Badge melhorado */
+        .nav-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: var(--ubq-success);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Métricas com melhor loading */
+        .metric-loading {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Toast melhorado */
+        .ubq-toast {
+            min-width: 300px;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--ubq-border-primary);
+        }
+        
+        /* Breadcrumb melhorado */
+        .breadcrumb-enhanced {
+            display: flex;
+            align-items: center;
+            gap: var(--ubq-space-2);
+            font-size: var(--ubq-text-lg);
+            font-weight: 600;
+            color: var(--ubq-text-primary);
+        }
+        
+        .breadcrumb-icon {
+            color: var(--ubq-blue-600);
+        }
+    </style>
+</head>
+<body class="ubq-theme-light">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link ubq-sr-only ubq-focus-ring">Saltar para conteúdo principal</a>
+    
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    
+    <!-- Loading indicator -->
+    <div id="loading-indicator" class="ubq-fixed ubq-inset-0 ubq-bg-primary ubq-flex ubq-items-center ubq-justify-center" style="z-index: 9999;">
+        <div class="ubq-text-center">
+            <div class="ubq-animate-spin ubq-rounded-full ubq-h-12 ubq-w-12 ubq-border-b-2 ubq-border-blue-600 ubq-mx-auto"></div>
+            <p class="ubq-mt-4 ubq-text-lg ubq-text-secondary">Carregando sistema Ubiquiti...</p>
+        </div>
+    </div>
+    
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                    <div>
+                        <h2 style="margin: 0; font-size: 16px;"><i class="fas fa-cog"></i> BGAPP</h2>
+                        <small style="color: var(--text-secondary); font-weight: 500;">Marine Angola</small>
+                    </div>
+                </div>
+                <p>v1.2.0 - Ubiquiti Design</p>
+                <small class="text-success">
+                    <i class="fas fa-check-circle me-1"></i>
+                    Sistema integrado com sucesso
+                </small>
+            </div>
+            
+            <ul class="nav-menu">
+                <!-- PAINEL PRINCIPAL -->
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard Administrativo</span>
+                    </a>
+                </li>
+                
+                <!-- INTERFACES CIENTÍFICAS -->
+                <div class="nav-section">📊 Interfaces Científicas</div>
+                <li class="nav-item">
+                    <a href="dashboard.html" target="_blank" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard Científico Angola</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard_cientifico.html" target="_blank" class="nav-link">
+                        <i class="fas fa-microscope"></i>
+                        <span>Dashboard Científico Avançado</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="collaboration.html" target="_blank" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Colaboração Científica</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                
+                <!-- MAPAS E VISUALIZAÇÃO -->
+                <div class="nav-section">🗺️ Mapas e Visualização</div>
+                <li class="nav-item">
+                    <a href="index.html" target="_blank" class="nav-link">
+                        <i class="fas fa-map"></i>
+                        <span>Mapa Interativo Principal</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="realtime_angola.html" target="_blank" class="nav-link">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span>Tempo Real Angola</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="mobile.html" target="_blank" class="nav-link">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Interface Mobile</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                
+                <!-- SITE INSTITUCIONAL -->
+                <div class="nav-section">🏛️ Site Institucional</div>
+                <li class="nav-item">
+                    <a href="minpermar/index.html" target="_blank" class="nav-link">
+                        <i class="fas fa-building"></i>
+                        <span>Site MINPERMAR</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+                
+                <!-- DEMONSTRAÇÃO UBIQUITI -->
+                <div class="nav-section">🎨 Sistema de Design</div>
+                <li class="nav-item">
+                    <a href="ubiquiti-ui-demo.html" target="_blank" class="nav-link" style="border-left: 3px solid var(--ubq-success);">
+                        <i class="fas fa-palette"></i>
+                        <span>Demo Sistema Design</span>
+                        <span class="nav-badge">NOVO</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Theme Toggle -->
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="ubq-btn theme-toggle-btn">
+                    <i class="fas fa-moon"></i>
+                    <span>Alternar Tema</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="mobile-header">
+                    <button class="mobile-menu-btn ubq-btn ubq-btn-ghost" id="mobile-menu-btn" aria-label="Abrir menu de navegação">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="breadcrumb-enhanced" id="breadcrumb">
+                        <i class="fas fa-tachometer-alt breadcrumb-icon"></i>
+                        <span>Painel de Controle</span>
+                    </h1>
+                </div>
+                
+                <div class="user-info">
+                    <div class="ubq-flex ubq-items-center ubq-gap-4">
+                        <div class="ubq-text-sm">
+                            <div class="ubq-font-medium">Sistema Ubiquiti</div>
+                            <div class="ubq-text-muted">Integração Completa</div>
+                        </div>
+                        <div class="ubq-w-8 ubq-h-8 ubq-bg-blue-600 ubq-rounded-full ubq-flex ubq-items-center ubq-justify-center ubq-text-white ubq-font-semibold">
+                            U
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area" id="main-content">
+                <!-- Dashboard Section -->
+                <div class="section" id="dashboard-section" style="display: block;">
+                    <div class="ubq-mb-8">
+                        <h2 class="ubq-text-3xl ubq-font-bold ubq-text-primary ubq-mb-2">
+                            🏠 Painel de Controle BGAPP
+                        </h2>
+                        <p class="ubq-text-lg ubq-text-secondary">
+                            Central de acesso a todas as funcionalidades do sistema oceanográfico e meteorológico de Angola.
+                        </p>
+                    </div>
+                    
+                    <!-- Status do Sistema -->
+                    <div class="ubq-grid ubq-grid-cols-4 ubq-gap-6 ubq-mb-8">
+                        <div class="ubq-metric-card metric-loading" id="metric-1">
+                            <div class="ubq-metric-value">
+                                <span class="skeleton" id="preserved-functions">Carregando...</span>
+                            </div>
+                            <div class="ubq-metric-label">Funcionalidades Ativas</div>
+                        </div>
+                        <div class="ubq-metric-card metric-loading" id="metric-2">
+                            <div class="ubq-metric-value">
+                                <span class="skeleton" id="migrated-components">Carregando...</span>
+                            </div>
+                            <div class="ubq-metric-label">Componentes Carregados</div>
+                        </div>
+                        <div class="ubq-metric-card" id="metric-3">
+                            <div class="ubq-metric-value" id="theme-status">Claro</div>
+                            <div class="ubq-metric-label">Tema Ativo</div>
+                        </div>
+                        <div class="ubq-metric-card" id="metric-4">
+                            <div class="ubq-metric-value" id="integration-status">100%</div>
+                            <div class="ubq-metric-label">Sistema Online</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acesso Rápido Melhorado -->
+                    <div class="ubq-card ubq-mb-8">
+                        <div class="ubq-card-header">
+                            <h3 class="ubq-text-xl ubq-font-semibold">🚀 Acesso Rápido</h3>
+                            <p class="ubq-text-sm ubq-text-secondary">Todas as funcionalidades principais em um só lugar</p>
+                        </div>
+                        <div class="ubq-card-body">
+                            <div class="ubq-grid ubq-grid-cols-3 ubq-gap-4">
+                                <button class="ubq-btn ubq-btn-primary" onclick="openPageWithLoading(this, 'ubiquiti-ui-demo.html')">
+                                    <i class="fas fa-palette"></i>
+                                    <span class="btn-text">Demo Sistema Design</span>
+                                </button>
+                                <button class="ubq-btn ubq-btn-secondary" onclick="openPageWithLoading(this, 'realtime_angola.html')">
+                                    <i class="fas fa-satellite-dish"></i>
+                                    <span class="btn-text">Tempo Real Angola</span>
+                                </button>
+                                <button class="ubq-btn ubq-btn-secondary" onclick="openPageWithLoading(this, 'dashboard_cientifico.html')">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span class="btn-text">Dashboard Científico</span>
+                                </button>
+                                <button class="ubq-btn ubq-btn-secondary" onclick="openPageWithLoading(this, 'mobile.html')">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span class="btn-text">Interface Mobile</span>
+                                </button>
+                                <button class="ubq-btn ubq-btn-secondary" onclick="openPageWithLoading(this, 'minpermar/index.html')">
+                                    <i class="fas fa-building"></i>
+                                    <span class="btn-text">Site MINPERMAR</span>
+                                </button>
+                                <button class="ubq-btn ubq-btn-ghost" id="refresh-integration">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span class="btn-text">Atualizar Sistema</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status do Sistema -->
+                    <div class="ubq-card">
+                        <div class="ubq-card-header">
+                            <h3 class="ubq-text-xl ubq-font-semibold">📊 Status do Sistema</h3>
+                            <p class="ubq-text-sm ubq-text-secondary">Monitorização em tempo real dos serviços</p>
+                        </div>
+                        <div class="ubq-card-body">
+                            <div id="system-status" class="ubq-space-y-3">
+                                <div class="ubq-flex ubq-items-center ubq-gap-3">
+                                    <div class="ubq-w-3 ubq-h-3 ubq-bg-green-500 ubq-rounded-full"></div>
+                                    <span class="ubq-text-sm">Sistema de Design Carregado</span>
+                                    <span class="ubq-text-xs ubq-text-success ubq-ml-auto">Online</span>
+                                </div>
+                                <div class="ubq-flex ubq-items-center ubq-gap-3">
+                                    <div class="ubq-w-3 ubq-h-3 ubq-bg-green-500 ubq-rounded-full"></div>
+                                    <span class="ubq-text-sm">Navegação Ativa</span>
+                                    <span class="ubq-text-xs ubq-text-success ubq-ml-auto">Online</span>
+                                </div>
+                                <div class="ubq-flex ubq-items-center ubq-gap-3">
+                                    <div class="ubq-w-3 ubq-h-3 ubq-bg-green-500 ubq-rounded-full"></div>
+                                    <span class="ubq-text-sm">APIs Funcionais</span>
+                                    <span class="ubq-text-xs ubq-text-success ubq-ml-auto">Online</span>
+                                </div>
+                                <div class="ubq-flex ubq-items-center ubq-gap-3" id="integration-status-line">
+                                    <div class="ubq-w-3 ubq-h-3 ubq-bg-blue-500 ubq-rounded-full animate-pulse"></div>
+                                    <span class="ubq-text-sm">Carregando componentes...</span>
+                                    <span class="ubq-text-xs ubq-text-info ubq-ml-auto">Inicializando</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
+    <!-- Scripts -->
+    <script src="assets/js/ubiquiti-navigation.js"></script>
+    <script src="assets/js/ubiquiti-integration.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        // Configuração específica para admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            // Loading inteligente - aguardar recursos carregarem
+            Promise.all([
+                // Aguardar CSS Ubiquiti
+                new Promise(resolve => {
+                    const link = document.querySelector('link[href*="ubiquiti-design-system"]');
+                    if (link && link.sheet) resolve();
+                    else if (link) link.onload = resolve;
+                    else setTimeout(resolve, 100);
+                }),
+                // Aguardar scripts críticos
+                new Promise(resolve => {
+                    if (window.ubqNavigation) resolve();
+                    else setTimeout(resolve, 500); // Fallback
+                }),
+                // Timeout mínimo para UX
+                new Promise(resolve => setTimeout(resolve, 800))
+            ]).then(() => {
+                hideLoadingScreen();
+            });
+            
+            function hideLoadingScreen() {
+                const loading = document.getElementById('loading-indicator');
+                if (loading) {
+                    loading.style.opacity = '0';
+                    setTimeout(() => loading.remove(), 300);
+                }
+                
+                // Inicializar métricas
+                initializeMetrics();
+                
+                // Mostrar toast de boas-vindas mais cedo
+                setTimeout(() => {
+                    showToast('success', 'Painel de controle carregado com sucesso!');
+                }, 500);
+            }
+            
+            // Configurar theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    if (window.ubqNavigation) {
+                        const newTheme = window.ubqNavigation.toggleTheme();
+                        showToast('info', `Tema ${newTheme === 'light' ? 'claro' : 'escuro'} ativado`);
+                        
+                        // Atualizar ícone e métrica
+                        const icon = this.querySelector('i');
+                        icon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+                        
+                        // Atualizar métrica de tema
+                        const themeStatus = document.getElementById('theme-status');
+                        if (themeStatus) {
+                            themeStatus.textContent = newTheme === 'light' ? 'Claro' : 'Escuro';
+                        }
+                    }
+                });
+            }
+            
+            // Função para inicializar métricas
+            function initializeMetrics() {
+                // Simular carregamento de dados reais
+                setTimeout(() => {
+                    updateMetric('preserved-functions', '15', 'metric-1');
+                }, 1000);
+                
+                setTimeout(() => {
+                    updateMetric('migrated-components', '42', 'metric-2');
+                }, 1500);
+                
+                // Atualizar status de integração
+                setTimeout(() => {
+                    const statusLine = document.getElementById('integration-status-line');
+                    if (statusLine) {
+                        statusLine.innerHTML = `
+                            <div class="ubq-w-3 ubq-h-3 ubq-bg-green-500 ubq-rounded-full"></div>
+                            <span class="ubq-text-sm">Todos os componentes carregados</span>
+                            <span class="ubq-text-xs ubq-text-success ubq-ml-auto">Online</span>
+                        `;
+                    }
+                }, 2000);
+            }
+            
+            function updateMetric(elementId, value, cardId) {
+                const element = document.getElementById(elementId);
+                const card = document.getElementById(cardId);
+                
+                if (element && card) {
+                    // Remover skeleton loading
+                    element.classList.remove('skeleton');
+                    element.textContent = value;
+                    
+                    // Remover classe de loading do card
+                    card.classList.remove('metric-loading');
+                    
+                    // Adicionar animação de entrada
+                    element.style.transform = 'scale(1.1)';
+                    element.style.transition = 'transform 0.3s ease';
+                    setTimeout(() => {
+                        element.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Configurar refresh de integração
+            const refreshBtn = document.getElementById('refresh-integration');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    this.classList.add('btn-loading');
+                    showToast('info', 'Atualizando sistema...');
+                    
+                    setTimeout(() => {
+                        this.classList.remove('btn-loading');
+                        showToast('success', 'Sistema atualizado com sucesso!');
+                        
+                        if (window.ubqIntegration) {
+                            window.ubqIntegration.forceReintegration();
+                        }
+                    }, 2000);
+                });
+            }
+        });
+        
+        // Função para abrir páginas com loading
+        function openPageWithLoading(button, url) {
+            // Adicionar estado de loading
+            button.classList.add('btn-loading');
+            
+            // Abrir página após delay
+            setTimeout(() => {
+                window.open(url, '_blank');
+                
+                // Remover loading após abrir
+                setTimeout(() => {
+                    button.classList.remove('btn-loading');
+                }, 500);
+            }, 800);
+        }
+        
+        // Mobile menu - movido para fora do DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            
+            if (mobileMenuBtn && sidebar && overlay) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                });
+                
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                });
+            }
+            
+            // Escutar eventos de integração
+            document.addEventListener('ubiquiti-integration-complete', function(e) {
+                const report = e.detail;
+                showToast('success', 'Sistema integrado com sucesso!');
+            });
+        });
+        
+        // Toast notification system
+        function showToast(type, message) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = `ubq-toast ubq-toast-${type}`;
+            
+            const icon = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            }[type] || 'ℹ️';
+            
+            toast.innerHTML = `
+                <div>${icon}</div>
+                <div style="flex: 1;">
+                    <div class="ubq-font-medium">${message}</div>
+                </div>
+                <button onclick="this.parentElement.remove()" class="ubq-btn ubq-btn-ghost" style="padding: var(--ubq-space-1);">
+                    ✕
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto remove após 5 segundos
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+
+    </script>
+</body>
+</html>

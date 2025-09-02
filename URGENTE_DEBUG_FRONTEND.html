@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🚨 URGENTE - Debug Frontend BGAPP</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
+        .critical { border: 2px solid #f00; padding: 15px; margin: 10px 0; background: #330000; }
+        .success { border: 2px solid #0f0; padding: 15px; margin: 10px 0; background: #003300; }
+        .warning { border: 2px solid #ff0; padding: 15px; margin: 10px 0; background: #333300; color: #000; }
+        pre { background: #111; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="critical">
+        <h1>🚨 URGENTE - DEBUG FRONTEND BGAPP</h1>
+        <p><strong>PROBLEMA:</strong> Dashboard mostra "unknown" e "N/A"</p>
+        <p><strong>DEADLINE:</strong> Apresentação 17 de setembro!</p>
+    </div>
+
+    <button onclick="testAPIDirectly()">🔧 TESTAR API DIRETAMENTE</button>
+    <button onclick="testFrontendAPI()">📱 TESTAR CHAMADAS FRONTEND</button>
+    <button onclick="testCORS()">🌐 TESTAR CORS</button>
+    <button onclick="openDashboard()">🚀 ABRIR DASHBOARD</button>
+
+    <div id="results"></div>
+
+    <script>
+        async function testAPIDirectly() {
+            document.getElementById('results').innerHTML = '<div class="warning">🔄 Testando API diretamente...</div>';
+            
+            try {
+                // Testar cada endpoint que o frontend usa
+                const endpoints = [
+                    { url: 'http://localhost:8000/health', name: 'Health Check' },
+                    { url: 'http://localhost:8000/api/dashboard/overview', name: 'Dashboard Overview' },
+                    { url: 'http://localhost:8000/admin-dashboard/system-health', name: 'System Health' },
+                    { url: 'http://localhost:8000/admin-dashboard/oceanographic-data', name: 'Ocean Data' },
+                    { url: 'http://localhost:8000/admin-dashboard/fisheries-stats', name: 'Fisheries' },
+                    { url: 'http://localhost:8000/admin-dashboard/copernicus-advanced/real-time-data', name: 'Copernicus' }
+                ];
+
+                let html = '<div class="success"><h2>✅ TESTE API DIRETA:</h2>';
+                let allWorking = true;
+
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint.url);
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            html += `<p>✅ ${endpoint.name}: OK</p>`;
+                            
+                            // Mostrar dados importantes
+                            if (endpoint.name === 'Dashboard Overview') {
+                                html += `<pre>Status: ${data.system_status?.overall || 'N/A'}</pre>`;
+                            }
+                            if (endpoint.name === 'System Health') {
+                                html += `<pre>Services: ${data.statistics?.online_services || 'N/A'}/${data.statistics?.total_services || 'N/A'}</pre>`;
+                            }
+                        } else {
+                            html += `<p>❌ ${endpoint.name}: HTTP ${response.status}</p>`;
+                            allWorking = false;
+                        }
+                    } catch (error) {
+                        html += `<p>❌ ${endpoint.name}: ${error.message}</p>`;
+                        allWorking = false;
+                    }
+                }
+
+                html += allWorking ? 
+                    '<p><strong>🎉 TODOS OS ENDPOINTS FUNCIONANDO!</strong></p>' :
+                    '<p><strong>❌ ALGUNS ENDPOINTS COM PROBLEMA</strong></p>';
+                html += '</div>';
+
+                document.getElementById('results').innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    `<div class="critical">❌ ERRO CRÍTICO: ${error.message}</div>`;
+            }
+        }
+
+        async function testFrontendAPI() {
+            document.getElementById('results').innerHTML = '<div class="warning">📱 Simulando chamadas do frontend...</div>';
+            
+            try {
+                // Simular exatamente as chamadas que o frontend faz
+                const apiBaseURL = 'http://localhost:8000';
+                
+                let html = '<div class="warning"><h2>📱 SIMULAÇÃO FRONTEND:</h2>';
+                
+                // 1. getDashboardOverview()
+                try {
+                    const overviewResponse = await fetch(`${apiBaseURL}/api/dashboard/overview`);
+                    const overviewData = await overviewResponse.json();
+                    html += `<p>✅ getDashboardOverview(): ${overviewData.system_status?.overall}</p>`;
+                } catch (e) {
+                    html += `<p>❌ getDashboardOverview(): ${e.message}</p>`;
+                }
+                
+                // 2. getSystemHealth()
+                try {
+                    const healthResponse = await fetch(`${apiBaseURL}/admin-dashboard/system-health`);
+                    const healthData = await healthResponse.json();
+                    html += `<p>✅ getSystemHealth(): ${healthData.overall_status}</p>`;
+                    html += `<p>   Serviços: ${healthData.statistics?.online_services}/${healthData.statistics?.total_services}</p>`;
+                } catch (e) {
+                    html += `<p>❌ getSystemHealth(): ${e.message}</p>`;
+                }
+                
+                html += '<p><strong>🔍 SE ISSO FUNCIONA, O PROBLEMA ESTÁ NO FRONTEND!</strong></p>';
+                html += '</div>';
+                
+                document.getElementById('results').innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    `<div class="critical">❌ ERRO SIMULAÇÃO: ${error.message}</div>`;
+            }
+        }
+
+        async function testCORS() {
+            document.getElementById('results').innerHTML = '<div class="warning">🌐 Testando CORS...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'http://localhost:3000',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                let html = '<div class="success"><h2>🌐 TESTE CORS:</h2>';
+                html += `<pre>${JSON.stringify(corsHeaders, null, 2)}</pre>`;
+                
+                if (corsHeaders['Access-Control-Allow-Origin']) {
+                    html += '<p>✅ CORS configurado corretamente</p>';
+                } else {
+                    html += '<p>❌ CORS não configurado - ESTE É O PROBLEMA!</p>';
+                }
+                
+                html += '</div>';
+                document.getElementById('results').innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    `<div class="critical">❌ ERRO CORS: ${error.message}</div>`;
+            }
+        }
+
+        function openDashboard() {
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        // Auto-start teste crítico
+        setTimeout(testAPIDirectly, 1000);
+    </script>
+</body>
+</html>

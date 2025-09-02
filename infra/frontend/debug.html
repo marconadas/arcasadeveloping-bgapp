@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
     <title>Debug Frontend API</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
@@ -22,7 +28,7 @@
         // Mesma configuração do admin.js
         const CONFIG = {
             API_BASE: window.location.hostname === 'localhost' ? 'http://localhost:5080' : `${window.location.protocol}//${window.location.host}/api`,
-            ADMIN_API: window.location.hostname === 'localhost' ? 'http://localhost:8000' : `${window.location.protocol}//${window.location.host}/admin-api`,
+            ADMIN_API: window.location.hostname === 'localhost' ? 'http://localhost:8085/admin-api' : `${window.location.protocol}//${window.location.host}/admin-api`,
             REFRESH_INTERVAL: 30000,
             REQUEST_TIMEOUT: 10000,
         };

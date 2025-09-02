@@ -13,7 +13,14 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
 # Configuração de segurança
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "bgapp-secret-key-change-in-production")
+from .secure_credentials import get_secure_credentials_manager
+
+# Obter credenciais seguras
+_credentials_manager = get_secure_credentials_manager()
+_credentials = _credentials_manager.load_credentials()
+
+# JWT Secret seguro
+SECRET_KEY = _credentials.get("jwt_secret") if _credentials else os.getenv("JWT_SECRET_KEY", "INSECURE-CHANGE-IMMEDIATELY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
@@ -46,39 +53,26 @@ class User(BaseModel):
 class UserInDB(User):
     hashed_password: str
 
-# Base de dados de utilizadores (em produção usar PostgreSQL)
-fake_users_db = {
-    "admin": {
-        "id": "1",
-        "username": "admin",
-        "email": "admin@bgapp.ao",
-        "full_name": "Administrador BGAPP",
-        "role": "admin",
-        "hashed_password": pwd_context.hash("bgapp123"),
-        "is_active": True,
-        "scopes": ["admin", "read", "write", "execute"]
-    },
-    "scientist": {
-        "id": "2", 
-        "username": "scientist",
-        "email": "scientist@bgapp.ao",
-        "full_name": "Cientista BGAPP",
-        "role": "scientist",
-        "hashed_password": pwd_context.hash("science123"),
-        "is_active": True,
-        "scopes": ["read", "write"]
-    },
-    "viewer": {
-        "id": "3",
-        "username": "viewer", 
-        "email": "viewer@bgapp.ao",
-        "full_name": "Observador BGAPP",
-        "role": "viewer",
-        "hashed_password": pwd_context.hash("view123"),
-        "is_active": True,
-        "scopes": ["read"]
-    }
-}
+# Base de dados de utilizadores segura (carregada de ficheiro encriptado)
+def get_users_db() -> dict:
+    """Obter base de dados de utilizadores de forma segura"""
+    credentials = _credentials_manager.load_credentials()
+    if credentials and "users" in credentials:
+        return credentials["users"]
+    
+    # Se não existem credenciais, inicializar sistema seguro
+    temp_passwords = _credentials_manager.initialize_secure_system()
+    print("⚠️  AVISO: Sistema inicializado com credenciais temporárias!")
+    print("📋 Passwords temporárias (alterar no primeiro login):")
+    for username, password in temp_passwords.items():
+        print(f"  {username}: {password}")
+    
+    # Recarregar credenciais
+    credentials = _credentials_manager.load_credentials()
+    return credentials["users"] if credentials else {}
+
+# Obter utilizadores de forma segura
+fake_users_db = get_users_db()
 
 class AuthenticationService:
     """Serviço de autenticação"""
@@ -105,7 +99,43 @@ class AuthenticationService:
             return None
         if not self.verify_password(password, user.hashed_password):
             return None
+        
+        # Verificar se password expirou
+        if _credentials_manager.is_password_expired(username):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Password expirada. Altere a password para continuar."
+            )
+        
         return user
+    
+    def change_password(self, username: str, current_password: str, new_password: str) -> bool:
+        """Alterar password do utilizador"""
+        # Verificar password atual
+        user = self.authenticate_user(username, current_password)
+        if not user:
+            return False
+        
+        # Alterar password
+        success = _credentials_manager.change_user_password(username, new_password)
+        
+        if success:
+            # Recarregar base de dados de utilizadores
+            global fake_users_db
+            fake_users_db = get_users_db()
+        
+        return success
+    
+    def force_password_change_required(self, username: str) -> bool:
+        """Verificar se é necessária alteração forçada de password"""
+        credentials = _credentials_manager.load_credentials()
+        if not credentials or "users" not in credentials:
+            return True
+        
+        if username not in credentials["users"]:
+            return True
+        
+        return credentials["users"][username].get("force_password_change", False)
     
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """Criar access token JWT"""

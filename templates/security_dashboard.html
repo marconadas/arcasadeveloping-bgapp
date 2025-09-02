@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Segurança - BGAPP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .metric-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        
+        .metric-title {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .metric-description {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+        
+        .status-secure { color: #4CAF50; }
+        .status-warning { color: #FF9800; }
+        .status-critical { color: #F44336; }
+        .status-unknown { color: #9E9E9E; }
+        
+        .alerts-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .alerts-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .alert-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+        
+        .alert-critical { border-left-color: #F44336; }
+        .alert-warning { border-left-color: #FF9800; }
+        .alert-info { border-left-color: #2196F3; }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .alert-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #F44336;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .last-updated {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🛡️ Dashboard de Segurança BGAPP</h1>
+            <div class="subtitle">Monitorização em Tempo Real</div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="refreshDashboard()">🔄 Atualizar</button>
+            <button class="btn" onclick="exportData()">📊 Exportar</button>
+            <button class="btn" onclick="showAlerts()">🚨 Alertas</button>
+        </div>
+        
+        <div id="dashboard-content">
+            <div class="loading">🔄 Carregando dados de segurança...</div>
+        </div>
+        
+        <div class="last-updated" id="last-updated"></div>
+    </div>
+
+    <script>
+        let dashboardData = null;
+        let refreshInterval = null;
+        
+        // Configuração da API
+        const API_BASE = '/admin-api/security';
+        
+        // Inicializar dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshDashboard();
+            // Auto-refresh a cada 30 segundos
+            refreshInterval = setInterval(refreshDashboard, 30000);
+        });
+        
+        async function refreshDashboard() {
+            try {
+                showLoading();
+                
+                // Buscar dados do dashboard
+                const [healthResponse, summaryResponse, metricsResponse, alertsResponse] = await Promise.all([
+                    fetch(`${API_BASE}/health`),
+                    fetch(`${API_BASE}/summary`),
+                    fetch(`${API_BASE}/metrics`),
+                    fetch(`${API_BASE}/alerts?limit=10`)
+                ]);
+                
+                if (!healthResponse.ok) {
+                    throw new Error(`Erro na API: ${healthResponse.status}`);
+                }
+                
+                const health = await healthResponse.json();
+                const summary = await summaryResponse.json();
+                const metrics = await metricsResponse.json();
+                const alerts = await alertsResponse.json();
+                
+                dashboardData = { health, summary, metrics, alerts };
+                
+                renderDashboard(dashboardData);
+                updateLastUpdated();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+                showError(`Erro ao carregar dados: ${error.message}`);
+            }
+        }
+        
+        function renderDashboard(data) {
+            const content = document.getElementById('dashboard-content');
+            
+            const html = `
+                <div class="metrics-grid">
+                    ${renderHealthCard(data.health)}
+                    ${renderScoreCard(data.summary)}
+                    ${renderAlertsCard(data.alerts)}
+                    ${renderUptimeCard(data.summary)}
+                </div>
+                
+                <div class="metrics-grid">
+                    ${data.metrics.slice(0, 6).map(renderMetricCard).join('')}
+                </div>
+                
+                ${renderAlertsSection(data.alerts)}
+            `;
+            
+            content.innerHTML = html;
+        }
+        
+        function renderHealthCard(health) {
+            const statusClass = `status-${health.status}`;
+            const statusIcon = {
+                'excellent': '🟢',
+                'good': '🟡', 
+                'warning': '🟠',
+                'critical': '🔴',
+                'error': '🚨'
+            }[health.status] || '❓';
+            
+            return `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">${statusIcon}</div>
+                        <div class="metric-title">Saúde Geral</div>
+                    </div>
+                    <div class="metric-value ${statusClass}">${health.overall_health.toFixed(1)}%</div>
+                    <div class="metric-description">Sistema de segurança operacional</div>
+                </div>
+            `;
+        }
+        
+        function renderScoreCard(summary) {
+            const score = summary.overall_score;
+            const statusClass = score >= 9 ? 'status-secure' : 
+                              score >= 7 ? 'status-warning' : 'status-critical';
+            
+            return `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">🏆</div>
+                        <div class="metric-title">Score de Segurança</div>
+                    </div>
+                    <div class="metric-value ${statusClass}">${score.toFixed(1)}/10</div>
+                    <div class="metric-description">Avaliação geral de segurança</div>
+                </div>
+            `;
+        }
+        
+        function renderAlertsCard(alerts) {
+            const totalAlerts = alerts.length;
+            const criticalAlerts = alerts.filter(a => a.level === 'critical').length;
+            const statusClass = criticalAlerts > 0 ? 'status-critical' : 
+                              totalAlerts > 0 ? 'status-warning' : 'status-secure';
+            
+            return `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">🚨</div>
+                        <div class="metric-title">Alertas Ativos</div>
+                    </div>
+                    <div class="metric-value ${statusClass}">${totalAlerts}</div>
+                    <div class="metric-description">${criticalAlerts} críticos, ${totalAlerts - criticalAlerts} avisos</div>
+                </div>
+            `;
+        }
+        
+        function renderUptimeCard(summary) {
+            const hours = summary.uptime_hours;
+            const days = Math.floor(hours / 24);
+            const remainingHours = Math.floor(hours % 24);
+            
+            return `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">⏱️</div>
+                        <div class="metric-title">Uptime</div>
+                    </div>
+                    <div class="metric-value status-secure">${days}d ${remainingHours}h</div>
+                    <div class="metric-description">Sistema operacional</div>
+                </div>
+            `;
+        }
+        
+        function renderMetricCard(metric) {
+            const statusClass = `status-${metric.status}`;
+            const statusIcon = {
+                'secure': '✅',
+                'warning': '⚠️',
+                'critical': '🚨',
+                'unknown': '❓'
+            }[metric.status] || '❓';
+            
+            return `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">${statusIcon}</div>
+                        <div class="metric-title">${metric.name.replace('_', ' ').toUpperCase()}</div>
+                    </div>
+                    <div class="metric-value ${statusClass}">
+                        ${typeof metric.value === 'number' ? metric.value.toFixed(1) : metric.value}
+                        ${metric.unit || ''}
+                    </div>
+                    <div class="metric-description">${metric.description}</div>
+                </div>
+            `;
+        }
+        
+        function renderAlertsSection(alerts) {
+            if (alerts.length === 0) {
+                return `
+                    <div class="alerts-section">
+                        <div class="alerts-header">
+                            <h3>🟢 Sem Alertas Ativos</h3>
+                        </div>
+                        <p>Sistema operando normalmente sem alertas de segurança.</p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="alerts-section">
+                    <div class="alerts-header">
+                        <h3>🚨 Alertas de Segurança (${alerts.length})</h3>
+                    </div>
+                    ${alerts.map(renderAlert).join('')}
+                </div>
+            `;
+        }
+        
+        function renderAlert(alert) {
+            const alertClass = `alert-${alert.level}`;
+            const levelIcon = {
+                'critical': '🚨',
+                'warning': '⚠️',
+                'info': 'ℹ️'
+            }[alert.level] || '❓';
+            
+            const alertTime = new Date(alert.timestamp).toLocaleString('pt-PT');
+            
+            return `
+                <div class="alert-item ${alertClass}">
+                    <div class="alert-title">${levelIcon} ${alert.title}</div>
+                    <div class="alert-description">${alert.description}</div>
+                    <div class="alert-time">📅 ${alertTime} | 📍 ${alert.source}</div>
+                </div>
+            `;
+        }
+        
+        function showLoading() {
+            const content = document.getElementById('dashboard-content');
+            content.innerHTML = '<div class="loading">🔄 Atualizando dados...</div>';
+        }
+        
+        function showError(message) {
+            const content = document.getElementById('dashboard-content');
+            content.innerHTML = `
+                <div class="error">
+                    <h3>🚨 Erro</h3>
+                    <p>${message}</p>
+                    <button class="btn" onclick="refreshDashboard()">🔄 Tentar Novamente</button>
+                </div>
+            `;
+        }
+        
+        function updateLastUpdated() {
+            const element = document.getElementById('last-updated');
+            element.textContent = `Última atualização: ${new Date().toLocaleString('pt-PT')}`;
+        }
+        
+        async function exportData() {
+            try {
+                const response = await fetch(`${API_BASE}/export?hours=24`);
+                if (!response.ok) throw new Error(`Erro: ${response.status}`);
+                
+                const data = await response.json();
+                
+                // Download do arquivo
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `bgapp_security_export_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('📊 Dados exportados com sucesso!');
+                
+            } catch (error) {
+                alert(`❌ Erro ao exportar: ${error.message}`);
+            }
+        }
+        
+        function showAlerts() {
+            if (!dashboardData || !dashboardData.alerts) {
+                alert('❌ Dados de alertas não disponíveis');
+                return;
+            }
+            
+            const alerts = dashboardData.alerts;
+            const message = alerts.length > 0 ? 
+                `🚨 ${alerts.length} alertas ativos:\n\n${alerts.map(a => `• ${a.title} (${a.level})`).join('\n')}` :
+                '🟢 Nenhum alerta ativo';
+            
+            alert(message);
+        }
+        
+        // Cleanup ao sair da página
+        window.addEventListener('beforeunload', function() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🛡️ Dashboard de Segurança BGAPP</h1>
+            <div class="subtitle">Monitorização em Tempo Real</div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="refreshDashboard()">🔄 Atualizar</button>
+            <button class="btn" onclick="exportData()">📊 Exportar</button>
+            <button class="btn" onclick="showAlerts()">🚨 Alertas</button>
+        </div>
+        
+        <div id="dashboard-content">
+            <div class="loading">🔄 Carregando dados de segurança...</div>
+        </div>
+        
+        <div class="last-updated" id="last-updated"></div>
+    </div>
+</body>
+</html>

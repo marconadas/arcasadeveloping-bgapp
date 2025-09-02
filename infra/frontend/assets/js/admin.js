@@ -6,7 +6,7 @@
 // Configuration and Constants
 const CONFIG = {
     API_BASE: window.location.hostname === 'localhost' ? 'http://localhost:5080' : 'https://bgapp-api-worker.majearcasa.workers.dev',
-    ADMIN_API: window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://bgapp-api-worker.majearcasa.workers.dev',
+    ADMIN_API: window.location.hostname === 'localhost' ? 'http://localhost:8000/admin-api' : 'https://bgapp-api-worker.majearcasa.workers.dev',
     REFRESH_INTERVAL: 30000, // 30 seconds
     REQUEST_TIMEOUT: 10000, // 10 seconds
     // Demo mode para Cloudflare Pages
@@ -493,7 +493,13 @@ const ApiService = {
      * Get collections from STAC API
      */
     async getCollections() {
-        return await this.fetch(`${CONFIG.API_BASE}/collections`);
+        // Usar admin API como fallback se pygeoapi não estiver disponível
+        try {
+            return await this.fetch(`${CONFIG.API_BASE}/collections`);
+        } catch (error) {
+            console.warn('🔄 Pygeoapi não disponível, usando mock do admin API:', error.message);
+            return await this.fetch(`${CONFIG.ADMIN_API}/collections`);
+        }
     },
 
     /**
@@ -1203,10 +1209,14 @@ const SectionLoader = {
                 const statusMap = {
                     'running': { class: 'online', text: 'Em Execução' },
                     'active': { class: 'online', text: 'Ativo' },
+                    'online': { class: 'online', text: 'Online' },
                     'completed': { class: 'online', text: 'Concluído' },
-                    'idle': { class: 'offline', text: 'Inativo' },
+                    'idle': { class: 'idle', text: 'Inativo' },
+                    'offline': { class: 'offline', text: 'Offline' },
                     'error': { class: 'error', text: 'Erro' },
-                    'failed': { class: 'error', text: 'Falha' }
+                    'failed': { class: 'error', text: 'Falha' },
+                    'disabled': { class: 'disabled', text: 'Desabilitado' },
+                    'pending': { class: 'pending', text: 'Pendente' }
                 };
                 
                 const status = statusMap[connector.status] || { class: 'offline', text: 'Desconhecido' };
@@ -2189,7 +2199,8 @@ const EnhancedFeatures = {
             const data = await response.json();
             
             if (data.enabled) {
-                const stats = data.stats;
+                // A API retorna dados diretamente, não em data.stats
+                const stats = data;
                 document.getElementById('cache-stats').innerHTML = `
                     <div class="row">
                         <div class="col-md-6">
@@ -2205,8 +2216,30 @@ const EnhancedFeatures = {
                             </div>
                         </div>
                     </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value text-primary">${stats.keys_total || 0}</div>
+                                <div class="metric-label">Chaves Ativas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value text-warning">${stats.operations_per_second || 0}</div>
+                                <div class="metric-label">Ops/Segundo</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value text-info">${stats.connected_clients || 0}</div>
+                                <div class="metric-label">Clientes</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mt-3">
                         <p class="text-success"><i class="fas fa-rocket me-2"></i>Latência reduzida de 6s para &lt;1s</p>
+                        <p class="text-info"><i class="fas fa-clock me-2"></i>Uptime: ${stats.uptime || 'N/A'}</p>
+                        <p class="text-secondary"><i class="fas fa-cog me-2"></i>Política: ${stats.eviction_policy || 'N/A'}</p>
                     </div>
                 `;
             } else {

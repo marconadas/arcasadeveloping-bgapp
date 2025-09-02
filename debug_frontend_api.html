@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 DEBUG CRÍTICO - Frontend API BGAPP</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #1a1a1a; 
+            color: #fff;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: #2a2a2a; 
+            padding: 20px; 
+            border-radius: 10px;
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-weight: bold;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+        .warning { background: #ffc107; color: #000; }
+        .info { background: #17a2b8; }
+        
+        .endpoint-test {
+            background: #3a3a3a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .data-display {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        
+        .critical { 
+            border: 2px solid #dc3545; 
+            background: #4a1a1a;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 DEBUG CRÍTICO - BGAPP Frontend API</h1>
+        <div class="critical">
+            <h2>⚠️ PROBLEMA: Dashboard mostra "unknown" e "N/A"</h2>
+            <p><strong>URGENTE:</strong> Apresentação dia 17 de setembro!</p>
+            <p><strong>OBJETIVO:</strong> Identificar por que frontend não recebe dados da API</p>
+        </div>
+
+        <div id="status" class="status info">
+            🔄 Iniciando diagnóstico crítico...
+        </div>
+
+        <button onclick="runCriticalDiagnostic()">🚨 DIAGNÓSTICO CRÍTICO</button>
+        <button onclick="testCORS()">🌐 Testar CORS</button>
+        <button onclick="testDirectAPI()">🔧 Testar API Direta</button>
+        <button onclick="simulateFrontend()">📱 Simular Frontend</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let results = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            results.push({message: logEntry, type});
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = results.map(r => 
+                `<div class="endpoint-test">
+                    <div class="status ${r.type}">${r.message}</div>
+                </div>`
+            ).join('');
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        async function testCORS() {
+            log('🌐 TESTANDO CORS...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ CORS OK: ${data.status}`, 'success');
+                    return true;
+                } else {
+                    log(`❌ CORS FALHOU: HTTP ${response.status}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ CORS ERROR: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function testDirectAPI() {
+            log('🔧 TESTANDO API DIRETA...', 'info');
+            
+            const endpoints = [
+                'http://localhost:8000/health',
+                'http://localhost:8000/api/dashboard/overview',
+                'http://localhost:8000/admin-dashboard/system-health',
+                'http://localhost:8000/admin-dashboard/oceanographic-data',
+                'http://localhost:8000/admin-dashboard/fisheries-stats',
+                'http://localhost:8000/admin-dashboard/copernicus-advanced/real-time-data'
+            ];
+
+            let workingEndpoints = 0;
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint);
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✅ ${endpoint.split('/').pop()}: OK`, 'success');
+                        workingEndpoints++;
+                        
+                        // Mostrar dados importantes
+                        if (endpoint.includes('overview')) {
+                            log(`   📊 Status: ${data.system_status?.overall}`, 'info');
+                            log(`   🌊 Temp: ${data.real_time_data?.sea_temperature}°C`, 'info');
+                        }
+                        if (endpoint.includes('system-health')) {
+                            log(`   ⚙️ Serviços: ${data.statistics?.online_services}/${data.statistics?.total_services}`, 'info');
+                        }
+                    } else {
+                        log(`❌ ${endpoint}: HTTP ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ ${endpoint}: ${error.message}`, 'error');
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            log(`📊 RESULTADO: ${workingEndpoints}/${endpoints.length} endpoints funcionando`, 
+                workingEndpoints === endpoints.length ? 'success' : 'warning');
+                
+            return workingEndpoints === endpoints.length;
+        }
+
+        async function simulateFrontend() {
+            log('📱 SIMULANDO CHAMADAS DO FRONTEND...', 'info');
+            
+            // Simular exatamente o que o frontend faz
+            const apiBaseURL = 'http://localhost:8000';
+            
+            try {
+                // Simular bgappApi.getDashboardOverview()
+                log('🔄 Chamando getDashboardOverview()...', 'info');
+                const overviewResponse = await fetch(`${apiBaseURL}/api/dashboard/overview`);
+                const overviewData = await overviewResponse.json();
+                
+                if (overviewData.system_status?.overall === 'healthy') {
+                    log('✅ getDashboardOverview(): SUCESSO', 'success');
+                    log(`   Status: ${overviewData.system_status.overall}`, 'success');
+                } else {
+                    log('❌ getDashboardOverview(): DADOS INCORRETOS', 'error');
+                }
+                
+                // Simular bgappApi.getSystemHealth()
+                log('🔄 Chamando getSystemHealth()...', 'info');
+                const healthResponse = await fetch(`${apiBaseURL}/admin-dashboard/system-health`);
+                const healthData = await healthResponse.json();
+                
+                if (healthData.overall_status === 'healthy') {
+                    log('✅ getSystemHealth(): SUCESSO', 'success');
+                    log(`   Status: ${healthData.overall_status}`, 'success');
+                    log(`   Serviços: ${healthData.statistics?.online_services}/${healthData.statistics?.total_services}`, 'success');
+                } else {
+                    log('❌ getSystemHealth(): DADOS INCORRETOS', 'error');
+                }
+                
+                // Teste final
+                log('🎯 SIMULAÇÃO FRONTEND COMPLETA!', 'success');
+                updateStatus('✅ API funcionando - Problema pode estar no frontend', 'success');
+                
+            } catch (error) {
+                log(`❌ ERRO SIMULAÇÃO: ${error.message}`, 'error');
+                updateStatus('❌ Problema na comunicação frontend-API', 'error');
+            }
+        }
+
+        async function runCriticalDiagnostic() {
+            log('🚨 INICIANDO DIAGNÓSTICO CRÍTICO...', 'warning');
+            updateStatus('🔄 Executando diagnóstico crítico...', 'warning');
+            
+            // 1. Testar CORS
+            const corsOk = await testCORS();
+            
+            // 2. Testar API direta
+            const apiOk = await testDirectAPI();
+            
+            // 3. Simular frontend
+            await simulateFrontend();
+            
+            // 4. Diagnóstico final
+            if (corsOk && apiOk) {
+                log('🎉 DIAGNÓSTICO: API FUNCIONANDO PERFEITAMENTE!', 'success');
+                log('🔍 PROBLEMA PROVÁVEL: Frontend não está fazendo as chamadas ou há erro no componente', 'warning');
+                log('💡 SOLUÇÃO: Verificar console do navegador em http://localhost:3000', 'info');
+                updateStatus('✅ API OK - Verificar frontend no navegador', 'success');
+            } else {
+                log('❌ DIAGNÓSTICO: Problemas na API ou CORS', 'error');
+                updateStatus('❌ Problemas na API detectados', 'error');
+            }
+        }
+
+        // Auto-start diagnóstico
+        setTimeout(() => {
+            runCriticalDiagnostic();
+        }, 1000);
+    </script>
+</body>
+</html>

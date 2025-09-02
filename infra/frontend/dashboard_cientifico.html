@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BGAPP - Dashboard Científico Avançado</title>
@@ -1267,7 +1273,7 @@
     
     <script>
         // Configuração global
-        const API_BASE = 'http://localhost:8000';
+        const API_BASE = 'http://localhost:8085/admin-api';
         let map;
         let currentFilters = {
             period: '30d',
@@ -2320,10 +2326,7 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
-                // Simular possível erro (5% chance)
-                if (Math.random() < 0.05) {
-                    throw new Error('Erro simulado na API de métricas');
-                }
+                // Métricas sempre carregam com sucesso
                 
                 // Simular métricas (substituir por chamadas à API)
                 document.getElementById('total-observations').textContent = '12,847';
@@ -2351,10 +2354,7 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1500));
                 
-                // Simular possível erro (10% chance)
-                if (Math.random() < 0.1) {
-                    throw new Error('Erro simulado na API de séries temporais');
-                }
+                // Séries temporais sempre carregam com sucesso
                 
                 // Dados simulados para série temporal
                 const dates = [];
@@ -2416,10 +2416,7 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
-                // Simular possível erro (5% chance)
-                if (Math.random() < 0.05) {
-                    throw new Error('Erro simulado na API de espécies');
-                }
+                // Dados de espécies sempre carregam com sucesso
                 
                 const data = [{
                     values: [45, 26, 12, 8, 9],
@@ -2455,10 +2452,7 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1200));
                 
-                // Simular possível erro (8% chance)
-                if (Math.random() < 0.08) {
-                    throw new Error('Erro simulado na API de heatmap');
-                }
+                // Heatmap sempre carrega com sucesso
                 
                 // Mapa de calor simulado com dados mais realistas
                 const z = [];
@@ -2512,10 +2506,7 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 800));
                 
-                // Simular possível erro (5% chance)
-                if (Math.random() < 0.05) {
-                    throw new Error('Erro simulado na API de correlação');
-                }
+                // Matriz de correlação sempre carrega com sucesso
                 
                 const variables = ['Temperatura', 'Salinidade', 'Oxigénio', 'pH', 'Clorofila'];
                 const correlationMatrix = [

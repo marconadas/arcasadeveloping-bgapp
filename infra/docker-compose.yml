@@ -105,8 +105,10 @@ services:
     ports: ["8085:80"]
     volumes:
       - ./frontend:/usr/share/nginx/html:ro
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx-simple.conf:/etc/nginx/nginx.conf:ro
     networks: [bgapp-net]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   admin-api:
     build:
@@ -209,7 +211,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
-    command: start-dev --import-realm --hostname-strict=false --hostname-strict-https=false --http-enabled=true --hostname=localhost --hostname-port=8083 --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
+    command: start-dev --import-realm --hostname-strict=false --hostname-strict-https=false --http-enabled=true --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
@@ -217,8 +219,6 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HTTP_ENABLED: "true"
       KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
-      KC_HOSTNAME: "localhost"
-      KC_HOSTNAME_PORT: "8083"
       KC_PROXY: "edge"
     volumes:
       - ./keycloak:/opt/keycloak/data/import:ro

@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-09-02T00:37:26.588702",
+  "stats": {
+    "total_checks": 2010,
+    "total_restarts": 5,
+    "total_alerts": 16,
+    "uptime_start": "2025-09-01T21:46:39.438139"
+  },
+  "services": {
+    "frontend": {
+      "name": "frontend",
+      "last_check": "2025-09-02T00:37:26.501589",
+      "consecutive_failures": 0,
+      "last_restart": null,
+      "restart_count": 0,
+      "total_downtime": 0.0,
+      "first_failure": null
+    },
+    "admin_api": {
+      "name": "admin_api",
+      "last_check": "2025-09-02T00:37:26.588652",
+      "consecutive_failures": 0,
+      "last_restart": "2025-09-01T21:57:20.596168",
+      "restart_count": 5,
+      "total_downtime": 641.205245,
+      "first_failure": null
+    },
+    "pygeoapi": {
+      "name": "pygeoapi",
+      "last_check": "2025-09-02T00:37:26.513208",
+      "consecutive_failures": 0,
+      "last_restart": null,
+      "restart_count": 0,
+      "total_downtime": 0.0,
+      "first_failure": null
+    },
+    "postgis": {
+      "name": "postgis",
+      "last_check": "2025-09-02T00:37:26.476585",
+      "consecutive_failures": 0,
+      "last_restart": null,
+      "restart_count": 0,
+      "total_downtime": 0.0,
+      "first_failure": null
+    },
+    "minio": {
+      "name": "minio",
+      "last_check": "2025-09-02T00:37:26.496328",
+      "consecutive_failures": 0,
+      "last_restart": null,
+      "restart_count": 0,
+      "total_downtime": 0.0,
+      "first_failure": null
+    },
+    "stac": {
+      "name": "stac",
+      "last_check": "2025-09-02T00:37:26.506148",
+      "consecutive_failures": 0,
+      "last_restart": null,
+      "restart_count": 0,
+      "total_downtime": 0.0,
+      "first_failure": null
+    }
+  }
+}

@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="pt">
 <head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>BGAPP - Marine Angola | Mapa Meteorológico Interativo</title>
@@ -39,6 +45,8 @@
                         https://tiles.stadiamaps.com
                         https://unpkg.com; 
                  connect-src 'self' 
+                            http://localhost:8000
+                            http://localhost:5080
                             https://tiles.maps.eox.at 
                             https://www.gebco.net 
                             https://services.sentinel-hub.com 
@@ -57,15 +65,15 @@
   <meta name="author" content="Marine Angola - BGAPP Development Team">
   
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#0066cc">
+  
   <meta name="application-name" content="BGAPP">
   <link rel="manifest" href="/BGAPP/manifest.json">
   
   <!-- Favicon e Ícones PWA -->
-  <link rel="icon" type="image/x-icon" href="/BGAPP/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16x16.png">
-  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  
+  
+  
+  
   <meta name="msapplication-TileImage" content="/assets/img/icon-144.png">
   <meta name="msapplication-TileColor" content="#0066cc">
   
@@ -82,6 +90,7 @@
   <link rel="stylesheet" href="assets/css/fontawesome-fallback.css"/>
   
   <link rel="stylesheet" href="assets/css/map-styles.css?v=20250115fresh">
+  <link rel="stylesheet" href="assets/css/ml-components.css?v=1.0.0">
   <style>
     /* =====================================================
        BGAPP - TEMA ESCURO PERMANENTE (IGUAL AO EOX LAYERS)
@@ -958,6 +967,9 @@
   <script src="assets/js/bathymetry-gebco.js?v=fresh"></script>
   <!-- Sistema de Funcionalidades Reais - NOVO -->
   <script src="assets/js/real-functionality.js?v=2.0.0"></script>
+  <!-- Sistema de Machine Learning - NOVO -->
+  <script src="assets/js/ml-service.js?v=1.0.0"></script>
+  <script src="assets/js/ml-map-overlays.js?v=1.0.0"></script>
   <!-- SCRIPTS OPCIONAIS (reativar gradualmente):
   <script src="assets/js/sentinel2-integration.js?v=fresh"></script>
   <script src="assets/js/attribution-system.js?v=fresh"></script>
@@ -3265,6 +3277,12 @@
       </div>
     </div>
   </div>
+
+  <!-- Sistema Plug-and-Play para APIs -->
+  <script src="assets/js/api-resilience.js"></script>
+  <script src="assets/js/api-plugin-manager.js"></script>
+  <script src="assets/js/api-adapter.js"></script>
+  <script src="assets/js/health-checker.js"></script>
 
 </body>
 </html>

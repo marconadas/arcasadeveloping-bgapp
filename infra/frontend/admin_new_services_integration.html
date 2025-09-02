@@ -1,0 +1,935 @@
+<!-- 🚀 INTEGRAÇÃO DOS NOVOS SERVIÇOS NO ADMIN.HTML -->
+<!-- Este ficheiro contém as adições necessárias para integrar os novos serviços no painel administrativo -->
+
+<!-- ========================================== -->
+<!-- 1. ADIÇÕES AO MENU LATERAL (após linha 196) -->
+<!-- ========================================== -->
+
+<!-- Adicionar nova secção no menu -->
+<div class="nav-section">🧠 Novos Serviços IA</div>
+<li class="nav-item">
+    <a href="#maxent-service" class="nav-link" data-section="maxent-service">
+        <i class="fas fa-brain"></i>
+        <span>MaxEnt - Distribuição Espécies</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="#boundary-service" class="nav-link" data-section="boundary-service">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>Processamento Fronteiras</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="#coastal-service" class="nav-link" data-section="coastal-service">
+        <i class="fas fa-water"></i>
+        <span>Análise Costeira</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="#mcda-service" class="nav-link" data-section="mcda-service">
+        <i class="fas fa-balance-scale"></i>
+        <span>MCDA - Análise Multi-Critério</span>
+    </a>
+</li>
+
+<!-- ========================================== -->
+<!-- 2. MÉTRICAS NO DASHBOARD PRINCIPAL (após linha 382) -->
+<!-- ========================================== -->
+
+<div class="metric-card">
+    <div class="metric-icon"><i class="fas fa-fish"></i></div>
+    <div class="metric-value text-info" id="maxent-models-count">-</div>
+    <div class="metric-label">Modelos MaxEnt Ativos</div>
+</div>
+<div class="metric-card">
+    <div class="metric-icon"><i class="fas fa-map-marked-alt"></i></div>
+    <div class="metric-value text-success" id="boundaries-processed">-</div>
+    <div class="metric-label">Fronteiras Processadas</div>
+</div>
+<div class="metric-card">
+    <div class="metric-icon"><i class="fas fa-water"></i></div>
+    <div class="metric-value text-warning" id="coastal-segments">-</div>
+    <div class="metric-label">Segmentos Costeiros</div>
+</div>
+<div class="metric-card">
+    <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+    <div class="metric-value text-primary" id="mcda-analyses">-</div>
+    <div class="metric-label">Análises MCDA</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. SECÇÃO MAXENT SERVICE (adicionar antes da tag </div> final) -->
+<!-- ========================================== -->
+
+<div id="maxent-service-section" class="section" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-brain"></i>
+                MaxEnt - Modelação de Distribuição de Espécies
+                <span class="badge bg-success">Ativo</span>
+            </div>
+            <div class="btn btn-outline" onclick="refreshMaxEntService()">
+                <i class="fas fa-sync-alt"></i>
+                Atualizar
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tabs">
+                <button class="tab active" data-tab="maxent-models">Modelos</button>
+                <button class="tab" data-tab="maxent-species">Espécies</button>
+                <button class="tab" data-tab="maxent-predictions">Predições</button>
+                <button class="tab" data-tab="maxent-performance">Performance</button>
+            </div>
+            
+            <div id="maxent-models-tab" class="tab-content active">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table table-mobile-stack">
+                                <thead>
+                                    <tr>
+                                        <th>Espécie</th>
+                                        <th>AUC Score</th>
+                                        <th>Precisão</th>
+                                        <th>Data Treino</th>
+                                        <th>Estado</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="maxent-models-table">
+                                    <tr>
+                                        <td colspan="6" class="loading">
+                                            <div class="spinner"></div>
+                                            A carregar modelos MaxEnt...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-success mb-2" onclick="trainNewMaxEntModel()">
+                                <i class="fas fa-play me-2"></i>
+                                Treinar Novo Modelo
+                            </button>
+                            <button class="btn btn-primary mb-2" onclick="importSpeciesData()">
+                                <i class="fas fa-upload me-2"></i>
+                                Importar Dados Espécies
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="exportMaxEntResults()">
+                                <i class="fas fa-download me-2"></i>
+                                Exportar Resultados
+                            </button>
+                            <button class="btn btn-warning" onclick="validateMaxEntModels()">
+                                <i class="fas fa-check me-2"></i>
+                                Validar Modelos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="maxent-species-tab" class="tab-content">
+                <div id="species-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        A carregar lista de espécies...
+                    </div>
+                </div>
+            </div>
+            
+            <div id="maxent-predictions-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Fazer Predição</h6>
+                        <div class="form-group">
+                            <label class="form-label">Espécie:</label>
+                            <select class="form-control" id="prediction-species">
+                                <option value="">Selecionar espécie...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Latitude:</label>
+                            <input type="number" class="form-control" id="prediction-lat" step="0.001" placeholder="-8.8383">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Longitude:</label>
+                            <input type="number" class="form-control" id="prediction-lon" step="0.001" placeholder="13.2344">
+                        </div>
+                        <button class="btn btn-primary" onclick="makePrediction()">
+                            <i class="fas fa-magic me-2"></i>
+                            Fazer Predição
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Resultado da Predição</h6>
+                        <div id="prediction-result" class="alert alert-info" style="display: none;">
+                            <!-- Resultado aparecerá aqui -->
+                        </div>
+                        <canvas id="prediction-map" style="height: 300px; display: none;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="maxent-performance-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="maxent-performance-chart" style="height: 300px;"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="maxent-accuracy-chart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 4. SECÇÃO BOUNDARY PROCESSOR -->
+<!-- ========================================== -->
+
+<div id="boundary-service-section" class="section" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-map-marked-alt"></i>
+                Processador de Fronteiras Marítimas
+                <span class="badge bg-info">Processando</span>
+            </div>
+            <div class="btn btn-outline" onclick="refreshBoundaryService()">
+                <i class="fas fa-sync-alt"></i>
+                Atualizar
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tabs">
+                <button class="tab active" data-tab="boundary-status">Estado</button>
+                <button class="tab" data-tab="boundary-zones">Zonas Marítimas</button>
+                <button class="tab" data-tab="boundary-validation">Validação</button>
+                <button class="tab" data-tab="boundary-export">Exportação</button>
+            </div>
+            
+            <div id="boundary-status-tab" class="tab-content active">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">
+                                <span id="zee-area">495,866</span>
+                            </div>
+                            <div class="metric-label">
+                                <i class="fas fa-water me-2"></i>
+                                Área ZEE (km²)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">
+                                <span id="coastline-length">1,650</span>
+                            </div>
+                            <div class="metric-label">
+                                <i class="fas fa-route me-2"></i>
+                                Linha Costeira (km)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <div class="metric-value">
+                                <span id="boundary-accuracy">99.8%</span>
+                            </div>
+                            <div class="metric-label">
+                                <i class="fas fa-check me-2"></i>
+                                Precisão Geométrica
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div id="boundary-map-preview" style="height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div class="text-center">
+                                <i class="fas fa-map fa-3x mb-3 text-muted"></i>
+                                <p class="text-muted">Pré-visualização do mapa de fronteiras</p>
+                                <button class="btn btn-primary" onclick="loadBoundaryMap()">
+                                    <i class="fas fa-map me-2"></i>
+                                    Carregar Mapa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-success mb-2" onclick="processBoundaries()">
+                                <i class="fas fa-cogs me-2"></i>
+                                Processar Fronteiras
+                            </button>
+                            <button class="btn btn-primary mb-2" onclick="validateGeometries()">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Validar Geometrias
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="calculateZones()">
+                                <i class="fas fa-calculator me-2"></i>
+                                Calcular Zonas
+                            </button>
+                            <button class="btn btn-warning" onclick="detectOverlaps()">
+                                <i class="fas fa-search me-2"></i>
+                                Detectar Sobreposições
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="boundary-zones-tab" class="tab-content">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Zona</th>
+                                <th>Tipo</th>
+                                <th>Área (km²)</th>
+                                <th>Perímetro (km)</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maritime-zones-table">
+                            <tr>
+                                <td colspan="5" class="loading">
+                                    <div class="spinner"></div>
+                                    A carregar zonas marítimas...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="boundary-validation-tab" class="tab-content">
+                <div id="validation-results">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        A executar validação...
+                    </div>
+                </div>
+            </div>
+            
+            <div id="boundary-export-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Formato de Exportação</h6>
+                        <div class="form-group">
+                            <select class="form-control" id="export-format">
+                                <option value="geojson">GeoJSON</option>
+                                <option value="shapefile">Shapefile</option>
+                                <option value="kml">KML</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="exportBoundaries()">
+                            <i class="fas fa-download me-2"></i>
+                            Exportar Fronteiras
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Exportações Recentes</h6>
+                        <div id="recent-exports">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                A carregar exportações...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 5. SECÇÃO COASTAL ANALYSIS -->
+<!-- ========================================== -->
+
+<div id="coastal-service-section" class="section" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-water"></i>
+                Análise Avançada de Linha Costeira
+                <span class="badge bg-warning">Monitorização</span>
+            </div>
+            <div class="btn btn-outline" onclick="refreshCoastalService()">
+                <i class="fas fa-sync-alt"></i>
+                Atualizar
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tabs">
+                <button class="tab active" data-tab="coastal-segments">Segmentos</button>
+                <button class="tab" data-tab="coastal-changes">Mudanças</button>
+                <button class="tab" data-tab="coastal-vulnerability">Vulnerabilidade</button>
+                <button class="tab" data-tab="coastal-monitoring">Monitorização</button>
+            </div>
+            
+            <div id="coastal-segments-tab" class="tab-content active">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-info">47</div>
+                            <div class="metric-label">
+                                <i class="fas fa-ruler me-2"></i>
+                                Segmentos Totais
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-success">1,650</div>
+                            <div class="metric-label">
+                                <i class="fas fa-route me-2"></i>
+                                Comprimento (km)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-warning">12</div>
+                            <div class="metric-label">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Alta Vulnerabilidade
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-primary">156</div>
+                            <div class="metric-label">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Pontos Monitorização
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive mt-4">
+                    <table class="table table-mobile-stack">
+                        <thead>
+                            <tr>
+                                <th>ID Segmento</th>
+                                <th>Tipo Costeiro</th>
+                                <th>Comprimento (km)</th>
+                                <th>Vulnerabilidade</th>
+                                <th>Mudança Anual (m)</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coastal-segments-table">
+                            <tr>
+                                <td colspan="6" class="loading">
+                                    <div class="spinner"></div>
+                                    A carregar segmentos costeiros...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="coastal-changes-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <canvas id="coastal-changes-chart" style="height: 300px;"></canvas>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-primary mb-2" onclick="detectCoastalChanges()">
+                                <i class="fas fa-search me-2"></i>
+                                Detectar Mudanças
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="generateChangeReport()">
+                                <i class="fas fa-file-alt me-2"></i>
+                                Relatório Mudanças
+                            </button>
+                            <button class="btn btn-success" onclick="exportChangeData()">
+                                <i class="fas fa-download me-2"></i>
+                                Exportar Dados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="coastal-vulnerability-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="vulnerability-chart" style="height: 300px;"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="vulnerability-recommendations">
+                            <h6>Recomendações por Vulnerabilidade</h6>
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                A carregar recomendações...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="coastal-monitoring-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div id="monitoring-map" style="height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div class="text-center">
+                                <i class="fas fa-satellite fa-3x mb-3 text-muted"></i>
+                                <p class="text-muted">Rede de monitorização costeira</p>
+                                <button class="btn btn-primary" onclick="loadMonitoringNetwork()">
+                                    <i class="fas fa-map me-2"></i>
+                                    Carregar Rede
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-success mb-2" onclick="createMonitoringNetwork()">
+                                <i class="fas fa-plus me-2"></i>
+                                Criar Rede
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="updateMonitoringPoints()">
+                                <i class="fas fa-sync me-2"></i>
+                                Atualizar Pontos
+                            </button>
+                            <button class="btn btn-warning" onclick="generateAlerts()">
+                                <i class="fas fa-bell me-2"></i>
+                                Gerar Alertas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 6. SECÇÃO MCDA SERVICE -->
+<!-- ========================================== -->
+
+<div id="mcda-service-section" class="section" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-balance-scale"></i>
+                MCDA - Análise Multi-Critério
+                <span class="badge bg-primary">Otimização</span>
+            </div>
+            <div class="btn btn-outline" onclick="refreshMCDAService()">
+                <i class="fas fa-sync-alt"></i>
+                Atualizar
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tabs">
+                <button class="tab active" data-tab="mcda-objectives">Objetivos</button>
+                <button class="tab" data-tab="mcda-criteria">Critérios</button>
+                <button class="tab" data-tab="mcda-analysis">Análises</button>
+                <button class="tab" data-tab="mcda-results">Resultados</button>
+            </div>
+            
+            <div id="mcda-objectives-tab" class="tab-content active">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="objective-card" onclick="selectObjective('aquaculture')">
+                            <div class="objective-icon">
+                                <i class="fas fa-fish"></i>
+                            </div>
+                            <h5>Aquacultura</h5>
+                            <p>Otimização de localizações para aquacultura marinha</p>
+                            <div class="objective-stats">
+                                <small>5 critérios • 1,200 alternativas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="objective-card" onclick="selectObjective('fishing')">
+                            <div class="objective-icon">
+                                <i class="fas fa-anchor"></i>
+                            </div>
+                            <h5>Pesca</h5>
+                            <p>Identificação de áreas ótimas para atividade pesqueira</p>
+                            <div class="objective-stats">
+                                <small>4 critérios • 800 alternativas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="objective-card" onclick="selectObjective('conservation')">
+                            <div class="objective-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <h5>Conservação</h5>
+                            <p>Seleção de áreas marinhas protegidas</p>
+                            <div class="objective-stats">
+                                <small>4 critérios • 950 alternativas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mcda-criteria-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Critério</th>
+                                        <th>Tipo</th>
+                                        <th>Peso</th>
+                                        <th>Unidade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mcda-criteria-table">
+                                    <tr>
+                                        <td colspan="5" class="loading">
+                                            <div class="spinner"></div>
+                                            A carregar critérios...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group-vertical w-100">
+                            <button class="btn btn-primary mb-2" onclick="addCriterion()">
+                                <i class="fas fa-plus me-2"></i>
+                                Adicionar Critério
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="adjustWeights()">
+                                <i class="fas fa-sliders-h me-2"></i>
+                                Ajustar Pesos
+                            </button>
+                            <button class="btn btn-success" onclick="validateCriteria()">
+                                <i class="fas fa-check me-2"></i>
+                                Validar Critérios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mcda-analysis-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Configuração da Análise</h6>
+                        <div class="form-group">
+                            <label class="form-label">Método:</label>
+                            <select class="form-control" id="mcda-method">
+                                <option value="ahp">AHP (Analytic Hierarchy Process)</option>
+                                <option value="topsis">TOPSIS</option>
+                                <option value="weighted_sum">Soma Ponderada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Resolução da Grelha (km):</label>
+                            <input type="number" class="form-control" id="grid-resolution" value="10" min="1" max="50">
+                        </div>
+                        <button class="btn btn-success" onclick="runMCDAAnalysis()">
+                            <i class="fas fa-play me-2"></i>
+                            Executar Análise
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Progresso da Análise</h6>
+                        <div id="mcda-progress" style="display: none;">
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div id="progress-status">Inicializando análise...</div>
+                        </div>
+                        <div id="analysis-log" style="height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                            <div class="text-muted">Log da análise aparecerá aqui...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mcda-results-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div id="mcda-results-map" style="height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div class="text-center">
+                                <i class="fas fa-map fa-3x mb-3 text-muted"></i>
+                                <p class="text-muted">Mapa de adequação espacial</p>
+                                <button class="btn btn-primary" onclick="loadResultsMap()">
+                                    <i class="fas fa-map me-2"></i>
+                                    Carregar Resultados
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Top 10 Alternativas</h6>
+                        <div id="top-alternatives">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                A carregar resultados...
+                            </div>
+                        </div>
+                        <div class="btn-group-vertical w-100 mt-3">
+                            <button class="btn btn-success mb-2" onclick="exportMCDAResults()">
+                                <i class="fas fa-download me-2"></i>
+                                Exportar Resultados
+                            </button>
+                            <button class="btn btn-info mb-2" onclick="generateMCDAReport()">
+                                <i class="fas fa-file-alt me-2"></i>
+                                Gerar Relatório
+                            </button>
+                            <button class="btn btn-warning" onclick="sensitivityAnalysis()">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Análise Sensibilidade
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 7. JAVASCRIPT FUNCTIONS (adicionar antes do </body>) -->
+<!-- ========================================== -->
+
+<script>
+// Funções para os novos serviços
+
+// MaxEnt Service Functions
+function refreshMaxEntService() {
+    console.log('🧠 Atualizando MaxEnt Service...');
+    // Implementar lógica de atualização
+}
+
+function trainNewMaxEntModel() {
+    console.log('🎯 Iniciando treino de novo modelo MaxEnt...');
+    // Implementar modal para seleção de espécie
+}
+
+function makePrediction() {
+    const species = document.getElementById('prediction-species').value;
+    const lat = document.getElementById('prediction-lat').value;
+    const lon = document.getElementById('prediction-lon').value;
+    
+    if (!species || !lat || !lon) {
+        alert('Por favor, preencha todos os campos');
+        return;
+    }
+    
+    console.log(`🔮 Fazendo predição para ${species} em (${lat}, ${lon})`);
+    // Implementar chamada à API MaxEnt
+}
+
+// Boundary Processor Functions
+function refreshBoundaryService() {
+    console.log('🗺️ Atualizando Boundary Service...');
+    // Implementar lógica de atualização
+}
+
+function processBoundaries() {
+    console.log('⚙️ Processando fronteiras marítimas...');
+    // Implementar processamento
+}
+
+function loadBoundaryMap() {
+    console.log('🗺️ Carregando mapa de fronteiras...');
+    // Implementar carregamento do mapa
+}
+
+// Coastal Analysis Functions
+function refreshCoastalService() {
+    console.log('🌊 Atualizando Coastal Service...');
+    // Implementar lógica de atualização
+}
+
+function detectCoastalChanges() {
+    console.log('🔍 Detectando mudanças costeiras...');
+    // Implementar detecção de mudanças
+}
+
+function createMonitoringNetwork() {
+    console.log('📡 Criando rede de monitorização...');
+    // Implementar criação da rede
+}
+
+// MCDA Service Functions
+function refreshMCDAService() {
+    console.log('⚖️ Atualizando MCDA Service...');
+    // Implementar lógica de atualização
+}
+
+function selectObjective(objective) {
+    console.log(`🎯 Selecionado objetivo: ${objective}`);
+    // Implementar seleção de objetivo
+}
+
+function runMCDAAnalysis() {
+    const method = document.getElementById('mcda-method').value;
+    const resolution = document.getElementById('grid-resolution').value;
+    
+    console.log(`🔄 Executando análise MCDA: ${method}, resolução: ${resolution}km`);
+    
+    // Mostrar progresso
+    document.getElementById('mcda-progress').style.display = 'block';
+    
+    // Implementar análise MCDA
+}
+
+// Função para atualizar métricas do dashboard
+function updateNewServicesMetrics() {
+    // Simular dados para demonstração
+    document.getElementById('maxent-models-count').textContent = '12';
+    document.getElementById('boundaries-processed').textContent = '8';
+    document.getElementById('coastal-segments').textContent = '47';
+    document.getElementById('mcda-analyses').textContent = '23';
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar métricas dos novos serviços
+    updateNewServicesMetrics();
+    
+    console.log('✅ Novos serviços integrados no painel administrativo');
+});
+</script>
+
+<!-- ========================================== -->
+<!-- 8. CSS ADICIONAL PARA OS NOVOS SERVIÇOS -->
+<!-- ========================================== -->
+
+<style>
+/* Estilos para os novos serviços */
+
+.objective-card {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.objective-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+    transform: translateY(-2px);
+}
+
+.objective-card.active {
+    border-color: #007bff;
+    background: #f8f9ff;
+}
+
+.objective-icon {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.objective-stats {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 10px;
+}
+
+.service-status {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.status-healthy { background-color: #28a745; }
+.status-warning { background-color: #ffc107; }
+.status-error { background-color: #dc3545; }
+
+.service-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.service-uptime {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.realtime-metric {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+#analysis-log {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 4px;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>

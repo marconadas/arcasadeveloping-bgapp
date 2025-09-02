@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Service Worker - BGAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #logs {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste Service Worker - BGAPP</h1>
+        <p>Esta página testa as correções implementadas no Service Worker avançado do BGAPP.</p>
+        
+        <div id="status-container">
+            <div class="status info">
+                ⏳ Inicializando testes...
+            </div>
+        </div>
+        
+        <div>
+            <button onclick="testServiceWorkerRegistration()">Testar Registro SW</button>
+            <button onclick="testNetworkRequests()">Testar Requisições</button>
+            <button onclick="testCacheStrategies()">Testar Cache</button>
+            <button onclick="testErrorHandling()">Testar Erros</button>
+            <button onclick="clearLogs()">Limpar Logs</button>
+        </div>
+        
+        <h3>📋 Logs de Teste</h3>
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        let serviceWorkerRegistration = null;
+        
+        // Função para adicionar logs
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logs.textContent += logEntry;
+            logs.scrollTop = logs.scrollHeight;
+            console.log(message);
+        }
+        
+        // Função para atualizar status
+        function updateStatus(message, type = 'info') {
+            const container = document.getElementById('status-container');
+            const statusClass = {
+                'success': 'success',
+                'error': 'error',
+                'warning': 'warning',
+                'info': 'info'
+            }[type] || 'info';
+            
+            container.innerHTML = `<div class="status ${statusClass}">${message}</div>`;
+        }
+        
+        // Limpar logs
+        function clearLogs() {
+            document.getElementById('logs').textContent = '';
+            addLog('📝 Logs limpos');
+        }
+        
+        // Teste 1: Registro do Service Worker
+        async function testServiceWorkerRegistration() {
+            addLog('🚀 Iniciando teste de registro do Service Worker...');
+            updateStatus('🔄 Testando registro do Service Worker...', 'info');
+            
+            if (!('serviceWorker' in navigator)) {
+                addLog('❌ Service Worker não suportado neste navegador');
+                updateStatus('❌ Service Worker não suportado', 'error');
+                return;
+            }
+            
+            try {
+                // Tentar registrar o service worker corrigido
+                const registration = await navigator.serviceWorker.register('/sw-advanced.js');
+                serviceWorkerRegistration = registration;
+                
+                addLog('✅ Service Worker registrado com sucesso');
+                addLog(`📍 Escopo: ${registration.scope}`);
+                
+                // Verificar estado
+                if (registration.installing) {
+                    addLog('⏳ Service Worker instalando...');
+                    registration.installing.addEventListener('statechange', (e) => {
+                        addLog(`🔄 Estado alterado: ${e.target.state}`);
+                    });
+                }
+                
+                if (registration.waiting) {
+                    addLog('⏳ Service Worker aguardando ativação...');
+                }
+                
+                if (registration.active) {
+                    addLog('✅ Service Worker ativo');
+                }
+                
+                updateStatus('✅ Service Worker registrado com sucesso', 'success');
+                
+            } catch (error) {
+                addLog(`❌ Erro ao registrar Service Worker: ${error.message}`);
+                updateStatus('❌ Erro no registro do Service Worker', 'error');
+            }
+        }
+        
+        // Teste 2: Requisições de rede
+        async function testNetworkRequests() {
+            addLog('🌐 Iniciando teste de requisições de rede...');
+            updateStatus('🔄 Testando requisições de rede...', 'info');
+            
+            const testUrls = [
+                '/api/services/status',
+                '/api/collections',
+                '/api/metrics',
+                'https://httpbin.org/json', // URL externa para teste
+                '/non-existent-endpoint' // URL que não existe para testar erro
+            ];
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const url of testUrls) {
+                try {
+                    addLog(`📡 Testando: ${url}`);
+                    const response = await fetch(url);
+                    
+                    if (response.ok) {
+                        addLog(`✅ ${url} - Status: ${response.status}`);
+                        successCount++;
+                    } else {
+                        addLog(`⚠️ ${url} - Status: ${response.status}`);
+                        if (response.headers.get('X-Service-Worker')) {
+                            addLog(`🔧 Resposta do Service Worker: ${response.headers.get('X-Service-Worker')}`);
+                        }
+                        errorCount++;
+                    }
+                    
+                } catch (error) {
+                    addLog(`❌ ${url} - Erro: ${error.message}`);
+                    errorCount++;
+                }
+                
+                // Pequena pausa entre requisições
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            addLog(`📊 Resumo: ${successCount} sucessos, ${errorCount} erros`);
+            updateStatus(`📊 Teste concluído: ${successCount}/${testUrls.length} sucessos`, 
+                        successCount > errorCount ? 'success' : 'warning');
+        }
+        
+        // Teste 3: Estratégias de cache
+        async function testCacheStrategies() {
+            addLog('💾 Iniciando teste de estratégias de cache...');
+            updateStatus('🔄 Testando estratégias de cache...', 'info');
+            
+            // Verificar se há caches criados
+            try {
+                const cacheNames = await caches.keys();
+                addLog(`📦 Caches encontrados: ${cacheNames.length}`);
+                
+                for (const cacheName of cacheNames) {
+                    addLog(`📦 Cache: ${cacheName}`);
+                    const cache = await caches.open(cacheName);
+                    const keys = await cache.keys();
+                    addLog(`   📁 Entradas: ${keys.length}`);
+                }
+                
+                updateStatus('✅ Estratégias de cache funcionando', 'success');
+                
+            } catch (error) {
+                addLog(`❌ Erro ao verificar caches: ${error.message}`);
+                updateStatus('❌ Erro nas estratégias de cache', 'error');
+            }
+        }
+        
+        // Teste 4: Tratamento de erros
+        async function testErrorHandling() {
+            addLog('🛠️ Iniciando teste de tratamento de erros...');
+            updateStatus('🔄 Testando tratamento de erros...', 'info');
+            
+            // Teste com URLs que devem gerar erros
+            const errorUrls = [
+                'https://invalid-domain-that-does-not-exist.com/api',
+                '/api/invalid-endpoint',
+                'chrome-extension://invalid'
+            ];
+            
+            let handledErrors = 0;
+            
+            for (const url of errorUrls) {
+                try {
+                    addLog(`🔍 Testando erro: ${url}`);
+                    const response = await fetch(url);
+                    
+                    // Verificar se a resposta é do service worker
+                    if (response.headers.get('X-Service-Worker')) {
+                        addLog(`✅ Erro tratado pelo Service Worker`);
+                        handledErrors++;
+                    } else {
+                        addLog(`⚠️ Resposta não tratada pelo Service Worker`);
+                    }
+                    
+                    // Tentar ler o JSON da resposta
+                    const data = await response.json();
+                    if (data.serviceWorker) {
+                        addLog(`✅ Resposta estruturada do Service Worker`);
+                    }
+                    
+                } catch (error) {
+                    addLog(`❌ Erro não tratado: ${error.message}`);
+                }
+            }
+            
+            addLog(`📊 Erros tratados: ${handledErrors}/${errorUrls.length}`);
+            updateStatus(`📊 Tratamento de erros: ${handledErrors}/${errorUrls.length}`, 
+                        handledErrors === errorUrls.length ? 'success' : 'warning');
+        }
+        
+        // Inicializar testes automaticamente
+        window.addEventListener('load', async () => {
+            addLog('🎯 Página carregada - iniciando diagnósticos');
+            
+            // Aguardar um pouco antes de iniciar os testes
+            setTimeout(() => {
+                testServiceWorkerRegistration();
+            }, 1000);
+        });
+        
+        // Escutar mensagens do service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                addLog(`📨 Mensagem do SW: ${JSON.stringify(event.data)}`);
+            });
+        }
+    </script>
+</body>
+</html>

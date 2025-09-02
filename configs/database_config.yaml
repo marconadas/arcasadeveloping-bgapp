@@ -1,0 +1,23 @@
+postgresql:
+  database: bgapp
+  host: localhost
+  max_overflow: 30
+  pool_recycle: 3600
+  pool_size: 20
+  pool_timeout: 30
+  port: 5432
+  username: bgapp_user
+redis:
+  database: 0
+  host: localhost
+  max_connections: 100
+  password: null
+  port: 6379
+  socket_timeout: 30
+timescaledb:
+  compression: true
+  database: timescaledb
+  host: localhost
+  port: 5432
+  retention_policy: 1 year
+  username: timescale_user

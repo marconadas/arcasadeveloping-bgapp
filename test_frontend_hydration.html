@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Frontend BGAPP - Hydration Fix</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f0f2f5;
+        }
+        .test-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb;
+        }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb;
+        }
+        .loading { 
+            background: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7;
+        }
+        iframe { 
+            width: 100%; 
+            height: 600px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🚀 BGAPP Frontend - Teste Hydration Fix</h1>
+        <p><strong>Objetivo:</strong> Verificar se a correção do hydration error resolveu o problema da página ficar em branco.</p>
+        
+        <div id="status" class="status loading">
+            🔄 Iniciando testes...
+        </div>
+
+        <div class="test-controls">
+            <button class="test-button" onclick="testDashboard()">🧪 Testar Dashboard</button>
+            <button class="test-button" onclick="testAPI()">🔧 Testar API</button>
+            <button class="test-button" onclick="reloadIframe()">🔄 Recarregar</button>
+            <button class="test-button" onclick="openInNewTab()">🗗 Abrir em Nova Aba</button>
+        </div>
+
+        <h2>📊 Dashboard BGAPP (iframe):</h2>
+        <iframe id="dashboard-iframe" src="http://localhost:3000" onload="checkIframeLoad()"></iframe>
+
+        <div id="console-output">
+            <h3>📝 Log de Testes:</h3>
+            <div id="log" style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; height: 200px; overflow-y: auto;">
+                Aguardando testes...<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testLog = [];
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            testLog.push(logMessage);
+            document.getElementById('log').innerHTML = testLog.join('<br>') + '<br>';
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+        }
+
+        function updateStatus(message, type = 'loading') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        async function testAPI() {
+            log('🔧 Testando conexão com API...');
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                const data = await response.json();
+                if (data.status === 'healthy') {
+                    log('✅ API funcionando corretamente');
+                    updateStatus('✅ API funcionando - Testando dashboard...', 'success');
+                    return true;
+                } else {
+                    log('⚠️ API retornou status não healthy');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Erro na API: ${error.message}`);
+                updateStatus('❌ API não está respondendo', 'error');
+                return false;
+            }
+        }
+
+        async function testDashboard() {
+            log('🧪 Iniciando teste completo do dashboard...');
+            
+            // Testar API primeiro
+            const apiWorking = await testAPI();
+            if (!apiWorking) {
+                updateStatus('❌ API falhou - verifique se está rodando', 'error');
+                return;
+            }
+
+            // Testar frontend
+            log('🌐 Testando frontend...');
+            try {
+                const response = await fetch('http://localhost:3000');
+                const html = await response.text();
+                
+                if (html.includes('BGAPP')) {
+                    log('✅ Frontend carregando HTML corretamente');
+                    
+                    // Verificar se não há erros óbvios
+                    if (html.includes('Cannot read properties')) {
+                        log('⚠️ Ainda há erros de propriedades no HTML');
+                        updateStatus('⚠️ Frontend com erros - verifique console do navegador', 'error');
+                    } else {
+                        log('✅ Nenhum erro óbvio detectado no HTML');
+                        updateStatus('✅ Testes passaram - Dashboard deve estar funcionando!', 'success');
+                    }
+                } else {
+                    log('❌ HTML não contém conteúdo esperado');
+                    updateStatus('❌ Frontend não está carregando conteúdo', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro testando frontend: ${error.message}`);
+                updateStatus('❌ Frontend não está respondendo', 'error');
+            }
+        }
+
+        function checkIframeLoad() {
+            log('📊 Iframe do dashboard carregado');
+            
+            // Tentar detectar se o iframe está em branco
+            setTimeout(() => {
+                try {
+                    const iframe = document.getElementById('dashboard-iframe');
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    if (iframeDoc.body && iframeDoc.body.innerHTML.trim() === '') {
+                        log('⚠️ ALERTA: Iframe parece estar em branco!');
+                        updateStatus('⚠️ Dashboard pode estar em branco - verifique manualmente', 'error');
+                    } else {
+                        log('✅ Iframe tem conteúdo');
+                        if (document.getElementById('status').className.includes('loading')) {
+                            updateStatus('✅ Dashboard carregou com sucesso!', 'success');
+                        }
+                    }
+                } catch (e) {
+                    log('ℹ️ Não foi possível verificar conteúdo do iframe (CORS)');
+                }
+            }, 2000);
+        }
+
+        function reloadIframe() {
+            log('🔄 Recarregando dashboard...');
+            document.getElementById('dashboard-iframe').src = document.getElementById('dashboard-iframe').src;
+        }
+
+        function openInNewTab() {
+            log('🗗 Abrindo dashboard em nova aba...');
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        // Iniciar teste automático
+        setTimeout(() => {
+            log('🚀 Iniciando teste automático...');
+            testDashboard();
+        }, 2000);
+    </script>
+</body>
+</html>
