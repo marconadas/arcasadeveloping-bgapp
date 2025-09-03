@@ -80,8 +80,8 @@ class Marine3DIntegration {
             // Carregar script da visualização avançada
             await this.loadAdvancedScript();
             
-            // Inicializar visualização
-            this.advancedVisualization = new AdvancedMarineVisualization('advanced-marine-3d-container');
+            // Inicializar visualização V2
+            this.advancedVisualization = new AdvancedMarineVisualizationV2('advanced-marine-3d-container');
             
             // Aguardar inicialização
             await this.waitForInitialization();
@@ -98,13 +98,13 @@ class Marine3DIntegration {
     async loadAdvancedScript() {
         return new Promise((resolve, reject) => {
             // Verificar se o script já foi carregado
-            if (window.AdvancedMarineVisualization) {
+            if (window.AdvancedMarineVisualizationV2) {
                 resolve();
                 return;
             }
             
             const script = document.createElement('script');
-            script.src = 'assets/js/advanced-3d-marine-visualization.js';
+            script.src = 'assets/js/advanced-3d-marine-visualization-v2.js';
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
