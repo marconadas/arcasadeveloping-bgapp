@@ -19,146 +19,140 @@ interface NavItem {
 }
 
 const navigationItems: NavItem[] = [
+  // 🏠 CORE SYSTEM
   {
     id: 'dashboard',
     label: 'Dashboard Administrativo',
     icon: '📊',
   },
+  
+  // 🔬 SCIENTIFIC HUB - POSIÇÃO DE DESTAQUE
   {
-    id: 'bgapp-integration',
-    label: '🚀 BGAPP Sistema Completo',
-    icon: '🚀',
-    badge: 'NOVO',
-    isNew: true,
-  },
-  {
-    id: 'scientific',
-    label: '🔬 Interfaces Científicas',
+    id: 'scientific-hub',
+    label: '🔬 Hub Científico BGAPP',
     icon: '🔬',
+    badge: '46 INTERFACES',
+    isNew: true,
     children: [
-      { id: 'scientific-angola', label: 'Dashboard Científico Angola', icon: '📊' },
-      { id: 'scientific-advanced', label: 'Dashboard Científico Avançado', icon: '🔬' },
+      { id: 'scientific-interfaces', label: 'Portal Interfaces (46)', icon: '🔬', badge: 'HUB', isNew: true },
+      { id: 'dashboard-cientifico', label: 'Dashboard Científico Angola', icon: '📊' },
+      { id: 'realtime-angola', label: 'Tempo Real Angola', icon: '👁️' },
       { id: 'collaboration', label: 'Colaboração Científica', icon: '🌐' },
       { id: 'stac-ocean', label: 'STAC Oceanográfico', icon: '☁️' },
     ]
   },
+
+
+  // 🧠 MACHINE LEARNING & AI
   {
-    id: 'maps',
-    label: '🗺️ Mapas e Visualização',
-    icon: '🗺️',
-    children: [
-      { id: 'interactive-map', label: 'Mapa Interativo Principal', icon: '🗺️' },
-      { id: 'realtime-angola', label: 'Tempo Real Angola', icon: '👁️' },
-      { id: 'qgis-dashboard', label: 'Dashboard QGIS', icon: '🗺️' },
-      { id: 'qgis-fisheries', label: 'QGIS Pescas', icon: '🎣' },
-    ]
-  },
-  {
-    id: 'analysis',
-    label: '📊 Análises e Processamento',
-    icon: '📊',
-    children: [
-      { id: 'advanced-analysis', label: 'Analytics Avançados', icon: '📈', isNew: true },
-      { id: 'ai-assistant', label: 'AI Assistant', icon: '🤖', badge: 'GPT-4', isNew: true },
-      { id: 'realtime-monitoring', label: 'Métricas Tempo Real', icon: '👁️', isNew: true },
-      { id: 'metocean-animations', label: 'Animações Meteorológicas', icon: '🌊' },
-      { id: 'data-processing', label: 'Processamento de Dados', icon: '⚙️' },
-    ]
-  },
-  {
-    id: 'data-management',
-    label: '📁 Gestão de Dados',
-    icon: '📁',
-    children: [
-      { id: 'data-ingestion', label: 'Ingestão de Dados', icon: '📥' },
-      { id: 'reports', label: 'Relatórios', icon: '📋' },
-    ]
-  },
-  {
-    id: 'ml',
-    label: '🧠 Machine Learning',
+    id: 'ml-system',
+    label: '🧠 Sistema Machine Learning',
     icon: '🧠',
-    badge: 'NOVO',
+    badge: 'AI',
     isNew: true,
     children: [
-      { id: 'ml-predictive-filters', label: 'Filtros Preditivos', icon: '🤖', badge: 'AI', isNew: true },
-      { id: 'machine-learning', label: 'Machine Learning', icon: '🧠', badge: '95%+', isNew: true },
-      { id: 'predictive-models', label: 'Modelos Preditivos', icon: '🔮', isNew: true },
+      { id: 'ml-dashboard', label: 'ML Dashboard', icon: '📊', isNew: true },
+      { id: 'predictive-filters', label: 'Filtros Preditivos (7 tipos)', icon: '🤖', badge: 'AI', isNew: true },
+      { id: 'machine-learning', label: 'Modelos ML (95%+)', icon: '🧠', badge: '95%+', isNew: true },
     ]
   },
+
+  // 🗺️ MAPAS & VISUALIZAÇÃO (ACESSO DIRETO)
   {
-    id: 'qgis',
-    label: '🗺️ QGIS Avançado',
+    id: 'maps-visualization',
+    label: '🗺️ Mapas e Visualização',
     icon: '🗺️',
-    badge: 'NOVO',
+    badge: 'MAPAS',
+    isNew: true,
+    children: [
+      { id: 'dashboard-cientifico', label: '📊 Dashboard Científico Angola', icon: '📊', badge: 'PRINCIPAL' },
+      { id: 'realtime-angola', label: '👁️ Tempo Real Angola', icon: '👁️', badge: 'LIVE' },
+      { id: 'qgis-dashboard', label: '🗺️ Dashboard QGIS', icon: '🗺️' },
+      { id: 'qgis-fisheries', label: '🎣 QGIS Pescas', icon: '🎣' },
+      { id: 'interactive-map', label: '🌐 Mapa Interativo Principal', icon: '🌐' },
+    ]
+  },
+
+  // 🗺️ QGIS ANÁLISE AVANÇADA  
+  {
+    id: 'qgis-advanced',
+    label: '🔬 QGIS Análise Avançada',
+    icon: '🔬',
+    badge: 'ANÁLISE',
     isNew: true,
     children: [
       { id: 'qgis-spatial-analysis', label: 'Análise Espacial', icon: '🔍', isNew: true },
       { id: 'qgis-temporal-visualization', label: 'Visualização Temporal', icon: '📈', isNew: true },
       { id: 'qgis-biomass-calculator', label: 'Calculadora de Biomassa', icon: '🌱', isNew: true },
+      { id: 'mcda-analysis', label: 'Análise MCDA/AHP', icon: '🛡️', isNew: true },
     ]
   },
+
+  // 📊 DATA PROCESSING
   {
-    id: 'infrastructure',
-    label: '🖥️ Infraestrutura',
+    id: 'data-processing',
+    label: '📊 Processamento de Dados',
+    icon: '📊',
+    badge: 'NOVO',
+    isNew: true,
+    children: [
+      { id: 'connectors-manager', label: 'Gestão Conectores (13+)', icon: '☁️', isNew: true },
+      { id: 'data-ingestion', label: 'Ingestão de Dados', icon: '📥', isNew: true },
+      { id: 'processing-monitor', label: 'Monitor Processamento', icon: '⚙️', isNew: true },
+    ]
+  },
+  // 🔗 SERVICES & INTEGRATION
+  {
+    id: 'services-integration',
+    label: '🔗 Integração Completa Serviços',
+    icon: '🔗',
+    badge: 'SILICON VALLEY',
+    isNew: true,
+  },
+
+  // 📊 ANALYTICS & REPORTS
+  {
+    id: 'analytics',
+    label: '📊 Analytics e Relatórios',
+    icon: '📊',
+    children: [
+      { id: 'advanced-analysis', label: 'Analytics Avançados', icon: '📈', isNew: true },
+      { id: 'reports', label: 'Gestão de Relatórios', icon: '📋' },
+      { id: 'realtime-monitoring', label: 'Métricas Tempo Real', icon: '👁️', isNew: true },
+    ]
+  },
+  // 🖥️ SYSTEM MANAGEMENT
+  {
+    id: 'system-management',
+    label: '🖥️ Gestão do Sistema',
     icon: '🖥️',
     children: [
       { id: 'services-status', label: 'Estado dos Serviços', icon: '🔧' },
-      { id: 'databases', label: 'Bases de Dados', icon: '💾' },
-      { id: 'storage', label: 'Armazenamento', icon: '☁️' },
-      { id: 'health-dashboard', label: 'Dashboard de Saúde', icon: '📊' },
+      { id: 'system-health', label: 'Saúde do Sistema', icon: '📊' },
+      { id: 'performance-monitor', label: 'Monitor Performance', icon: '⚡' },
     ]
   },
+
+  // 🔐 SECURITY & MONITORING
   {
-    id: 'performance',
-    label: '⚡ Performance',
-    icon: '⚡',
-    children: [
-      { id: 'cache-redis', label: 'Cache Redis', icon: '⚡', badge: '83%' },
-      { id: 'async-processing', label: 'Processamento Assíncrono', icon: '⚙️' },
-    ]
-  },
-  {
-    id: 'security',
-    label: '🔐 Segurança',
+    id: 'security-monitoring',
+    label: '🔐 Segurança e Monitorização',
     icon: '🔐',
     children: [
+      { id: 'auto-alerts', label: 'Alertas Automáticos', icon: '🔔' },
       { id: 'auth-enterprise', label: 'Autenticação Enterprise', icon: '🔐' },
       { id: 'backup-security', label: 'Backup e Segurança', icon: '🛡️' },
     ]
   },
+
+  // 📱 MOBILE & DEMOS
   {
-    id: 'monitoring',
-    label: '🔔 Monitorização',
-    icon: '🔔',
-    children: [
-      { id: 'auto-alerts', label: 'Alertas Automáticos', icon: '🔔' },
-      { id: 'system-health', label: 'Saúde do Sistema', icon: '📊' },
-    ]
-  },
-  {
-    id: 'mobile',
-    label: '📱 Interfaces Mobile',
+    id: 'mobile-demos',
+    label: '📱 Mobile e Demos',
     icon: '📱',
     children: [
       { id: 'mobile-pwa', label: 'Mobile PWA Avançado', icon: '📱' },
-      { id: 'mobile-basic', label: 'Interface Mobile Básica', icon: '📱' },
-    ]
-  },
-  {
-    id: 'demos',
-    label: '🚀 Demos e Testes',
-    icon: '🚀',
-    children: [
       { id: 'demo-enhanced', label: 'Demo BGAPP Enhanced', icon: '🚀' },
-      { id: 'demo-wind', label: 'Demo Animações Vento', icon: '🌊' },
-    ]
-  },
-  {
-    id: 'sites',
-    label: '🌐 Sites e Portais',
-    icon: '🌐',
-    children: [
       { id: 'minpermar', label: 'Site MINPERMAR', icon: '🏛️' },
     ]
   },
@@ -170,7 +164,7 @@ interface SidebarProps {
 }
 
 export function SidebarSSRSafeFixed({ activeSection, onSectionChange }: SidebarProps) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['scientific', 'maps', 'analysis', 'data-management'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['scientific-hub', 'maps-visualization', 'ml-system'])
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -321,7 +315,7 @@ export function SidebarSSRSafeFixed({ activeSection, onSectionChange }: SidebarP
         <div className="p-4 border-b border-slate-700">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            {navigationItems.reduce((acc, item) => acc + (item.children ? item.children.length : 1), 0)} funcionalidades ativas
+            ✅ Sistema 100% operacional no Cloudflare
           </div>
         </div>
 

@@ -705,10 +705,10 @@
     <script src="assets/js/eox-layers.js?v=20250901"></script>
     
     <script>
-        // Configuração do mapa
+        // 🚀 CONFIGURAÇÃO DO MAPA - SILICON VALLEY OPTIMIZED
         const map = L.map('map', {
-            center: [-12.5, 13.5], // Centro de Angola
-            zoom: 6,
+            center: [-9.5, 13.2], // Centro otimizado para costa de Angola (Luanda region)
+            zoom: 7, // Zoom mais próximo para ver infraestruturas costeiras
             minZoom: 5,
             maxZoom: 18
         });
@@ -798,10 +798,15 @@
             wholesale_market: { color: '#20c997', radius: 7, icon: '🐟' }
         };
 
-        // Função para criar marcador customizado
+        // 🚀 FUNÇÃO PARA CRIAR MARCADOR CUSTOMIZADO - SILICON VALLEY DEBUG
         function createCustomMarker(feature, style, collection, featureIndex) {
             const coords = feature.geometry.coordinates;
             const props = feature.properties;
+            
+            // Debug das coordenadas
+            console.log(`🎯 Criando marcador: ${props.name}`);
+            console.log(`📍 GeoJSON coords [lng, lat]: [${coords[0]}, ${coords[1]}]`);
+            console.log(`🗺️ Leaflet coords [lat, lng]: [${coords[1]}, ${coords[0]}]`);
             
             const marker = L.circleMarker([coords[1], coords[0]], {
                 radius: style.radius,
@@ -933,20 +938,27 @@
                 `;
             }
 
+            // 🚀 SILICON VALLEY ROBUST HANDLING
             if (props.infrastructure) {
+                const infraValue = Array.isArray(props.infrastructure) 
+                    ? props.infrastructure.join(', ')
+                    : String(props.infrastructure);
                 content += `
                     <div class="info-item">
                         <span class="info-label">Infraestruturas:</span>
-                        <span class="info-value">${props.infrastructure.join(', ')}</span>
+                        <span class="info-value">${infraValue}</span>
                     </div>
                 `;
             }
 
             if (props.main_species) {
+                const speciesValue = Array.isArray(props.main_species)
+                    ? props.main_species.slice(0, 2).join(', ')
+                    : String(props.main_species);
                 content += `
                     <div class="info-item">
                         <span class="info-label">Espécies Principais:</span>
-                        <span class="info-value">${props.main_species.slice(0, 2).join(', ')}</span>
+                        <span class="info-value">${speciesValue}</span>
                     </div>
                 `;
             }
@@ -965,34 +977,54 @@
             return names[zone] || zone;
         }
 
-        // Função para carregar dados
+        // 🚀 FUNÇÃO PARA CARREGAR DADOS - SILICON VALLEY DIRECT MODE (BYPASS SERVICE WORKER)
         async function loadData() {
             try {
-                const endpoints = [
-                    'http://localhost:5080/collections/fishing_ports/items?f=json&limit=1000',
-                    'http://localhost:5080/collections/fishing_villages/items?f=json&limit=1000',
-                    'http://localhost:5080/collections/fishing_infrastructure/items?f=json&limit=1000'
+                console.log('🎯 INICIANDO CARREGAMENTO DIRETO - BYPASS SILICON VALLEY MODE');
+                
+                // USAR DIRETAMENTE O ADMIN-API-WORKER (SEM LOCALHOST)
+                const directEndpoints = [
+                    'https://bgapp-admin-api.majearcasa.workers.dev/collections/fishing_ports/items?f=json&limit=1000',
+                    'https://bgapp-admin-api.majearcasa.workers.dev/collections/fishing_villages/items?f=json&limit=1000',
+                    'https://bgapp-admin-api.majearcasa.workers.dev/collections/fishing_infrastructure/items?f=json&limit=1000'
                 ];
 
-                console.log('Carregando dados dos endpoints:', endpoints);
+                console.log('🚀 Carregando DIRETAMENTE do admin-api-worker:', directEndpoints);
 
-                const [portsResponse, villagesResponse, infrastructureResponse] = await Promise.all(
-                    endpoints.map(url => fetch(url))
-                );
+                try {
+                    const [portsResponse, villagesResponse, infrastructureResponse] = await Promise.all(
+                        directEndpoints.map(url => fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        }))
+                    );
 
-                if (!portsResponse.ok || !villagesResponse.ok || !infrastructureResponse.ok) {
-                    throw new Error('Erro ao carregar dados dos endpoints');
+                    console.log('📊 Status das responses:', {
+                        ports: portsResponse.status,
+                        villages: villagesResponse.status,
+                        infrastructure: infrastructureResponse.status
+                    });
+
+                    if (portsResponse.ok && villagesResponse.ok && infrastructureResponse.ok) {
+                        allData.ports = await portsResponse.json();
+                        allData.villages = await villagesResponse.json();
+                        allData.infrastructure = await infrastructureResponse.json();
+                        
+                        console.log('✅ Dados carregados DIRETAMENTE:', {
+                            ports: allData.ports.features?.length || 0,
+                            villages: allData.villages.features?.length || 0,
+                            infrastructure: allData.infrastructure.features?.length || 0
+                        });
+                    } else {
+                        throw new Error(`API responses failed: ${portsResponse.status}, ${villagesResponse.status}, ${infrastructureResponse.status}`);
+                    }
+                } catch (directError) {
+                    console.error('❌ Erro na chamada direta:', directError);
+                    throw directError;
                 }
-
-                allData.ports = await portsResponse.json();
-                allData.villages = await villagesResponse.json();
-                allData.infrastructure = await infrastructureResponse.json();
-
-                console.log('Dados carregados:', {
-                    ports: allData.ports.features?.length || 0,
-                    villages: allData.villages.features?.length || 0,
-                    infrastructure: allData.infrastructure.features?.length || 0
-                });
 
                 renderLayers();
                 updateStats();
@@ -1000,43 +1032,159 @@
                 document.getElementById('loading').style.display = 'none';
                 
             } catch (error) {
-                console.error('Erro ao carregar dados:', error);
+                console.error('❌ ERRO CRÍTICO ao carregar dados:', error);
+                
+                // 🎭 FALLBACK FINAL COM DADOS MOCK - SILICON VALLEY STRUCTURE
+                console.log('🎭 Usando dados mock como último recurso...');
+                allData = {
+                    ports: {
+                        type: "FeatureCollection",
+                        features: [
+                            {
+                                type: "Feature",
+                                id: 1,
+                                geometry: { type: "Point", coordinates: [13.2343, -8.8384] },
+                                properties: { 
+                                    name: "Porto de Luanda", 
+                                    type: "major_port", 
+                                    zone: "zona_norte",
+                                    capacity_boats: 500,
+                                    boats: 350,
+                                    infrastructure: ["Cais", "Armazéns", "Oficinas"],
+                                    main_species: ["Sardinha", "Cavala", "Atum"]
+                                }
+                            }
+                        ]
+                    },
+                    villages: {
+                        type: "FeatureCollection", 
+                        features: [
+                            {
+                                type: "Feature",
+                                id: 1,
+                                geometry: { type: "Point", coordinates: [13.1543, -8.7234] },
+                                properties: { 
+                                    name: "Vila da Corimba", 
+                                    type: "fishing_village", 
+                                    zone: "zona_norte",
+                                    population: 2500,
+                                    boats: 45,
+                                    main_species: ["Sardinha", "Carapau"]
+                                }
+                            }
+                        ]
+                    },
+                    infrastructure: {
+                        type: "FeatureCollection",
+                        features: [
+                            {
+                                type: "Feature", 
+                                id: 1,
+                                geometry: { type: "Point", coordinates: [13.2543, -8.8534] },
+                                properties: { 
+                                    name: "Fábrica de Conservas Luanda", 
+                                    type: "canning_factory", 
+                                    zone: "zona_norte",
+                                    capacity_boats: 100,
+                                    main_species: ["Sardinha", "Atum"]
+                                }
+                            }
+                        ]
+                    }
+                };
+                
+                renderLayers();
+                updateStats();
+                
                 document.getElementById('loading').innerHTML = 
-                    '<i class="fas fa-exclamation-triangle"></i> Erro ao carregar dados';
+                    '<i class="fas fa-exclamation-triangle"></i> Usando dados de demonstração';
             }
         }
 
-        // Função para renderizar camadas
+        // 🚀 FUNÇÃO PARA RENDERIZAR CAMADAS - SILICON VALLEY DEBUG
         function renderLayers() {
+            console.log('🎯 RENDERIZANDO CAMADAS - DEBUG SILICON VALLEY');
+            console.log('📊 Dados disponíveis:', {
+                ports: allData.ports?.features?.length || 0,
+                villages: allData.villages?.features?.length || 0,
+                infrastructure: allData.infrastructure?.features?.length || 0
+            });
+
             // Limpar camadas existentes
             Object.values(layerGroups).forEach(group => group.clearLayers());
 
-            // Renderizar portos
-            if (allData.ports.features) {
+            let totalMarkersAdded = 0;
+
+            // Renderizar portos com debug
+            if (allData.ports?.features) {
+                console.log('🏗️ Renderizando portos:', allData.ports.features.length);
                 allData.ports.features.forEach((feature, index) => {
                     const style = markerStyles[feature.properties.type] || markerStyles.major_port;
                     const marker = createCustomMarker(feature, style, 'ports', index);
                     layerGroups.ports.addLayer(marker);
+                    totalMarkersAdded++;
+                    console.log(`⚓ Porto adicionado: ${feature.properties.name} em [${feature.geometry.coordinates}]`);
                 });
+                
+                // Forçar z-index alto para portos
+                layerGroups.ports.eachLayer(layer => {
+                    if (layer.getElement) {
+                        layer.getElement().style.zIndex = 1000;
+                    }
+                });
+            } else {
+                console.warn('❌ Dados de portos não disponíveis!');
             }
 
-            // Renderizar vilas
-            if (allData.villages.features) {
+            // Renderizar vilas com debug
+            if (allData.villages?.features) {
+                console.log('🏠 Renderizando vilas:', allData.villages.features.length);
                 allData.villages.features.forEach((feature, index) => {
                     const style = markerStyles.fishing_village;
                     const marker = createCustomMarker(feature, style, 'villages', index);
                     layerGroups.villages.addLayer(marker);
+                    totalMarkersAdded++;
+                    console.log(`🏠 Vila adicionada: ${feature.properties.name} em [${feature.geometry.coordinates}]`);
                 });
+                
+                // Forçar z-index alto para vilas
+                layerGroups.villages.eachLayer(layer => {
+                    if (layer.getElement) {
+                        layer.getElement().style.zIndex = 1001;
+                    }
+                });
+            } else {
+                console.warn('❌ Dados de vilas não disponíveis!');
             }
 
-            // Renderizar infraestruturas
-            if (allData.infrastructure.features) {
+            // Renderizar infraestruturas com debug
+            if (allData.infrastructure?.features) {
+                console.log('🏭 Renderizando infraestruturas:', allData.infrastructure.features.length);
                 allData.infrastructure.features.forEach((feature, index) => {
                     const style = markerStyles[feature.properties.type] || markerStyles.processing_plant;
                     const marker = createCustomMarker(feature, style, 'infrastructure', index);
                     layerGroups.infrastructure.addLayer(marker);
+                    totalMarkersAdded++;
+                    console.log(`🏭 Infraestrutura adicionada: ${feature.properties.name} em [${feature.geometry.coordinates}]`);
                 });
+                
+                // Forçar z-index alto para infraestruturas
+                layerGroups.infrastructure.eachLayer(layer => {
+                    if (layer.getElement) {
+                        layer.getElement().style.zIndex = 1002;
+                    }
+                });
+            } else {
+                console.warn('❌ Dados de infraestruturas não disponíveis!');
             }
+
+            console.log(`✅ RENDERIZAÇÃO COMPLETA: ${totalMarkersAdded} marcadores adicionados ao mapa`);
+            
+            // Forçar atualização visual do mapa
+            setTimeout(() => {
+                map.invalidateSize();
+                console.log('🔄 Mapa invalidado para forçar re-render');
+            }, 100);
         }
 
         // ===============================================================================

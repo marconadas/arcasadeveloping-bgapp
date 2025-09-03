@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { getServiceUrl } from '@/lib/environment-urls';
 import { Card, CardContent } from '@/components/ui/card';
 
 /**
@@ -45,28 +46,28 @@ const BGAPP_MAPS = {
   realtime_angola: {
     name: 'Realtime Angola',
     description: 'Dados oceanográficos em tempo real da costa angolana',
-    url: 'http://localhost:8085/realtime_angola.html',
+    url: `https://befb0797.bgapp-arcasadeveloping.pages.dev/realtime_angola.html`,
     icon: '🌊',
     features: ['SST', 'Correntes', 'Ventos', 'Clorofila-a', 'Batimetria']
   },
   dashboard_cientifico: {
     name: 'Dashboard Científico',
     description: 'Interface científica principal para dados oceanográficos',
-    url: 'http://localhost:8085/dashboard_cientifico.html',
+    url: `https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html`,
     icon: '🔬',
     features: ['Análise Científica', 'Múltiplas Camadas', 'Visualizações Avançadas']
   },
   qgis_dashboard: {
     name: 'QGIS Dashboard',
     description: 'Dashboard QGIS principal com análise espacial',
-    url: 'http://localhost:8085/qgis_dashboard.html',
+    url: `https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_dashboard.html`,
     icon: '🗺️',
     features: ['Análise Espacial', 'QGIS Integration', 'Geoprocessamento']
   },
   qgis_fisheries: {
     name: 'QGIS Pescas',
     description: 'Sistema QGIS especializado para gestão pesqueira',
-    url: 'http://localhost:8085/qgis_fisheries.html',
+    url: `https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_fisheries.html`,
     icon: '🎣',
     features: ['Gestão Pesqueira', 'Zonas de Pesca', 'Análise de Stocks']
   }

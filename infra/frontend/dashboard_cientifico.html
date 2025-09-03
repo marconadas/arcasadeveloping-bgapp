@@ -24,6 +24,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
     
+    <!-- Advanced 3D Marine Visualization -->
+    <link rel="stylesheet" href="assets/css/advanced-3d-marine-styles.css">
+    <script src="assets/js/advanced-3d-marine-visualization.js" defer></script>
+    <script src="assets/js/marine-3d-integration.js" defer></script>
+    
     <!-- Leaflet para mapas -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
     
@@ -1857,7 +1862,7 @@
                             <div id="ocean-3d-visualization" style="height: 500px; position: relative;">
                                 <div class="loading-spinner">
                                     <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Carregando visualização 3D...</span>
+                                        <span class="visually-hidden">Carregando visualização 3D avançada...</span>
                                     </div>
                                 </div>
                             </div>
@@ -5204,11 +5209,12 @@
         let current3DMode = 'ocean';
         let animationId;
 
-        function initialize3DVisualization() {
+        // LEGACY 3D - Desabilitado em favor do Advanced 3D Marine Visualization
+        function initialize3DVisualization_LEGACY() {
             const container = document.getElementById('ocean-3d-visualization');
             if (!container || typeof THREE === 'undefined') {
                 console.log('⏳ Aguardando Three.js carregar...');
-                setTimeout(initialize3DVisualization, 1000);
+                setTimeout(initialize3DVisualization_LEGACY, 1000);
                 return;
             }
 
@@ -6610,13 +6616,23 @@
                 apiIntegrationSystem.initialize();
             }, 1500);
             
-            // Inicializar visualização 3D após carregar bibliotecas
-            setTimeout(initialize3DVisualization, 2000);
+            // LEGACY 3D removido - Agora usando Advanced 3D Marine Visualization
+            // setTimeout(initialize3DVisualization_LEGACY, 2000);
             
             // Mostrar hint de atalhos após 3 segundos
             setTimeout(() => {
                 showShortcutFeedback('Pressione H para ver atalhos de teclado');
             }, 3000);
+            
+            // Inicializar integração 3D avançada
+            setTimeout(() => {
+                if (window.Marine3DIntegration) {
+                    window.marine3DIntegration = new Marine3DIntegration();
+                    console.log('🌊 Sistema 3D avançado inicializado');
+                } else {
+                    console.warn('⚠️ Marine3DIntegration não disponível');
+                }
+            }, 500);
             
             console.log('🚀 Dashboard BGAPP inicializado com todas as funcionalidades avançadas');
         });

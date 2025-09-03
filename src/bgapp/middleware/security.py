@@ -190,7 +190,7 @@ class SecurityHeaders:
         """Adicionar headers de segurança à resposta"""
         headers = {
             # Prevenir clickjacking
-            "X-Frame-Options": "DENY",
+            "X-Frame-Options": "SAMEORIGIN",
             
             # Prevenir MIME sniffing
             "X-Content-Type-Options": "nosniff",

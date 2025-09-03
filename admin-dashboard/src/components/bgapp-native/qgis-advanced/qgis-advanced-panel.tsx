@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getServiceUrl } from '@/lib/environment-urls';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -482,7 +483,7 @@ export default function QGISAdvancedPanel() {
             <Button
               variant="outline"
               className="h-16 justify-start"
-              onClick={() => window.open('http://localhost:8085/qgis_dashboard.html', '_blank')}
+              onClick={() => window.open(`${getServiceUrl('frontend')}/qgis_dashboard.html`, '_blank')}
             >
               <MapIcon className="h-6 w-6 mr-3" />
               <div className="text-left">
@@ -494,7 +495,7 @@ export default function QGISAdvancedPanel() {
             <Button
               variant="outline"
               className="h-16 justify-start"
-              onClick={() => window.open('http://localhost:8085/qgis_fisheries.html', '_blank')}
+              onClick={() => window.open(`${getServiceUrl('frontend')}/qgis_fisheries.html`, '_blank')}
             >
               <BeakerIcon className="h-6 w-6 mr-3" />
               <div className="text-left">

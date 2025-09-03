@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Base API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bgapp-scientific.pages.dev'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -51,7 +51,7 @@ export const apiService = {
           name: 'STAC FastAPI',
           status: 'online',
           port: 8000,
-          url: 'http://localhost:8000',
+          url: 'https://bgapp-api-worker.majearcasa.workers.dev',
           response_time: 1.1,
           last_check: new Date().toISOString()
         }

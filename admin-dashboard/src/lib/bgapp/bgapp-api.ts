@@ -5,15 +5,17 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
  * Sistema completo de integração com todas as funcionalidades BGAPP
  */
 
-// Configuração das URLs base
+import { ENV, getApiUrl, getExternalServiceUrl } from '@/config/environment';
+
+// Configuração das URLs base - Silicon Valley Style
 const API_CONFIG = {
-  ADMIN_API: process.env.ADMIN_API_URL || 'http://localhost:8000',
-  STAC_API: process.env.STAC_API_URL || 'http://localhost:8081',
-  PYGEOAPI: process.env.PYGEOAPI_URL || 'http://localhost:5080',
-  MINIO_API: process.env.MINIO_API_URL || 'http://localhost:9000',
-  FLOWER_API: process.env.FLOWER_API_URL || 'http://localhost:5555',
-  KEYCLOAK: process.env.KEYCLOAK_URL || 'http://localhost:8083',
-  FRONTEND: process.env.FRONTEND_URL || 'http://localhost:8085',
+  ADMIN_API: ENV.apiUrl,
+  STAC_API: getExternalServiceUrl('stacBrowser'),
+  PYGEOAPI: getExternalServiceUrl('pygeoapi'),
+  MINIO_API: getExternalServiceUrl('minioConsole'),
+  FLOWER_API: getExternalServiceUrl('flowerMonitor'),
+  KEYCLOAK: ENV.isDevelopment ? 'http://localhost:8083' : 'https://bgapp-auth.majearcasa.workers.dev',
+  FRONTEND: ENV.frontendUrl,
 };
 
 // Tipos TypeScript para BGAPP

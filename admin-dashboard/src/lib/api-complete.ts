@@ -7,7 +7,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
 // API Configuration - Apontar para nosso admin_api_complete.py
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bgapp-api-worker.majearcasa.workers.dev';
 
 // Create axios instance
 const api = axios.create({

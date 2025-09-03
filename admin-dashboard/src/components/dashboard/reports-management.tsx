@@ -66,7 +66,7 @@ export function ReportsManagement() {
       setError(null)
       
       // Tentar conectar ao nosso servidor de relatórios
-      const response = await fetch('http://localhost:8001/api/reports')
+      const response = await fetch(`${ENV.apiUrl}/api/reports`)
       
       if (!response.ok) {
         throw new Error(`Erro HTTP: ${response.status}`)
@@ -79,7 +79,7 @@ export function ReportsManagement() {
       
     } catch (err) {
       console.error('Erro ao carregar relatórios:', err)
-      setError('Erro ao carregar relatórios. Verifique se o servidor está ativo em localhost:8001')
+      setError('Erro ao carregar relatórios. Verifique se o servidor está ativo')
     } finally {
       setLoading(false)
     }
@@ -87,7 +87,7 @@ export function ReportsManagement() {
 
   const openReport = async (reportId: string) => {
     try {
-      const response = await fetch(`http://localhost:8001/api/reports/${reportId}`)
+      const response = await fetch(`${ENV.apiUrl}/api/reports/${reportId}`)
       
       if (!response.ok) {
         throw new Error(`Erro ao carregar relatório: ${response.status}`)
@@ -105,7 +105,7 @@ export function ReportsManagement() {
 
   const downloadReport = (reportId: string, filename: string) => {
     const link = document.createElement('a')
-    link.href = `http://localhost:8001/api/reports/${reportId}`
+    link.href = `${ENV.apiUrl}/api/reports/${reportId}`
     link.download = filename
     link.click()
   }

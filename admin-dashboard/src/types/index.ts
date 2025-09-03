@@ -369,5 +369,139 @@ export interface Notification {
   };
 }
 
+// Tipos para o sistema de mapas
+export interface MapLayer {
+  id: string;
+  name: string;
+  type: 'geojson' | 'wms' | 'wmts' | 'xyz' | 'vector' | 'raster';
+  url?: string;
+  data?: any;
+  style?: MapLayerStyle;
+  visible: boolean;
+  opacity: number;
+  zIndex: number;
+  properties: Record<string, any>;
+}
+
+export interface MapLayerStyle {
+  fillColor?: string;
+  fillOpacity?: number;
+  strokeColor?: string;
+  strokeWidth?: number;
+  strokeOpacity?: number;
+  iconUrl?: string;
+  iconSize?: [number, number];
+  popupTemplate?: string;
+}
+
+export interface MapConfiguration {
+  id: string;
+  name: string;
+  description: string;
+  category: 'oceanographic' | 'fisheries' | 'biodiversity' | 'coastal' | 'administrative' | 'scientific';
+  center: [number, number];
+  zoom: number;
+  minZoom?: number;
+  maxZoom?: number;
+  bounds?: [[number, number], [number, number]];
+  baseLayers: string[];
+  defaultBaseLayer: string;
+  overlayLayers: MapLayer[];
+  controls: MapControls;
+  metadata: MapMetadata;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+  status: 'active' | 'draft' | 'archived';
+}
+
+export interface MapControls {
+  zoom: boolean;
+  scale: boolean;
+  fullscreen: boolean;
+  layers: boolean;
+  search: boolean;
+  coordinates: boolean;
+  measurement: boolean;
+  drawing: boolean;
+  export: boolean;
+}
+
+export interface MapMetadata {
+  title: string;
+  abstract?: string;
+  keywords: string[];
+  author: string;
+  organization?: string;
+  contact?: string;
+  license?: string;
+  version: string;
+  language: string;
+  spatial_extent: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  };
+  temporal_extent?: {
+    start?: string;
+    end?: string;
+  };
+}
+
+export interface BGAPPMap {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  icon: string;
+  category: string;
+  features: string[];
+  iframe_config?: {
+    sandbox?: string;
+    allow?: string;
+    loading?: 'lazy' | 'eager';
+  };
+  status: 'active' | 'maintenance' | 'offline';
+  last_updated: string;
+  configuration?: MapConfiguration;
+}
+
+export interface MapTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  preview_image?: string;
+  configuration: Partial<MapConfiguration>;
+  required_layers: string[];
+  optional_layers: string[];
+}
+
+export interface MapCreationRequest {
+  name: string;
+  description: string;
+  category: string;
+  template_id?: string;
+  configuration: Partial<MapConfiguration>;
+  layers: MapLayer[];
+}
+
+export interface MapStats {
+  total_maps: number;
+  active_maps: number;
+  maps_by_category: Record<string, number>;
+  most_used_maps: Array<{
+    id: string;
+    name: string;
+    views: number;
+  }>;
+  recent_maps: Array<{
+    id: string;
+    name: string;
+    created_at: string;
+  }>;
+}
+
 // Export all types
 export type * from './index';

@@ -47,16 +47,7 @@ export const bgappRoutes: BGAPPRoute[] = [
     description: 'Visão geral do sistema BGAPP',
     component: 'DashboardOverview'
   },
-  {
-    id: 'bgapp-integration',
-    label: '🚀 BGAPP Sistema Completo',
-    icon: RocketLaunchIcon,
-    category: 'core',
-    description: 'Integração completa do ecossistema BGAPP',
-    badge: 'NOVO',
-    isNew: true,
-    component: 'BGAPPIntegrationBulletproof'
-  },
+
   {
     id: 'services-integration',
     label: '🔗 Integração Completa Serviços',
@@ -237,7 +228,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: ChartBarIcon,
         category: 'scientific',
         description: 'Interface científica principal para dados oceanográficos',
-        iframeUrl: 'http://localhost:8085/dashboard_cientifico.html',
+        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html',
         component: 'ScientificDashboard'
       },
       {
@@ -246,7 +237,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: EyeIcon,
         category: 'scientific',
         description: 'Dados oceanográficos em tempo real da costa angolana',
-        iframeUrl: 'http://localhost:8085/realtime_angola.html',
+        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/realtime_angola.html',
         component: 'RealtimeAngola'
       },
       {
@@ -262,7 +253,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: MapIcon,
             category: 'scientific',
             description: 'Dashboard QGIS principal',
-            iframeUrl: 'http://localhost:8085/qgis_dashboard.html'
+            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_dashboard.html'
           },
           {
             id: 'qgis-fisheries',
@@ -270,7 +261,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: MapIcon,
             category: 'scientific',
             description: 'Sistema QGIS para gestão pesqueira',
-            iframeUrl: 'http://localhost:8085/qgis_fisheries.html'
+            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_fisheries.html'
           }
         ]
       },
@@ -280,7 +271,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: BoltIcon,
         category: 'scientific',
         description: 'Animações avançadas de vento e correntes',
-        iframeUrl: 'http://localhost:8085/bgapp-wind-animation-demo.html',
+        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html',
         component: 'WeatherAnimations'
       },
       {
@@ -289,7 +280,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: GlobeAltIcon,
         category: 'scientific',
         description: 'Plataforma de colaboração para investigadores',
-        iframeUrl: 'http://localhost:8085/collaboration.html',
+        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/collaboration.html',
         component: 'ScientificCollaboration'
       },
       {
@@ -298,7 +289,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: CloudArrowUpIcon,
         category: 'scientific',
         description: 'Catálogo STAC para dados marinhos',
-        iframeUrl: 'http://localhost:8085/stac_oceanographic.html',
+        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/stac_oceanographic.html',
         component: 'STACOceanographic'
       },
       {
@@ -314,7 +305,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: DevicePhoneMobileIcon,
             category: 'scientific',
             description: 'Aplicação web progressiva otimizada',
-            iframeUrl: 'http://localhost:8085/mobile_pwa.html'
+            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile_pwa.html'
           },
           {
             id: 'mobile-basic',
@@ -322,7 +313,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: DevicePhoneMobileIcon,
             category: 'scientific',
             description: 'Interface mobile simplificada',
-            iframeUrl: 'http://localhost:8085/mobile.html'
+            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile.html'
           }
         ]
       }
@@ -461,45 +452,47 @@ export const navigationConfig = {
   favoriteRoutes: [] as string[]
 };
 
+import { getServiceUrl } from '../environment-urls';
+
 /**
  * URLs das interfaces HTML existentes
  */
 export const htmlInterfaces = {
   // Core Interfaces
-  admin: 'http://localhost:8085/admin.html',
-  dashboard_cientifico: 'http://localhost:8085/dashboard_cientifico.html',
-  realtime_angola: 'http://localhost:8085/realtime_angola.html',
+  admin: `${getServiceUrl('frontend')}/admin.html`,
+  dashboard_cientifico: `${getServiceUrl('frontend')}/dashboard_cientifico.html`,
+  realtime_angola: `${getServiceUrl('frontend')}/realtime_angola.html`,
   
   // QGIS Interfaces
-  qgis_dashboard: 'http://localhost:8085/qgis_dashboard.html',
-  qgis_fisheries: 'http://localhost:8085/qgis_fisheries.html',
+  qgis_dashboard: `${getServiceUrl('frontend')}/qgis_dashboard.html`,
+  qgis_fisheries: `${getServiceUrl('frontend')}/qgis_fisheries.html`,
   
   // Specialized Tools
-  wind_animations: 'http://localhost:8085/bgapp-wind-animation-demo.html',
-  collaboration: 'http://localhost:8085/collaboration.html',
-  stac_oceanographic: 'http://localhost:8085/stac_oceanographic.html',
+  wind_animations: `${getServiceUrl('frontend')}/bgapp-wind-animation-demo.html`,
+  collaboration: `${getServiceUrl('frontend')}/collaboration.html`,
+  stac_oceanographic: `${getServiceUrl('frontend')}/stac_oceanographic.html`,
   
   // Mobile Interfaces
-  mobile_pwa: 'http://localhost:8085/mobile_pwa.html',
-  mobile_basic: 'http://localhost:8085/mobile.html',
+  mobile_pwa: `${getServiceUrl('frontend')}/mobile_pwa.html`,
+  mobile_basic: `${getServiceUrl('frontend')}/mobile.html`,
   
   // Analysis Tools
-  advanced_analysis: 'http://localhost:8085/dashboard.html',
-  health_dashboard: 'http://localhost:8085/health_dashboard.html',
+  advanced_analysis: `${getServiceUrl('frontend')}/dashboard.html`,
+  health_dashboard: `${getServiceUrl('frontend')}/health_dashboard.html`,
   
   // Demo and Enhanced
-  bgapp_enhanced: 'http://localhost:8085/bgapp-enhanced-demo.html',
-  ml_demo: 'http://localhost:8085/ml-demo.html',
+  bgapp_enhanced: `${getServiceUrl('frontend')}/bgapp-enhanced-demo.html`,
+  ml_demo: `${getServiceUrl('frontend')}/ml-demo.html`,
   
   // MINPERMAR
-  minpermar: 'http://localhost:8085/minpermar/dist/index.html',
+  minpermar: `${getServiceUrl('frontend')}/minpermar/dist/index.html`,
   
   // External Services
-  stac_browser: 'http://localhost:8082',
-  flower_monitor: 'http://localhost:5555',
-  minio_console: 'http://localhost:9001',
-  keycloak_admin: 'http://localhost:8083',
-  admin_api_docs: 'http://localhost:8000/docs'
+  stac_browser: getServiceUrl('stacBrowser'),
+  flower_monitor: getServiceUrl('flower'),
+  minio_console: getServiceUrl('minio'),
+  keycloak_admin: getServiceUrl('keycloak'),
+  admin_api_docs: `${getServiceUrl('adminApi')}/docs`
 };
 
 export default {

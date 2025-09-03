@@ -24,13 +24,7 @@ const navigationItems: NavItem[] = [
     label: 'Dashboard Administrativo',
     icon: '📊',
   },
-  {
-    id: 'bgapp-integration',
-    label: '🚀 BGAPP Sistema Completo',
-    icon: '🚀',
-    badge: 'NOVO',
-    isNew: true,
-  },
+
   {
     id: 'ml',
     label: '🧠 Machine Learning',

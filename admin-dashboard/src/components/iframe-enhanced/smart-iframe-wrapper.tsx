@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { ENV, getScientificInterfaceUrl } from '@/config/environment';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,8 @@ import {
 interface SmartIFrameWrapperProps {
   title: string;
   description: string;
-  src: string;
+  url: string; // Mudança: usar 'url' em vez de 'src'
+  category?: string;
   icon?: React.ComponentType<any>;
   height?: string;
   allowFullscreen?: boolean;
@@ -31,13 +33,16 @@ interface SmartIFrameWrapperProps {
 export default function SmartIFrameWrapper({
   title,
   description,
-  src,
+  url,
+  category,
   icon: Icon,
   height = "600px",
   allowFullscreen = true,
   preventLoop = true,
   showControls = true
 }: SmartIFrameWrapperProps) {
+  // Converter URL para URL completa do Cloudflare
+  const fullUrl = getScientificInterfaceUrl(url);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -46,8 +51,8 @@ export default function SmartIFrameWrapper({
 
   // Prevenção de loops circulares
   const isCircularNavigation = preventLoop && (
-    window.location.href.includes(src) ||
-    src.includes(window.location.hostname + ':3000')
+    window.location.href.includes(fullUrl) ||
+    fullUrl.includes(window.location.hostname + ':3000')
   );
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export default function SmartIFrameWrapper({
   };
 
   const handleOpenExternal = () => {
-    window.open(src, '_blank');
+    window.open(fullUrl, '_blank');
   };
 
   const handleToggleFullscreen = () => {
