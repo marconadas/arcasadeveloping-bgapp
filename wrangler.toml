@@ -45,7 +45,7 @@ publish = "./infra/frontend"
 [[headers]]
 for = "/*"
 [headers.values]
-X-Frame-Options = "DENY"
+X-Frame-Options = "SAMEORIGIN"
 X-Content-Type-Options = "nosniff"
 Referrer-Policy = "strict-origin-when-cross-origin"
 Permissions-Policy = "geolocation=(), microphone=(), camera=()"
@@ -88,3 +88,9 @@ status = 301
 from = "/dashboard"
 to = "/BGAPP/admin.html"
 status = 301
+
+# Redirect para STAC Oceanographic Worker
+[[redirects]]
+from = "/BGAPP/admin-api/stac/*"
+to = "https://bgapp-stac-oceanographic.majearcasa.workers.dev/stac/:splat"
+status = 200

@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getScientificInterfaceUrl, getExternalServiceUrl, ENV } from '@/config/environment';
+import { bgappApiCloudflare } from '@/lib/api-cloudflare';
 import { 
   BeakerIcon,
   EyeIcon,
@@ -77,8 +79,27 @@ export default function ScientificInterfacesHub() {
   const categories = Object.keys(interfacesByCategory);
 
   const handleOpenInterface = (interface_: ScientificInterface) => {
+    // Converter URL localhost para URL Cloudflare dinamicamente
+    let url = interface_?.url || '';
+    
+    // Verificar se URL existe e não é undefined
+    if (!url || typeof url !== 'string') {
+      console.warn('⚠️ URL inválida para interface:', interface_);
+      return;
+    }
+    
+    if (url.includes('e1a322f9.bgapp-arcasadeveloping.pages.dev')) {
+      url = url.replace('https://e1a322f9.bgapp-arcasadeveloping.pages.dev', 'https://bgapp-scientific.pages.dev');
+    } else if (url.includes('localhost')) {
+      // Para outros serviços localhost, usar URLs apropriadas
+      if (url.includes(':8082')) url = getExternalServiceUrl('stacBrowser');
+      else if (url.includes(':5555')) url = getExternalServiceUrl('flowerMonitor');
+      else if (url.includes(':9001')) url = getExternalServiceUrl('minioConsole');
+      else if (url.includes(':5080')) url = getExternalServiceUrl('pygeoapi');
+    }
+    
     // Abrir em nova aba
-    window.open(interface_.url, '_blank');
+    window.open(url, '_blank');
     
     // Atualizar lastAccessed (simulado)
     setSelectedInterface({
@@ -363,7 +384,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-20 flex-col"
-              onClick={() => window.open('http://localhost:8085/dashboard_cientifico.html', '_blank')}
+              onClick={() => window.open(getScientificInterfaceUrl('/dashboard_cientifico.html'), '_blank')}
             >
               <ChartBarIcon className="h-6 w-6 mb-2 text-blue-600" />
               <span>Dashboard Científico</span>
@@ -373,7 +394,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-20 flex-col"
-              onClick={() => window.open('http://localhost:8085/realtime_angola.html', '_blank')}
+              onClick={() => window.open(getScientificInterfaceUrl('/realtime_angola.html'), '_blank')}
             >
               <EyeIcon className="h-6 w-6 mb-2 text-green-600" />
               <span>Realtime Angola</span>
@@ -383,7 +404,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-20 flex-col"
-              onClick={() => window.open('http://localhost:8085/qgis_dashboard.html', '_blank')}
+              onClick={() => window.open(getScientificInterfaceUrl('/qgis_dashboard.html'), '_blank')}
             >
               <MapIcon className="h-6 w-6 mb-2 text-purple-600" />
               <span>QGIS Dashboard</span>
@@ -393,7 +414,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-20 flex-col"
-              onClick={() => window.open('http://localhost:8085/mobile_pwa.html', '_blank')}
+              onClick={() => window.open(getScientificInterfaceUrl('/mobile_pwa.html'), '_blank')}
             >
               <DevicePhoneMobileIcon className="h-6 w-6 mb-2 text-emerald-600" />
               <span>Mobile PWA</span>
@@ -473,7 +494,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-16 justify-start"
-              onClick={() => window.open('http://localhost:8082', '_blank')}
+              onClick={() => window.open(getExternalServiceUrl('stacBrowser'), '_blank')}
             >
               <CloudArrowUpIcon className="h-6 w-6 mr-3 text-blue-600" />
               <div className="text-left">
@@ -485,9 +506,9 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-16 justify-start"
-              onClick={() => window.open('http://localhost:5555', '_blank')}
+              onClick={() => window.open(getExternalServiceUrl('flowerMonitor'), '_blank')}
             >
-              <CpuChipIcon className="h-6 w-6 mr-3 text-green-600" />
+              <div className="h-6 w-6 mr-3 text-green-600 flex items-center justify-center">🖥️</div>
               <div className="text-left">
                 <div className="font-medium">Flower Monitor</div>
                 <div className="text-xs text-gray-500">Monitor Celery</div>
@@ -497,7 +518,7 @@ export default function ScientificInterfacesHub() {
             <Button
               variant="outline"
               className="h-16 justify-start"
-              onClick={() => window.open('http://localhost:9001', '_blank')}
+              onClick={() => window.open(getExternalServiceUrl('minioConsole'), '_blank')}
             >
               <CloudArrowUpIcon className="h-6 w-6 mr-3 text-purple-600" />
               <div className="text-left">

@@ -104,12 +104,25 @@ self.addEventListener('fetch', event => {
         return; // Deixar passar sem interceptar
     }
     
-    // Interceptar apenas PyGeoAPI (5080) com resiliência
+    // 🐟 REDIRECIONAR LOCALHOST:5080 PARA ADMIN-API-WORKER (SILICON VALLEY FIX)
     const isPyGeoAPI = url.port === '5080';
     
     if (isPyGeoAPI) {
-        console.log('🛡️ PyGeoAPI detectado - aplicando resiliência:', url.href.substring(0, 60));
-        event.respondWith(handleCriticalAPIRequest(request));
+        console.log('🛡️ PyGeoAPI detectado - redirecionando para admin-api-worker:', url.href.substring(0, 60));
+        
+        // Redirecionar para admin-api-worker em produção
+        const isProduction = !url.hostname.includes('localhost');
+        if (isProduction) {
+            const newUrl = url.href.replace('localhost:5080', 'bgapp-admin-api.majearcasa.workers.dev');
+            console.log('🔄 Redirecionando:', newUrl);
+            event.respondWith(fetch(newUrl, {
+                method: request.method,
+                headers: request.headers,
+                body: request.body
+            }));
+        } else {
+            event.respondWith(handleCriticalAPIRequest(request));
+        }
         return;
     }
     

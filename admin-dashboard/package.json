@@ -14,7 +14,12 @@
     "start:3002": "next start -p 3002",
     "start:4000": "next start -p 4000",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "deploy": "./quick-deploy.sh",
+    "deploy:watch": "./watch-deploy.sh",
+    "dev:deploy": "./dev-and-deploy.sh",
+    "test:local": "npm run dev",
+    "test:prod": "npm run build && npm run deploy"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",

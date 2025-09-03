@@ -3,8 +3,8 @@
  * Gerencia cache de forma inteligente para evitar problemas com scripts externos
  */
 
-const CACHE_NAME = 'bgapp-v1.0.0-fresh';
-const CACHE_VERSION = '20250115-fresh';
+const CACHE_NAME = 'bgapp-v2.1.0-https-fix';
+const CACHE_VERSION = '20250903-https-fix';
 
 // URLs que NUNCA devem ser cacheadas (sempre buscar da rede)
 const NETWORK_ONLY = [
@@ -18,6 +18,9 @@ const NETWORK_ONLY = [
 const NETWORK_FIRST = [
   'https://tiles.maps.eox.at/',
   'https://services.sentinel-hub.com/',
+  'https://bgapp-stac-oceanographic.majearcasa.workers.dev/',
+  'https://planetarycomputer.microsoft.com/',
+  'https://earth-search.aws.element84.com/',
   '/api/',
   '/BGAPP/api/',
   '.js?v=fresh',  // Scripts com versão fresh
@@ -68,6 +71,36 @@ self.addEventListener('fetch', (event) => {
   
   // Log detalhado para debug
   console.log('🔍 Fetch interceptado:', url.substring(0, 100) + '...');
+  
+  // 🐟 REDIRECIONAR LOCALHOST:5080 PARA ADMIN-API-WORKER (SILICON VALLEY FIX)
+  if (url.includes('localhost:5080')) {
+    const newUrl = url.replace('http://localhost:5080', 'https://bgapp-admin-api.majearcasa.workers.dev');
+    console.log('🔄 Redirecionando localhost:5080 para admin-api-worker:', newUrl);
+    event.respondWith(
+      fetch(newUrl, {
+        method: request.method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        console.log('✅ Redirecionamento bem-sucedido:', response.status);
+        return response;
+      }).catch(error => {
+        console.error('❌ Erro no redirecionamento:', error);
+        return new Response(JSON.stringify({
+          error: 'API temporariamente indisponível',
+          fallback: true,
+          type: "FeatureCollection",
+          features: []
+        }), { 
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      })
+    );
+    return;
+  }
   
   // Ignorar requisições HEAD para evitar problemas de cache
   if (request.method === 'HEAD') {

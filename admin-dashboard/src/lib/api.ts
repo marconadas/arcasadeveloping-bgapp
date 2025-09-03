@@ -23,14 +23,16 @@ import type {
   DashboardStats
 } from '@/types';
 
-// API Configuration - CORRIGIDO para integração completa
-const API_BASE_URL = process.env.ADMIN_API_URL || 'http://localhost:8000';  // Admin API FastAPI
-const ML_API_URL = process.env.ML_API_URL || 'http://localhost:8000';       // Same as Admin API
-const STAC_API_URL = process.env.STAC_API_URL || 'http://localhost:8081';   // STAC API
-const PYGEOAPI_URL = process.env.PYGEOAPI_URL || 'http://localhost:5080';   // pygeoapi
-const MINIO_API_URL = process.env.MINIO_API_URL || 'http://localhost:9000'; // MinIO API
-const FLOWER_API_URL = process.env.FLOWER_API_URL || 'http://localhost:5555'; // Flower
-const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'http://localhost:8083';   // Keycloak
+import { ENV, getApiUrl, getExternalServiceUrl } from '@/config/environment';
+
+// API Configuration - Silicon Valley Style com auto-detecção de ambiente
+const API_BASE_URL = ENV.apiUrl;
+const ML_API_URL = ENV.apiUrl; // Same as Admin API
+const STAC_API_URL = getExternalServiceUrl('stacBrowser');
+const PYGEOAPI_URL = ENV.isDevelopment ? 'http://localhost:5080' : 'https://bgapp-pygeoapi.majearcasa.workers.dev';
+const MINIO_API_URL = ENV.isDevelopment ? 'http://localhost:9001' : 'https://bgapp-storage.majearcasa.workers.dev';
+const FLOWER_API_URL = ENV.isDevelopment ? 'http://localhost:5555' : 'https://bgapp-monitor.majearcasa.workers.dev';
+const KEYCLOAK_URL = ENV.isDevelopment ? 'http://localhost:8083' : 'https://bgapp-auth.majearcasa.workers.dev';
 
 // Create axios instances for all services
 const adminApi = axios.create({
@@ -171,7 +173,7 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
 
 // Services
 export const getServices = async (): Promise<ServiceStatus[]> => {
-  const response = await adminApi.get<ApiResponse<ServiceStatus[]>>('/services/status');
+  const response = await adminApi.get<ApiResponse<ServiceStatus[]>>('/services');
   return handleApiResponse(response);
 };
 
@@ -643,6 +645,130 @@ export const getKeycloakSessions = async (realm: string = 'bgapp'): Promise<any[
   }
 };
 
+// =============================================================================
+// MAPS API - SISTEMA COMPLETO DE GESTÃO DE MAPAS
+// =============================================================================
+
+export const getMaps = async (): Promise<ApiResponse<BGAPPMap[]>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<BGAPPMap[]>> = await adminApi.get('/api/maps');
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao obter mapas:', error);
+    throw error;
+  }
+};
+
+export const getMapById = async (mapId: string): Promise<ApiResponse<BGAPPMap>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.get(`/api/maps/${mapId}`);
+    return response.data;
+  } catch (error) {
+    logger.error(`Erro ao obter mapa ${mapId}:`, error);
+    throw error;
+  }
+};
+
+export const createMap = async (mapData: any): Promise<ApiResponse<BGAPPMap>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.post('/api/maps', mapData);
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao criar mapa:', error);
+    throw error;
+  }
+};
+
+export const updateMap = async (mapId: string, updates: any): Promise<ApiResponse<BGAPPMap>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.put(`/api/maps/${mapId}`, updates);
+    return response.data;
+  } catch (error) {
+    logger.error(`Erro ao atualizar mapa ${mapId}:`, error);
+    throw error;
+  }
+};
+
+export const deleteMap = async (mapId: string): Promise<ApiResponse<any>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any>> = await adminApi.delete(`/api/maps/${mapId}`);
+    return response.data;
+  } catch (error) {
+    logger.error(`Erro ao deletar mapa ${mapId}:`, error);
+    throw error;
+  }
+};
+
+export const getMapStats = async (): Promise<ApiResponse<any>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any>> = await adminApi.get('/api/maps/stats');
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao obter estatísticas de mapas:', error);
+    throw error;
+  }
+};
+
+export const getMapTemplates = async (): Promise<ApiResponse<any[]>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/templates');
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao obter templates de mapas:', error);
+    throw error;
+  }
+};
+
+export const getMapCategories = async (): Promise<ApiResponse<any[]>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/tools/categories');
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao obter categorias de mapas:', error);
+    throw error;
+  }
+};
+
+export const getBaseLayers = async (): Promise<ApiResponse<any[]>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/tools/base-layers');
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao obter camadas base:', error);
+    throw error;
+  }
+};
+
+export const validateMapConfig = async (config: any): Promise<ApiResponse<any>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any>> = await adminApi.post('/api/maps/tools/validate', config);
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao validar configuração de mapa:', error);
+    throw error;
+  }
+};
+
+export const suggestLayers = async (category: string): Promise<ApiResponse<any[]>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get(`/api/maps/tools/suggest-layers/${category}`);
+    return response.data;
+  } catch (error) {
+    logger.error(`Erro ao sugerir camadas para categoria ${category}:`, error);
+    throw error;
+  }
+};
+
+export const optimizeMapConfig = async (config: any): Promise<ApiResponse<any>> => {
+  try {
+    const response: AxiosResponse<ApiResponse<any>> = await adminApi.post('/api/maps/tools/optimize', config);
+    return response.data;
+  } catch (error) {
+    logger.error('Erro ao otimizar configuração de mapa:', error);
+    throw error;
+  }
+};
+
 // Export API object for easier importing
 export const api = {
   // Dashboard
@@ -755,6 +881,20 @@ export const api = {
   getKeycloakUsers,
   getKeycloakClients,
   getKeycloakSessions,
+  
+  // Maps - SISTEMA COMPLETO DE MAPAS
+  getMaps,
+  getMapById,
+  createMap,
+  updateMap,
+  deleteMap,
+  getMapStats,
+  getMapTemplates,
+  getMapCategories,
+  getBaseLayers,
+  validateMapConfig,
+  suggestLayers,
+  optimizeMapConfig,
 };
 
 export default api;

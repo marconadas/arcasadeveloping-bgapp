@@ -42,12 +42,21 @@ const navigationItems: NavItem[] = [
     icon: ChartBarIcon,
   },
   {
-    id: 'bgapp-integration',
-    label: '🚀 BGAPP Sistema Completo',
-    icon: RocketLaunchIcon,
-    badge: 'NOVO',
+    id: 'scientific-hub',
+    label: '🔬 Hub Científico BGAPP',
+    icon: BeakerIcon,
+    badge: '46 INTERFACES',
     isNew: true,
+    children: [
+      { id: 'scientific-interfaces', label: 'Portal Interfaces (46)', icon: BeakerIcon, badge: 'HUB', isNew: true },
+      { id: 'dashboard-cientifico', label: 'Dashboard Científico Angola', icon: ChartBarIcon },
+      { id: 'realtime-angola', label: 'Tempo Real Angola', icon: EyeIcon },
+      { id: 'qgis-tools', label: 'Ferramentas QGIS', icon: MapIcon },
+      { id: 'collaboration', label: 'Colaboração Científica', icon: GlobeAltIcon },
+      { id: 'stac-ocean', label: 'STAC Oceanográfico', icon: CloudArrowUpIcon },
+    ]
   },
+
   {
     id: 'services-integration',
     label: '🔗 Integração Completa Serviços',
@@ -93,32 +102,7 @@ const navigationItems: NavItem[] = [
       { id: 'quality-control', label: 'Controle Qualidade', icon: ShieldCheckIcon, isNew: true },
     ]
   },
-  {
-    id: 'scientific-hub',
-    label: '🔬 Hub Científico',
-    icon: BeakerIcon,
-    badge: 'HUB',
-    isNew: true,
-    children: [
-      { id: 'scientific-interfaces', label: 'Portal Interfaces (46)', icon: BeakerIcon, isNew: true },
-      { id: 'dashboard-cientifico', label: 'Dashboard Científico', icon: ChartBarIcon },
-      { id: 'realtime-angola', label: 'Realtime Angola', icon: EyeIcon },
-      { id: 'qgis-tools', label: 'Ferramentas QGIS', icon: MapIcon },
-      { id: 'weather-animations', label: 'Animações Meteorológicas', icon: BoltIcon },
-      { id: 'collaboration', label: 'Colaboração Científica', icon: GlobeAltIcon },
-    ]
-  },
-  {
-    id: 'scientific',
-    label: '🔬 Interfaces Científicas',
-    icon: BeakerIcon,
-    children: [
-      { id: 'scientific-angola', label: 'Dashboard Científico Angola', icon: ChartBarIcon },
-      { id: 'scientific-advanced', label: 'Dashboard Científico Avançado', icon: BeakerIcon },
-      { id: 'collaboration', label: 'Colaboração Científica', icon: GlobeAltIcon },
-      { id: 'stac-ocean', label: 'STAC Oceanográfico', icon: CloudArrowUpIcon },
-    ]
-  },
+
   {
     id: 'maps',
     label: '🗺️ Mapas e Visualização',
@@ -289,7 +273,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ open, onClose, currentSection, onSectionChange }: SidebarProps) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['scientific'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['scientific-hub', 'maps'])
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev => 
@@ -340,7 +324,7 @@ export function Sidebar({ open, onClose, currentSection, onSectionChange }: Side
         <div className="p-4 border-b border-slate-700">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            25 funcionalidades ativas
+            🔬 Hub Científico com 46 interfaces ativas
           </div>
         </div>
 

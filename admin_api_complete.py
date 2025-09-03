@@ -23,6 +23,18 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import uvicorn
 
+# Importar serviço de mapas
+import sys
+sys.path.append('admin-dashboard/src/lib')
+from maps_service import (
+    maps_service, map_tools,
+    get_all_maps_endpoint, get_map_by_id_endpoint, create_map_endpoint,
+    update_map_endpoint, delete_map_endpoint, get_map_templates_endpoint,
+    get_maps_stats_endpoint, validate_map_config_endpoint,
+    suggest_layers_endpoint, optimize_map_endpoint,
+    MapCreationRequest, BGAPPMap, MapTemplate
+)
+
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -1179,6 +1191,164 @@ async def get_fisheries_chart_data():
     }
 
 # =============================================================================
+# ENDPOINTS DE GESTÃO DE MAPAS - SISTEMA COMPLETO
+# =============================================================================
+
+@app.get("/api/maps")
+async def get_all_maps():
+    """🗺️ Listar todos os mapas disponíveis"""
+    return await get_all_maps_endpoint()
+
+@app.get("/api/maps/stats")
+async def get_maps_statistics():
+    """📊 Estatísticas dos mapas"""
+    return await get_maps_stats_endpoint()
+
+@app.get("/api/maps/templates")
+async def get_map_templates():
+    """📋 Templates para criação de mapas"""
+    return await get_map_templates_endpoint()
+
+@app.get("/api/maps/{map_id}")
+async def get_map_by_id(map_id: str):
+    """🗺️ Obter mapa específico por ID"""
+    return await get_map_by_id_endpoint(map_id)
+
+@app.post("/api/maps")
+async def create_new_map(map_request: MapCreationRequest):
+    """➕ Criar novo mapa"""
+    return await create_map_endpoint(map_request)
+
+@app.put("/api/maps/{map_id}")
+async def update_existing_map(map_id: str, updates: Dict[str, Any] = Body(...)):
+    """✏️ Atualizar mapa existente"""
+    return await update_map_endpoint(map_id, updates)
+
+@app.delete("/api/maps/{map_id}")
+async def delete_existing_map(map_id: str):
+    """🗑️ Deletar mapa"""
+    return await delete_map_endpoint(map_id)
+
+# =============================================================================
+# FERRAMENTAS AVANÇADAS PARA CRIAÇÃO DE MAPAS
+# =============================================================================
+
+@app.post("/api/maps/tools/validate")
+async def validate_map_configuration(config: Dict[str, Any] = Body(...)):
+    """✅ Validar configuração de mapa"""
+    return await validate_map_config_endpoint(config)
+
+@app.get("/api/maps/tools/suggest-layers/{category}")
+async def suggest_layers_by_category(category: str):
+    """💡 Sugerir camadas por categoria"""
+    return await suggest_layers_endpoint(category)
+
+@app.post("/api/maps/tools/optimize")
+async def optimize_map_configuration(config: Dict[str, Any] = Body(...)):
+    """⚡ Otimizar configuração de mapa"""
+    return await optimize_map_endpoint(config)
+
+@app.get("/api/maps/tools/categories")
+async def get_map_categories():
+    """📂 Obter categorias de mapas disponíveis"""
+    categories = [
+        {
+            "id": "oceanographic",
+            "name": "Oceanográfico",
+            "description": "Mapas com dados oceanográficos e meteorológicos",
+            "icon": "🌊",
+            "color": "#0066cc"
+        },
+        {
+            "id": "fisheries",
+            "name": "Pescas",
+            "description": "Mapas para gestão e monitoramento pesqueiro",
+            "icon": "🎣",
+            "color": "#ff6600"
+        },
+        {
+            "id": "biodiversity",
+            "name": "Biodiversidade",
+            "description": "Mapas de estudos e conservação da biodiversidade",
+            "icon": "🐠",
+            "color": "#00cc66"
+        },
+        {
+            "id": "coastal",
+            "name": "Costeiro",
+            "description": "Mapas de análise e gestão costeira",
+            "icon": "🏖️",
+            "color": "#ffcc00"
+        },
+        {
+            "id": "administrative",
+            "name": "Administrativo",
+            "description": "Mapas para gestão administrativa e territorial",
+            "icon": "🏛️",
+            "color": "#cc6600"
+        },
+        {
+            "id": "scientific",
+            "name": "Científico",
+            "description": "Mapas para pesquisa e análise científica",
+            "icon": "🔬",
+            "color": "#6600cc"
+        }
+    ]
+    
+    return {
+        "success": True,
+        "data": categories,
+        "total": len(categories),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/api/maps/tools/base-layers")
+async def get_available_base_layers():
+    """🗺️ Obter camadas base disponíveis"""
+    base_layers = [
+        {
+            "id": "osm",
+            "name": "OpenStreetMap",
+            "description": "Mapa colaborativo mundial",
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "attribution": "© OpenStreetMap contributors",
+            "type": "xyz"
+        },
+        {
+            "id": "satellite",
+            "name": "Satélite",
+            "description": "Imagens de satélite de alta resolução",
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "© Esri",
+            "type": "xyz"
+        },
+        {
+            "id": "terrain",
+            "name": "Terreno",
+            "description": "Mapa topográfico com relevo",
+            "url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+            "attribution": "© OpenTopoMap",
+            "type": "xyz"
+        },
+        {
+            "id": "dark",
+            "name": "Escuro",
+            "description": "Tema escuro para visualização noturna",
+            "url": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+            "attribution": "© CARTO",
+            "type": "xyz"
+        }
+    ]
+    
+    return {
+        "success": True,
+        "data": base_layers,
+        "total": len(base_layers),
+        "timestamp": datetime.now().isoformat()
+    }
+
+# =============================================================================
 # MAIN EXECUTION
 # =============================================================================
 
@@ -1191,10 +1361,14 @@ if __name__ == "__main__":
     print("🔬 Biodiversidade: MONITORIZADA")
     print("📊 Analytics: FUNCIONAIS")
     print("🗺️ Mapas: INTEGRADOS")
+    print("🗺️ Sistema de Mapas: COMPLETO")
+    print("🛠️ Ferramentas de Criação: ATIVAS")
     print("=" * 60)
     print("🔗 API Principal: http://localhost:8000")
     print("📋 Documentação: http://localhost:8000/docs")
     print("🎯 Dashboard: http://localhost:8000/admin-dashboard/initialize")
+    print("🗺️ Mapas API: http://localhost:8000/api/maps")
+    print("🛠️ Ferramentas: http://localhost:8000/api/maps/tools")
     print("🌐 NextJS Integration: READY")
     print("=" * 60)
     

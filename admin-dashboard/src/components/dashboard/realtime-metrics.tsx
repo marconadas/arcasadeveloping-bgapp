@@ -167,7 +167,7 @@ export function RealtimeMetrics() {
     const connectWebSocket = () => {
       try {
         // In a real app, this would be your WebSocket endpoint
-        // wsRef.current = new WebSocket('ws://localhost:8000/ws/metrics')
+        // wsRef.current = new WebSocket('ws://bgapp-api-worker.majearcasa.workers.dev/ws/metrics')
         
         // Simulate connection
         setWsStatus(prev => ({ ...prev, connected: true, reconnectAttempts: 0 }))
