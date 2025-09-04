@@ -1,3 +1,20 @@
+/**
+ * BGAPP Admin Dashboard - Dashboard Content Router
+ * 
+ * Copyright (c) 2025 MareDatum Consultoria e Gestão de Projectos Unipessoal LDA
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * This component handles routing and rendering of all dashboard sections
+ * including ML systems, QGIS analysis, real-time data, and scientific interfaces.
+ * 
+ * Developed by:
+ * - Director: Paulo Fernandes
+ * - Technical Lead: Marcos Santos
+ * 
+ * Marine Angola Platform v2.0.0
+ * https://bgapp-admin.pages.dev
+ */
+
 'use client'
 
 import { DashboardOverview } from './sections/dashboard-overview-clean'
@@ -5,6 +22,8 @@ import { IframeWrapper } from './sections/iframe-wrapper'
 import { ReportsManagement } from './reports-management'
 import BGAPPIntegrationBulletproof from './bgapp-integration-bulletproof'
 import ServicesIntegrationComplete from './services-integration-complete'
+import ServicesIntegrationCloudflare from './services-integration-cloudflare'
+import { ServicesStatus } from './services-status'
 
 // 🎨 UI Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,6 +33,7 @@ import { Button } from '@/components/ui/button'
 // 🚀 BGAPP Native Components - Silicon Valley Grade A+
 import MLSystemDashboard from '../bgapp-native/ml-system/ml-system-dashboard'
 import PredictiveFiltersManager from '../bgapp-native/ml-system/predictive-filters-manager'
+import MLRetentionDashboard from '../ml-retention/MLRetentionDashboard'
 import QGISAdvancedPanel from '../bgapp-native/qgis-advanced/qgis-advanced-panel'
 import DataConnectorsManager from '../bgapp-native/data-processing/data-connectors-manager'
 import ScientificInterfacesHub from '../bgapp-native/scientific-tools/scientific-interfaces-hub'
@@ -25,6 +45,8 @@ import QGISBiomassCalculator from './qgis-biomass-calculator'
 
 // 🔧 Enhanced Components
 import SmartIFrameWrapper from '../iframe-enhanced/smart-iframe-wrapper'
+import { AdvancedAnalytics } from './advanced-analytics'
+import { RealtimeMetrics } from './realtime-metrics'
 import {
   GlobeAltIcon,
   BeakerIcon,
@@ -61,7 +83,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <BGAPPIntegrationBulletproof />
       
       case 'services-integration':
-        return <ServicesIntegrationComplete />
+        return <ServicesIntegrationCloudflare />
       
       // 🧠 MACHINE LEARNING SYSTEM
       case 'ml-system':
@@ -70,6 +92,9 @@ export function DashboardContent({ section }: DashboardContentProps) {
       
       case 'predictive-filters':
         return <PredictiveFiltersManager />
+      
+      case 'ml-retention-system':
+        return <MLRetentionDashboard />
       
       // 🗺️ QGIS ADVANCED SYSTEM  
       case 'qgis-advanced':
@@ -85,6 +110,43 @@ export function DashboardContent({ section }: DashboardContentProps) {
       case 'scientific-hub':
       case 'scientific-interfaces':
         return <ScientificInterfacesHub />
+      
+      // 🌊 ENHANCED OCEAN SYSTEM
+      case 'enhanced-ocean-system':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">🌊 Enhanced Ocean System</h1>
+                <p className="text-muted-foreground">
+                  Sistema de renderização oceânica avançado com shaders Unreal Engine
+                </p>
+              </div>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                NOVO
+              </Badge>
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🌊 Visualização Oceânica Avançada
+                  <Badge variant="outline">Offline</Badge>
+                </CardTitle>
+                <CardDescription>
+                  Sistema de renderização oceânica com ondas Gerstner, caustics e qualidade adaptativa
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <IframeWrapper
+                  src="/bgapp-enhanced-ocean-system.html"
+                  title="Enhanced Ocean System"
+                  height="600px"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )
       
       // 🗺️ QGIS ROUTES ESPECÍFICAS - IMPLEMENTAÇÕES COMPLETAS
       case 'qgis-spatial-analysis':
@@ -119,6 +181,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <MLSystemDashboard />
       
       case 'models-manager':
+      case 'ml-models-manager':
         return <MLSystemDashboard />
       
       case 'auto-ingestion':
@@ -136,7 +199,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Dashboard Científico"
           description="Interface científica principal"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html"
+          src="https://bgapp-frontend.pages.dev/dashboard_cientifico.html"
           icon={BeakerIcon}
         />
       
@@ -144,7 +207,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Animações Meteorológicas"
           description="Animações avançadas de vento e correntes"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html"
+          src="https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html"
           icon={BoltIcon}
         />
       
@@ -153,7 +216,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Dashboard Científico Angola"
           description="Interface científica principal para dados oceanográficos de Angola"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html"
+          src="https://bgapp-frontend.pages.dev/dashboard_cientifico.html"
           icon={BeakerIcon}
         />
       
@@ -161,7 +224,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <SmartIFrameWrapper
           title="Dashboard Científico Avançado"
           description="Análises científicas avançadas e modelos preditivos"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html"
+          url="https://bgapp-frontend.pages.dev/dashboard_cientifico.html"
           icon={BeakerIcon}
           preventLoop={true}
           showControls={true}
@@ -171,16 +234,17 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Colaboração Científica"
           description="Plataforma de colaboração para investigadores e instituições"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/collaboration.html"
+          src="https://bgapp-frontend.pages.dev/collaboration.html"
           icon={UserGroupIcon}
         />
       
       case 'stac-ocean':
         return <IframeWrapper
-          title="STAC Oceanográfico"
-          description="SpatioTemporal Asset Catalog para dados marinhos"
-          src="http://localhost:8082"
+          title="STAC Browser - Navegador de Catálogo"
+          description="Interface visual para navegar no catálogo STAC oceanográfico"
+          src="https://bgapp-frontend.pages.dev/stac_oceanographic"
           icon={CloudArrowUpIcon}
+          height="900px"
         />
 
       // Maps and Visualization
@@ -188,25 +252,87 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Mapa Interativo Principal"
           description="Visualização interativa de dados oceanográficos em tempo real"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/index.html"
+          src="https://bgapp-frontend.pages.dev/index.html"
           icon={MapIcon}
           height="900px"
         />
       
       case 'realtime-angola':
-        return <IframeWrapper
-          title="Tempo Real Angola"
-          description="Dados oceanográficos em tempo real da costa angolana"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/realtime_angola.html"
-          icon={EyeIcon}
-          height="900px"
-        />
+        return <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">👁️ Tempo Real Angola</h1>
+              <p className="text-muted-foreground">
+                Dados oceanográficos em tempo real da costa angolana
+              </p>
+            </div>
+            <Badge variant="secondary" className="bg-green-100 text-green-800">
+              LIVE
+            </Badge>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🌡️ Temperatura
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-blue-600">24.8°C</div>
+                <p className="text-sm text-muted-foreground">Superfície do mar</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🌊 Ondas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600">1.6m</div>
+                <p className="text-sm text-muted-foreground">Altura significativa</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🧪 Clorofila
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-emerald-600">2.3 mg/m³</div>
+                <p className="text-sm text-muted-foreground">Concentração</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                🗺️ Visualização Interativa
+              </CardTitle>
+              <CardDescription>
+                Interface completa de dados em tempo real
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <IframeWrapper
+                src="https://bgapp-frontend.pages.dev/realtime_angola.html"
+                title="Realtime Angola"
+                height="600px"
+              />
+            </CardContent>
+          </Card>
+        </div>
       
       case 'qgis-dashboard':
         return <IframeWrapper
           title="Dashboard QGIS"
           description="Interface QGIS integrada para análise espacial avançada"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_dashboard.html"
+          src="https://bgapp-frontend.pages.dev/qgis_dashboard.html"
           icon={MapIcon}
           height="900px"
         />
@@ -215,40 +341,92 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="QGIS Pescas"
           description="Sistema QGIS especializado para gestão de recursos pesqueiros"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_fisheries.html"
+          src="https://bgapp-frontend.pages.dev/qgis_fisheries.html"
           icon={MapIcon}
           height="900px"
         />
 
       // Mobile Interfaces
       case 'mobile-pwa':
-        return <IframeWrapper
-          title="Mobile PWA Avançado"
-          description="Aplicação web progressiva otimizada para dispositivos móveis"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile_pwa.html"
-          icon={DevicePhoneMobileIcon}
-          height="700px"
-        />
+      case 'mobile-demos':
+        return <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">📱 Mobile e Demos</h1>
+              <p className="text-muted-foreground">
+                Aplicações móveis e demonstrações do sistema BGAPP
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/mobile_pwa.html', '_blank')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DevicePhoneMobileIcon className="h-6 w-6" />
+                  Mobile PWA Avançado
+                </CardTitle>
+                <CardDescription>Aplicação web progressiva otimizada</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full">Abrir PWA</Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html', '_blank')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <RocketLaunchIcon className="h-6 w-6" />
+                  Demo BGAPP Enhanced
+                </CardTitle>
+                <CardDescription>Demonstração das funcionalidades avançadas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full">Abrir Demo</Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/minpermar/dist/index.html', '_blank')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BuildingStorefrontIcon className="h-6 w-6" />
+                  Site MINPERMAR
+                </CardTitle>
+                <CardDescription>Portal oficial do Ministério das Pescas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full">Abrir Site</Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/mobile.html', '_blank')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DevicePhoneMobileIcon className="h-6 w-6" />
+                  Interface Mobile Básica
+                </CardTitle>
+                <CardDescription>Versão simplificada para mobile</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full">Abrir Mobile</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       
       case 'mobile-basic':
         return <IframeWrapper
           title="Interface Mobile Básica"
           description="Interface mobile simplificada para acesso rápido"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile.html"
+          src="https://bgapp-frontend.pages.dev/mobile.html"
           icon={DevicePhoneMobileIcon}
           height="700px"
         />
 
       // Analysis and Processing
       case 'advanced-analysis':
-        return <SmartIFrameWrapper
-          title="Analytics Avançados"
-          description="Análises estatísticas e visualizações avançadas"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard.html"
-          icon={ChartBarIcon}
-          preventLoop={true}
-          showControls={true}
-        />
+      case 'analytics':
+        return <AdvancedAnalytics />
       
       case 'ai-assistant':
         return <div className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 rounded-xl border border-purple-200 dark:border-purple-800">
@@ -276,18 +454,14 @@ export function DashboardContent({ section }: DashboardContentProps) {
         </div>
       
       case 'realtime-monitoring':
-        return <IframeWrapper
-          title="Métricas Tempo Real"
-          description="Monitoramento em tempo real de sistemas e dados"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/health_dashboard.html"
-          icon={EyeIcon}
-        />
+      case 'realtime-metrics':
+        return <RealtimeMetrics />
       
       case 'metocean-animations':
         return <IframeWrapper
           title="Animações Meteorológicas"
           description="Visualizações animadas de dados meteorológicos e oceanográficos"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html"
+          src="https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html"
           icon={CloudArrowUpIcon}
           height="900px"
         />
@@ -322,18 +496,24 @@ export function DashboardContent({ section }: DashboardContentProps) {
 
       // Infrastructure
       case 'services-status':
-        return <IframeWrapper
-          title="Estado dos Serviços"
-          description="Monitoramento do estado de todos os serviços BGAPP"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/admin.html#services"
-          icon={ServerIcon}
-        />
+      case 'system-management':
+        return <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">🖥️ Gestão do Sistema</h1>
+              <p className="text-muted-foreground">
+                Monitorização e gestão completa dos serviços BGAPP
+              </p>
+            </div>
+          </div>
+          <ServicesStatus />
+        </div>
       
       case 'databases':
         return <IframeWrapper
           title="Bases de Dados"
           description="Gestão e monitoramento das bases de dados"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/admin.html#databases"
+          src="https://bgapp-frontend.pages.dev/admin.html#databases"
           icon={CircleStackIcon}
         />
       
@@ -349,7 +529,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Dashboard de Saúde"
           description="Monitoramento da saúde geral do sistema"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/health_dashboard.html"
+          src="https://bgapp-frontend.pages.dev/health_dashboard.html"
           icon={ChartBarIcon}
         />
       
@@ -466,7 +646,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Logs do Sistema"
           description="Visualização e análise de logs do sistema BGAPP"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/debug.html"
+          src="https://bgapp-frontend.pages.dev/debug.html"
           icon={WrenchScrewdriverIcon}
         />
 
@@ -474,7 +654,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Interface de Debug"
           description="Ferramentas de debug e diagnóstico do sistema"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/debug.html"
+          src="https://bgapp-frontend.pages.dev/debug.html"
           icon={WrenchScrewdriverIcon}
         />
 
@@ -523,7 +703,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Demo BGAPP Enhanced"
           description="Demonstração das funcionalidades avançadas do BGAPP"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-enhanced-demo.html"
+          src="https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html"
           icon={RocketLaunchIcon}
           height="900px"
         />
@@ -532,7 +712,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Demo Animações Vento"
           description="Demonstração das animações avançadas de vento e correntes"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html"
+          src="https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html"
           icon={CloudArrowUpIcon}
           height="900px"
         />
@@ -542,7 +722,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Site MINPERMAR"
           description="Portal oficial do Ministério das Pescas e Recursos Marinhos"
-          src="https://befb0797.bgapp-arcasadeveloping.pages.dev/minpermar/dist/index.html"
+          src="https://bgapp-frontend.pages.dev/minpermar/dist/index.html"
           icon={BuildingStorefrontIcon}
           height="900px"
         />
@@ -707,12 +887,13 @@ export function DashboardContent({ section }: DashboardContentProps) {
 
       // Security
       case 'auth-enterprise':
+      case 'security-monitoring':
         return <div className="p-6 bg-white dark:bg-slate-800 rounded-xl">
           <div className="flex items-center gap-4 mb-6">
             <ShieldCheckIcon className="h-8 w-8 text-blue-600" />
             <div>
-              <h2 className="text-2xl font-bold">Autenticação Enterprise</h2>
-              <p className="text-slate-600 dark:text-slate-400">Sistema de autenticação e autorização avançado</p>
+              <h2 className="text-2xl font-bold">Segurança e Monitorização</h2>
+              <p className="text-slate-600 dark:text-slate-400">Sistema de segurança, autenticação e monitorização avançado</p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -893,7 +1074,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>Frontend Principal</span>
-                  <a href="https://befb0797.bgapp-arcasadeveloping.pages.dev" target="_blank" className="text-green-600 font-medium hover:underline">:8085</a>
+                  <a href="https://bgapp-admin.pages.dev" target="_blank" className="text-green-600 font-medium hover:underline">:8085</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>API Admin</span>
@@ -978,6 +1159,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <MLSystemDashboard />
       
       case 'models-manager':
+      case 'ml-models-manager':
         return <MLSystemDashboard />
       
       case 'auto-ingestion':
@@ -993,7 +1175,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <SmartIFrameWrapper
           title="Dashboard Científico"
           description="Interface científica principal"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html"
+          url="https://bgapp-frontend.pages.dev/dashboard_cientifico.html"
           icon={BeakerIcon}
           preventLoop={true}
         />
@@ -1002,7 +1184,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <SmartIFrameWrapper
           title="Animações Meteorológicas"
           description="Animações avançadas de vento e correntes"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html"
+          url="https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html"
           icon={BoltIcon}
           preventLoop={true}
         />
@@ -1011,7 +1193,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <SmartIFrameWrapper
           title="Análises e Processamento"
           description="Centro de análises estatísticas"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard.html"
+          url="https://bgapp-frontend.pages.dev/dashboard.html"
           icon={ChartBarIcon}
           preventLoop={true}
         />
@@ -1023,7 +1205,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             🗺️ Mapas e Visualização
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/index.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/index.html', '_blank')}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapIcon className="h-6 w-6" />
@@ -1036,7 +1218,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/realtime_angola.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/realtime_angola.html', '_blank')}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <EyeIcon className="h-6 w-6" />
@@ -1058,7 +1240,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             📱 Interfaces Mobile
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile_pwa.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/mobile_pwa.html', '_blank')}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <DevicePhoneMobileIcon className="h-6 w-6" />
@@ -1071,7 +1253,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/mobile.html', '_blank')}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <DevicePhoneMobileIcon className="h-6 w-6" />
@@ -1093,7 +1275,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             🚀 Demos e Testes
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-enhanced-demo.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html', '_blank')}>
               <CardHeader>
                 <CardTitle>Demo BGAPP Enhanced</CardTitle>
                 <CardDescription>Demonstração das funcionalidades avançadas</CardDescription>
@@ -1103,7 +1285,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html', '_blank')}>
               <CardHeader>
                 <CardTitle>Demo Animações Vento</CardTitle>
                 <CardDescription>Animações meteorológicas avançadas</CardDescription>
@@ -1119,7 +1301,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <SmartIFrameWrapper
           title="Site MINPERMAR"
           description="Portal institucional MINPERMAR"
-          url="https://befb0797.bgapp-arcasadeveloping.pages.dev/minpermar/dist/index.html"
+          url="https://bgapp-frontend.pages.dev/minpermar/dist/index.html"
           icon={BuildingStorefrontIcon}
           preventLoop={true}
         />
@@ -1131,7 +1313,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             📈 Monitorização Sistema
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/health_dashboard.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/health_dashboard.html', '_blank')}>
               <CardHeader>
                 <CardTitle>Health Dashboard</CardTitle>
                 <CardDescription>Saúde do sistema</CardDescription>
@@ -1319,7 +1501,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://befb0797.bgapp-arcasadeveloping.pages.dev/debug.html', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-frontend.pages.dev/debug.html', '_blank')}>
               <CardHeader>
                 <CardTitle>Debug Interface</CardTitle>
                 <CardDescription>Interface de debug</CardDescription>
