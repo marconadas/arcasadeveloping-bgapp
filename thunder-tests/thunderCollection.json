@@ -1,0 +1,45 @@
+[
+  {
+    "_id": "bgapp-main-collection",
+    "colName": "🌊 BGAPP Marine Angola API",
+    "created": "2024-12-27T12:00:00.000Z",
+    "sortNum": 10000,
+    "folders": [
+      {
+        "_id": "dashboard-folder-id",
+        "name": "📊 Dashboard & System",
+        "containerId": "",
+        "created": "2024-12-27T12:00:00.000Z",
+        "sortNum": 10000
+      },
+      {
+        "_id": "services-folder-id", 
+        "name": "🔧 Services Management",
+        "containerId": "",
+        "created": "2024-12-27T12:00:00.000Z",
+        "sortNum": 20000
+      },
+      {
+        "_id": "ml-folder-id",
+        "name": "🧠 Machine Learning & AI",
+        "containerId": "",
+        "created": "2024-12-27T12:00:00.000Z",
+        "sortNum": 30000
+      },
+      {
+        "_id": "stac-folder-id",
+        "name": "🛰️ STAC API (Satellite Data)",
+        "containerId": "",
+        "created": "2024-12-27T12:00:00.000Z",
+        "sortNum": 40000
+      },
+      {
+        "_id": "maps-folder-id",
+        "name": "🗺️ Maps System",
+        "containerId": "",
+        "created": "2024-12-27T12:00:00.000Z",
+        "sortNum": 50000
+      }
+    ]
+  }
+]

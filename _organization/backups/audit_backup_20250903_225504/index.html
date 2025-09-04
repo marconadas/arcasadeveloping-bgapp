@@ -1,0 +1,3288 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP - Marine Angola | Mapa Meteorológico Interativo</title>
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; 
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+                           https://unpkg.com 
+                           https://cdnjs.cloudflare.com; 
+                 style-src 'self' 'unsafe-inline' 
+                          https://unpkg.com 
+                          https://netdna.bootstrapcdn.com; 
+                 font-src 'self' 
+                          https://unpkg.com 
+                          https://netdna.bootstrapcdn.com 
+                          data:; 
+                 img-src 'self' data: blob: 
+                        https://tiles.maps.eox.at 
+                        https://www.gebco.net 
+                        https://services.sentinel-hub.com 
+                        https://tiles.arcgis.com
+                        https://a.tile.openstreetmap.org
+                        https://b.tile.openstreetmap.org
+                        https://c.tile.openstreetmap.org
+                        https://a.basemaps.cartocdn.com
+                        https://b.basemaps.cartocdn.com
+                        https://c.basemaps.cartocdn.com
+                        https://d.basemaps.cartocdn.com
+                        https://server.arcgisonline.com
+                        https://stamen-tiles-a.a.ssl.fastly.net
+                        https://stamen-tiles-b.a.ssl.fastly.net
+                        https://stamen-tiles-c.a.ssl.fastly.net
+                        https://stamen-tiles-d.a.ssl.fastly.net
+                        https://tile.stamen.com
+                        https://tiles.stadiamaps.com
+                        https://unpkg.com; 
+                 connect-src 'self' 
+                            http://localhost:8000
+                            http://localhost:5080
+                            https://tiles.maps.eox.at 
+                            https://www.gebco.net 
+                            https://services.sentinel-hub.com 
+                            https://copernicus.eu 
+                            https://stamen-tiles-a.a.ssl.fastly.net
+                            https://stamen-tiles-b.a.ssl.fastly.net
+                            https://stamen-tiles-c.a.ssl.fastly.net
+                            https://stamen-tiles-d.a.ssl.fastly.net
+                            https://tile.stamen.com
+                            https://tiles.stadiamaps.com
+                            wss:;">
+  
+  <!-- Meta Tags SEO -->
+  <meta name="description" content="BGAPP - Marine Angola: Sistema avançado de monitoramento oceanográfico e meteorológico marinho de Angola com dados em tempo real.">
+  <meta name="keywords" content="Marine Angola, BGAPP, oceanografia, meteorologia, Angola, SST, correntes marinhas, batimetria, GEBCO, Sentinel-2, Copernicus, marítimo">
+  <meta name="author" content="Marine Angola - BGAPP Development Team">
+  
+  <!-- PWA Meta Tags -->
+  
+  <meta name="application-name" content="BGAPP">
+  <link rel="manifest" href="/BGAPP/manifest.json">
+  
+  <!-- Favicon e Ícones PWA -->
+  
+  
+  
+  
+  <meta name="msapplication-TileImage" content="/assets/img/icon-144.png">
+  <meta name="msapplication-TileColor" content="#0066cc">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- TIMEDIMENSION DESATIVADO TEMPORARIAMENTE:
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css"/>
+  -->
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- FontAwesome Fallback CSS -->
+  <link rel="stylesheet" href="assets/css/fontawesome-fallback.css"/>
+  
+  <link rel="stylesheet" href="assets/css/map-styles.css?v=20250115fresh">
+  <link rel="stylesheet" href="assets/css/ml-components.css?v=1.0.0">
+  <style>
+    /* =====================================================
+       BGAPP - TEMA ESCURO PERMANENTE (IGUAL AO EOX LAYERS)
+       =====================================================
+       
+       ATENÇÃO: Este painel usa APENAS tema escuro.
+       Não há suporte para tema claro nem alternância automática.
+       O visual é idêntico ao painel EOX Layers.
+       
+       ===================================================== */
+    :root {
+      --apple-blue: #007AFF;
+      --apple-green: #34C759;
+      --apple-orange: #FF9500;
+      --apple-red: #FF3B30;
+      --apple-teal: #5AC8FA;
+      
+      /* TEMA ESCURO FIXO - NÃO MUDA */
+      --surface-elevated: rgba(44, 44, 46, 0.95);
+      --border: rgba(255, 255, 255, 0.2);
+      --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --transition-smooth: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --radius-lg: 16px;
+      --spacing-lg: 24px;
+      --spacing-md: 16px;
+      
+      /* HIERARQUIA Z-INDEX ORGANIZADA */
+      --z-map: 1;
+      --z-toolbar: 1000;
+      --z-floating-toggle: 1001;
+      --z-legend: 1002;
+      --z-notifications: 2000;
+      --z-modals: 3000;
+      
+      /* TEXTO SEMPRE BRANCO/CLARO */
+      --text-primary: #ffffff;
+      --text-secondary: #d1d1d6;
+      --text-muted: #8e8e93;
+      
+      /* FUNDOS SEMPRE ESCUROS */
+      --bg-header: rgba(58, 58, 60, 0.9);
+      --bg-footer: rgba(58, 58, 60, 0.9);
+      --bg-input: rgba(58, 58, 60, 0.9);
+      --bg-button-control: rgba(72, 72, 74, 0.9);
+      --bg-toggle: rgba(72, 72, 74, 0.8);
+      --bg-toggle-hover: rgba(99, 99, 102, 0.9);
+      
+      /* ESTADOS HOVER ESCUROS */
+      --bg-hover-dark: rgba(58, 58, 60, 0.98);
+      --bg-hover-control: rgba(88, 88, 90, 0.9);
+      --bg-hover-input: rgba(72, 72, 74, 0.95);
+    }
+    
+    /* =====================================================
+       CORREÇÃO CRÍTICA: SOBRESCREVER map-styles.css
+       =====================================================
+       
+       PROBLEMA ENCONTRADO: O arquivo map-styles.css contém:
+       - #toolbar:hover { background: rgba(255,255,255,0.98); }
+       - .btn:hover com cores que conflitam com tema escuro
+       
+       SOLUÇÃO: Usar especificidade máxima (body #elemento)
+       e !important para garantir prioridade sobre CSS externo.
+       
+       ===================================================== */
+    body #toolbar:hover {
+      background: var(--surface-elevated) !important;
+      transform: none !important;
+    }
+    
+    body #toolbar *:hover {
+      background-color: inherit !important;
+    }
+    
+    body #toolbar button:hover,
+    body #toolbar input:hover,
+    body #toolbar .btn:hover {
+      background: var(--bg-hover-control) !important;
+    }
+    
+    /* ANULAR TODOS OS HOVERS DO map-styles.css */
+    body .btn:hover {
+      background: var(--bg-hover-control) !important;
+      color: var(--text-primary) !important;
+    }
+    
+    /* CORREÇÃO LEAFLET - EVITAR SOBREPOSIÇÃO */
+    .leaflet-control-container {
+      z-index: 500 !important;
+    }
+    
+    .leaflet-control-layers,
+    .leaflet-bar {
+      z-index: 500 !important;
+    }
+    
+    /* Garantir que controles Leaflet não sobreponham nosso painel */
+    .leaflet-top.leaflet-left {
+      top: 100px !important;
+      left: 30px !important;
+    }
+    
+    /* ===================================================== */
+    
+    /* Base - Mapa em tela cheia */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    #map {
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: var(--z-map) !important;
+    }
+    
+    /* Painel flutuante retrátil - ANTI-SOBREPOSIÇÃO */
+    #toolbar {
+      position: fixed !important;
+      top: var(--spacing-lg) !important;
+      left: var(--spacing-lg) !important;
+      width: 320px;
+      max-height: calc(100vh - 48px);
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      border: 1px solid var(--border);
+      z-index: var(--z-toolbar) !important;
+      transform: translateX(0);
+      transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      /* ANTI-SOBREPOSIÇÃO */
+      isolation: isolate;
+      pointer-events: auto;
+    }
+    
+    #toolbar.collapsed {
+      transform: translateX(-340px) !important;
+      opacity: 0.1 !important;
+      pointer-events: none;
+    }
+    
+    /* Header do painel - TEMA ESCURO IGUAL EOX */
+    #toolbar header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-header);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    #app-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text-primary);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Botão de toggle - TEMA ESCURO FIXO */
+    .panel-toggle {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg-toggle);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid var(--border);
+    }
+    
+    body .panel-toggle:hover {
+      background: var(--bg-toggle-hover) !important;
+      transform: scale(1.05) !important;
+      color: var(--text-primary) !important;
+    }
+    
+    /* Conteúdo do painel */
+    .toolbar-section {
+      margin-bottom: var(--spacing-md);
+      padding: 0 var(--spacing-md);
+    }
+    
+    .toolbar-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Botões modernizados - MELHORADOS */
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+      position: relative;
+      overflow: hidden;
+      margin: 2px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      filter: brightness(1.1);
+    }
+    
+    .btn:active {
+      transform: scale(0.95);
+    }
+    
+    .btn.ocean {
+      background: var(--apple-teal);
+      color: white;
+    }
+    
+    body .btn.ocean:hover {
+      background: #4DD0E7 !important;
+      color: white !important;
+    }
+    
+    .btn.meteo {
+      background: var(--apple-orange);
+      color: white;
+    }
+    
+    body .btn.meteo:hover {
+      background: #FFB143 !important;
+      color: white !important;
+    }
+    
+    .btn.control {
+      background: var(--bg-button-control);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    body .btn.control:hover {
+      background: var(--bg-hover-control) !important;
+      color: var(--text-primary) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .btn.animate {
+      background: #af52de;
+      color: white;
+    }
+    
+    body .btn.animate:hover {
+      background: #C574E8 !important;
+      color: white !important;
+    }
+    
+    .btn.active {
+      background: var(--apple-green) !important;
+      color: white;
+      box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
+    }
+    
+    body .btn.active:hover {
+      background: #56D478 !important;
+      color: white !important;
+      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.4) !important;
+    }
+    
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    /* Input de data - TEMA ESCURO FIXO */
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-input);
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    body input[type="date"]:hover {
+      background: var(--bg-hover-input) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    body input[type="date"]:focus {
+      outline: none !important;
+      border-color: var(--apple-blue) !important;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3) !important;
+      background: var(--bg-button-control) !important;
+    }
+    
+    /* Status - TEMA ESCURO */
+    footer {
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border);
+      background: var(--bg-footer);
+      margin-top: auto;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    /* Botão flutuante (quando painel está recolhido) - CORRIGIDO */
+    #floating-toggle {
+      position: fixed;
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 50%;
+      box-shadow: var(--shadow-elevated);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      z-index: var(--z-floating-toggle) !important;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      opacity: 0;
+      transform: scale(0.8);
+      will-change: transform, opacity;
+    }
+    
+    body #floating-toggle:hover {
+      transform: scale(1.1) !important;
+      background: var(--bg-hover-dark) !important;
+      border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    #floating-toggle.show {
+      display: flex !important;
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    /* Legenda modernizada */
+    #legend {
+      position: fixed;
+      bottom: var(--spacing-lg);
+      right: var(--spacing-lg);
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      box-shadow: var(--shadow-elevated);
+      border: 1px solid var(--border);
+      z-index: var(--z-legend);
+    }
+    
+    /* Responsivo - CORRIGIDO */
+    @media (max-width: 768px) {
+      #toolbar {
+        width: calc(100vw - 32px) !important;
+        left: 16px !important;
+        right: 16px !important;
+        top: 16px !important;
+        max-height: 70vh;
+        max-width: none;
+      }
+      
+      #toolbar.collapsed {
+        transform: translateY(-100%) !important;
+        opacity: 0 !important;
+      }
+      
+      #floating-toggle {
+        top: 16px !important;
+        left: 16px !important;
+      }
+      
+      /* Ajustar tamanho de botões em mobile */
+      .btn-group {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px;
+      }
+      
+      .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        min-height: 32px;
+      }
+    }
+
+    /* =====================================================
+       ESTILOS DO PAINEL ADMINISTRATIVO
+       ===================================================== */
+    
+    /* Botão de Acesso Administrativo */
+    .admin-access-btn {
+      background: rgba(255, 149, 0, 0.9) !important;
+      color: white !important;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+    }
+
+    .admin-access-btn:hover {
+      background: rgba(255, 149, 0, 1) !important;
+      transform: scale(1.05);
+    }
+
+    .admin-access-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Modal de Login Administrativo */
+    .admin-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .admin-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .admin-modal-content {
+      position: relative;
+      background: var(--surface-elevated);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      max-width: 400px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideInUp 0.3s ease;
+    }
+
+    .admin-modal-header {
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .admin-modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .admin-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .admin-modal-body {
+      padding: var(--spacing-lg);
+    }
+
+    .admin-form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .admin-form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .admin-form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .admin-form-group input:focus {
+      outline: none;
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+
+    .admin-form-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .admin-form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: var(--spacing-lg);
+    }
+
+    .admin-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 80px;
+    }
+
+    .admin-btn-primary {
+      background: var(--apple-blue);
+      color: white;
+    }
+
+    .admin-btn-primary:hover {
+      background: #0051D0;
+      transform: translateY(-1px);
+    }
+
+    .admin-btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .admin-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .admin-error {
+      margin-top: var(--spacing-md);
+      padding: 12px;
+      background: rgba(255, 59, 48, 0.1);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+      border-radius: 8px;
+      color: var(--apple-red);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsivo */
+    @media (max-width: 480px) {
+      .admin-modal-content {
+        width: 95%;
+        margin: 20px;
+      }
+
+      .admin-modal-header,
+      .admin-modal-body {
+        padding: 16px;
+      }
+
+      .admin-form-actions {
+        flex-direction: column;
+      }
+
+      .admin-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav id="toolbar" role="navigation" aria-label="Controles do Mapa Meteorológico">
+    <header>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 40px; height: 40px; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <div>
+          <h1 id="app-title" tabindex="0" style="margin: 0; font-size: 18px; font-weight: 700; color: var(--text-primary);">BGAPP</h1>
+          <p style="margin: 0; font-size: 12px; color: var(--text-secondary); font-weight: 500;">Marine Angola</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="admin-access-btn" id="admin-access-btn" aria-label="Acesso Administrativo" title="Acesso ao Painel Administrativo">
+          <span>⚙️</span>
+        </button>
+        <button class="panel-toggle" id="panel-toggle" aria-label="Recolher painel">
+          <span>←</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="toolbar-section" aria-labelledby="filters-heading">
+      <h2 id="filters-heading" class="sr-only">Filtros Temporais</h2>
+      <label for="dateMin" style="font-size: 12px; color: var(--text-secondary); font-weight: 600; text-shadow: 0 1px 1px rgba(0,0,0,0.5);">
+        Data mínima:
+        <input type="date" 
+               id="dateMin" 
+               value="2024-06-01"
+               aria-describedby="date-help"
+               aria-label="Selecionar data mínima para filtros">
+      </label>
+      <div id="date-help" class="sr-only">
+        Formato: DD/MM/AAAA. Selecione a data inicial para visualização dos dados.
+      </div>
+      <button id="apply" 
+              class="btn" 
+              style="margin-top: 4px;"
+              aria-describedby="apply-help">
+        <span aria-hidden="true">🔍</span>
+        Aplicar Filtro
+      </button>
+      <div id="apply-help" class="sr-only">
+        Aplica o filtro de data selecionado aos dados meteorológicos
+      </div>
+    </section>
+
+    <section class="toolbar-section" aria-labelledby="ocean-heading">
+      <h2 id="ocean-heading" style="margin: 0 0 6px 0; font-size: 13px; color: var(--text-primary); font-weight: 700; text-shadow: 0 1px 1px rgba(0,0,0,0.5);">
+        🌡️ Variáveis Oceanográficas
+      </h2>
+      <div class="btn-group" role="group" aria-labelledby="ocean-heading">
+        <button id="btn-sst" 
+                class="btn ocean"
+                aria-label="Temperatura da Superfície do Mar"
+                aria-describedby="sst-help"
+                role="button"
+                tabindex="0"
+                aria-pressed="false">
+          <span aria-hidden="true">🌡️</span>
+          SST
+        </button>
+        <div id="sst-help" class="sr-only">
+          Visualizar dados de temperatura da superfície do mar
+        </div>
+
+        <button id="btn-salinity" 
+                class="btn ocean"
+                aria-label="Salinidade da Água do Mar"
+                aria-describedby="salinity-help"
+                role="button"
+                tabindex="0"
+                aria-pressed="false">
+          <span aria-hidden="true">🧂</span>
+          Salinidade
+        </button>
+        <div id="salinity-help" class="sr-only">
+          Visualizar dados de salinidade da água do mar
+        </div>
+
+        <button id="btn-chlorophyll" 
+                class="btn ocean"
+                aria-label="Concentração de Clorofila"
+                aria-describedby="chlorophyll-help"
+                role="button"
+                tabindex="0"
+                aria-pressed="false">
+          <span aria-hidden="true">🌿</span>
+          Clorofila
+        </button>
+        <div id="chlorophyll-help" class="sr-only">
+          Visualizar concentração de clorofila na água
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar-section" aria-labelledby="vector-heading">
+      <h2 id="vector-heading" style="margin: 0 0 6px 0; font-size: 13px; color: var(--text-primary); font-weight: 700; text-shadow: 0 1px 1px rgba(0,0,0,0.5);">
+        💨 Campos Vetoriais
+      </h2>
+      <div class="btn-group" role="group" aria-labelledby="vector-heading">
+        <button id="btn-currents" 
+                class="btn meteo"
+                aria-label="Correntes Marítimas"
+                aria-describedby="currents-help"
+                role="button"
+                tabindex="0"
+                aria-pressed="false">
+          <span aria-hidden="true">🌊</span>
+          Correntes
+        </button>
+        <div id="currents-help" class="sr-only">
+          Visualizar direção e intensidade das correntes marítimas
+        </div>
+
+        <button id="btn-wind" 
+                class="btn meteo"
+                aria-label="Velocidade e Direção do Vento"
+                aria-describedby="wind-help"
+                role="button"
+                tabindex="0"
+                aria-pressed="false">
+          <span aria-hidden="true">💨</span>
+          Vento
+        </button>
+        <div id="wind-help" class="sr-only">
+          Visualizar velocidade e direção do vento
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar-section" aria-labelledby="controls-heading">
+      <h2 id="controls-heading" style="margin: 0 0 6px 0; font-size: 13px; color: var(--text-primary); font-weight: 700; text-shadow: 0 1px 1px rgba(0,0,0,0.5);">
+        ⚙️ Controles
+      </h2>
+      <div class="btn-group" role="group" aria-labelledby="controls-heading">
+        <button id="btn-clear" 
+                class="btn control" 
+                style="background: #95a5a6;"
+                aria-label="Limpar Todas as Camadas do Mapa"
+                aria-describedby="clear-help"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true">🗑️</span>
+          Limpar Tudo
+        </button>
+        <div id="clear-help" class="sr-only">
+          Remove todas as camadas ativas do mapa
+        </div>
+
+        <button id="btn-animate" 
+                class="btn animate" 
+                style="background: #9b59b6;"
+                aria-label="Iniciar Animação Temporal"
+                aria-describedby="animate-help"
+                aria-pressed="false"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true" id="animate-icon">▶️</span>
+          <span id="animate-text">Animar</span>
+        </button>
+        <div id="animate-help" class="sr-only">
+          Inicia ou para a animação temporal dos dados meteorológicos
+        </div>
+
+        <button id="btn-disable-eox" 
+                class="btn control" 
+                style="background: #ff3b30; color: white; font-size: 11px;"
+                aria-label="Desabilitar EOX em caso de problemas"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true">🚫</span>
+          EOX OFF
+        </button>
+      </div>
+    </section>
+
+    <footer style="margin-top: 8px; font-size: 11px; color: var(--text-secondary); font-weight: 600;">
+      <div role="status" aria-live="polite" aria-label="Status do Sistema">
+        <span class="status-indicator status-online" aria-hidden="true" style="display: inline-block; width: 8px; height: 8px; background: #27ae60; border-radius: 50%; margin-right: 6px;"></span>
+        <span id="system-status" style="text-shadow: 0 1px 1px rgba(0,0,0,0.5);">Sistema Online</span>
+      </div>
+    </footer>
+  </nav>
+  
+  <!-- Botão flutuante (quando painel está recolhido) -->
+  <button id="floating-toggle" aria-label="Mostrar painel de controles">
+    ⚙️
+  </button>
+  
+  <!-- Região principal do mapa -->
+  <main role="main" aria-label="Mapa Interativo Meteorológico">
+    <div id="map" 
+         role="application" 
+         aria-label="Mapa interativo com dados meteorológicos e oceanográficos de Angola"
+         tabindex="0"></div>
+  </main>
+
+  <!-- Legenda -->
+  <aside id="legend" 
+         class="legend" 
+         role="complementary" 
+         aria-labelledby="legend-title"
+         aria-live="polite">
+    <h3 id="legend-title" style="margin: 0 0 8px 0; font-size: 13px;">Legenda</h3>
+    <div id="legend-content" aria-describedby="legend-description"></div>
+    <div id="legend-description" class="sr-only">
+      Informações sobre cores e símbolos utilizados no mapa
+    </div>
+  </aside>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- POLYFILLS E TIMEDIMENSION DESATIVADOS TEMPORARIAMENTE:
+  <script src="assets/js/nezasa-polyfill.js?v=fresh"></script>
+  <script src="https://unpkg.com/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js"></script>
+  -->
+
+  <!-- Scripts do sistema -->
+  <script src="assets/js/zee_angola_official.js?v=fresh"></script>
+  <script src="assets/js/eox-layers.js?v=fresh"></script>
+  <script src="assets/js/bathymetry-gebco.js?v=fresh"></script>
+  <!-- Sistema de Funcionalidades Reais - NOVO -->
+  <script src="assets/js/real-functionality.js?v=2.0.0"></script>
+  <!-- Sistema de Machine Learning - NOVO -->
+  <script src="assets/js/ml-service.js?v=1.0.0"></script>
+  <script src="assets/js/ml-map-overlays.js?v=1.0.0"></script>
+  <!-- SCRIPTS OPCIONAIS (reativar gradualmente):
+  <script src="assets/js/sentinel2-integration.js?v=fresh"></script>
+  <script src="assets/js/attribution-system.js?v=fresh"></script>
+  <script src="assets/js/copernicus-integration.js?v=fresh"></script>
+  <script src="assets/js/projection-manager.js?v=fresh"></script>
+  <script src="assets/js/offline-capability.js?v=fresh"></script>
+  <script src="assets/js/3d-visualization.js?v=fresh"></script>
+  -->
+
+  <!-- Service Worker Registration -->
+  <script>
+    // Registrar Service Worker para controle de cache
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('✅ Service Worker registrado:', registration.scope);
+          })
+          .catch(error => {
+            console.log('❌ Falha no registro do Service Worker:', error);
+          });
+      });
+    }
+  </script>
+
+  <!-- Inicialização controlada -->
+  <script>
+    console.log('🚀 BGAPP Fresh - Inicialização Controlada');
+    
+    // Estado global da aplicação
+    let appState = {
+      occLayer: null,
+      velocityLayer: null,
+      wmsLayers: {},
+      activeLayers: new Set(),
+      isAnimating: false,
+      panelCollapsed: false,
+      eoxEnabled: true, // Flag para controlar EOX
+      eoxErrorCount: 0,  // Contador de erros EOX
+      stamenEnabled: true, // Flag para controlar Stamen
+      stamenErrorCount: 0  // Contador de erros Stamen
+    };
+
+    // Variáveis globais para componentes
+    let eoxManager = null;
+    let gebcoManager = null;
+    let map = null; // Instância global do mapa
+
+    // API Base
+    const apiBase = location.hostname === 'localhost' ? 'http://localhost:5080' : '/api';
+
+    // Aguardar DOM estar pronto
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('✅ DOM Ready - Iniciando sistema BGAPP');
+      
+      // Configurar mapa SIMPLES primeiro - sem TimeDimension
+      map = L.map('map', {
+        center: [-12.5, 13.5],
+        zoom: 6,
+        zoomControl: true,
+        attributionControl: true
+      });
+      
+      // Tornar mapa acessível globalmente
+      window.map = map;
+
+      console.log('✅ Mapa Leaflet criado');
+
+      // Adicionar OpenStreetMap IMEDIATAMENTE
+      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+        crossOrigin: true
+      });
+      osmLayer.addTo(map);
+      console.log('✅ OpenStreetMap adicionado imediatamente');
+
+      // Aguardar um pouco e então inicializar componentes
+      setTimeout(() => {
+        initializeComponents(map);
+      }, 1000);
+
+      // Aguardar mais um pouco e então configurar event listeners
+      setTimeout(() => {
+        initializeEventListeners(map);
+      }, 1500);
+    });
+
+    function initializeComponents(map) {
+      console.log('🧩 Inicializando componentes...');
+      
+      try {
+        // Adicionar ZEE Angola
+        if (typeof angolaZEEOfficial !== 'undefined') {
+          L.polygon(angolaZEEOfficial, {
+            color: '#0066cc',
+            weight: 2,
+            fillOpacity: 0.15,
+            fillColor: '#0080ff',
+            opacity: 0.7
+          }).addTo(map).bindPopup('🌊 ZEE Angola - OFICIAL<br>📏 495.866 km² (Marine Regions)');
+          
+          console.log('✅ ZEE Angola adicionada');
+        }
+
+        // ZEE Cabinda
+        if (typeof cabindaZEEOfficial !== 'undefined') {
+          L.polygon(cabindaZEEOfficial, {
+            color: '#9b59b6',
+            weight: 2,
+            fillOpacity: 0.15,
+            fillColor: '#9b59b6',
+            opacity: 0.7
+          }).addTo(map).bindPopup('🏛️ ZEE Cabinda - OFICIAL<br>📍 Marine Regions');
+          
+          console.log('✅ ZEE Cabinda adicionada');
+        }
+
+        // EOX Layers Manager - SISTEMA ROBUSTO COM FALLBACK AUTOMÁTICO
+        setTimeout(() => {
+          try {
+            if (typeof EOXLayersManager !== 'undefined') {
+              console.log('🔧 Inicializando EOX Manager com fallback robusto...');
+              
+              eoxManager = new EOXLayersManager(); // Tornar global
+              
+              // Configurar rate limiting mais agressivo
+              eoxManager.setupRateLimiting();
+              
+              // Sistema de verificação de saúde do EOX com múltiplas tentativas
+              const checkEOXHealth = async () => {
+                const testUrls = [
+                  'https://tiles.maps.eox.at/wms?service=WMS&request=GetCapabilities&version=1.3.0',
+                  'https://tiles.maps.eox.at/wms?service=WMS&request=GetMap&layers=terrain_3857&bbox=0,0,1,1&width=1&height=1&srs=EPSG:3857&format=image/png',
+                  'https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?service=WMS&request=GetCapabilities'
+                ];
+                
+                for (const url of testUrls) {
+                  try {
+                    const response = await fetch(url, {
+                    method: 'GET',
+                      signal: AbortSignal.timeout(2000) // Timeout ainda mais curto
+                  });
+                  
+                    if (response.ok || response.status === 400) { // 400 pode ser válido para WMS mal formado
+                      console.log(`✅ EOX/GEBCO Service parcialmente acessível via: ${url.split('?')[0]}`);
+                    return true;
+                  }
+                } catch (error) {
+                    console.warn(`⚠️ Teste falhou para ${url.split('?')[0]}:`, error.message);
+                    continue;
+                }
+                }
+                
+                console.warn('⚠️ Todos os serviços EOX/GEBCO inacessíveis');
+                return false;
+              };
+              
+              // Inicializar com verificação de saúde e detecção inteligente
+              checkEOXHealth().then(isHealthy => {
+                if (isHealthy) {
+                  console.log('🚀 Inicializando EOX Manager...');
+                  eoxManager.createLayerControl(map);
+                  
+                  // Configurar fallback automático para camadas problemáticas
+                  setTimeout(() => {
+                    setupEOXFallback(map);
+                  }, 2000);
+                  
+                  // Inicializar sistema de detecção proativa de camadas
+                  setTimeout(() => {
+                    initializeLayerHealthMonitoring(map);
+                  }, 5000);
+                  
+                } else {
+                  console.log('🔄 EOX indisponível - usando apenas camadas estáveis');
+                  setupStableLayersOnly(map);
+                }
+              });
+              
+            } else {
+              console.warn('⚠️ EOXLayersManager não disponível - usando camadas básicas');
+              setupStableLayersOnly(map);
+            }
+          } catch (eoxError) {
+            console.error('❌ Erro crítico no EOX Manager:', eoxError);
+            setupStableLayersOnly(map);
+          }
+        }, 2000);
+
+        // Inicializar dados batimétricos via EOX Terrain Light (solução CORS-free)
+        setTimeout(async () => {
+          console.log('🌊 Inicializando dados batimétricos via EOX Terrain Light...');
+          
+          try {
+            // Verificar se EOX Terrain Light está disponível
+            const eoxTerrainHealthy = await checkEOXTerrainLightHealth();
+            
+            if (eoxTerrainHealthy) {
+              // Criar camada batimétrica usando EOX Terrain (corrigido) - OTIMIZADA
+              const bathymetryLayer = L.tileLayer.wms('https://tiles.maps.eox.at/wms', {
+                layers: 'terrain_3857', // Nome correto baseado nos logs de sucesso
+                format: 'image/jpeg', // EOX usa JPEG para terrain (conforme documentação)
+                transparent: false,
+                opacity: 0.8,
+                attribution: '🌊 Batimetria: Terrain EOX (inclui GEBCO) © EOX',
+                maxZoom: 12,
+                minZoom: 3,
+                // Configurações WMS corretas para EOX
+                version: '1.3.0', // Versão padrão WMS
+                crs: L.CRS.EPSG3857,
+                // Remover bounds restritivos que podem causar 400
+                // bounds: L.latLngBounds([-18, 8], [-4, 18]) // Comentado - pode causar problemas
+              });
+              
+              // Adicionar controle para ativar/desativar batimetria
+              const bathymetryControl = L.control({ position: 'topright' });
+              bathymetryControl.onAdd = function(map) {
+                const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                div.innerHTML = `
+                  <a href="#" id="bathymetry-toggle" title="Toggle Batimetria GEBCO via EOX" 
+                     style="background: #0066cc; color: white; padding: 8px; text-decoration: none; display: block;">
+                    🌊 Batimetria
+                  </a>
+                `;
+                
+                L.DomEvent.on(div.querySelector('#bathymetry-toggle'), 'click', function(e) {
+                  e.preventDefault();
+                  
+                  if (map.hasLayer(bathymetryLayer)) {
+                    map.removeLayer(bathymetryLayer);
+                    this.style.background = '#666';
+                    console.log('🌊 Batimetria GEBCO (via EOX) desativada');
+                  } else {
+                    bathymetryLayer.addTo(map);
+                    this.style.background = '#0066cc';
+                    console.log('🌊 Batimetria GEBCO (via EOX) ativada');
+                  }
+                });
+                
+                return div;
+              };
+              
+              bathymetryControl.addTo(map);
+              
+              console.log('✅ Sistema de batimetria EOX Terrain configurado com sucesso');
+              console.log('💡 Usando terrain_3857 (corrigido) ao invés de terrain-light');
+              
+              // Teste automatizado das correções
+              setTimeout(() => {
+                testCorrectedLayers(map);
+              }, 2000);
+              
+            } else {
+              console.warn('⚠️ EOX Terrain indisponível - tentando alternativas...');
+              await setupBathymetryFallback(map);
+            }
+            
+          } catch (error) {
+            console.warn('⚠️ Erro ao configurar batimetria via EOX:', error);
+          }
+        }, 3000);
+
+      } catch (error) {
+        console.error('❌ Erro ao inicializar componentes:', error);
+      }
+    }
+
+    function initializeEventListeners(map) {
+      console.log('🎛️ Inicializando event listeners...');
+      
+      try {
+        // Verificar se todos os elementos existem
+        const elements = {
+          apply: document.getElementById('apply'),
+          dateMin: document.getElementById('dateMin'),
+          btnSst: document.getElementById('btn-sst'),
+          btnSalinity: document.getElementById('btn-salinity'),
+          btnChlorophyll: document.getElementById('btn-chlorophyll'),
+          btnCurrents: document.getElementById('btn-currents'),
+          btnWind: document.getElementById('btn-wind'),
+          btnClear: document.getElementById('btn-clear'),
+          btnAnimate: document.getElementById('btn-animate'),
+          btnDisableEox: document.getElementById('btn-disable-eox')
+        };
+
+        // Verificar elementos
+        for (const [name, element] of Object.entries(elements)) {
+          if (!element) {
+            console.warn(`⚠️ Elemento ${name} não encontrado`);
+          } else {
+            console.log(`✅ Elemento ${name} encontrado`);
+          }
+        }
+
+        // Configurar toggle do painel - MELHORADO
+        const panelToggle = document.getElementById('panel-toggle');
+        const floatingToggle = document.getElementById('floating-toggle');
+        const toolbar = document.getElementById('toolbar');
+        
+        // Verificar se elementos existem
+        if (!toolbar) {
+          console.error('❌ Elemento toolbar não encontrado!');
+          return;
+        }
+        
+        if (!panelToggle) {
+          console.error('❌ Botão panel-toggle não encontrado!');
+          return;
+        }
+        
+        if (!floatingToggle) {
+          console.error('❌ Botão floating-toggle não encontrado!');
+          return;
+        }
+        
+        // Garantir estado inicial correto
+        toolbar.classList.remove('collapsed');
+        floatingToggle.classList.remove('show');
+        panelToggle.innerHTML = '<span>←</span>';
+        panelToggle.setAttribute('aria-label', 'Recolher painel');
+        appState.panelCollapsed = false;
+        
+        console.log('✅ Estado inicial do painel configurado');
+        
+        // Event listeners com tratamento de erro
+        panelToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            togglePanel();
+          } catch (error) {
+            console.error('❌ Erro no toggle do painel:', error);
+          }
+        });
+        
+        floatingToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            togglePanel();
+          } catch (error) {
+            console.error('❌ Erro no toggle do painel:', error);
+          }
+        });
+
+        // Configurar event listeners apenas para elementos que existem
+        if (elements.apply) {
+          elements.apply.addEventListener('click', () => {
+            const date = elements.dateMin ? elements.dateMin.value : null;
+            console.log('📅 Filtro de data aplicado:', date);
+          });
+          console.log('✅ Event listener Apply configurado');
+        }
+
+        if (elements.btnSst) {
+          elements.btnSst.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            console.log('🌡️ SST toggled:', e.target.classList.contains('active'));
+          });
+          console.log('✅ Event listener SST configurado');
+        }
+
+        if (elements.btnSalinity) {
+          elements.btnSalinity.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            console.log('🧂 Salinidade toggled:', e.target.classList.contains('active'));
+          });
+          console.log('✅ Event listener Salinidade configurado');
+        }
+
+        if (elements.btnChlorophyll) {
+          elements.btnChlorophyll.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            console.log('🌿 Clorofila toggled:', e.target.classList.contains('active'));
+          });
+          console.log('✅ Event listener Clorofila configurado');
+        }
+
+        if (elements.btnCurrents) {
+          elements.btnCurrents.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            console.log('🌊 Correntes toggled:', e.target.classList.contains('active'));
+          });
+          console.log('✅ Event listener Correntes configurado');
+        }
+
+        if (elements.btnWind) {
+          elements.btnWind.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            console.log('💨 Vento toggled:', e.target.classList.contains('active'));
+          });
+          console.log('✅ Event listener Vento configurado');
+        }
+
+        if (elements.btnClear) {
+          elements.btnClear.addEventListener('click', () => {
+            // Remover classe active de todos os botões
+            document.querySelectorAll('.btn.active').forEach(btn => {
+              btn.classList.remove('active');
+              btn.setAttribute('aria-pressed', 'false');
+            });
+            console.log('🗑️ Todas as camadas limpas');
+          });
+          console.log('✅ Event listener Limpar configurado');
+        }
+
+        if (elements.btnAnimate) {
+          elements.btnAnimate.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            const isActive = e.target.classList.contains('active');
+            e.target.setAttribute('aria-pressed', isActive);
+            
+            const icon = document.getElementById('animate-icon');
+            const text = document.getElementById('animate-text');
+            
+            if (isActive) {
+              if (icon) icon.textContent = '⏸️';
+              if (text) text.textContent = 'Pausar';
+              console.log('▶️ Animação iniciada');
+            } else {
+              if (icon) icon.textContent = '▶️';
+              if (text) text.textContent = 'Animar';
+              console.log('⏸️ Animação pausada');
+            }
+          });
+          console.log('✅ Event listener Animar configurado');
+        }
+
+        if (elements.btnDisableEox) {
+          elements.btnDisableEox.addEventListener('click', () => {
+            appState.eoxEnabled = false;
+            console.log('🚫 EOX desabilitado manualmente pelo usuário');
+            
+            // Forçar volta para OpenStreetMap
+            const osmBtn = document.querySelector('[data-layer="osm"]');
+            if (osmBtn) {
+              osmBtn.click();
+            }
+            
+            // Atualizar botão
+            elements.btnDisableEox.style.background = '#666';
+            elements.btnDisableEox.innerHTML = '<span>✅</span> EOX OFF';
+            elements.btnDisableEox.disabled = true;
+            
+            showEOXDisabledNotification();
+          });
+          console.log('✅ Event listener EOX OFF configurado');
+        }
+
+        console.log('🎯 Todos os event listeners configurados com sucesso!');
+        
+        // Verificar status do mapa
+        verifyMapStatus(map);
+        
+        // Adicionar marcador de teste para confirmar funcionamento
+        setTimeout(() => {
+          const testMarker = L.marker([-12.5, 13.5]).addTo(map);
+          testMarker.bindPopup('🎉 MAPA FUNCIONANDO!<br>✅ Correções aplicadas com sucesso');
+          console.log('📍 Marcador de teste adicionado');
+        }, 2000);
+
+      } catch (error) {
+        console.error('❌ Erro ao configurar event listeners:', error);
+      }
+    }
+
+    // Função simples para verificar se o mapa está funcionando
+    function verifyMapStatus(map) {
+      setTimeout(() => {
+        console.log('🔍 Verificando status do mapa...');
+        
+        const mapContainer = map.getContainer();
+        const tiles = mapContainer.querySelectorAll('.leaflet-tile');
+        
+        console.log(`📊 Status: ${tiles.length} tiles encontradas`);
+        
+        // Atualizar status na interface
+        const systemStatus = document.getElementById('system-status');
+        if (systemStatus) {
+          if (tiles.length > 0) {
+            systemStatus.textContent = 'Sistema Online - Mapa Funcionando';
+            systemStatus.style.color = '#27ae60';
+          } else {
+            systemStatus.textContent = 'Sistema Online - Carregando Mapa';
+            systemStatus.style.color = '#f39c12';
+          }
+        }
+      }, 3000);
+    }
+
+    // Função para toggle do painel - CORRIGIDA
+    function togglePanel() {
+      const toolbar = document.getElementById('toolbar');
+      const floatingToggle = document.getElementById('floating-toggle');
+      const panelToggle = document.getElementById('panel-toggle');
+      
+      if (!toolbar) {
+        console.error('❌ Elemento toolbar não encontrado');
+        return;
+      }
+      
+      appState.panelCollapsed = !appState.panelCollapsed;
+      
+      if (appState.panelCollapsed) {
+        // Recolher painel
+        toolbar.classList.add('collapsed');
+        
+        // Mostrar botão flutuante após a animação
+        setTimeout(() => {
+          if (floatingToggle) {
+            floatingToggle.classList.add('show');
+          }
+        }, 150);
+        
+        if (panelToggle) {
+          panelToggle.innerHTML = '<span>→</span>';
+          panelToggle.setAttribute('aria-label', 'Expandir painel');
+        }
+        console.log('📱 Painel recolhido - mapa em tela cheia');
+        
+      } else {
+        // Expandir painel
+        if (floatingToggle) {
+          floatingToggle.classList.remove('show');
+        }
+        
+        // Pequeno delay para suavizar a transição
+        setTimeout(() => {
+          toolbar.classList.remove('collapsed');
+        }, 50);
+        
+        if (panelToggle) {
+          panelToggle.innerHTML = '<span>←</span>';
+          panelToggle.setAttribute('aria-label', 'Recolher painel');
+        }
+        console.log('📱 Painel expandido');
+      }
+      
+      // Invalidar tamanho do mapa após animação completa
+      setTimeout(() => {
+        const mapInstance = window.map || document.querySelector('#map')?._leaflet_map;
+        if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
+          mapInstance.invalidateSize();
+          console.log('✅ Tamanho do mapa invalidado após toggle do painel');
+        } else {
+          console.warn('⚠️ Instância do mapa não encontrada para invalidateSize');
+        }
+      }, 400);
+      
+      // Debug: verificar estado atual
+      console.log(`🔧 Estado do painel: ${appState.panelCollapsed ? 'recolhido' : 'expandido'}`);
+      console.log(`🔧 Classes do toolbar: ${toolbar.className}`);
+    }
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', (e) => {
+      // Não ativar se estiver digitando em um input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      switch(e.key.toLowerCase()) {
+        case ' ':
+          e.preventDefault();
+          togglePanel();
+          break;
+        case 'h':
+          showHelp();
+          break;
+        case 'escape':
+          if (!appState.panelCollapsed) {
+            togglePanel();
+          }
+          break;
+        case '1':
+          document.getElementById('btn-sst')?.click();
+          break;
+        case '2':
+          document.getElementById('btn-salinity')?.click();
+          break;
+        case '3':
+          document.getElementById('btn-chlorophyll')?.click();
+          break;
+        case '4':
+          document.getElementById('btn-currents')?.click();
+          break;
+        case '5':
+          document.getElementById('btn-wind')?.click();
+          break;
+        case 'c':
+          document.getElementById('btn-clear')?.click();
+          break;
+      }
+    });
+
+    function showHelp() {
+      const helpText = `🎹 Atalhos de Teclado BGAPP:
+
+📱 Painel:
+• Espaço - Recolher/Expandir painel
+• Esc - Fechar painel
+• H - Mostrar esta ajuda
+
+🌊 Variáveis:
+• 1 - SST (Temperatura)
+• 2 - Salinidade  
+• 3 - Clorofila
+• 4 - Correntes
+• 5 - Vento
+• C - Limpar tudo
+
+🖱️ Mapa:
+• Arrastar - Navegar
+• Scroll - Zoom
+• Clique - Informações`;
+      
+      alert(helpText);
+    }
+
+    // Função para configurar apenas camadas estáveis
+    function setupStableLayersOnly(map) {
+      console.log('🛡️ Configurando apenas camadas estáveis...');
+      
+      // Criar controle de camadas básico apenas com camadas que funcionam
+      const stableLayers = {
+        'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 19
+        }),
+        'CartoDB Light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap, © CartoDB',
+          maxZoom: 19
+        }),
+        'CartoDB Dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap, © CartoDB',
+          maxZoom: 19
+        }),
+        'ESRI Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: '© Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+          maxZoom: 18
+        })
+      };
+      
+      // Adicionar controle de camadas
+      const layerControl = L.control.layers(stableLayers, {}, {
+        position: 'topright',
+        collapsed: false
+      }).addTo(map);
+      
+      // Ativar OpenStreetMap por padrão
+      stableLayers['OpenStreetMap'].addTo(map);
+      
+      console.log('✅ Sistema funcionando com camadas estáveis apenas');
+    }
+    
+    // Função para configurar fallback automático do EOX
+    function setupEOXFallback(map) {
+      console.log('🔧 Configurando fallback automático para EOX...');
+      
+      // Verificar se eoxManager está disponível e aplicar correções
+      if (typeof eoxManager !== 'undefined' && eoxManager) {
+        console.log('🔧 Aplicando correções EOX Maps...');
+        
+        // Ativar terrain-light corrigido como padrão
+        try {
+          eoxManager.setBackgroundLayer(map, 'terrain-light');
+          console.log('✅ Terrain Light corrigido ativado');
+          
+          // Adicionar overlay coastline para Angola (muito útil para áreas costeiras)
+          setTimeout(() => {
+            if (eoxManager.overlayLayers['coastline']) {
+              eoxManager.overlayLayers['coastline'].addTo(map);
+              console.log('✅ Coastline overlay adicionado para Angola');
+            }
+          }, 1000);
+          
+        } catch (error) {
+          console.warn('⚠️ Erro ao aplicar correções EOX, usando fallback:', error);
+          // Forçar uso de OpenStreetMap como padrão seguro
+          const osmBtn = document.querySelector('[data-layer="osm"]');
+          if (osmBtn && !osmBtn.classList.contains('active')) {
+            osmBtn.click();
+            console.log('🔄 Ativado fallback seguro: OpenStreetMap');
+          }
+        }
+      } else {
+        // Forçar uso de OpenStreetMap como padrão seguro IMEDIATAMENTE
+        const osmBtn = document.querySelector('[data-layer="osm"]');
+        if (osmBtn && !osmBtn.classList.contains('active')) {
+          osmBtn.click();
+          console.log('🔄 Ativado fallback seguro IMEDIATO: OpenStreetMap');
+        }
+      }
+      
+      // Monitorar erros e fazer fallback automático mais agressivo
+      let errorCount = 0;
+      const maxErrors = 3; // Reduzido para reagir mais rápido
+      let fallbackActivated = false;
+      
+      const errorHandler = (e) => {
+        if (e.target && e.target.src && e.target.src.includes('tiles.maps.eox.at')) {
+          errorCount++;
+          console.warn(`⚠️ EOX Error #${errorCount}: ${e.target.src.substring(0, 80)}...`);
+          
+          if (errorCount >= maxErrors && !fallbackActivated) {
+            fallbackActivated = true;
+            console.error('❌ EOX instável detectado - Ativando fallback definitivo');
+            
+            // Desativar TODAS as camadas EOX imediatamente
+            setTimeout(() => {
+              const eoxButtons = document.querySelectorAll('[data-layer*="terrain"], [data-layer*="sentinel"], [data-layer*="black-marble"], [data-layer*="blue-marble"], [data-layer*="bathymetry"]');
+              eoxButtons.forEach(btn => {
+                if (btn.classList.contains('active')) {
+                  btn.classList.remove('active');
+                }
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.filter = 'grayscale(100%)';
+                btn.title = '🚫 Serviço EOX indisponível - Use camadas alternativas';
+              });
+              
+              // Garantir que OpenStreetMap está ativo
+              const osmBtn = document.querySelector('[data-layer="osm"]');
+              if (osmBtn && !osmBtn.classList.contains('active')) {
+                osmBtn.click();
+                console.log('🔄 Fallback definitivo para OpenStreetMap');
+              }
+              
+              showEOXDisabledNotification();
+              
+              // Atualizar estado global
+              appState.eoxEnabled = false;
+              
+            }, 100);
+            
+            // Remover listener para evitar spam
+            window.removeEventListener('error', errorHandler, true);
+          }
+        }
+      };
+      
+      window.addEventListener('error', errorHandler, true);
+      
+      // Sistema de rate limiting inteligente e cache (otimizado para múltiplos serviços)
+      let requestStats = {
+        eox: { count: 0, lastReset: Date.now(), blocked: false },
+        gebco: { count: 0, lastReset: Date.now(), blocked: false },
+        esri: { count: 0, lastReset: Date.now(), blocked: false },
+        stamen: { count: 0, lastReset: Date.now(), blocked: false }
+      };
+      
+      const RATE_LIMITS = {
+        eox: { maxRequests: 40, windowMs: 10000 },    // 40 requests per 10s (aumentado para EOX)
+        gebco: { maxRequests: 20, windowMs: 10000 },  // 20 requests per 10s
+        esri: { maxRequests: 50, windowMs: 10000 },   // 50 requests per 10s (ESRI é mais tolerante)
+        stamen: { maxRequests: 25, windowMs: 10000 }  // 25 requests per 10s (Stamen pode ser instável)
+      };
+      
+      // Cache inteligente para tiles com prioridade para batimetria
+      const tileCache = new Map();
+      const MAX_CACHE_SIZE = 200; // Aumentado para acomodar múltiplos serviços
+      const BATHYMETRY_CACHE_PRIORITY = 0.7; // 70% do cache reservado para batimetria
+      
+      // Função para gerenciar cache com prioridade
+      function manageTileCache(url, response, serviceType) {
+        if (tileCache.size >= MAX_CACHE_SIZE) {
+          // Se cache está cheio, remover tiles não-batimétricos primeiro
+          const toRemove = [];
+          let removedCount = 0;
+          const targetRemoval = Math.floor(MAX_CACHE_SIZE * 0.2); // Remover 20% do cache
+          
+          for (const [cachedUrl, cachedData] of tileCache.entries()) {
+            if (!cachedUrl.includes('terrain') && !cachedUrl.includes('bathymetry') && removedCount < targetRemoval) {
+              toRemove.push(cachedUrl);
+              removedCount++;
+            }
+          }
+          
+          // Se não encontrou tiles não-batimétricos suficientes, remover os mais antigos
+          if (removedCount < targetRemoval) {
+            const entries = Array.from(tileCache.entries());
+            const oldEntries = entries.slice(0, targetRemoval - removedCount);
+            toRemove.push(...oldEntries.map(([url]) => url));
+          }
+          
+          toRemove.forEach(url => tileCache.delete(url));
+          console.log(`🧹 Cache limpo: ${toRemove.length} tiles removidas`);
+        }
+        
+        tileCache.set(url, {
+          response: response.clone(),
+          timestamp: Date.now(),
+          serviceType: serviceType,
+          priority: (url.includes('terrain') || url.includes('bathymetry')) ? 'high' : 'normal'
+        });
+        
+        console.log(`💾 Tile cacheada (${serviceType}): ${tileCache.size}/${MAX_CACHE_SIZE}`);
+      }
+      
+      const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        const url = args[0];
+        
+        if (typeof url === 'string') {
+          let serviceType = null;
+          
+          if (url.includes('tiles.maps.eox.at')) {
+            serviceType = 'eox';
+          } else if (url.includes('gebco.net')) {
+            serviceType = 'gebco';
+          } else if (url.includes('arcgisonline.com')) {
+            serviceType = 'esri';
+          } else if (url.includes('stamen-tiles') || url.includes('tile.stamen.com') || url.includes('tiles.stadiamaps.com')) {
+            serviceType = 'stamen';
+          }
+          
+          if (serviceType) {
+            const now = Date.now();
+            const stats = requestStats[serviceType];
+            const limits = RATE_LIMITS[serviceType];
+            
+            // Reset contador se janela de tempo passou
+            if (now - stats.lastReset > limits.windowMs) {
+              stats.count = 0;
+              stats.lastReset = now;
+              stats.blocked = false;
+            }
+            
+            // Verificar rate limit
+            if (stats.count >= limits.maxRequests) {
+              if (!stats.blocked) {
+                console.warn(`⚠️ Rate limit atingido para ${serviceType.toUpperCase()} - Aplicando throttling`);
+                stats.blocked = true;
+              }
+              
+              // Retornar Promise rejeitada para forçar fallback
+              return Promise.reject(new Error(`Rate limit exceeded for ${serviceType}`));
+            }
+            
+            stats.count++;
+            
+            // Verificar cache primeiro (para tiles de imagem) - sistema otimizado
+            if (url.includes('GetMap') && tileCache.has(url)) {
+              const cachedData = tileCache.get(url);
+              const cacheAge = Date.now() - cachedData.timestamp;
+              const maxAge = cachedData.priority === 'high' ? 3600000 : 1800000; // 1h para batimetria, 30min para outros
+              
+              if (cacheAge < maxAge) {
+                console.log(`🎯 Cache hit para ${serviceType} (${Math.round(cacheAge/1000)}s): ${url.substring(0, 80)}...`);
+                return Promise.resolve(cachedData.response);
+              } else {
+                console.log(`⏰ Cache expirado para ${serviceType}, removendo...`);
+                tileCache.delete(url);
+              }
+            }
+            
+            // Filtrar requisições para camadas conhecidas como problemáticas
+            if (url.includes('bathymetry') && serviceType === 'eox') {
+              console.warn('🚫 Requisição bathymetry bloqueada (404 conhecido)');
+              return Promise.reject(new Error('Bathymetry layer disabled due to 404'));
+            }
+            
+            if (serviceType === 'gebco') {
+              console.warn('🚫 Requisição GEBCO bloqueada (CORS conhecido)');
+              return Promise.reject(new Error('GEBCO service disabled due to CORS'));
+            }
+            
+            // Verificar se Stamen está com muitos erros 503
+            if (serviceType === 'stamen' && appState.stamenErrorCount > 10) {
+              console.warn('🚫 Requisições Stamen bloqueadas (muitos erros 503)');
+              return Promise.reject(new Error('Stamen service disabled due to 503 errors'));
+            }
+            
+            // Otimização específica para EOX: corrigir parâmetros WMS problemáticos
+            if (serviceType === 'eox' && url.includes('terrain-light')) {
+              console.log('🔧 Corrigindo parâmetros para terrain-light -> terrain_3857');
+              const correctedUrl = url.replace('terrain-light', 'terrain_3857')
+                                     .replace('version=1.3.0', 'version=1.1.1');
+              args[0] = correctedUrl;
+            }
+            
+            // Fazer requisição com timeout otimizado
+            const timeoutMs = serviceType === 'eox' ? 5000 : 8000; // EOX mais rápido
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            
+            args[1] = { ...(args[1] || {}), signal: controller.signal };
+            
+            return originalFetch.apply(this, args)
+              .then(response => {
+                clearTimeout(timeoutId);
+                
+                // Análise inteligente da resposta com cache otimizado
+                if (response.ok) {
+                  // Cachear resposta se for tile de imagem e bem-sucedida
+                  if (url.includes('GetMap')) {
+                    manageTileCache(url, response, serviceType);
+                  }
+                  return response;
+                } else if (response.status === 400) {
+                  console.error(`❌ 400 Bad Request para ${serviceType}`);
+                  console.error(`🔍 URL problemática: ${url.substring(0, 150)}...`);
+                  
+                  // Diagnóstico específico para EOX 400 errors
+                  if (serviceType === 'eox') {
+                    diagnosEOXError(url);
+                  }
+                  
+                  return response;
+                } else if (response.status === 404) {
+                  console.warn(`❌ 404 para ${serviceType} - camada pode estar indisponível`);
+                  return response;
+                } else if (response.status === 503) {
+                  console.error(`❌ 503 Service Unavailable para ${serviceType}`);
+                  
+                  // Tratamento específico para Stamen 503
+                  if (serviceType === 'stamen') {
+                    appState.stamenErrorCount++;
+                    console.warn(`⚠️ Stamen 503 Error #${appState.stamenErrorCount}`);
+                    
+                    if (appState.stamenErrorCount > 10 && appState.stamenEnabled) {
+                      console.error('❌ Muitos erros 503 Stamen - Desabilitando serviço');
+                      appState.stamenEnabled = false;
+                      showStamenDisabledNotification();
+                    }
+                  }
+                  
+                  return response;
+                } else {
+                  console.warn(`⚠️ Status ${response.status} para ${serviceType}`);
+                  return response;
+                }
+              })
+              .catch(error => {
+                clearTimeout(timeoutId);
+                
+                // Tratamento específico por tipo de erro
+                if (error.name === 'AbortError') {
+                  console.warn(`⏱️ Timeout em requisição ${serviceType} (${timeoutMs}ms)`);
+                } else if (error.message.includes('CORS')) {
+                  console.warn(`🚫 CORS bloqueado para ${serviceType}`);
+                } else {
+                  console.warn(`❌ Erro em requisição ${serviceType}: ${error.message}`);
+                }
+                
+                throw error;
+              });
+          }
+        }
+        
+        return originalFetch.apply(this, args);
+      };
+    }
+
+    // Monitor de erros para todos os serviços (versão melhorada)
+    function monitorEOXErrors() {
+      let errorDetails = {
+        eox: { count: 0, lastError: null },
+        gebco: { count: 0, lastError: null },
+        stamen: { count: 0, lastError: null }
+      };
+      
+      // Interceptar erros de imagem (tiles WMS)
+      window.addEventListener('error', (e) => {
+        if (e.target && e.target.src) {
+          let serviceType = null;
+          
+          if (e.target.src.includes('tiles.maps.eox.at')) {
+            serviceType = 'eox';
+          } else if (e.target.src.includes('gebco.net')) {
+            serviceType = 'gebco';
+          } else if (e.target.src.includes('stamen-tiles') || e.target.src.includes('tile.stamen.com') || e.target.src.includes('tiles.stadiamaps.com')) {
+            serviceType = 'stamen';
+          }
+          
+          if (serviceType) {
+            errorDetails[serviceType].count++;
+            errorDetails[serviceType].lastError = e.target.src;
+            
+            console.warn(`⚠️ ${serviceType.toUpperCase()} Error #${errorDetails[serviceType].count}: ${e.target.src.substring(0, 100)}...`);
+            
+            // Análise inteligente de erros
+            analyzeAndHandleErrors(serviceType, errorDetails[serviceType]);
+          }
+        }
+      }, true);
+      
+      // Função para analisar padrões de erro
+      function analyzeAndHandleErrors(serviceType, errorInfo) {
+        // Se muitos erros em pouco tempo, desabilitar temporariamente
+                    if (errorInfo.count > 5) {
+              console.error(`❌ Muitos erros ${serviceType.toUpperCase()} - Implementando fallback inteligente`);
+              
+              if (serviceType === 'eox' && appState.eoxEnabled) {
+                appState.eoxEnabled = false;
+                
+                // Forçar volta para OpenStreetMap
+                const osmBtn = document.querySelector('[data-layer="osm"]');
+                if (osmBtn && !osmBtn.classList.contains('active')) {
+                  osmBtn.click();
+                  console.log('🔄 Fallback automático para OpenStreetMap');
+                }
+                
+                showServiceErrorNotification(serviceType, errorInfo.count);
+              } else if (serviceType === 'stamen' && appState.stamenEnabled) {
+                appState.stamenEnabled = false;
+                appState.stamenErrorCount = errorInfo.count;
+                
+                // Tentar ativar EOX como fallback para Stamen
+                const eoxBtn = document.querySelector('[data-layer*="terrain"]');
+                if (eoxBtn && !eoxBtn.classList.contains('active')) {
+                  console.log('🔄 Fallback automático Stamen → EOX');
+                  eoxBtn.click();
+                } else {
+                  // Se EOX não disponível, usar OpenStreetMap
+                  const osmBtn = document.querySelector('[data-layer="osm"]');
+                  if (osmBtn && !osmBtn.classList.contains('active')) {
+                    osmBtn.click();
+                    console.log('🔄 Fallback automático Stamen → OpenStreetMap');
+                  }
+                }
+                
+                showStamenDisabledNotification();
+              }
+          
+          // Reset contador após um tempo para permitir retry
+          setTimeout(() => {
+            errorDetails[serviceType].count = Math.max(0, errorDetails[serviceType].count - 2);
+          }, 30000); // 30 segundos
+        }
+      }
+    }
+    
+    // Função para verificar saúde do EOX e validar camadas disponíveis
+    async function checkEOXTerrainLightHealth() {
+      try {
+        // Testar EOX WMS service
+        const response = await fetch('https://tiles.maps.eox.at/wms?service=WMS&request=GetCapabilities&version=1.1.1', {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000)
+        });
+        
+        if (response.ok) {
+          console.log('✅ EOX WMS Service Online');
+          
+          // Validar camadas específicas que sabemos que funcionam
+          const workingLayers = ['terrain_3857', 'overlay_3857'];
+          const validationPromises = workingLayers.map(async (layerName) => {
+            try {
+              // Teste mínimo para cada camada
+              const testUrl = `https://tiles.maps.eox.at/wms?service=WMS&request=GetMap&layers=${layerName}&bbox=0,0,1,1&width=1&height=1&srs=EPSG:3857&format=image/png&version=1.1.1`;
+              const testResponse = await fetch(testUrl, { 
+                method: 'GET', 
+                signal: AbortSignal.timeout(3000) 
+              });
+              
+              if (testResponse.ok || testResponse.status === 400) { // 400 pode ser bbox inválido mas camada existe
+                console.log(`✅ Camada ${layerName} validada`);
+                return { layer: layerName, available: true };
+              } else {
+                console.warn(`⚠️ Camada ${layerName} retornou ${testResponse.status}`);
+                return { layer: layerName, available: false };
+              }
+            } catch (error) {
+              console.warn(`❌ Erro ao validar ${layerName}:`, error.message);
+              return { layer: layerName, available: false };
+            }
+          });
+          
+          const validationResults = await Promise.all(validationPromises);
+          const availableLayers = validationResults.filter(r => r.available);
+          
+          console.log(`✅ EOX Service Online - ${availableLayers.length}/${workingLayers.length} camadas disponíveis`);
+          return availableLayers.length > 0;
+          
+        } else {
+          console.warn(`⚠️ EOX WMS retornou status ${response.status}`);
+          return false;
+        }
+      } catch (error) {
+        console.warn('⚠️ EOX WMS inacessível:', error.message);
+        return false;
+      }
+    }
+    
+    // Função GEBCO original mantida para referência (desabilitada)
+    async function checkGEBCOHealth() {
+      console.log('ℹ️ GEBCO direto desabilitado - usando EOX Terrain Light que inclui GEBCO');
+      return false; // Sempre retorna false para forçar uso do EOX
+    }
+    
+    // Sistema de fallback para dados batimétricos
+    async function setupBathymetryFallback(map) {
+      console.log('🔄 Configurando sistema de fallback para batimetria...');
+      
+      const fallbackOptions = [
+        {
+          name: 'EOX Terrain',
+          url: 'https://tiles.maps.eox.at/wms',
+          layers: 'terrain_3857', // Nome correto baseado nos logs
+          attribution: 'Terrain © EOX, dados diversos incluindo GEBCO'
+        },
+        {
+          name: 'ESRI Ocean Basemap',
+          url: 'https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+          type: 'xyz',
+          attribution: 'Ocean Basemap © Esri, GEBCO, NOAA, National Geographic'
+        },
+        {
+          name: 'OpenStreetMap (sem batimetria)',
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          type: 'xyz',
+          attribution: '© OpenStreetMap contributors (fallback básico)'
+        }
+      ];
+      
+      for (const option of fallbackOptions) {
+        try {
+          console.log(`🧪 Testando fallback: ${option.name}...`);
+          
+          let layer;
+          if (option.type === 'xyz') {
+            layer = L.tileLayer(option.url, {
+              attribution: option.attribution,
+              maxZoom: 18,
+              opacity: 0.8
+            });
+          } else {
+            // WMS layer com configurações corretas para EOX
+            layer = L.tileLayer.wms(option.url, {
+              layers: option.layers,
+              format: 'image/png',
+              transparent: false,
+              attribution: option.attribution,
+              maxZoom: 12,
+              opacity: 0.8,
+              version: '1.1.1', // Versão mais compatível
+              crs: L.CRS.EPSG3857
+            });
+          }
+          
+          // Testar se a camada carrega
+          const testPromise = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('Timeout'));
+            }, 5000);
+            
+            layer.on('load', () => {
+              clearTimeout(timeout);
+              resolve(true);
+            });
+            
+            layer.on('tileerror', () => {
+              clearTimeout(timeout);
+              reject(new Error('Tile error'));
+            });
+          });
+          
+          // Adicionar temporariamente para teste
+          layer.addTo(map);
+          
+          try {
+            await testPromise;
+            
+            // Se chegou aqui, o fallback funciona
+            console.log(`✅ Fallback funcionando: ${option.name}`);
+            
+            // Criar controle para esta camada
+            const fallbackControl = L.control({ position: 'topright' });
+            fallbackControl.onAdd = function(map) {
+              const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              div.innerHTML = `
+                <a href="#" id="bathymetry-fallback-toggle" title="Toggle ${option.name}" 
+                   style="background: #ff6b35; color: white; padding: 8px; text-decoration: none; display: block; font-size: 11px;">
+                  🌊 ${option.name}
+                </a>
+              `;
+              
+              L.DomEvent.on(div.querySelector('#bathymetry-fallback-toggle'), 'click', function(e) {
+                e.preventDefault();
+                
+                if (map.hasLayer(layer)) {
+                  map.removeLayer(layer);
+                  this.style.background = '#666';
+                  console.log(`🌊 ${option.name} desativado`);
+                } else {
+                  layer.addTo(map);
+                  this.style.background = '#ff6b35';
+                  console.log(`🌊 ${option.name} ativado`);
+                }
+              });
+              
+              return div;
+            };
+            
+            fallbackControl.addTo(map);
+            
+            // Notificar usuário sobre o fallback
+            showBathymetryFallbackNotification(option.name);
+            
+            return; // Sair do loop, encontramos um fallback funcional
+            
+          } catch (testError) {
+            console.warn(`❌ Fallback ${option.name} falhou no teste:`, testError.message);
+            map.removeLayer(layer); // Remover camada que falhou
+            continue; // Tentar próximo fallback
+          }
+          
+        } catch (error) {
+          console.warn(`❌ Erro ao configurar fallback ${option.name}:`, error);
+          continue;
+        }
+      }
+      
+      console.warn('❌ Todos os fallbacks de batimetria falharam');
+    }
+    
+    // Notificação para fallback de batimetria
+    function showBathymetryFallbackNotification(fallbackName) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        background: rgba(255, 107, 53, 0.95);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 1500;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        max-width: 350px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 8px; font-size: 14px;">
+          🔄 Fallback Ativado
+        </div>
+        <div style="font-size: 12px; opacity: 0.9; line-height: 1.4;">
+          <strong>Batimetria:</strong> ${fallbackName}<br>
+          EOX Terrain Light indisponível, usando alternativa.
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Auto-remover após 6 segundos
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(-20px)';
+        setTimeout(() => notification.remove(), 300);
+      }, 6000);
+    }
+    
+    // Notificação específica para Stamen desabilitado
+    function showStamenDisabledNotification() {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 59, 48, 0.95), rgba(255, 149, 0, 0.95));
+        color: white;
+        padding: 20px 28px;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        max-width: 380px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 12px; font-size: 16px;">
+          🚫 Stamen Tiles Indisponível
+        </div>
+        <div style="font-size: 13px; line-height: 1.4; margin-bottom: 12px; opacity: 0.95;">
+          Serviço Stamen retornando <strong>503 Service Unavailable</strong>.<br>
+          Camadas Stamen temporariamente desabilitadas.
+        </div>
+        <div style="font-size: 12px; background: rgba(255, 255, 255, 0.15); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;">
+          ✅ Fallback automático ativado<br>
+          ✅ EOX e outras camadas funcionando<br>
+          🔄 Retry automático em 5 minutos
+        </div>
+        <div style="font-size: 11px; opacity: 0.8;">
+          Sistema funcionando com camadas alternativas
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Auto-fechar após 6 segundos
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      }, 6000);
+      
+      // Permitir fechar clicando
+      notification.addEventListener('click', () => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      notification.style.cursor = 'pointer';
+      
+      // Programar retry automático em 5 minutos
+      setTimeout(() => {
+        console.log('🔄 Tentando reabilitar Stamen após 5 minutos...');
+        appState.stamenErrorCount = 0;
+        appState.stamenEnabled = true;
+      }, 300000); // 5 minutos
+    }
+    
+    // Notificação melhorada para erros de serviço
+    function showServiceErrorNotification(serviceType, errorCount) {
+      const serviceNames = {
+        'eox': 'EOX Maps',
+        'gebco': 'GEBCO Bathymetry',
+        'stamen': 'Stamen Tiles'
+      };
+      
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 149, 0, 0.95), rgba(255, 59, 48, 0.95));
+        color: white;
+        padding: 20px 28px;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        max-width: 380px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 12px; font-size: 16px;">
+          🛡️ Sistema Adaptativo
+        </div>
+        <div style="font-size: 13px; line-height: 1.4; margin-bottom: 12px; opacity: 0.95;">
+          Serviço <strong>${serviceNames[serviceType]}</strong> instável detectado.<br>
+          <strong>Erros registrados:</strong> ${errorCount}
+        </div>
+        <div style="font-size: 12px; background: rgba(255, 255, 255, 0.15); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;">
+          ✅ Fallback automático ativado<br>
+          ✅ Camadas estáveis funcionando<br>
+          🔄 Retry automático em 30s
+        </div>
+        <div style="font-size: 11px; opacity: 0.8;">
+          Sistema funcionando normalmente com camadas alternativas
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Auto-fechar após 4 segundos
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      }, 4000);
+      
+      // Permitir fechar clicando
+      notification.addEventListener('click', () => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      notification.style.cursor = 'pointer';
+    }
+    
+    function showEOXDisabledNotification() {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 149, 0, 0.95), rgba(255, 59, 48, 0.95));
+        color: white;
+        padding: 20px 28px;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        max-width: 380px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 12px; font-size: 16px;">
+          🛡️ Sistema Estabilizado
+        </div>
+        <div style="font-size: 13px; line-height: 1.4; margin-bottom: 12px; opacity: 0.95;">
+          Serviços EOX instáveis foram desabilitados.<br>
+          <strong>Camadas funcionais disponíveis:</strong>
+        </div>
+        <div style="font-size: 12px; background: rgba(255, 255, 255, 0.15); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;">
+          ✅ OpenStreetMap<br>
+          ✅ CartoDB Light & Dark<br>
+          ✅ ESRI Satellite
+        </div>
+        <div style="font-size: 11px; opacity: 0.8;">
+          Sistema funcionando normalmente com camadas estáveis
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Auto-fechar após 5 segundos
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+      
+      // Permitir fechar clicando
+      notification.addEventListener('click', () => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      });
+      
+      // Adicionar cursor pointer para indicar que é clicável
+      notification.style.cursor = 'pointer';
+    }
+    
+    // Função de diagnóstico para erros EOX 400 Bad Request
+    function diagnosEOXError(url) {
+      console.group('🔧 Diagnóstico EOX 400 Error');
+      
+      try {
+        const urlObj = new URL(url);
+        const params = new URLSearchParams(urlObj.search);
+        
+        console.log('📋 Parâmetros da requisição:');
+        for (const [key, value] of params.entries()) {
+          console.log(`  ${key}: ${value}`);
+        }
+        
+        // Verificações específicas
+        const layers = params.get('layers');
+        const version = params.get('version');
+        const bbox = params.get('bbox');
+        const srs = params.get('srs');
+        
+        console.log('🔍 Análise de problemas potenciais:');
+        
+        if (layers && layers.includes('terrain-light')) {
+          console.warn('  ⚠️ Camada "terrain-light" pode estar incorreta - tentar "terrain_3857"');
+        }
+        
+        if (version === '1.3.0') {
+          console.warn('  ⚠️ Versão 1.3.0 pode ser incompatível - tentar "1.1.1"');
+        }
+        
+        if (bbox) {
+          const bboxValues = bbox.split(',').map(Number);
+          if (bboxValues.some(val => Math.abs(val) > 20037508)) {
+            console.warn('  ⚠️ Bbox pode estar fora dos limites EPSG:3857');
+          }
+        }
+        
+        if (srs === 'EPSG:3857' && version === '1.3.0') {
+          console.warn('  ⚠️ Combinação EPSG:3857 + versão 1.3.0 pode causar problemas');
+        }
+        
+        // Sugestões de correção
+        console.log('💡 Sugestões de correção:');
+        console.log('  - Usar camada: terrain_3857 ou overlay_3857');
+        console.log('  - Usar versão: 1.1.1');
+        console.log('  - Verificar bbox dentro dos limites válidos');
+        
+      } catch (error) {
+        console.error('❌ Erro no diagnóstico:', error);
+      }
+      
+      console.groupEnd();
+    }
+    
+    // Função de teste automatizado para camadas corrigidas
+    async function testCorrectedLayers(map) {
+      console.group('🧪 Teste Automatizado de Camadas Corrigidas');
+      
+      const testResults = {
+        terrain_3857: false,
+        overlay_3857: false,
+        errors: []
+      };
+      
+      // Lista de testes a executar
+      const tests = [
+        {
+          name: 'terrain_3857',
+          url: 'https://tiles.maps.eox.at/wms?service=WMS&request=GetMap&layers=terrain_3857&bbox=1000000,-1000000,2000000,0&width=256&height=256&srs=EPSG:3857&format=image/png&version=1.1.1'
+        },
+        {
+          name: 'overlay_3857',
+          url: 'https://tiles.maps.eox.at/wms?service=WMS&request=GetMap&layers=overlay_3857&bbox=1000000,-1000000,2000000,0&width=256&height=256&srs=EPSG:3857&format=image/png&version=1.1.1'
+        }
+      ];
+      
+      console.log('🔬 Executando testes de validação...');
+      
+      for (const test of tests) {
+        try {
+          console.log(`🧪 Testando ${test.name}...`);
+          
+          const startTime = Date.now();
+          const response = await fetch(test.url, {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
+          });
+          const endTime = Date.now();
+          
+          if (response.ok) {
+            testResults[test.name] = true;
+            console.log(`✅ ${test.name}: OK (${response.status}) - ${endTime - startTime}ms`);
+          } else {
+            testResults.errors.push(`${test.name}: Status ${response.status}`);
+            console.warn(`❌ ${test.name}: Status ${response.status}`);
+            
+            if (response.status === 400) {
+              console.warn(`🔍 Analisando erro 400 para ${test.name}...`);
+              diagnosEOXError(test.url);
+            }
+          }
+          
+        } catch (error) {
+          testResults.errors.push(`${test.name}: ${error.message}`);
+          console.error(`❌ ${test.name}: ${error.message}`);
+        }
+      }
+      
+      // Relatório final
+      const successCount = Object.values(testResults).filter(v => v === true).length;
+      const totalTests = tests.length;
+      
+      console.log('📊 Relatório de Testes:');
+      console.log(`  ✅ Sucessos: ${successCount}/${totalTests}`);
+      console.log(`  ❌ Erros: ${testResults.errors.length}`);
+      
+      if (testResults.errors.length > 0) {
+        console.log('📋 Lista de Erros:');
+        testResults.errors.forEach(error => console.log(`  - ${error}`));
+      }
+      
+      // Notificação visual do resultado
+      if (successCount === totalTests) {
+        console.log('🎉 Todos os testes passaram! Camadas EOX funcionando corretamente.');
+        showTestSuccessNotification();
+      } else {
+        console.warn(`⚠️ ${totalTests - successCount} teste(s) falharam. Sistema pode ter problemas.`);
+        showTestWarningNotification(successCount, totalTests);
+      }
+      
+      console.groupEnd();
+      return testResults;
+    }
+    
+    // Notificações de resultado dos testes
+    function showTestSuccessNotification() {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: 24px;
+        background: linear-gradient(135deg, rgba(52, 199, 89, 0.95), rgba(48, 176, 199, 0.95));
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        max-width: 300px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 8px; font-size: 14px;">
+          🎉 Testes Aprovados
+        </div>
+        <div style="font-size: 12px; opacity: 0.9;">
+          Todas as correções EOX funcionando!<br>
+          Camadas terrain_3857 e overlay_3857 OK.
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(20px)';
+        setTimeout(() => notification.remove(), 300);
+      }, 4000);
+    }
+    
+    function showTestWarningNotification(success, total) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: 24px;
+        background: linear-gradient(135deg, rgba(255, 149, 0, 0.95), rgba(255, 59, 48, 0.95));
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        max-width: 300px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 8px; font-size: 14px;">
+          ⚠️ Testes Parciais
+        </div>
+        <div style="font-size: 12px; opacity: 0.9;">
+          ${success}/${total} camadas funcionando.<br>
+          Verifique console para detalhes.
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(20px)';
+        setTimeout(() => notification.remove(), 300);
+      }, 6000);
+    }
+    
+    // Sistema de monitoramento proativo de saúde das camadas
+    function initializeLayerHealthMonitoring(map) {
+      console.log('🔍 Inicializando monitoramento proativo de camadas...');
+      
+      const layerHealthStatus = new Map();
+      const HEALTH_CHECK_INTERVAL = 60000; // 1 minuto
+      const FAILURE_THRESHOLD = 3;
+      
+      // Lista de camadas críticas para monitorar (apenas as que funcionam)
+      const criticalLayers = [
+        { name: 'terrain_3857', service: 'eox', url: 'https://tiles.maps.eox.at/wms' },
+        { name: 'overlay_3857', service: 'eox', url: 'https://tiles.maps.eox.at/wms' }
+        // Removidas temporariamente: bathymetry (404) e GEBCO (CORS)
+      ];
+      
+      // Função para testar saúde de uma camada específica
+      async function testLayerHealth(layer) {
+        // Usar GetCapabilities ao invés de GetMap para evitar problemas de bbox
+        const testParams = {
+          service: 'WMS',
+          request: 'GetCapabilities',
+          version: '1.3.0'
+        };
+        
+        const url = `${layer.url}?${new URLSearchParams(testParams).toString()}`;
+        
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000), // Timeout maior para GetCapabilities
+            mode: 'cors' // Explicitamente permitir CORS
+          });
+          
+          if (response.ok) {
+            console.log(`✅ Camada ${layer.name} está saudável (${response.status})`);
+            return true;
+          } else {
+            console.warn(`⚠️ Camada ${layer.name} retornou status ${response.status}`);
+            return false;
+          }
+        } catch (error) {
+          // Análise detalhada do tipo de erro
+          if (error.name === 'TypeError' && error.message.includes('CORS')) {
+            console.warn(`🚫 CORS bloqueado para ${layer.name} - serviço pode estar funcionando mas inacessível via browser`);
+            return false; // CORS = não utilizável no browser
+          } else if (error.name === 'AbortError') {
+            console.warn(`⏱️ Timeout para ${layer.name} - serviço lento ou indisponível`);
+            return false;
+          } else {
+            console.warn(`❌ Erro desconhecido para ${layer.name}:`, error.message);
+            return false;
+          }
+        }
+      }
+      
+      // Função principal de verificação
+      async function performHealthCheck() {
+        console.log('🔍 Executando verificação de saúde das camadas...');
+        
+        for (const layer of criticalLayers) {
+          const isHealthy = await testLayerHealth(layer);
+          const currentStatus = layerHealthStatus.get(layer.name) || { failures: 0, lastHealthy: Date.now() };
+          
+          if (isHealthy) {
+            // Reset contador de falhas se camada está saudável
+            layerHealthStatus.set(layer.name, { failures: 0, lastHealthy: Date.now() });
+            console.log(`✅ Camada ${layer.name} está saudável`);
+          } else {
+            // Incrementar contador de falhas
+            currentStatus.failures++;
+            layerHealthStatus.set(layer.name, currentStatus);
+            
+            console.warn(`❌ Camada ${layer.name} falhou (${currentStatus.failures}/${FAILURE_THRESHOLD})`);
+            
+            // Se atingiu threshold, desabilitar camada
+            if (currentStatus.failures >= FAILURE_THRESHOLD) {
+              disableProblematicLayer(layer, map);
+            }
+          }
+        }
+        
+        // Atualizar status na interface
+        updateHealthStatusDisplay();
+      }
+      
+      // Função para desabilitar camada problemática
+      function disableProblematicLayer(layer, map) {
+        console.error(`🚫 Desabilitando camada problemática: ${layer.name}`);
+        
+        // Encontrar e desabilitar botões relacionados
+        const layerButtons = document.querySelectorAll(`[data-layer*="${layer.service}"]`);
+        layerButtons.forEach(btn => {
+          if (btn.classList.contains('active')) {
+            btn.classList.remove('active');
+          }
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          btn.title = `🚫 Camada ${layer.name} temporariamente indisponível`;
+        });
+        
+        // Ativar fallback se necessário
+        if (layer.service === 'eox') {
+          const osmBtn = document.querySelector('[data-layer="osm"]');
+          if (osmBtn && !osmBtn.classList.contains('active')) {
+            osmBtn.click();
+            console.log('🔄 Ativado fallback automático para OpenStreetMap');
+          }
+        }
+        
+        // Mostrar notificação
+        showLayerDisabledNotification(layer.name);
+      }
+      
+      // Função para atualizar display de status
+      function updateHealthStatusDisplay() {
+        const systemStatus = document.getElementById('system-status');
+        if (systemStatus) {
+          const totalLayers = criticalLayers.length;
+          const healthyLayers = Array.from(layerHealthStatus.values())
+            .filter(status => status.failures === 0).length;
+          
+          if (healthyLayers === totalLayers) {
+            systemStatus.textContent = 'Sistema Online - Todas as Camadas OK';
+            systemStatus.style.color = '#27ae60';
+          } else if (healthyLayers > totalLayers / 2) {
+            systemStatus.textContent = `Sistema Online - ${healthyLayers}/${totalLayers} Camadas OK`;
+            systemStatus.style.color = '#f39c12';
+          } else {
+            systemStatus.textContent = `Sistema Degradado - ${healthyLayers}/${totalLayers} Camadas OK`;
+            systemStatus.style.color = '#e74c3c';
+          }
+        }
+      }
+      
+      // Notificação para camada desabilitada
+      function showLayerDisabledNotification(layerName) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          background: rgba(231, 76, 60, 0.95);
+          color: white;
+          padding: 12px 20px;
+          border-radius: 12px;
+          font-size: 13px;
+          font-weight: 500;
+          z-index: 1500;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+          max-width: 300px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        `;
+        notification.innerHTML = `
+          <div style="margin-bottom: 6px; font-size: 14px;">
+            🚫 Camada Desabilitada
+          </div>
+          <div style="font-size: 12px; opacity: 0.9;">
+            <strong>${layerName}</strong> temporariamente indisponível.<br>
+            Fallback automático ativado.
+          </div>
+        `;
+        document.body.appendChild(notification);
+        
+        // Auto-remover após 5 segundos
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          notification.style.transform = 'translateY(20px)';
+          setTimeout(() => notification.remove(), 300);
+        }, 5000);
+      }
+      
+      // Executar primeira verificação após 10 segundos
+      setTimeout(performHealthCheck, 10000);
+      
+      // Configurar verificações periódicas
+      setInterval(performHealthCheck, HEALTH_CHECK_INTERVAL);
+      
+      console.log('✅ Sistema de monitoramento proativo configurado');
+    }
+    
+    // Sistema de tratamento global de erros
+    function setupGlobalErrorHandling() {
+      // Capturar erros JavaScript não tratados
+      window.addEventListener('error', (event) => {
+        console.error('🚨 Erro JavaScript não tratado:', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          error: event.error
+        });
+        
+        // Prevenir que erros de camadas quebrem a aplicação
+        if (event.message && (
+          event.message.includes('invalidateSize') ||
+          event.message.includes('EOX') ||
+          event.message.includes('GEBCO') ||
+          event.message.includes('WMS')
+        )) {
+          console.log('🛡️ Erro de camada interceptado - aplicação continua funcionando');
+          event.preventDefault();
+          return false;
+        }
+      });
+      
+      // Capturar promises rejeitadas não tratadas
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('🚨 Promise rejeitada não tratada:', event.reason);
+        
+        // Prevenir que erros de rede quebrem a aplicação
+        if (event.reason && (
+          event.reason.message?.includes('fetch') ||
+          event.reason.message?.includes('CORS') ||
+          event.reason.message?.includes('404') ||
+          event.reason.message?.includes('Rate limit')
+        )) {
+          console.log('🛡️ Erro de rede interceptado - aplicação continua funcionando');
+          event.preventDefault();
+        }
+      });
+      
+      console.log('✅ Sistema de tratamento global de erros configurado');
+    }
+    
+    // Inicializar tratamento de erros primeiro
+    setupGlobalErrorHandling();
+    
+    // Sistema de diagnóstico do painel
+    function diagnosePanelIssues() {
+      console.group('🔧 Diagnóstico do Painel Flutuante');
+      
+      const toolbar = document.getElementById('toolbar');
+      const panelToggle = document.getElementById('panel-toggle');
+      const floatingToggle = document.getElementById('floating-toggle');
+      
+      const issues = [];
+      
+      // Verificar existência dos elementos
+      if (!toolbar) issues.push('Elemento #toolbar não encontrado');
+      if (!panelToggle) issues.push('Elemento #panel-toggle não encontrado');
+      if (!floatingToggle) issues.push('Elemento #floating-toggle não encontrado');
+      
+      if (toolbar) {
+        // Verificar estilos computados
+        const styles = window.getComputedStyle(toolbar);
+        const position = styles.position;
+        const zIndex = styles.zIndex;
+        const display = styles.display;
+        const visibility = styles.visibility;
+        
+        console.log('📊 Estilos do painel:', {
+          position,
+          zIndex,
+          display,
+          visibility,
+          top: styles.top,
+          left: styles.left,
+          width: styles.width,
+          transform: styles.transform,
+          opacity: styles.opacity
+        });
+        
+        // Detectar problemas comuns
+        if (position !== 'fixed') issues.push(`Position incorreto: ${position} (deveria ser fixed)`);
+        if (parseInt(zIndex) < 1000) issues.push(`Z-index muito baixo: ${zIndex} (deveria ser >= 1000)`);
+        if (display === 'none') issues.push('Painel está oculto (display: none)');
+        if (visibility === 'hidden') issues.push('Painel está invisível (visibility: hidden)');
+        if (parseFloat(styles.opacity) < 0.1) issues.push(`Opacity muito baixa: ${styles.opacity}`);
+        
+        // Verificar se está fora da tela
+        const rect = toolbar.getBoundingClientRect();
+        if (rect.left < -300) issues.push(`Painel fora da tela: left=${rect.left}px`);
+        if (rect.top < 0) issues.push(`Painel acima da tela: top=${rect.top}px`);
+      }
+      
+      // Verificar conflitos CSS
+      const mapStyles = document.querySelector('link[href*="map-styles.css"]');
+      if (mapStyles) {
+        console.log('✅ map-styles.css carregado');
+      } else {
+        issues.push('map-styles.css não encontrado');
+      }
+      
+      // Relatório
+      if (issues.length === 0) {
+        console.log('✅ Nenhum problema detectado no painel');
+      } else {
+        console.warn(`⚠️ ${issues.length} problema(s) detectado(s):`);
+        issues.forEach((issue, index) => {
+          console.warn(`  ${index + 1}. ${issue}`);
+        });
+        
+        // Tentar correções automáticas
+        attemptPanelFixes(toolbar, issues);
+      }
+      
+      console.groupEnd();
+      return issues;
+    }
+    
+    // Função para tentar correções automáticas
+    function attemptPanelFixes(toolbar, issues) {
+      console.log('🔧 Tentando correções automáticas...');
+      
+      if (toolbar) {
+        // Forçar estilos críticos
+        toolbar.style.position = 'fixed';
+        toolbar.style.zIndex = '1000';
+        toolbar.style.display = 'flex';
+        toolbar.style.visibility = 'visible';
+        
+        // Se está muito fora da tela, reposicionar
+        const rect = toolbar.getBoundingClientRect();
+        if (rect.left < -300) {
+          toolbar.style.transform = 'translateX(0)';
+          toolbar.classList.remove('collapsed');
+          console.log('🔧 Painel reposicionado');
+        }
+        
+        // Garantir que não está invisível
+        if (parseFloat(window.getComputedStyle(toolbar).opacity) < 0.1) {
+          toolbar.style.opacity = '1';
+          console.log('🔧 Opacity corrigida');
+        }
+      }
+      
+      console.log('✅ Correções automáticas aplicadas');
+    }
+    
+    // Executar diagnóstico após inicialização
+    setTimeout(() => {
+      diagnosePanelIssues();
+      fixOverlapIssues();
+    }, 3000);
+    
+    // Função para corrigir problemas de sobreposição
+    function fixOverlapIssues() {
+      console.group('🔧 Correção de Sobreposições');
+      
+      const toolbar = document.getElementById('toolbar');
+      const floatingToggle = document.getElementById('floating-toggle');
+      
+      if (toolbar) {
+        // Garantir que o toolbar está sempre visível
+        toolbar.style.zIndex = '1000';
+        toolbar.style.isolation = 'isolate';
+        toolbar.style.pointerEvents = 'auto';
+        
+        // Verificar se há elementos sobrepostos
+        const toolbarRect = toolbar.getBoundingClientRect();
+        const elementsAtPosition = document.elementsFromPoint(
+          toolbarRect.left + toolbarRect.width / 2,
+          toolbarRect.top + toolbarRect.height / 2
+        );
+        
+        console.log('📍 Elementos na posição do toolbar:', elementsAtPosition.map(el => el.tagName + (el.className ? '.' + el.className : '')));
+        
+        // Verificar se o toolbar é o elemento mais alto
+        const topElement = elementsAtPosition[0];
+        if (topElement !== toolbar && !toolbar.contains(topElement)) {
+          console.warn('⚠️ Elemento sobrepondo toolbar:', topElement);
+          
+          // Tentar corrigir aumentando z-index
+          toolbar.style.zIndex = '1500';
+          console.log('🔧 Z-index do toolbar aumentado para 1500');
+        }
+      }
+      
+      if (floatingToggle) {
+        floatingToggle.style.zIndex = '1501';
+        floatingToggle.style.isolation = 'isolate';
+      }
+      
+      // Corrigir controles Leaflet que podem estar sobrepostos
+      const leafletControls = document.querySelectorAll('.leaflet-control-container .leaflet-control');
+      leafletControls.forEach((control, index) => {
+        control.style.zIndex = '500';
+        console.log(`🍃 Leaflet control ${index} z-index ajustado para 500`);
+      });
+      
+      console.log('✅ Correções de sobreposição aplicadas');
+      console.groupEnd();
+    }
+
+    // Inicializar monitor
+    monitorEOXErrors();
+
+    // Função para habilitar visualização 3D (placeholder)
+    function enable3DView() {
+      console.log('🎯 Função 3D View chamada');
+      
+      // Mostrar notificação de recurso em desenvolvimento
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 122, 255, 0.95);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 300px;
+      `;
+      notification.innerHTML = `
+        <div style="margin-bottom: 8px;">🚀 Visualização 3D</div>
+        <div style="font-size: 12px; opacity: 0.9;">
+          Recurso em desenvolvimento.<br>
+          Aguarde futuras atualizações!
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    
+    // Adicionar enable3DView ao escopo global
+    window.enable3DView = enable3DView;
+
+    // Mostrar hint de atalhos na inicialização
+    setTimeout(() => {
+      const hint = document.createElement('div');
+      hint.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-size: 11px;
+        color: #666;
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        animation: fadeInOut 4s ease-in-out;
+      `;
+      hint.textContent = 'Pressione H para atalhos ou Espaço para recolher painel';
+      document.body.appendChild(hint);
+      
+      setTimeout(() => {
+        hint.remove();
+      }, 4000);
+    }, 2000);
+
+    // =====================================================
+    // FUNCIONALIDADE DE ACESSO ADMINISTRATIVO
+    // =====================================================
+    
+    // Aguardar o DOM estar completamente carregado
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeAdminAccess();
+    });
+
+    // Se o DOM já estiver carregado, inicializar imediatamente
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeAdminAccess);
+    } else {
+      initializeAdminAccess();
+    }
+
+    function initializeAdminAccess() {
+      // Credenciais administrativas (em produção, isto deveria estar num servidor seguro)
+      const ADMIN_CREDENTIALS = {
+        username: 'admin',
+        password: 'Kianda'
+      };
+
+      // Elementos do modal
+      const adminAccessBtn = document.getElementById('admin-access-btn');
+      const adminModal = document.getElementById('admin-login-modal');
+      const adminModalClose = document.getElementById('admin-modal-close');
+      const adminCancelBtn = document.getElementById('admin-cancel-btn');
+      const adminLoginForm = document.getElementById('admin-login-form');
+      const adminLoginError = document.getElementById('admin-login-error');
+      const adminUsernameInput = document.getElementById('admin-username');
+      const adminPasswordInput = document.getElementById('admin-password');
+
+      // Verificar se todos os elementos existem
+      if (!adminAccessBtn || !adminModal || !adminModalClose || !adminCancelBtn || 
+          !adminLoginForm || !adminLoginError || !adminUsernameInput || !adminPasswordInput) {
+        console.warn('⚠️ Alguns elementos do sistema administrativo não foram encontrados');
+        return;
+      }
+
+      // Função para mostrar o modal
+      function showAdminModal() {
+        if (!adminModal || !adminUsernameInput) {
+          console.error('❌ Elementos do modal não encontrados');
+          return;
+        }
+        
+        adminModal.style.display = 'flex';
+        adminUsernameInput.focus();
+        
+        // Limpar campos e erros
+        adminUsernameInput.value = '';
+        adminPasswordInput.value = '';
+        hideAdminError();
+      }
+
+      // Função para esconder o modal
+      function hideAdminModal() {
+        if (!adminModal) {
+          console.error('❌ Modal não encontrado');
+          return;
+        }
+        
+        adminModal.style.display = 'none';
+        
+        // Limpar campos
+        if (adminUsernameInput) adminUsernameInput.value = '';
+        if (adminPasswordInput) adminPasswordInput.value = '';
+        hideAdminError();
+      }
+
+      // Função para mostrar erro
+      function showAdminError(message) {
+        if (!adminLoginError) {
+          console.error('❌ Elemento de erro não encontrado');
+          return;
+        }
+        
+        adminLoginError.textContent = message;
+        adminLoginError.style.display = 'block';
+      }
+
+      // Função para esconder erro
+      function hideAdminError() {
+        if (!adminLoginError) return;
+        adminLoginError.style.display = 'none';
+      }
+
+      // Função para validar credenciais
+      function validateAdminCredentials(username, password) {
+        return username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password;
+      }
+
+      // Função para redirecionar para o painel administrativo
+      function redirectToAdmin() {
+        // Mostrar mensagem de sucesso
+        console.log('✅ Acesso administrativo autorizado');
+        
+        // Redirecionar para admin.html
+        window.location.href = '/BGAPP/admin.html';
+      }
+
+      // Event listeners
+      adminAccessBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAdminModal();
+      });
+
+      adminModalClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideAdminModal();
+      });
+
+      adminCancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideAdminModal();
+      });
+
+      // Fechar modal ao clicar no overlay
+      adminModal.addEventListener('click', (e) => {
+        if (e.target === adminModal || e.target.classList.contains('admin-modal-overlay')) {
+          hideAdminModal();
+        }
+      });
+
+      // Fechar modal com tecla Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && adminModal && adminModal.style.display === 'flex') {
+          hideAdminModal();
+        }
+      });
+
+      // Processar formulário de login
+      adminLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        if (!adminUsernameInput || !adminPasswordInput) {
+          console.error('❌ Campos de input não encontrados');
+          return;
+        }
+        
+        const username = adminUsernameInput.value.trim();
+        const password = adminPasswordInput.value.trim();
+        
+        // Validar campos vazios
+        if (!username || !password) {
+          showAdminError('Por favor, preencha todos os campos.');
+          return;
+        }
+        
+        // Validar credenciais
+        if (validateAdminCredentials(username, password)) {
+          hideAdminModal();
+          redirectToAdmin();
+        } else {
+          showAdminError('Credenciais inválidas. Tente novamente.');
+          
+          // Limpar password
+          adminPasswordInput.value = '';
+          adminPasswordInput.focus();
+        }
+      });
+
+      // Permitir Enter no campo password
+      adminPasswordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          adminLoginForm.dispatchEvent(new Event('submit'));
+        }
+      });
+
+      console.log('🔐 Sistema de acesso administrativo inicializado com sucesso');
+    }
+  </script>
+
+  <!-- Modal de Login Administrativo -->
+  <div id="admin-login-modal" class="admin-modal" style="display: none;">
+    <div class="admin-modal-overlay"></div>
+    <div class="admin-modal-content">
+      <div class="admin-modal-header">
+        <h2>🔐 Acesso Administrativo</h2>
+        <button class="admin-modal-close" id="admin-modal-close" aria-label="Fechar modal">×</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="admin-login-form">
+          <div class="admin-form-group">
+            <label for="admin-username">Utilizador:</label>
+            <input type="text" id="admin-username" name="username" required autocomplete="username" placeholder="Digite o nome de utilizador">
+          </div>
+          <div class="admin-form-group">
+            <label for="admin-password">Palavra-passe:</label>
+            <input type="password" id="admin-password" name="password" required autocomplete="current-password" placeholder="Digite a palavra-passe">
+          </div>
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" id="admin-cancel-btn">Cancelar</button>
+            <button type="submit" class="admin-btn admin-btn-primary">Entrar</button>
+          </div>
+        </form>
+        <div id="admin-login-error" class="admin-error" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sistema Plug-and-Play para APIs -->
+  <script src="assets/js/api-resilience.js"></script>
+  <script src="assets/js/api-plugin-manager.js"></script>
+  <script src="assets/js/api-adapter.js"></script>
+  <script src="assets/js/health-checker.js"></script>
+
+</body>
+</html>

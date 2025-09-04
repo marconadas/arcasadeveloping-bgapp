@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mapa Simples</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; width: 100%; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste Mapa Simples - Cabinda</h1>
+    <div id="map"></div>
+    <div id="info"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        console.log('🗺️ Inicializando mapa de teste...');
+        
+        // Inicializar mapa
+        const map = L.map('map').setView([-5.0, 12.0], 7);
+        
+        // Camada base
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        console.log('✅ Mapa inicializado');
+        
+        // Cabinda costa real (forma alongada)
+        const cabindaReal = [
+            [-4.3700, 11.8500], [-4.4000, 11.9100], [-4.4500, 12.0100], 
+            [-4.5000, 12.1100], [-4.5500, 12.2100], [-4.6000, 12.3100], 
+            [-4.6200, 12.3500], [-4.6500, 12.2900], [-4.7000, 12.1900],
+            [-4.7500, 12.0900], [-4.8000, 11.9900], [-4.8500, 11.8900],
+            [-4.9000, 11.7900], [-4.9500, 11.6900], [-5.0000, 11.5900],
+            [-5.1000, 11.3900], [-5.2000, 11.1900], [-5.3000, 10.9900],
+            [-5.4100, 10.7700]
+        ];
+        
+        console.log('📍 Cabinda Real:', cabindaReal.length, 'pontos');
+        
+        // Adicionar Cabinda ao mapa
+        const cabindaLayer = L.polyline(cabindaReal, {
+            color: '#9b59b6',
+            weight: 4,
+            opacity: 1.0
+        }).addTo(map);
+        
+        cabindaLayer.bindPopup('🏛️ Cabinda - Costa Real<br>📊 ' + cabindaReal.length + ' pontos');
+        
+        // Ajustar vista para Cabinda
+        map.fitBounds(cabindaLayer.getBounds());
+        
+        // Angola Continental (início)
+        const angolaInicio = [[-5.9200, 12.3800], [-6.994221, 12.829412]];
+        
+        L.polyline(angolaInicio, {
+            color: '#ff6600',
+            weight: 4,
+            opacity: 1.0
+        }).addTo(map).bindPopup('🇦🇴 Angola Continental');
+        
+        console.log('✅ Camadas adicionadas ao mapa');
+        
+        // Mostrar informações
+        document.getElementById('info').innerHTML = `
+            <h3>📊 Informações do Teste:</h3>
+            <p><strong>Pontos Cabinda:</strong> ${cabindaReal.length}</p>
+            <p><strong>Primeira coordenada:</strong> [${cabindaReal[0][0]}, ${cabindaReal[0][1]}]</p>
+            <p><strong>Última coordenada:</strong> [${cabindaReal[cabindaReal.length-1][0]}, ${cabindaReal[cabindaReal.length-1][1]}]</p>
+            <p><strong>Status:</strong> ✅ Mapa funcionando corretamente</p>
+        `;
+    </script>
+</body>
+</html>

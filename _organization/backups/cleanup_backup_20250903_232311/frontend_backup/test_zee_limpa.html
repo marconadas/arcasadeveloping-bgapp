@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste ZEE Limpa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; width: 100%; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .info { background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>🧪 Teste ZEE Oficial Limpa</h1>
+        <div id="status">Carregando...</div>
+    </div>
+    
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/zee_angola_official.js?v=20250831"></script>
+    <script>
+        console.log('🗺️ Iniciando teste ZEE limpa...');
+        
+        // Inicializar mapa
+        const map = L.map('map').setView([-12.5, 13.5], 6);
+        
+        // Camada base
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        console.log('✅ Mapa base carregado');
+        
+        // Verificar se dados oficiais estão disponíveis
+        if (typeof angolaZEEOfficial !== 'undefined') {
+            console.log('✅ ZEE oficial disponível:', angolaZEEOfficial.length, 'pontos');
+            
+            // Adicionar ZEE Angola Continental (azul)
+            const angolaZEE = L.polygon(angolaZEEOfficial, {
+                color: '#0066cc',
+                weight: 2,
+                fillOpacity: 0.2,
+                fillColor: '#0080ff',
+                opacity: 0.8
+            }).addTo(map);
+            
+            angolaZEE.bindPopup('🌊 ZEE Angola Continental - OFICIAL<br>📏 495.866 km² (Marine Regions)');
+            
+            document.getElementById('status').innerHTML = `
+                ✅ ZEE Oficial carregada<br>
+                📊 ${angolaZEEOfficial.length} pontos<br>
+                🎯 Qualidade: MÁXIMA<br>
+                🧹 Visual: LIMPO (sem linhas extras)
+            `;
+            
+        } else {
+            console.log('❌ ZEE oficial não disponível');
+            document.getElementById('status').innerHTML = '❌ ZEE oficial não carregada';
+        }
+        
+        // Verificar Cabinda
+        if (typeof cabindaZEEOfficial !== 'undefined') {
+            console.log('✅ Cabinda ZEE disponível:', cabindaZEEOfficial.length, 'pontos');
+            
+            // Adicionar ZEE Cabinda (roxo)
+            const cabindaZEE = L.polygon(cabindaZEEOfficial, {
+                color: '#9b59b6',
+                weight: 2,
+                fillOpacity: 0.2,
+                fillColor: '#9b59b6',
+                opacity: 0.8
+            }).addTo(map);
+            
+            cabindaZEE.bindPopup('🏛️ ZEE Cabinda - OFICIAL<br>📍 Marine Regions');
+            
+        } else {
+            console.log('⚠️ Cabinda ZEE não disponível');
+        }
+        
+        console.log('✅ Teste concluído - apenas ZEE oficial visível');
+    </script>
+</body>
+</html>

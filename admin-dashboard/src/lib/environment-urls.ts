@@ -11,6 +11,8 @@ export interface EnvironmentUrls {
   stacBrowser: string;
   pygeoapi: string;
   adminApi: string;
+  stacApi: string;
+  workflow: string;
 }
 
 /**
@@ -32,16 +34,20 @@ const ENVIRONMENT_URLS: Record<'development' | 'production', EnvironmentUrls> = 
     flower: 'http://localhost:5555',
     stacBrowser: 'http://localhost:8082',
     pygeoapi: 'http://localhost:5080',
-    adminApi: 'http://localhost:8000'
+    adminApi: 'http://localhost:8000',
+    stacApi: 'https://bgapp-stac.majearcasa.workers.dev',
+    workflow: 'http://localhost:8787'
   },
   production: {
-    frontend: 'https://bgapp-scientific.pages.dev',
+    frontend: 'https://bgapp-frontend.pages.dev',
     keycloak: 'https://bgapp-auth.majearcasa.workers.dev',
     minio: 'https://bgapp-storage.majearcasa.workers.dev',
     flower: 'https://bgapp-monitor.majearcasa.workers.dev',
-    stacBrowser: 'https://bgapp-stac-api.majearcasa.workers.dev',
-    pygeoapi: 'https://bgapp-pygeoapi.majearcasa.workers.dev',
-    adminApi: 'https://bgapp-admin-api.majearcasa.workers.dev'
+    stacBrowser: 'https://bgapp-browser.majearcasa.workers.dev',
+    pygeoapi: 'https://bgapp-geoapi.majearcasa.workers.dev',
+    adminApi: 'https://bgapp-api.majearcasa.workers.dev',
+    stacApi: 'https://bgapp-stac.majearcasa.workers.dev',
+    workflow: 'https://bgapp-workflow.majearcasa.workers.dev'
   }
 };
 

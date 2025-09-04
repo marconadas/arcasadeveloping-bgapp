@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-08-31T13:51:07.449862",
+  "summary": {
+    "avg_sst": 20.9,
+    "max_sst": 26.0,
+    "min_sst": 18.7,
+    "avg_chlorophyll": 4.03,
+    "max_chlorophyll": 5.94,
+    "upwelling_active": true
+  },
+  "locations": [
+    {
+      "location": "Cabinda",
+      "latitude": -5.5,
+      "longitude": 12.2,
+      "sst": 26.02303267072617,
+      "chlorophyll": 1.6400677277507627,
+      "salinity": 35.08917448218265,
+      "current_u": 0.13275096081554308,
+      "current_v": -0.5216873744120378,
+      "current_magnitude": 0.5383126732841942,
+      "conditions": "Warm water (Angola current)"
+    },
+    {
+      "location": "Luanda",
+      "latitude": -8.8,
+      "longitude": 13.2,
+      "sst": 20.728554745371348,
+      "chlorophyll": 3.381331810429125,
+      "salinity": 35.02477703800829,
+      "current_u": -0.4217302441954742,
+      "current_v": 0.4874273014759494,
+      "current_magnitude": 0.6445477275526619,
+      "conditions": "Normal conditions"
+    },
+    {
+      "location": "Benguela",
+      "latitude": -12.6,
+      "longitude": 13.4,
+      "sst": 19.371718990244975,
+      "chlorophyll": 3.4537651163361693,
+      "salinity": 35.315178050999975,
+      "current_u": -0.13462652021300253,
+      "current_v": 0.43717571461410965,
+      "current_magnitude": 0.4574351379081185,
+      "conditions": "Cold water (Benguela influence)"
+    },
+    {
+      "location": "Namibe",
+      "latitude": -15.2,
+      "longitude": 12.1,
+      "sst": 19.474489455175537,
+      "chlorophyll": 5.745487749201497,
+      "salinity": 35.080099691581914,
+      "current_u": -0.24119505792080523,
+      "current_v": 0.5417810800697496,
+      "current_magnitude": 0.593044513242442,
+      "conditions": "High productivity (upwelling active)"
+    },
+    {
+      "location": "Tombwa",
+      "latitude": -16.8,
+      "longitude": 11.8,
+      "sst": 18.669704280580937,
+      "chlorophyll": 5.939226232795566,
+      "salinity": 35.356660723966954,
+      "current_u": -0.32419045084844245,
+      "current_v": 0.41717352328327423,
+      "current_magnitude": 0.52833057544486,
+      "conditions": "High productivity (upwelling active)"
+    }
+  ],
+  "alerts": [],
+  "data_quality": {
+    "availability": 95.2,
+    "last_update": "2025-08-31T13:51:07.449862",
+    "source": "Copernicus Marine (Simulated)",
+    "latency_hours": 3.2
+  }
+}

@@ -1,0 +1,856 @@
+{
+  "summary": {
+    "total_tests": 25,
+    "successful": 22,
+    "failed": 3,
+    "success_rate": 88.0,
+    "avg_response_time": 7.344800000000001
+  },
+  "results": [
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 5.32,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.536944",
+      "has_data": true,
+      "data_keys": [
+        "status",
+        "timestamp",
+        "version",
+        "services"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/services/status",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 135.34,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.672339",
+      "has_data": true,
+      "data_keys": [
+        "services",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/services",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 51.97,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.724362",
+      "has_data": true,
+      "data_keys": []
+    },
+    {
+      "endpoint": "/collections",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.84,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.726265",
+      "has_data": true,
+      "data_keys": [
+        "collections",
+        "links"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/connectors",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.11,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.728420",
+      "has_data": true,
+      "data_keys": []
+    },
+    {
+      "endpoint": "/ingest/jobs",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 4.44,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.732926",
+      "has_data": true,
+      "data_keys": [
+        "jobs",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 12
+    },
+    {
+      "endpoint": "/ingest/schedule",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.37,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.735364",
+      "has_data": true,
+      "data_keys": [
+        "schedule",
+        "total_days",
+        "total_scheduled_jobs",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/performance/metrics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 1.9,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.737327",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/performance/connectors",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 2.75,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.740116",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/performance/dashboard",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 1.53,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.741683",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/reports",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.75,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.743459",
+      "has_data": true,
+      "data_keys": [
+        "reports",
+        "total",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/storage/buckets",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.84,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.745347",
+      "has_data": true,
+      "data_keys": [
+        "buckets",
+        "total",
+        "total_size",
+        "total_objects",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/database/tables/public",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 3.91,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.749293",
+      "has_data": true,
+      "data_keys": [
+        "tables",
+        "total",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 6
+    },
+    {
+      "endpoint": "/gateway/metrics",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.94,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.751284",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "requests_per_minute",
+        "average_response_time",
+        "error_rate",
+        "active_connections",
+        "rate_limits",
+        "backends",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/gateway/rate-limits",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.56,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.752894",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "global_limit",
+        "per_ip_limit",
+        "per_endpoint_limit",
+        "current_usage"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/gateway/backends/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.93,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.754860",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "backends"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/alerts/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.07,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.756984",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "active_alerts",
+        "total_alerts_today",
+        "critical_alerts",
+        "warning_alerts",
+        "info_alerts",
+        "alerts",
+        "alert_rules",
+        "monitoring_enabled",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/alerts/rules",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.36,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.758395",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "rules"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/backup/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.11,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.760542",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "last_backup",
+        "backup_size",
+        "backup_frequency",
+        "retention_days",
+        "backups_available",
+        "backup_status",
+        "security",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/auth/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.02,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.762603",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "authentication_method",
+        "active_sessions",
+        "total_users",
+        "roles_configured",
+        "permissions",
+        "security",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/models",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.22,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.764880",
+      "has_data": true,
+      "data_keys": [
+        "models",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/ml/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.12,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.767055",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "models_active",
+        "predictions_today",
+        "training_jobs_running",
+        "model_accuracy_avg",
+        "gpu_usage",
+        "cpu_usage",
+        "memory_usage",
+        "recent_predictions",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/async/tasks",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.92,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.769022",
+      "has_data": true,
+      "data_keys": [
+        "active_tasks",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 2
+    },
+    {
+      "endpoint": "/cache/stats",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.74,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.770805",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "type",
+        "memory_usage",
+        "memory_limit",
+        "hit_rate",
+        "miss_rate",
+        "keys_total",
+        "keys_expired",
+        "operations_per_second",
+        "connected_clients",
+        "uptime",
+        "eviction_policy",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/processing/pipelines",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.11,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.772990",
+      "has_data": true,
+      "data_keys": []
+    },
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 3.61,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.776752",
+      "has_data": true,
+      "data_keys": [
+        "status",
+        "timestamp",
+        "version",
+        "services"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/services/status",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 37.71,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.814514",
+      "has_data": true,
+      "data_keys": [
+        "services",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/services",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 33.5,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.848098",
+      "has_data": true,
+      "data_keys": []
+    },
+    {
+      "endpoint": "/collections",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.2,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.850360",
+      "has_data": true,
+      "data_keys": [
+        "collections",
+        "links"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/connectors",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.35,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.852777",
+      "has_data": true,
+      "data_keys": []
+    },
+    {
+      "endpoint": "/ingest/jobs",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 3.61,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.856456",
+      "has_data": true,
+      "data_keys": [
+        "jobs",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 12
+    },
+    {
+      "endpoint": "/ingest/schedule",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.99,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.859528",
+      "has_data": true,
+      "data_keys": [
+        "schedule",
+        "total_days",
+        "total_scheduled_jobs",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true
+    },
+    {
+      "endpoint": "/performance/metrics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 2.47,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.862078",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/performance/connectors",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 2.27,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.864377",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/performance/dashboard",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 1.76,
+      "success": false,
+      "timestamp": "2025-09-01T22:54:26.866164",
+      "error": "{\"detail\":\"Not Found\"}"
+    },
+    {
+      "endpoint": "/reports",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.59,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.867783",
+      "has_data": true,
+      "data_keys": [
+        "reports",
+        "total",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/storage/buckets",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.01,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.869837",
+      "has_data": true,
+      "data_keys": [
+        "buckets",
+        "total",
+        "total_size",
+        "total_objects",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/database/tables/public",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.09,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.871968",
+      "has_data": true,
+      "data_keys": [
+        "tables",
+        "total",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 6
+    },
+    {
+      "endpoint": "/gateway/metrics",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.68,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.873681",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "requests_per_minute",
+        "average_response_time",
+        "error_rate",
+        "active_connections",
+        "rate_limits",
+        "backends",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/gateway/rate-limits",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.99,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.875699",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "global_limit",
+        "per_ip_limit",
+        "per_endpoint_limit",
+        "current_usage"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/gateway/backends/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.03,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.877757",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "backends"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/alerts/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 1.73,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.879539",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "active_alerts",
+        "total_alerts_today",
+        "critical_alerts",
+        "warning_alerts",
+        "info_alerts",
+        "alerts",
+        "alert_rules",
+        "monitoring_enabled",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/alerts/rules",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.24,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.881820",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "rules"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/backup/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.17,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.884043",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "last_backup",
+        "backup_size",
+        "backup_frequency",
+        "retention_days",
+        "backups_available",
+        "backup_status",
+        "security",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/auth/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.0,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.886120",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "authentication_method",
+        "active_sessions",
+        "total_users",
+        "roles_configured",
+        "permissions",
+        "security",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/models",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.68,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.888842",
+      "has_data": true,
+      "data_keys": [
+        "models",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 3
+    },
+    {
+      "endpoint": "/ml/dashboard",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 5.13,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.894026",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "models_active",
+        "predictions_today",
+        "training_jobs_running",
+        "model_accuracy_avg",
+        "gpu_usage",
+        "cpu_usage",
+        "memory_usage",
+        "recent_predictions",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/async/tasks",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.72,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.896884",
+      "has_data": true,
+      "data_keys": [
+        "active_tasks",
+        "total",
+        "summary",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "total_items": 2
+    },
+    {
+      "endpoint": "/cache/stats",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.51,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.899446",
+      "has_data": true,
+      "data_keys": [
+        "enabled",
+        "type",
+        "memory_usage",
+        "memory_limit",
+        "hit_rate",
+        "miss_rate",
+        "keys_total",
+        "keys_expired",
+        "operations_per_second",
+        "connected_clients",
+        "uptime",
+        "eviction_policy",
+        "timestamp"
+      ],
+      "missing_fields": [],
+      "fields_complete": true,
+      "service_enabled": true
+    },
+    {
+      "endpoint": "/processing/pipelines",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 2.03,
+      "success": true,
+      "timestamp": "2025-09-01T22:54:26.901523",
+      "has_data": true,
+      "data_keys": []
+    }
+  ],
+  "timestamp": "2025-09-01T22:54:26.901611"
+}

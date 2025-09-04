@@ -1,0 +1,14 @@
+name = "bgapp-arcasadeveloping"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "./infra/frontend"
+
+[env.production]
+name = "bgapp-arcasadeveloping"
+
+# Enhanced Ocean System deployment
+[env.production.vars]
+NODE_ENV = "production"
+DOMAIN = "arcasadeveloping.org"
+SUBDIRECTORY = "BGAPP"
+ENHANCED_OCEAN_VERSION = "1.0.0"
+ENHANCED_OCEAN_OFFLINE = "true"

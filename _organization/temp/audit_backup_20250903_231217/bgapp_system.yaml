@@ -1,0 +1,24 @@
+angola_zee:
+  area_km2: 518000
+  cabinda_bounds:
+    east: 13.5
+    north: -4.2
+    south: -6.02
+    west: 11.5
+  continental_bounds:
+    east: 17.5
+    north: -6.02
+    south: -17.266
+    west: 8.5
+logging:
+  file_rotation: true
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+  max_file_size_mb: 100
+system:
+  debug: false
+  environment: production
+  language: pt
+  name: BGAPP - MARÍTIMO ANGOLA
+  timezone: Africa/Luanda
+  version: 2.0.0

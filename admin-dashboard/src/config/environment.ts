@@ -1,6 +1,12 @@
 /**
- * 🌐 BGAPP Environment Configuration - Silicon Valley Style
- * Configuração centralizada de URLs e ambientes
+ * 🌐 BGAPP Environment Configuration - Silicon Valley Style Enhanced
+ * Configuração centralizada de URLs e ambientes com compatibilidade
+ * 
+ * MELHORIAS v2.1.0:
+ * ✅ URLs padronizadas com fallback
+ * ✅ Compatibilidade mantida
+ * ✅ Detecção automática de ambiente
+ * ✅ Fallbacks para todas as páginas BGAPP
  */
 
 export interface EnvironmentConfig {
@@ -16,6 +22,16 @@ export interface EnvironmentConfig {
     minioConsole: string;
     pygeoapi: string;
   };
+  // Novos campos para compatibilidade
+  fallbackUrls: {
+    apiUrl: string[];
+    stacBrowser: string[];
+    pygeoapi: string[];
+  };
+  retryConfig: {
+    maxRetries: number;
+    retryDelay: number;
+  };
 }
 
 // 🎯 Detectar ambiente automaticamente
@@ -26,35 +42,79 @@ const getEnvironment = (): EnvironmentConfig => {
   const isProduction = !isDevelopment;
 
   if (isDevelopment) {
-    // 🔧 Ambiente de desenvolvimento local
+    // 🔧 Ambiente de desenvolvimento local com fallbacks
     return {
       isDevelopment: true,
       isProduction: false,
       baseUrl: 'http://localhost:3000',
-      apiUrl: 'https://bgapp-api-worker.majearcasa.workers.dev',
-      frontendUrl: 'https://bgapp-scientific.pages.dev',
-      scientificInterfacesUrl: 'https://bgapp-scientific.pages.dev',
+      apiUrl: 'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+      frontendUrl: 'https://bgapp-frontend.pages.dev',
+      scientificInterfacesUrl: 'https://bgapp-frontend.pages.dev',
       externalServices: {
-        stacBrowser: 'https://bgapp-stac-api.majearcasa.workers.dev',
+        stacBrowser: 'https://bgapp-stac.majearcasa.workers.dev',
         flowerMonitor: 'https://bgapp-monitor.majearcasa.workers.dev',
         minioConsole: 'https://bgapp-storage.majearcasa.workers.dev',
         pygeoapi: 'https://bgapp-pygeoapi.majearcasa.workers.dev'
+      },
+      // URLs de fallback para garantir funcionamento
+      fallbackUrls: {
+        apiUrl: [
+          'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+          'https://bgapp-admin.majearcasa.workers.dev',
+          'http://localhost:8000'
+        ],
+        stacBrowser: [
+          'https://bgapp-stac.majearcasa.workers.dev',
+          'https://bgapp-stac-worker.majearcasa.workers.dev',
+          'http://localhost:8081'
+        ],
+        pygeoapi: [
+          'https://bgapp-pygeoapi.majearcasa.workers.dev',
+          'https://bgapp-geo.majearcasa.workers.dev',
+          'http://localhost:5080'
+        ]
+      },
+      retryConfig: {
+        maxRetries: 3,
+        retryDelay: 1000
       }
     };
   } else {
-    // 🚀 Ambiente de produção Cloudflare
+    // 🚀 Ambiente de produção Cloudflare com fallbacks
     return {
       isDevelopment: false,
       isProduction: true,
       baseUrl: 'https://bgapp-admin.pages.dev',
-      apiUrl: 'https://bgapp-admin-api.majearcasa.workers.dev',
-      frontendUrl: 'https://bgapp-scientific.pages.dev',
-      scientificInterfacesUrl: 'https://bgapp-scientific.pages.dev',
+      apiUrl: 'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+      frontendUrl: 'https://bgapp-frontend.pages.dev',
+      scientificInterfacesUrl: 'https://bgapp-frontend.pages.dev',
       externalServices: {
-        stacBrowser: 'https://bgapp-stac-api.majearcasa.workers.dev',
+        stacBrowser: 'https://bgapp-stac.majearcasa.workers.dev',
         flowerMonitor: 'https://bgapp-monitor.majearcasa.workers.dev',
         minioConsole: 'https://bgapp-storage.majearcasa.workers.dev',
         pygeoapi: 'https://bgapp-pygeoapi.majearcasa.workers.dev'
+      },
+      // URLs de fallback para produção
+      fallbackUrls: {
+        apiUrl: [
+          'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+          'https://bgapp-admin.majearcasa.workers.dev',
+          'https://bgapp-api.majearcasa.workers.dev'
+        ],
+        stacBrowser: [
+          'https://bgapp-stac.majearcasa.workers.dev',
+          'https://bgapp-stac-worker.majearcasa.workers.dev',
+          'https://bgapp-stac-ocean.majearcasa.workers.dev'
+        ],
+        pygeoapi: [
+          'https://bgapp-pygeoapi.majearcasa.workers.dev',
+          'https://bgapp-geo.majearcasa.workers.dev',
+          'https://bgapp-geoapi.majearcasa.workers.dev'
+        ]
+      },
+      retryConfig: {
+        maxRetries: 3,
+        retryDelay: 1000
       }
     };
   }
@@ -75,57 +135,70 @@ export const getApiUrl = (endpoint: string): string => {
   return `${ENV.apiUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
 };
 
-// 🔧 Mock data para quando APIs não estão disponíveis
-export const getMockApiResponse = (endpoint: string): any => {
-  const mockData = {
-    '/api/dashboard/overview': {
-      success: true,
-      data: {
-        servicesOnline: 7,
-        totalServices: 7,
-        healthPercentage: 100,
-        uptime: '99.9%',
-        lastUpdate: new Date().toISOString()
-      }
-    },
-    '/admin-dashboard/system-health': {
-      success: true,
-      data: {
-        status: 'healthy',
-        services: ['frontend', 'api-worker', 'kv-storage', 'cache-engine'],
-        uptime: '99.9%'
-      }
-    },
-    '/admin-dashboard/oceanographic-data': {
-      success: true,
-      data: {
-        temperature: 24.5,
-        salinity: 35.2,
-        currentSpeed: 0.8,
-        lastUpdate: new Date().toISOString()
-      }
-    },
-    '/admin-dashboard/fisheries-stats': {
-      success: true,
-      data: {
-        activeFisheries: 45,
-        totalCatch: 12500,
-        sustainability: 'good',
-        lastUpdate: new Date().toISOString()
-      }
-    },
-    '/admin-dashboard/copernicus-advanced/real-time-data': {
-      success: true,
-      data: {
-        sst: 25.3,
-        chlorophyll: 0.8,
-        waves: 1.2,
-        lastUpdate: new Date().toISOString()
+// 🔄 Sistema de Retry com Fallback para garantir funcionamento
+export const fetchWithFallback = async (endpoint: string, options: RequestInit = {}): Promise<Response> => {
+  const urls = ENV.fallbackUrls.apiUrl.map(baseUrl => 
+    `${baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`
+  );
+  
+  let lastError: Error | null = null;
+  
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    
+    for (let retry = 0; retry <= ENV.retryConfig.maxRetries; retry++) {
+      try {
+        console.log(`🔄 Tentativa ${retry + 1}/${ENV.retryConfig.maxRetries + 1} para ${url}`);
+        
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-BGAPP-Source': 'admin-dashboard',
+            'X-BGAPP-Fallback-Attempt': `${i + 1}`,
+            'X-BGAPP-Retry-Attempt': `${retry + 1}`,
+            ...options.headers
+          }
+        });
+        
+        if (response.ok) {
+          console.log(`✅ Sucesso com ${url}`);
+          return response;
+        }
+        
+        if (response.status >= 400 && response.status < 500) {
+          // Erro do cliente, não retry
+          throw new Error(`Client error: ${response.status} ${response.statusText}`);
+        }
+        
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        
+      } catch (error) {
+        lastError = error as Error;
+        console.warn(`⚠️ Erro em ${url} (tentativa ${retry + 1}):`, error);
+        
+        // Esperar antes do próximo retry (exceto na última tentativa)
+        if (retry < ENV.retryConfig.maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, ENV.retryConfig.retryDelay));
+        }
       }
     }
-  };
+  }
   
-  return mockData[endpoint] || { success: false, error: 'Endpoint not found' };
+  // Se chegou aqui, todas as URLs falharam
+  throw new Error(`All API endpoints failed. Last error: ${lastError?.message}`);
+};
+
+// 🚫 MOCK DATA REMOVIDO - APENAS DADOS REAIS!
+export const getMockApiResponse = (endpoint: string): any => {
+  // MOCK DATA FOI ELIMINADO DESTA FASE
+  console.warn('⚠️ Mock data foi eliminado - usando apenas dados reais');
+  return { 
+    success: false, 
+    error: 'Mock data eliminado - apenas dados reais disponíveis',
+    endpoint: endpoint,
+    real_data_required: true
+  };
 };
 
 // 🔧 Debug info (apenas em desenvolvimento)

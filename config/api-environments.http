@@ -1,0 +1,62 @@
+# 🌊 BGAPP - Configurações de Ambiente
+# Copie e cole as variáveis desejadas no arquivo api-endpoints.http
+
+### ========================================
+### 🌊 PRODUCTION ENVIRONMENT
+### ========================================
+
+@baseUrl = https://bgapp-api.majearcasa.workers.dev
+@stacUrl = https://bgapp-stac.majearcasa.workers.dev
+@pygeoapiUrl = https://bgapp-pygeoapi.majearcasa.workers.dev
+@keycloakUrl = https://bgapp-auth.majearcasa.workers.dev
+@flowerUrl = https://bgapp-monitor.majearcasa.workers.dev
+@frontendUrl = https://bgapp-frontend.pages.dev
+@minioUrl = https://bgapp-storage.majearcasa.workers.dev
+
+### ========================================
+### 🔧 DEVELOPMENT ENVIRONMENT
+### ========================================
+
+# @baseUrl = http://localhost:8000
+# @stacUrl = https://bgapp-stac.majearcasa.workers.dev
+# @pygeoapiUrl = http://localhost:5080
+# @keycloakUrl = http://localhost:8083
+# @flowerUrl = http://localhost:5555
+# @frontendUrl = http://localhost:8085
+# @minioUrl = http://localhost:9001
+
+### ========================================
+### 🔑 AUTHENTICATION TOKENS
+### ========================================
+
+# Substitua pelos valores reais dos seus tokens
+@authToken = YOUR_ADMIN_TOKEN_HERE
+@keycloakToken = YOUR_KEYCLOAK_TOKEN_HERE
+
+### ========================================
+### 📝 VARIÁVEIS DE EXEMPLO
+### ========================================
+
+@serviceName = example-service
+@collectionId = angola-marine-data
+@bucketName = bgapp-data
+@realmName = bgapp
+@userId = user-id-example
+@mapId = map-id-example
+@alertId = alert-id-example
+
+### ========================================
+### 🧪 QUICK TESTS
+### ========================================
+
+### Test Production API Health
+GET https://bgapp-api.majearcasa.workers.dev/health
+
+### Test STAC API
+GET https://bgapp-stac.majearcasa.workers.dev/collections
+
+### Test Frontend
+GET https://bgapp-frontend.pages.dev
+
+### Test Admin Dashboard
+GET https://bgapp-admin.pages.dev

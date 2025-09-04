@@ -1,0 +1,123 @@
+{
+  "collections": [
+    {
+      "id": "zee_angola_sst",
+      "title": "Temperatura Superficial do Mar - Angola",
+      "description": "Dados de temperatura da superfície do mar na Zona Econômica Exclusiva de Angola coletados por satélites Sentinel-3",
+      "keywords": ["temperatura", "SST", "Angola", "oceanografia", "Sentinel-3"],
+      "license": "proprietary",
+      "providers": [
+        {
+          "name": "BGAPP Marine Angola",
+          "roles": ["processor", "host"],
+          "url": "https://bgapp-frontend.pages.dev"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [11.0, -18.0, 14.0, -5.0]
+        },
+        "temporal": {
+          "interval": [["2024-01-01T00:00:00Z", "2024-12-31T23:59:59Z"]]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "/stac-data/zee_angola_sst.json",
+          "type": "application/geo+json",
+          "title": "Items"
+        },
+        {
+          "rel": "self",
+          "href": "/collections/zee_angola_sst",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "id": "zee_angola_chlorophyll", 
+      "title": "Clorofila-a - Angola",
+      "description": "Concentração de clorofila-a nas águas costeiras de Angola indicando produtividade primária e upwelling",
+      "keywords": ["clorofila", "produtividade", "upwelling", "Angola", "oceanografia"],
+      "license": "proprietary",
+      "providers": [
+        {
+          "name": "BGAPP Marine Angola",
+          "roles": ["processor", "host"],
+          "url": "https://bgapp-frontend.pages.dev"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [11.0, -18.0, 14.0, -5.0]
+        },
+        "temporal": {
+          "interval": [["2024-01-01T00:00:00Z", "2024-12-31T23:59:59Z"]]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "/stac-data/zee_angola_chlorophyll.json",
+          "type": "application/geo+json",
+          "title": "Items"
+        },
+        {
+          "rel": "self", 
+          "href": "/collections/zee_angola_chlorophyll",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "id": "zee_angola_biodiversity",
+      "title": "Biodiversidade Marinha - Angola", 
+      "description": "Dados de biodiversidade, riqueza de espécies e biomassa nas águas angolanas",
+      "keywords": ["biodiversidade", "espécies", "biomassa", "conservação", "Angola"],
+      "license": "proprietary",
+      "providers": [
+        {
+          "name": "BGAPP Marine Angola",
+          "roles": ["processor", "host"],
+          "url": "https://bgapp-frontend.pages.dev"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [11.0, -18.0, 14.0, -5.0]
+        },
+        "temporal": {
+          "interval": [["2024-01-01T00:00:00Z", "2024-12-31T23:59:59Z"]]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "/stac-data/zee_angola_biodiversity.json",
+          "type": "application/geo+json", 
+          "title": "Items"
+        },
+        {
+          "rel": "self",
+          "href": "/collections/zee_angola_biodiversity",
+          "type": "application/json"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": "root",
+      "href": "/",
+      "type": "application/json",
+      "title": "BGAPP STAC Catalog"
+    },
+    {
+      "rel": "self",
+      "href": "/collections",
+      "type": "application/json",
+      "title": "Collections"
+    }
+  ]
+}

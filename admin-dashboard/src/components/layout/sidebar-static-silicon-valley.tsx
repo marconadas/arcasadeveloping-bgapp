@@ -30,9 +30,10 @@ const navigationItems: NavItem[] = [
     id: 'scientific-hub',
     label: '🔬 Hub Científico BGAPP',
     icon: '🔬',
-    badge: '46 INTERFACES',
+    badge: '43 INTERFACES',
     children: [
-      { id: 'scientific-interfaces', label: 'Portal Interfaces (46)', icon: '🔬', badge: 'HUB' },
+      { id: 'scientific-interfaces', label: 'Portal Interfaces (43)', icon: '🔬', badge: 'HUB' },
+      { id: 'enhanced-ocean-system', label: '🌊 Enhanced Ocean System', icon: '🌊', badge: 'NOVO' },
       // Interfaces individuais funcionam dentro do Hub - não precisam aparecer separadamente
     ]
   },
@@ -55,6 +56,7 @@ const navigationItems: NavItem[] = [
       { id: 'ml-dashboard', label: 'ML Dashboard', icon: '📊' },
       { id: 'predictive-filters', label: 'Filtros Preditivos (7 tipos)', icon: '🤖', badge: 'AI' },
       { id: 'machine-learning', label: 'Modelos ML (95%+)', icon: '🧠', badge: '95%+' },
+      { id: 'ml-retention-system', label: '🧠 Base de Retenção ML', icon: '🗄️', badge: 'PERFORMANCE', isNew: true },
     ]
   },
 
@@ -128,15 +130,17 @@ const navigationItems: NavItem[] = [
       { id: 'demo-enhanced', label: 'Demo BGAPP Enhanced', icon: '🚀' },
       { id: 'minpermar', label: 'Site MINPERMAR', icon: '🏛️' },
     ]
-  },
+  }
 ]
 
 interface SidebarProps {
   activeSection: string
   onSectionChange: (section: string) => void
+  open?: boolean
+  onClose?: () => void
 }
 
-export function SidebarStaticSiliconValley({ activeSection, onSectionChange }: SidebarProps) {
+export function SidebarStaticSiliconValley({ activeSection, onSectionChange, open = false, onClose }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(['scientific-hub', 'ml-system', 'qgis-advanced'])
 
   const toggleExpanded = (itemId: string) => {
@@ -149,10 +153,17 @@ export function SidebarStaticSiliconValley({ activeSection, onSectionChange }: S
 
   const handleSectionClick = (sectionId: string) => {
     onSectionChange(sectionId)
+    // Fechar sidebar no mobile após seleção
+    if (window.innerWidth < 1024 && onClose) {
+      onClose()
+    }
   }
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-80 ubiquiti-sidebar transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 -translate-x-full">
+    <div className={cn(
+      "fixed inset-y-0 left-0 z-50 w-80 ubiquiti-sidebar transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
+      open ? "translate-x-0" : "-translate-x-full"
+    )}>
       <div className="flex flex-col h-full">
         {/* Logo Header */}
         <div className="flex items-center gap-3 p-6 border-b border-slate-700">
@@ -172,7 +183,7 @@ export function SidebarStaticSiliconValley({ activeSection, onSectionChange }: S
         <div className="p-4 border-b border-slate-700">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            ✅ Sistema 100% operacional no Cloudflare
+            ✅ Sistema deployado e pronto para clientes
           </div>
         </div>
 

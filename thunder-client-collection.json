@@ -1,0 +1,641 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "BGAPP - Marine Angola API Collection",
+  "dateExported": "2024-12-27T12:00:00.000Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "id": "dashboard-folder",
+      "name": "📊 Dashboard",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 10000
+    },
+    {
+      "id": "services-folder", 
+      "name": "🔧 Services Management",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 20000
+    },
+    {
+      "id": "ml-folder",
+      "name": "🧠 Machine Learning & AI",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 30000
+    },
+    {
+      "id": "stac-folder",
+      "name": "🛰️ STAC API (Satellite Data)",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 40000
+    },
+    {
+      "id": "pygeoapi-folder",
+      "name": "🌍 PyGeoAPI (OGC Features)",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 50000
+    },
+    {
+      "id": "storage-folder",
+      "name": "💾 MinIO Storage",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 60000
+    },
+    {
+      "id": "keycloak-folder",
+      "name": "🔐 Keycloak Authentication",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 70000
+    },
+    {
+      "id": "maps-folder",
+      "name": "🗺️ Maps System",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 80000
+    },
+    {
+      "id": "monitoring-folder",
+      "name": "📈 Monitoring & Analytics",
+      "containerId": "",
+      "created": "2024-12-27T12:00:00.000Z",
+      "sortNum": 90000
+    }
+  ],
+  "requests": [
+    {
+      "id": "dashboard-stats",
+      "name": "Get Dashboard Statistics",
+      "url": "{{BASE_URL}}/dashboard/stats",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "tests": [],
+      "containerId": "dashboard-folder"
+    },
+    {
+      "id": "services-list",
+      "name": "List All Services",
+      "url": "{{BASE_URL}}/services",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "services-folder"
+    },
+    {
+      "id": "service-start",
+      "name": "Start Service",
+      "url": "{{BASE_URL}}/services/{{SERVICE_NAME}}/start",
+      "method": "POST",
+      "sortNum": 20100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "services-folder"
+    },
+    {
+      "id": "service-stop",
+      "name": "Stop Service",
+      "url": "{{BASE_URL}}/services/{{SERVICE_NAME}}/stop",
+      "method": "POST",
+      "sortNum": 20200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "services-folder"
+    },
+    {
+      "id": "ml-models",
+      "name": "Get ML Models",
+      "url": "{{BASE_URL}}/ml/models",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "ml-folder"
+    },
+    {
+      "id": "ml-predict",
+      "name": "Make ML Prediction",
+      "url": "{{BASE_URL}}/ml/predict",
+      "method": "POST",
+      "sortNum": 30100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"modelId\": \"marine-species-prediction\",\n  \"features\": {\n    \"temperature\": 25.5,\n    \"depth\": 100,\n    \"salinity\": 35.2\n  }\n}",
+        "form": []
+      },
+      "params": [],
+      "containerId": "ml-folder"
+    },
+    {
+      "id": "biodiversity-studies",
+      "name": "Get Biodiversity Studies",
+      "url": "{{BASE_URL}}/biodiversity-studies",
+      "method": "GET",
+      "sortNum": 30200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [
+        {
+          "name": "page",
+          "value": "1",
+          "isPath": false
+        },
+        {
+          "name": "pageSize",
+          "value": "50",
+          "isPath": false
+        }
+      ],
+      "containerId": "ml-folder"
+    },
+    {
+      "id": "maxent-models",
+      "name": "Get MaxEnt Models",
+      "url": "{{BASE_URL}}/maxent/models",
+      "method": "GET",
+      "sortNum": 30300,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "ml-folder"
+    },
+    {
+      "id": "stac-collections",
+      "name": "Get STAC Collections",
+      "url": "{{STAC_URL}}/collections",
+      "method": "GET",
+      "sortNum": 40000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "stac-folder"
+    },
+    {
+      "id": "stac-collection-items",
+      "name": "Get STAC Collection Items",
+      "url": "{{STAC_URL}}/collections/{{COLLECTION_ID}}/items",
+      "method": "GET",
+      "sortNum": 40100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "limit",
+          "value": "10",
+          "isPath": false
+        }
+      ],
+      "containerId": "stac-folder"
+    },
+    {
+      "id": "pygeoapi-collections",
+      "name": "Get PyGeoAPI Collections",
+      "url": "{{PYGEOAPI_URL}}/collections",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "pygeoapi-folder"
+    },
+    {
+      "id": "pygeoapi-features",
+      "name": "Get Collection Features",
+      "url": "{{PYGEOAPI_URL}}/collections/{{COLLECTION_ID}}/items",
+      "method": "GET",
+      "sortNum": 50100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "limit",
+          "value": "100",
+          "isPath": false
+        }
+      ],
+      "containerId": "pygeoapi-folder"
+    },
+    {
+      "id": "pygeoapi-processes",
+      "name": "Get Available Processes",
+      "url": "{{PYGEOAPI_URL}}/processes",
+      "method": "GET",
+      "sortNum": 50200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "pygeoapi-folder"
+    },
+    {
+      "id": "storage-buckets",
+      "name": "Get Storage Buckets",
+      "url": "{{BASE_URL}}/storage/buckets",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "storage-folder"
+    },
+    {
+      "id": "storage-bucket-objects",
+      "name": "Get Bucket Objects",
+      "url": "{{BASE_URL}}/storage/buckets/{{BUCKET_NAME}}/objects",
+      "method": "GET",
+      "sortNum": 60100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [
+        {
+          "name": "prefix",
+          "value": "",
+          "isPath": false
+        }
+      ],
+      "containerId": "storage-folder"
+    },
+    {
+      "id": "storage-stats",
+      "name": "Get Storage Statistics",
+      "url": "{{BASE_URL}}/storage/stats",
+      "method": "GET",
+      "sortNum": 60200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "storage-folder"
+    },
+    {
+      "id": "keycloak-realms",
+      "name": "Get Keycloak Realms",
+      "url": "{{KEYCLOAK_URL}}/admin/realms",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{KEYCLOAK_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "keycloak-folder"
+    },
+    {
+      "id": "keycloak-users",
+      "name": "Get Realm Users",
+      "url": "{{KEYCLOAK_URL}}/admin/realms/{{REALM_NAME}}/users",
+      "method": "GET",
+      "sortNum": 70100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{KEYCLOAK_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "keycloak-folder"
+    },
+    {
+      "id": "maps-list",
+      "name": "Get All Maps",
+      "url": "{{BASE_URL}}/api/maps",
+      "method": "GET",
+      "sortNum": 80000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "maps-folder"
+    },
+    {
+      "id": "maps-create",
+      "name": "Create New Map",
+      "url": "{{BASE_URL}}/api/maps",
+      "method": "POST",
+      "sortNum": 80100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Marine Biodiversity Map\",\n  \"description\": \"Interactive map showing marine biodiversity data for Angola\",\n  \"category\": \"biodiversity\",\n  \"config\": {\n    \"center\": [-12.5, 18.5],\n    \"zoom\": 6,\n    \"layers\": []\n  }\n}",
+        "form": []
+      },
+      "params": [],
+      "containerId": "maps-folder"
+    },
+    {
+      "id": "maps-stats",
+      "name": "Get Maps Statistics",
+      "url": "{{BASE_URL}}/api/maps/stats",
+      "method": "GET",
+      "sortNum": 80200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "maps-folder"
+    },
+    {
+      "id": "maps-templates",
+      "name": "Get Map Templates",
+      "url": "{{BASE_URL}}/api/maps/templates",
+      "method": "GET",
+      "sortNum": 80300,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "maps-folder"
+    },
+    {
+      "id": "system-metrics",
+      "name": "Get System Metrics",
+      "url": "{{BASE_URL}}/metrics",
+      "method": "GET",
+      "sortNum": 90000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{AUTH_TOKEN}}"
+        }
+      ],
+      "params": [],
+      "containerId": "monitoring-folder"
+    },
+    {
+      "id": "async-tasks",
+      "name": "Get Async Tasks (Flower)",
+      "url": "{{FLOWER_URL}}/api/tasks",
+      "method": "GET",
+      "sortNum": 90100,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "monitoring-folder"
+    },
+    {
+      "id": "flower-workers",
+      "name": "Get Flower Workers",
+      "url": "{{FLOWER_URL}}/api/workers",
+      "method": "GET",
+      "sortNum": 90200,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "monitoring-folder"
+    },
+    {
+      "id": "health-check",
+      "name": "Health Check",
+      "url": "{{BASE_URL}}/health",
+      "method": "GET",
+      "sortNum": 90300,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "monitoring-folder"
+    }
+  ],
+  "environments": [
+    {
+      "id": "production-env",
+      "name": "🌊 BGAPP Production",
+      "default": true,
+      "sortNum": 10000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "data": [
+        {
+          "name": "BASE_URL",
+          "value": "https://bgapp-api.majearcasa.workers.dev"
+        },
+        {
+          "name": "STAC_URL",
+          "value": "https://bgapp-stac.majearcasa.workers.dev"
+        },
+        {
+          "name": "PYGEOAPI_URL",
+          "value": "https://bgapp-pygeoapi.majearcasa.workers.dev"
+        },
+        {
+          "name": "KEYCLOAK_URL",
+          "value": "https://bgapp-auth.majearcasa.workers.dev"
+        },
+        {
+          "name": "FLOWER_URL",
+          "value": "https://bgapp-monitor.majearcasa.workers.dev"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "https://bgapp-frontend.pages.dev"
+        },
+        {
+          "name": "AUTH_TOKEN",
+          "value": "YOUR_ADMIN_TOKEN_HERE"
+        },
+        {
+          "name": "KEYCLOAK_TOKEN",
+          "value": "YOUR_KEYCLOAK_TOKEN_HERE"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "example-service"
+        },
+        {
+          "name": "COLLECTION_ID",
+          "value": "angola-marine-data"
+        },
+        {
+          "name": "BUCKET_NAME",
+          "value": "bgapp-data"
+        },
+        {
+          "name": "REALM_NAME",
+          "value": "bgapp"
+        }
+      ]
+    },
+    {
+      "id": "development-env",
+      "name": "🔧 BGAPP Development",
+      "default": false,
+      "sortNum": 20000,
+      "created": "2024-12-27T12:00:00.000Z",
+      "modified": "2024-12-27T12:00:00.000Z",
+      "data": [
+        {
+          "name": "BASE_URL",
+          "value": "http://localhost:8000"
+        },
+        {
+          "name": "STAC_URL",
+          "value": "https://bgapp-stac.majearcasa.workers.dev"
+        },
+        {
+          "name": "PYGEOAPI_URL",
+          "value": "http://localhost:5080"
+        },
+        {
+          "name": "KEYCLOAK_URL",
+          "value": "http://localhost:8083"
+        },
+        {
+          "name": "FLOWER_URL",
+          "value": "http://localhost:5555"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "http://localhost:8085"
+        },
+        {
+          "name": "AUTH_TOKEN",
+          "value": "YOUR_DEV_TOKEN_HERE"
+        },
+        {
+          "name": "KEYCLOAK_TOKEN",
+          "value": "YOUR_DEV_KEYCLOAK_TOKEN_HERE"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "example-service"
+        },
+        {
+          "name": "COLLECTION_ID",
+          "value": "test-collection"
+        },
+        {
+          "name": "BUCKET_NAME",
+          "value": "test-bucket"
+        },
+        {
+          "name": "REALM_NAME",
+          "value": "bgapp"
+        }
+      ]
+    }
+  ]
+}

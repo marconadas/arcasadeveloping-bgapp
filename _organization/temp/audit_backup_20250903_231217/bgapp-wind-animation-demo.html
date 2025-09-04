@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BGAPP - Demonstração Sistema de Animação de Vento</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Estilos para controles de vento */
+        .bgapp-wind-canvas {
+            pointer-events: none !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 200 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .bgapp-velocity-overlay {
+            mix-blend-mode: normal !important;
+            opacity: 1 !important;
+        }
+        
+        /* Garantir que o canvas seja visível */
+        .leaflet-layer.bgapp-wind-canvas {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .bgapp-wind-control {
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bgapp-wind-player-control {
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bgapp-wind-config-panel {
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .loading-details {
+            font-size: 14px;
+            opacity: 0.7;
+            text-align: center;
+        }
+        
+        /* Info panel */
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+        
+        .info-panel h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-panel h2 {
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+            color: #00ff88;
+        }
+        
+        .info-panel ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info-panel li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info-panel li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .feature-highlight {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid #00d4ff;
+        }
+        
+        .toggle-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .toggle-info:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .info-panel {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                font-size: 14px;
+            }
+            
+            .info-panel h1 {
+                font-size: 20px;
+            }
+            
+            .bgapp-wind-config-panel {
+                font-size: 11px;
+                padding: 10px;
+            }
+            
+            .bgapp-wind-player-control {
+                min-width: 180px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">🌪️ Inicializando Sistema de Animação de Vento BGAPP</div>
+        <div class="loading-details" id="loadingDetails">Carregando componentes...</div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel" id="infoPanel">
+        <button class="toggle-info" onclick="toggleInfoPanel()">−</button>
+        
+        <h1>🌪️ BGAPP Wind Animation</h1>
+        
+        <div class="feature-highlight">
+            <strong>Sistema Completo Implementado!</strong><br>
+            Animação de vento em tempo real para águas angolanas
+        </div>
+        
+        <h2>🚀 Funcionalidades Principais</h2>
+        <ul>
+            <li>Animação de partículas em tempo real</li>
+            <li>Dados meteorológicos GFS/Copernicus</li>
+            <li>Controles temporais interativos</li>
+            <li>Cache inteligente de dados</li>
+            <li>Otimização automática para mobile</li>
+            <li>Interpolação bilinear avançada</li>
+            <li>Escala de cores dinâmica</li>
+            <li>Monitoramento de performance</li>
+        </ul>
+        
+        <h2>🎮 Controles</h2>
+        <ul>
+            <li>Painel de configuração (canto superior direito)</li>
+            <li>Player temporal (canto inferior direito)</li>
+            <li>Info de velocidade (canto inferior esquerdo)</li>
+            <li>Clique no mapa para ver velocidade do vento</li>
+        </ul>
+        
+        <h2>📊 Dados Simulados</h2>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 10px;">
+            Esta demonstração usa dados simulados. Em produção, conectar às APIs meteorológicas reais.
+        </p>
+    </div>
+
+    <!-- Mapa -->
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Sistema de Animação de Vento BGAPP -->
+    <script src="assets/js/wind-performance-config.js"></script>
+    <script src="assets/js/wind-animation-core.js"></script>
+    <script src="assets/js/wind-data-loader.js"></script>
+    <script src="assets/js/wind-time-dimension.js"></script>
+    <script src="assets/js/wind-integration.js"></script>
+    
+    <!-- Scripts de teste automático -->
+    <script src="test-wind-animation.js"></script>
+    <script src="test-wind-performance.js"></script>
+    <script src="test-velocity-control.js"></script>
+    <script src="force-particle-visibility.js"></script>
+
+    <script>
+        // Variáveis globais
+        let map, windSystem;
+        let isInfoVisible = true;
+
+        // Função para toggle do painel de informações
+        function toggleInfoPanel() {
+            const panel = document.getElementById('infoPanel');
+            const button = panel.querySelector('.toggle-info');
+            
+            if (isInfoVisible) {
+                panel.style.transform = 'translateX(-320px)';
+                button.innerHTML = '+';
+                button.style.transform = 'translateX(320px)';
+            } else {
+                panel.style.transform = 'translateX(0)';
+                button.innerHTML = '−';
+                button.style.transform = 'translateX(0)';
+            }
+            
+            isInfoVisible = !isInfoVisible;
+        }
+
+        // Atualizar detalhes de carregamento
+        function updateLoadingDetails(message) {
+            const details = document.getElementById('loadingDetails');
+            if (details) {
+                details.textContent = message;
+            }
+        }
+
+        // Esconder overlay de carregamento
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('hidden');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        }
+
+        // Gerar dados simulados de vento
+        function generateSimulatedWindData() {
+            console.log("Gerando dados simulados de vento para Angola...");
+            
+            // Área de Angola e águas adjacentes
+            const bounds = {
+                north: -4.0,
+                south: -18.5,
+                west: 8.0,
+                east: 25.0
+            };
+            
+            const resolution = 0.25; // graus
+            const nx = Math.ceil((bounds.east - bounds.west) / resolution);
+            const ny = Math.ceil((bounds.north - bounds.south) / resolution);
+            
+            console.log(`Grade: ${nx} x ${ny} pontos`);
+            
+            // Gerar dados U (componente leste-oeste)
+            const uData = new Float32Array(nx * ny);
+            const vData = new Float32Array(nx * ny);
+            
+            for (let i = 0; i < nx * ny; i++) {
+                const x = i % nx;
+                const y = Math.floor(i / nx);
+                
+                const lon = bounds.west + x * resolution;
+                const lat = bounds.north - y * resolution;
+                
+                // Simular padrões de vento realistas para Angola
+                // Ventos alísios do sudeste predominantes
+                const baseU = -2 + Math.sin(lat * 0.1) * 3; // Componente oeste
+                const baseV = -4 + Math.cos(lon * 0.05) * 2; // Componente sul
+                
+                // Adicionar variação baseada na distância da costa
+                const distanceFromCoast = Math.min(Math.abs(lon - 13), 5); // Aproximação
+                const coastalEffect = Math.exp(-distanceFromCoast * 0.3);
+                
+                // Adicionar turbulência
+                const turbulenceU = (Math.random() - 0.5) * 2;
+                const turbulenceV = (Math.random() - 0.5) * 2;
+                
+                uData[i] = baseU + turbulenceU + coastalEffect * 1.5;
+                vData[i] = baseV + turbulenceV + coastalEffect * 1.0;
+            }
+            
+            // Criar estrutura de dados compatível com o sistema
+            return [
+                {
+                    header: {
+                        parameterCategory: 2,
+                        parameterNumber: 2,
+                        refTime: new Date().toISOString(),
+                        forecastTime: 0,
+                        lo1: bounds.west,
+                        la1: bounds.north,
+                        lo2: bounds.east,
+                        la2: bounds.south,
+                        dx: resolution,
+                        dy: resolution,
+                        nx: nx,
+                        ny: ny,
+                        scanMode: 0
+                    },
+                    data: uData
+                },
+                {
+                    header: {
+                        parameterCategory: 2,
+                        parameterNumber: 3,
+                        refTime: new Date().toISOString(),
+                        forecastTime: 0,
+                        lo1: bounds.west,
+                        la1: bounds.north,
+                        lo2: bounds.east,
+                        la2: bounds.south,
+                        dx: resolution,
+                        dy: resolution,
+                        nx: nx,
+                        ny: ny,
+                        scanMode: 0
+                    },
+                    data: vData
+                }
+            ];
+        }
+
+        // Inicializar aplicação
+        async function initializeApp() {
+            try {
+                updateLoadingDetails("Inicializando mapa base...");
+                
+                // Criar mapa centrado em Angola
+                map = L.map('map', {
+                    center: [-11.2, 17.9], // Centro aproximado de Angola
+                    zoom: 6,
+                    zoomControl: true,
+                    attributionControl: true
+                });
+
+                // Adicionar camada base
+                const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors | BGAPP Wind Animation Demo',
+                    maxZoom: 18
+                });
+                baseLayer.addTo(map);
+
+                // Adicionar camada de relevo/batimetria para contexto
+                const reliefLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri, GEBCO, NOAA, National Geographic',
+                    opacity: 0.6
+                });
+                reliefLayer.addTo(map);
+
+                updateLoadingDetails("Gerando dados meteorológicos simulados...");
+                
+                // Gerar dados simulados
+                const simulatedData = generateSimulatedWindData();
+                
+                updateLoadingDetails("Inicializando sistema de animação de vento...");
+                
+                // Aplicar configurações de performance otimizadas
+                const capabilities = window.BGAPPWindPerformanceUtils.detectCapabilities();
+                const perfConfig = window.BGAPPWindPerformanceConfig;
+                
+                console.log("BGAPP Wind Demo - Aplicando configurações otimizadas", capabilities);
+                
+                // Criar sistema de vento com dados simulados e configurações otimizadas
+                windSystem = new BGAPPWindSystem(map, {
+                    enabled: true,
+                    autoStart: true,
+                    dataSource: 'simulated',
+                    particleCount: window.BGAPPWindPerformanceUtils.calculateOptimalParticleCount(
+                        window.innerWidth, 
+                        window.innerHeight, 
+                        capabilities
+                    ),
+                    colorScheme: 'default',
+                    opacity: capabilities.isMobile ? 0.6 : 0.8, // Reduzir opacidade em mobile
+                    showControls: true,
+                    showVelocityInfo: true,
+                    showPlayer: true,
+                    compactControls: window.innerWidth < 768,
+                    
+                    // Configurações de performance
+                    frameRate: perfConfig.frameRate.target,
+                    useRAF: perfConfig.timers.useRAF,
+                    debugMode: perfConfig.debug.enabled,
+                    adaptivePerformance: perfConfig.particles.adaptive.enabled,
+                    onReady: (system) => {
+                        console.log("BGAPP Wind System - Sistema pronto!", system.getStatus());
+                        
+                        // Definir dados simulados
+                        if (system.particlesLayer) {
+                            system.particlesLayer.setData(simulatedData);
+                        }
+                        
+                        updateLoadingDetails("Sistema carregado com sucesso!");
+                        
+                        setTimeout(() => {
+                            hideLoadingOverlay();
+                        }, 1000);
+                    },
+                    onError: (error) => {
+                        console.error("Erro no sistema de vento:", error);
+                        updateLoadingDetails("Erro ao carregar sistema: " + error.message);
+                    },
+                    onDataUpdate: (data, time) => {
+                        console.log("Dados atualizados:", time);
+                    }
+                });
+
+                // Override do carregador de dados para usar dados simulados
+                if (windSystem.dataLoader) {
+                    const originalLoad = windSystem.dataLoader.loadWindData.bind(windSystem.dataLoader);
+                    windSystem.dataLoader.loadWindData = async function(options) {
+                        console.log("Carregando dados simulados...");
+                        
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                resolve({
+                                    components: simulatedData,
+                                    metadata: {
+                                        source: 'simulated',
+                                        time: options.time || new Date(),
+                                        bounds: options.bounds || windSystem.options.bounds,
+                                        resolution: '0.25',
+                                        level: '10m',
+                                        processedAt: new Date().toISOString()
+                                    }
+                                });
+                            }, 500); // Simular latência de rede
+                        });
+                    };
+                }
+
+                updateLoadingDetails("Configurando eventos e integrações...");
+                
+                // Adicionar eventos personalizados
+                map.on('click', function(e) {
+                    console.log("Clique no mapa:", e.latlng);
+                });
+
+                // Log de informações do sistema
+                setInterval(() => {
+                    if (windSystem) {
+                        const status = windSystem.getStatus();
+                        console.log("Status do sistema:", {
+                            active: status.active,
+                            performance: status.performance,
+                            cache: status.cache
+                        });
+                    }
+                }, 30000); // A cada 30 segundos
+
+                console.log("BGAPP Wind Animation Demo - Inicialização completa!");
+
+            } catch (error) {
+                console.error("Erro na inicialização:", error);
+                updateLoadingDetails("Erro na inicialização: " + error.message);
+                
+                // Tentar recuperação básica
+                setTimeout(() => {
+                    updateLoadingDetails("Tentando recuperação...");
+                    hideLoadingOverlay();
+                }, 3000);
+            }
+        }
+
+        // Detectar dispositivos móveis e ajustar interface
+        function setupMobileOptimizations() {
+            if (window.innerWidth < 768) {
+                document.body.classList.add('mobile');
+                
+                // Esconder painel de informações automaticamente em mobile
+                setTimeout(() => {
+                    if (isInfoVisible) {
+                        toggleInfoPanel();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("BGAPP Wind Animation Demo - Iniciando...");
+            
+            setupMobileOptimizations();
+            initializeApp();
+        });
+
+        // Handle resize
+        window.addEventListener('resize', function() {
+            if (map) {
+                map.invalidateSize();
+            }
+            
+            if (windSystem && windSystem.playerControl) {
+                const compact = window.innerWidth < 768;
+                windSystem.playerControl.setCompact(compact);
+            }
+        });
+
+        // Handle visibility change (para pausar animação quando aba não está visível)
+        document.addEventListener('visibilitychange', function() {
+            if (windSystem && windSystem.timeDimension) {
+                if (document.hidden) {
+                    windSystem.timeDimension.pause();
+                } else {
+                    // Opcional: retomar reprodução automaticamente
+                    // windSystem.timeDimension.play();
+                }
+            }
+        });
+
+        // Debugging helpers (disponíveis no console)
+        window.debugWindSystem = () => windSystem;
+        window.debugMap = () => map;
+        window.toggleWindSystem = () => windSystem ? windSystem.toggle() : console.log("Sistema não inicializado");
+        window.debugCanvas = () => {
+            if (windSystem && windSystem.particlesLayer && windSystem.particlesLayer._canvasLayer) {
+                const canvas = windSystem.particlesLayer._canvasLayer._canvas;
+                console.log("Canvas info:", {
+                    element: canvas,
+                    width: canvas.width,
+                    height: canvas.height,
+                    style: canvas.style.cssText,
+                    position: canvas.getBoundingClientRect(),
+                    visible: canvas.offsetParent !== null
+                });
+                
+                // Desenhar teste visual
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
+                ctx.fillRect(50, 50, 200, 100);
+                ctx.fillStyle = 'black';
+                ctx.font = '16px Arial';
+                ctx.fillText('CANVAS FUNCIONANDO!', 60, 100);
+                
+                setTimeout(() => {
+                    ctx.clearRect(50, 50, 200, 100);
+                }, 3000);
+                
+                return canvas;
+            }
+            return null;
+        };
+        window.debugParticles = () => {
+            if (windSystem && windSystem.particlesLayer && windSystem.particlesLayer._windy) {
+                console.log("Windy info:", windSystem.particlesLayer._windy);
+                return windSystem.particlesLayer._windy;
+            }
+            return null;
+        };
+        
+        console.log("BGAPP Wind Animation Demo - Helpers disponíveis no console:");
+        console.log("- debugWindSystem() - Inspecionar sistema de vento");
+        console.log("- debugMap() - Inspecionar mapa");
+        console.log("- toggleWindSystem() - Ligar/desligar animação");
+        console.log("- debugCanvas() - Testar renderização do canvas");
+        console.log("- debugParticles() - Inspecionar motor de partículas");
+    </script>
+</body>
+</html>

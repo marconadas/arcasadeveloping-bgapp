@@ -1,0 +1,353 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1848,
+          -5.555
+        ]
+      },
+      "properties": {
+        "id": "cabinda",
+        "name": "Porto de Cabinda",
+        "zone": "zona_norte",
+        "type": "major_port",
+        "capacity_boats": 150,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market"
+        ],
+        "main_species": [
+          "Thunnus albacares",
+          "Katsuwonus pelamis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "artisanal"
+        ],
+        "population": 8500,
+        "facilities": {
+          "docking_capacity": 45,
+          "cold_storage_tons": 500,
+          "ice_production_daily": 15,
+          "fuel_tanks_liters": 50000,
+          "market_area_m2": 2500
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834976"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.3689,
+          -6.1364
+        ]
+      },
+      "properties": {
+        "id": "soyo",
+        "name": "Porto de Soyo",
+        "zone": "zona_norte",
+        "type": "regional_port",
+        "capacity_boats": 85,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Sardinella aurita",
+          "Thunnus albacares"
+        ],
+        "fleet_types": [
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 4200,
+        "facilities": {
+          "docking_capacity": 25,
+          "cold_storage_tons": 200,
+          "ice_production_daily": 8,
+          "fuel_tanks_liters": 20000,
+          "market_area_m2": 1200
+        },
+        "category": "fishing_port",
+        "importance": "medium",
+        "last_updated": "2025-08-31T19:33:39.834981"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.2343,
+          -8.8115
+        ]
+      },
+      "properties": {
+        "id": "luanda",
+        "name": "Porto de Luanda (Pesqueiro)",
+        "zone": "zona_norte",
+        "type": "major_port",
+        "capacity_boats": 200,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market",
+          "processing_plant"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Engraulis encrasicolus"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 12000,
+        "facilities": {
+          "docking_capacity": 60,
+          "cold_storage_tons": 800,
+          "ice_production_daily": 25,
+          "fuel_tanks_liters": 75000,
+          "market_area_m2": 4000,
+          "processing_capacity_daily": 50
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834985"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.1167,
+          -7.85
+        ]
+      },
+      "properties": {
+        "id": "ambriz",
+        "name": "Porto de Ambriz",
+        "zone": "zona_centro",
+        "type": "local_port",
+        "capacity_boats": 45,
+        "infrastructure": [
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Scomber japonicus"
+        ],
+        "fleet_types": [
+          "artisanal"
+        ],
+        "population": 2100,
+        "facilities": {
+          "docking_capacity": 15,
+          "fuel_tanks_liters": 8000,
+          "market_area_m2": 600
+        },
+        "category": "fishing_port",
+        "importance": "low",
+        "last_updated": "2025-08-31T19:33:39.834987"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.55,
+          -12.35
+        ]
+      },
+      "properties": {
+        "id": "lobito",
+        "name": "Porto de Lobito (Pesqueiro)",
+        "zone": "zona_centro",
+        "type": "major_port",
+        "capacity_boats": 180,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market",
+          "processing_plant"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Engraulis encrasicolus",
+          "Scomber japonicus"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 9500,
+        "facilities": {
+          "docking_capacity": 55,
+          "cold_storage_tons": 600,
+          "ice_production_daily": 20,
+          "fuel_tanks_liters": 60000,
+          "market_area_m2": 3200,
+          "processing_capacity_daily": 40
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834990"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.4058,
+          -12.5763
+        ]
+      },
+      "properties": {
+        "id": "benguela",
+        "name": "Porto de Benguela",
+        "zone": "zona_sul",
+        "type": "major_port",
+        "capacity_boats": 160,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Trachurus capensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 7800,
+        "facilities": {
+          "docking_capacity": 50,
+          "cold_storage_tons": 550,
+          "ice_production_daily": 18,
+          "fuel_tanks_liters": 55000,
+          "market_area_m2": 2800
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834993"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1528,
+          -15.1944
+        ]
+      },
+      "properties": {
+        "id": "namibe",
+        "name": "Porto de Namibe",
+        "zone": "zona_sul",
+        "type": "regional_port",
+        "capacity_boats": 95,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Dentex angolensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 5200,
+        "facilities": {
+          "docking_capacity": 30,
+          "cold_storage_tons": 300,
+          "ice_production_daily": 12,
+          "fuel_tanks_liters": 35000,
+          "market_area_m2": 1800
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834996"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9167,
+          -15.7833
+        ]
+      },
+      "properties": {
+        "id": "tombwa",
+        "name": "Porto de Tombwa",
+        "zone": "zona_sul",
+        "type": "regional_port",
+        "capacity_boats": 75,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Dentex angolensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 3800,
+        "facilities": {
+          "docking_capacity": 25,
+          "cold_storage_tons": 250,
+          "ice_production_daily": 10,
+          "fuel_tanks_liters": 25000,
+          "market_area_m2": 1400
+        },
+        "category": "fishing_port",
+        "importance": "high",
+        "last_updated": "2025-08-31T19:33:39.834998"
+      }
+    }
+  ],
+  "metadata": {
+    "title": "Portos Pesqueiros de Angola",
+    "description": "Infraestruturas portuárias dedicadas à atividade pesqueira",
+    "source": "BGAPP Angola Fisheries Infrastructure Generator",
+    "total_ports": 8,
+    "zones": [
+      "zona_norte",
+      "zona_centro",
+      "zona_sul"
+    ],
+    "generation_date": "2025-08-31T19:33:39.835000",
+    "coordinate_system": "EPSG:4326"
+  }
+}

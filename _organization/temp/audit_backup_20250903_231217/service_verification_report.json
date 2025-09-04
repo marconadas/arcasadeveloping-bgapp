@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-09-01T16:58:17.724472",
+  "services": {
+    "OpenStreetMap": {
+      "tests": [
+        {
+          "url": "https://a.tile.openstreetmap.org/0/0/0.png",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host a.tile.openstreetmap.org:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        },
+        {
+          "url": "https://b.tile.openstreetmap.org/0/0/0.png",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host b.tile.openstreetmap.org:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        },
+        {
+          "url": "https://c.tile.openstreetmap.org/0/0/0.png",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host c.tile.openstreetmap.org:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    },
+    "Leaflet CDN": {
+      "tests": [
+        {
+          "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host unpkg.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        },
+        {
+          "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host unpkg.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    },
+    "EOX Maps": {
+      "tests": [
+        {
+          "url": "https://tiles.maps.eox.at/wms?service=WMS&request=GetCapabilities&version=1.3.0",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host tiles.maps.eox.at:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    },
+    "CartoDB": {
+      "tests": [
+        {
+          "url": "https://a.basemaps.cartocdn.com/light_all/0/0/0.png",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host a.basemaps.cartocdn.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        },
+        {
+          "url": "https://b.basemaps.cartocdn.com/dark_all/0/0/0.png",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host b.basemaps.cartocdn.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    },
+    "GEBCO": {
+      "tests": [
+        {
+          "url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?service=WMS&request=GetCapabilities",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host www.gebco.net:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    },
+    "ESRI": {
+      "tests": [
+        {
+          "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/0/0/0",
+          "status": "ERROR",
+          "response_time_ms": 0,
+          "success": false,
+          "error": "Cannot connect to host server.arcgisonline.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')]"
+        }
+      ],
+      "success_rate": 0.0,
+      "avg_response_time_ms": 0,
+      "status": "DOWN"
+    }
+  },
+  "summary": {
+    "total_services": 6,
+    "operational": 0,
+    "degraded": 0,
+    "down": 6
+  }
+}

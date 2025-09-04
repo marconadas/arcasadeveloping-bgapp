@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Plataforma Científica Avançada para Biodiversidade Marinha de Angola</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Plataforma científica avançada para análise de biodiversidade marinha da ZEE de Angola com tecnologia Niagara Underwater Effects">
+    <meta name="keywords" content="BGAPP, Angola, Biodiversidade Marinha, Machine Learning, Niagara, Unreal Engine, Oceanografia">
+    <meta name="author" content="MareDatum - BGAPP Team">
+    
+    <!-- Bibliotecas Three.js (ES Modules) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <!-- Outras bibliotecas -->
+    <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <link href="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+            background: #000508; /* Fallback color */
+        }
+
+        /* 🌊 NIAGARA UNDERWATER BACKGROUND */
+        #niagara-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.95;
+        }
+
+        /* Overlay sutil para melhorar legibilidade do conteúdo */
+        #content-overlay {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(
+                180deg,
+                rgba(0, 5, 8, 0.1) 0%,
+                rgba(0, 5, 8, 0.3) 50%,
+                rgba(0, 5, 8, 0.1) 100%
+            );
+            min-height: 100vh;
+        }
+
+        /* 🎛️ PAINEL DE CONTROLES NIAGARA MINIMIZÁVEL */
+        .niagara-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            min-width: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: bottom right;
+        }
+
+        .niagara-controls.minimized {
+            transform: scale(0.1);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .niagara-controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .niagara-controls-title {
+            color: #60a5fa;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .minimize-btn {
+            background: none;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #60a5fa;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .minimize-btn:hover {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #60a5fa;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group h4 {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-item {
+            margin-bottom: 10px;
+        }
+
+        .control-item label {
+            display: block;
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-bottom: 4px;
+        }
+
+        .control-item input[type="range"] {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1.5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #60a5fa;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-item select {
+            width: 100%;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: white;
+            font-size: 11px;
+        }
+
+        /* 🎮 BOTÃO TOGGLE FLUTUANTE */
+        .niagara-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(96, 165, 250, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .niagara-toggle.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .niagara-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        /* Header principal */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            background: linear-gradient(45deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(45deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text .subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            border-radius: 25px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-access-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            border: 1px solid #ef4444;
+            border-radius: 25px;
+            font-size: 12px;
+            color: #ef4444;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-access-btn:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        .admin-access-btn:active {
+            transform: translateY(0);
+        }
+
+        .niagara-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid #60a5fa;
+            border-radius: 25px;
+            font-size: 12px;
+            color: #60a5fa;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(96, 165, 250, 0.5);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.2);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Features section */
+        .features {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ffffff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title p {
+            font-size: 16px;
+            color: #94a3b8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #60a5fa, #3b82f6, #1d4ed8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 15px 40px rgba(96, 165, 250, 0.15);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: '•';
+            color: #60a5fa;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* ML Models section */
+        .ml-models {
+            padding: 80px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .model-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(34, 197, 94, 0.5);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.1);
+        }
+
+        .model-accuracy {
+            font-size: 24px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 10px;
+        }
+
+        .model-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .model-description {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-text {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .footer-credits {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .hero .subtitle {
+                font-size: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .niagara-controls {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                max-height: 300px;
+            }
+            
+            .niagara-toggle {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(96, 165, 250, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(96, 165, 250, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- 🌊 NIAGARA UNDERWATER BACKGROUND -->
+    <div id="niagara-background"></div>
+    
+    <!-- Overlay de conteúdo -->
+    <div id="content-overlay">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🌊</div>
+                    <div class="logo-text">
+                        <h1>BGAPP</h1>
+                        <p class="subtitle">Plataforma Científica Avançada - Biodiversidade Marinha de Angola</p>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <div class="admin-access-btn" id="admin-access-btn">
+                        <span>🔐</span>
+                        <span>Dashboard Admin</span>
+                    </div>
+                    <div class="niagara-badge">
+                        <span>⚡</span>
+                        <span>Niagara Effects</span>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Sistema Ativo</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Plataforma Científica de Classe Mundial</h2>
+            <p class="subtitle">
+                Sistema avançado de análise de biodiversidade marinha para a Zona Econômica Exclusiva de Angola, 
+                integrando Machine Learning, visualizações 3D cinematográficas e dados oceanográficos em tempo real.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-number">61+</div>
+                    <div class="stat-label">Funcionalidades</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-number">95%+</div>
+                    <div class="stat-label">Precisão ML</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-number">518K</div>
+                    <div class="stat-label">km² ZEE Angola</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-number">35+</div>
+                    <div class="stat-label">Espécies Catalogadas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="section-title">
+                <h3>Capacidades Avançadas</h3>
+                <p>Tecnologia de ponta para análise científica marinha com efeitos cinematográficos</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">🧠</div>
+                    <h4 class="feature-title">Sistema ML Avançado</h4>
+                    <p class="feature-description">5 modelos de Machine Learning com precisão superior a 95% para análise de biodiversidade e predições oceanográficas.</p>
+                    <ul class="feature-list">
+                        <li>Preditor de Biodiversidade (95.2% precisão)</li>
+                        <li>Classificador de Espécies Marinhas</li>
+                        <li>Forecasting de Temperatura Oceânica</li>
+                        <li>7 Filtros Preditivos com IA</li>
+                        <li>Pipeline Automático de Treino</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">🎬</div>
+                    <h4 class="feature-title">Visualizações 3D Cinematográficas</h4>
+                    <p class="feature-description">Integração Niagara Underwater Effects e Unreal Engine para visualizações oceanográficas cinematográficas e interativas.</p>
+                    <ul class="feature-list">
+                        <li>WebGL 2.0 com shaders customizados</li>
+                        <li>Simulação oceânica realística</li>
+                        <li>Sistema de partículas para plâncton</li>
+                        <li>Iluminação volumétrica subaquática</li>
+                        <li>Controles cinematográficos</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">🐟</div>
+                    <h4 class="feature-title">Análise de Biodiversidade</h4>
+                    <p class="feature-description">Sistema completo para análise da biodiversidade marinha angolana com 35+ espécies catalogadas.</p>
+                    <ul class="feature-list">
+                        <li>35+ espécies marinhas angolanas</li>
+                        <li>Índices de Shannon e Simpson</li>
+                        <li>Análise de distribuição espacial</li>
+                        <li>Padrões migratórios</li>
+                        <li>Adequação de habitat</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">📡</div>
+                    <h4 class="feature-title">Dados em Tempo Real</h4>
+                    <p class="feature-description">Integração com múltiplas fontes de dados oceanográficos para monitorização contínua.</p>
+                    <ul class="feature-list">
+                        <li>Copernicus Marine Service</li>
+                        <li>STAC Collections</li>
+                        <li>MODIS e GBIF/OBIS</li>
+                        <li>Sensores em tempo real</li>
+                        <li>APIs RESTful avançadas</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">🗺️</div>
+                    <h4 class="feature-title">Sistema QGIS Avançado</h4>
+                    <p class="feature-description">Ferramentas geoespaciais profissionais para análise espacial e ordenamento marinho.</p>
+                    <ul class="feature-list">
+                        <li>Análise de buffer zones</li>
+                        <li>Conectividade de habitats</li>
+                        <li>Identificação de hotspots</li>
+                        <li>Corredores ecológicos</li>
+                        <li>Análise multicritério (MCDA/AHP)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">⚡</div>
+                    <h4 class="feature-title">Arquitetura Moderna</h4>
+                    <p class="feature-description">Infraestrutura de classe empresarial com performance otimizada e escalabilidade.</p>
+                    <ul class="feature-list">
+                        <li>Cloudflare Pages + Workers</li>
+                        <li>Cache Redis inteligente</li>
+                        <li>Processamento assíncrono</li>
+                        <li>PWA com funcionamento offline</li>
+                        <li>Monitorização em tempo real</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ML Models Section -->
+        <section class="ml-models">
+            <div class="section-title">
+                <h3>Modelos de Machine Learning</h3>
+                <p>Algoritmos avançados com precisão superior a 95%</p>
+            </div>
+            
+            <div class="models-grid">
+                <div class="model-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="model-accuracy">95.2% Precisão</div>
+                    <h4 class="model-name">Preditor de Biodiversidade</h4>
+                    <p class="model-description">Ensemble Random Forest + Gradient Boosting para análise de ecossistemas marinhos</p>
+                </div>
+
+                <div class="model-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="model-accuracy">97.1% Precisão</div>
+                    <h4 class="model-name">Classificador de Espécies</h4>
+                    <p class="model-description">Random Forest otimizado para identificação automática de espécies marinhas</p>
+                </div>
+
+                <div class="model-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="model-accuracy">94.8% Precisão</div>
+                    <h4 class="model-name">Forecasting Oceânico</h4>
+                    <p class="model-description">LSTM Neural Networks para predição de temperatura e condições oceanográficas</p>
+                </div>
+
+                <div class="model-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="model-accuracy">96.3% Precisão</div>
+                    <h4 class="model-name">Adequação de Habitat</h4>
+                    <p class="model-description">MaxEnt para modelação de distribuição de espécies e análise de nicho ecológico</p>
+                </div>
+
+                <div class="model-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="model-accuracy">93.7% Precisão</div>
+                    <h4 class="model-name">Estimador de Abundância</h4>
+                    <p class="model-description">Modelos ensemble para estimação de biomassa e abundância de espécies</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <h4 class="footer-logo">BGAPP - Transformando a Ciência Marinha em Angola</h4>
+                <p class="footer-text">
+                    Plataforma científica avançada desenvolvida com tecnologias de ponta para apoiar a investigação, 
+                    conservação e gestão sustentável da biodiversidade marinha na Zona Econômica Exclusiva de Angola.
+                </p>
+                <div class="footer-credits">
+                    <p><strong>MareDatum Consultoria e Gestão de Projectos Unipessoal LDA</strong></p>
+                    <p>Diretor Geral: Paulo Fernandes</p>
+                    <p>© 2025 BGAPP - Todos os direitos reservados | Tecnologia de Classe Mundial para Angola</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 🎛️ PAINEL DE CONTROLES NIAGARA MINIMIZÁVEL -->
+    <div class="niagara-controls" id="niagara-controls">
+        <div class="niagara-controls-header">
+            <div class="niagara-controls-title">
+                <span>🌊</span>
+                <span>Niagara Controls</span>
+            </div>
+            <button class="minimize-btn" id="minimize-btn" title="Minimizar controles">−</button>
+        </div>
+        
+        <div class="control-group">
+            <h4>🌊 Oceano</h4>
+            <div class="control-item">
+                <label>Altura das Ondas</label>
+                <input type="range" id="wave-height" min="0.5" max="4.0" step="0.1" value="1.5">
+            </div>
+            <div class="control-item">
+                <label>Velocidade</label>
+                <input type="range" id="wave-speed" min="0.2" max="2.0" step="0.1" value="0.8">
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h4>💫 Efeitos</h4>
+            <div class="control-item">
+                <label>Partículas</label>
+                <select id="particle-count">
+                    <option value="2000">2K - Performance</option>
+                    <option value="5000" selected>5K - Balanceado</option>
+                    <option value="8000">8K - Qualidade</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label>Caustics</label>
+                <input type="range" id="caustics-intensity" min="0.5" max="3.0" step="0.1" value="1.2">
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h4>⚙️ Sistema</h4>
+            <div class="control-item">
+                <label>Performance</label>
+                <select id="performance-mode">
+                    <option value="low">Baixa</option>
+                    <option value="medium" selected>Média</option>
+                    <option value="high">Alta</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎮 BOTÃO TOGGLE FLUTUANTE -->
+    <button class="niagara-toggle" id="niagara-toggle" title="Mostrar controles Niagara">
+        🌊
+    </button>
+
+    <!-- Scripts -->
+    <script type="module">
+        // Importar Three.js e dependências
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        
+        // Sistema Niagara simplificado para background
+        let niagaraSystem = null;
+        let isNiagaraActive = true;
+        
+        // Configurações otimizadas para background
+        const config = {
+            waveHeight: 1.5,
+            waveSpeed: 0.8,
+            particleCount: 5000,
+            causticsIntensity: 1.2,
+            performanceMode: 'medium'
+        };
+        
+        async function initializeNiagaraBackground() {
+            console.log('🌊 Inicializando Niagara Background...');
+            
+            try {
+                const container = document.getElementById('niagara-background');
+                
+                // Scene otimizada para background
+                const scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x000508);
+                scene.fog = new THREE.FogExp2(0x001122, 0.001);
+                
+                // Camera
+                const camera = new THREE.PerspectiveCamera(
+                    60,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                camera.position.set(0, 15, 40);
+                
+                // Renderer otimizado
+                const renderer = new THREE.WebGLRenderer({ 
+                    antialias: false, // Desabilitado para performance
+                    alpha: true,
+                    powerPreference: 'default' // Não forçar high-performance
+                });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Limitado para performance
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+                
+                container.appendChild(renderer.domElement);
+                
+                // Oceano com shader otimizado
+                const oceanGeometry = new THREE.PlaneGeometry(300, 300, 128, 128); // Reduzida resolução
+                const oceanMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        time: { value: 0 },
+                        waveHeight: { value: config.waveHeight },
+                        waveSpeed: { value: config.waveSpeed },
+                        causticsIntensity: { value: config.causticsIntensity }
+                    },
+                    vertexShader: `
+                        uniform float time;
+                        uniform float waveHeight;
+                        uniform float waveSpeed;
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        
+                        void main() {
+                            vUv = uv;
+                            vec3 pos = position;
+                            
+                            // Ondas simplificadas para background
+                            pos.z += sin(pos.x * 0.02 + time * waveSpeed) * waveHeight;
+                            pos.z += cos(pos.y * 0.015 + time * waveSpeed * 0.7) * waveHeight * 0.6;
+                            pos.z += sin(pos.x * 0.03 + pos.y * 0.02 + time * waveSpeed * 1.1) * waveHeight * 0.3;
+                            
+                            vPosition = pos;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform float time;
+                        uniform float causticsIntensity;
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        
+                        void main() {
+                            vec3 color = vec3(0.05, 0.2, 0.6);
+                            
+                            // Caustics simplificadas
+                            float caustics = sin(vUv.x * 8.0 + time * 0.5) * cos(vUv.y * 6.0 + time * 0.3);
+                            caustics = max(0.0, caustics) * causticsIntensity * 0.15;
+                            color += vec3(0.3, 0.6, 1.0) * caustics;
+                            
+                            // Gradient de profundidade
+                            float depth = clamp(-vPosition.z / 20.0, 0.0, 1.0);
+                            color = mix(color, vec3(0.0, 0.05, 0.15), depth);
+                            
+                            // Adicionar variação sutil
+                            color += sin(time * 0.1) * 0.02;
+                            
+                            gl_FragColor = vec4(color, 0.95);
+                        }
+                    `,
+                    transparent: true,
+                    side: THREE.DoubleSide
+                });
+                
+                const oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+                oceanMesh.rotation.x = -Math.PI / 2;
+                scene.add(oceanMesh);
+                
+                // Iluminação básica
+                const ambientLight = new THREE.AmbientLight(0x404080, 0.4);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0x60a5fa, 0.6);
+                directionalLight.position.set(50, 50, 50);
+                scene.add(directionalLight);
+                
+                // Controles suaves para background
+                const controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.02; // Mais suave
+                controls.enableZoom = false; // Desabilitar zoom
+                controls.enablePan = false; // Desabilitar pan
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 0.2; // Muito lento
+                controls.maxPolarAngle = Math.PI / 2.5; // Limitar ângulo
+                controls.minPolarAngle = Math.PI / 4;
+                
+                // Partículas otimizadas
+                const particleGeometry = new THREE.BufferGeometry();
+                const particleCount = Math.min(config.particleCount, 3000); // Limitado para background
+                const positions = new Float32Array(particleCount * 3);
+                const velocities = new Float32Array(particleCount * 3);
+                
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * 150;
+                    positions[i * 3 + 1] = Math.random() * -30;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * 150;
+                    
+                    velocities[i * 3] = (Math.random() - 0.5) * 0.1;
+                    velocities[i * 3 + 1] = Math.random() * 0.05 + 0.02;
+                    velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.1;
+                }
+                
+                particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                particleGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+                
+                const particleMaterial = new THREE.PointsMaterial({
+                    color: 0x60a5fa,
+                    size: 0.6,
+                    transparent: true,
+                    opacity: 0.3, // Mais sutil para background
+                    blending: THREE.AdditiveBlending
+                });
+                
+                const particles = new THREE.Points(particleGeometry, particleMaterial);
+                scene.add(particles);
+                
+                // Clock para animação
+                const clock = new THREE.Clock();
+                
+                // Loop de animação otimizado
+                function animate() {
+                    if (!isNiagaraActive) {
+                        requestAnimationFrame(animate);
+                        return;
+                    }
+                    
+                    requestAnimationFrame(animate);
+                    
+                    const elapsedTime = clock.getElapsedTime();
+                    
+                    // Atualizar oceano
+                    oceanMaterial.uniforms.time.value = elapsedTime;
+                    
+                    // Atualizar partículas (menos frequente para performance)
+                    if (Math.floor(elapsedTime * 30) % 2 === 0) { // 15 FPS para partículas
+                        const positions = particles.geometry.attributes.position.array;
+                        const velocities = particles.geometry.attributes.velocity.array;
+                        
+                        for (let i = 0; i < particleCount; i++) {
+                            const i3 = i * 3;
+                            
+                            positions[i3] += velocities[i3];
+                            positions[i3 + 1] += velocities[i3 + 1];
+                            positions[i3 + 2] += velocities[i3 + 2];
+                            
+                            // Reset partículas que saíram dos limites
+                            if (positions[i3 + 1] > 0) {
+                                positions[i3 + 1] = -30;
+                                positions[i3] = (Math.random() - 0.5) * 150;
+                                positions[i3 + 2] = (Math.random() - 0.5) * 150;
+                            }
+                        }
+                        
+                        particles.geometry.attributes.position.needsUpdate = true;
+                    }
+                    
+                    // Rotação sutil das partículas
+                    particles.rotation.y += 0.0005;
+                    
+                    // Atualizar controles
+                    controls.update();
+                    
+                    // Render
+                    renderer.render(scene, camera);
+                }
+                
+                // Responsividade
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+                
+                // Armazenar referências
+                niagaraSystem = {
+                    scene,
+                    camera,
+                    renderer,
+                    controls,
+                    oceanMaterial,
+                    particles,
+                    particleGeometry,
+                    particleMaterial
+                };
+                
+                // Iniciar animação
+                animate();
+                
+                console.log('✅ Niagara Background inicializado');
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Niagara Background:', error);
+                // Fallback para background estático
+                document.getElementById('niagara-background').style.background = 
+                    'linear-gradient(135deg, #000508 0%, #001018 50%, #002030 100%)';
+            }
+        }
+        
+        // Configurar controles
+        function setupNiagaraControls() {
+            const controls = document.getElementById('niagara-controls');
+            const toggle = document.getElementById('niagara-toggle');
+            const minimizeBtn = document.getElementById('minimize-btn');
+            
+            // Toggle controles
+            toggle.addEventListener('click', () => {
+                controls.classList.remove('minimized');
+                toggle.classList.remove('visible');
+            });
+            
+            minimizeBtn.addEventListener('click', () => {
+                controls.classList.add('minimized');
+                setTimeout(() => {
+                    toggle.classList.add('visible');
+                }, 300);
+            });
+            
+            // Controles de oceano
+            document.getElementById('wave-height').addEventListener('input', (e) => {
+                config.waveHeight = parseFloat(e.target.value);
+                if (niagaraSystem) {
+                    niagaraSystem.oceanMaterial.uniforms.waveHeight.value = config.waveHeight;
+                }
+            });
+            
+            document.getElementById('wave-speed').addEventListener('input', (e) => {
+                config.waveSpeed = parseFloat(e.target.value);
+                if (niagaraSystem) {
+                    niagaraSystem.oceanMaterial.uniforms.waveSpeed.value = config.waveSpeed;
+                }
+            });
+            
+            document.getElementById('caustics-intensity').addEventListener('input', (e) => {
+                config.causticsIntensity = parseFloat(e.target.value);
+                if (niagaraSystem) {
+                    niagaraSystem.oceanMaterial.uniforms.causticsIntensity.value = config.causticsIntensity;
+                }
+            });
+            
+            // Controle de partículas
+            document.getElementById('particle-count').addEventListener('change', (e) => {
+                config.particleCount = parseInt(e.target.value);
+                // Recriar partículas seria custoso, apenas ajustar opacidade
+                if (niagaraSystem) {
+                    const opacity = config.particleCount <= 2000 ? 0.2 : 
+                                  config.particleCount <= 5000 ? 0.3 : 0.4;
+                    niagaraSystem.particleMaterial.opacity = opacity;
+                }
+            });
+            
+            // Controle de performance
+            document.getElementById('performance-mode').addEventListener('change', (e) => {
+                config.performanceMode = e.target.value;
+                
+                if (niagaraSystem) {
+                    switch(config.performanceMode) {
+                        case 'low':
+                            niagaraSystem.particleMaterial.opacity = 0.1;
+                            niagaraSystem.controls.autoRotateSpeed = 0.1;
+                            break;
+                        case 'medium':
+                            niagaraSystem.particleMaterial.opacity = 0.3;
+                            niagaraSystem.controls.autoRotateSpeed = 0.2;
+                            break;
+                        case 'high':
+                            niagaraSystem.particleMaterial.opacity = 0.4;
+                            niagaraSystem.controls.autoRotateSpeed = 0.3;
+                            break;
+                    }
+                }
+            });
+            
+            // Auto-minimizar após 10 segundos
+            setTimeout(() => {
+                if (!controls.classList.contains('minimized')) {
+                    minimizeBtn.click();
+                }
+            }, 10000);
+        }
+        
+        // Inicializar quando a página carregar
+        window.addEventListener('load', async () => {
+            // Inicializar AOS
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-out-cubic',
+                    once: true,
+                    offset: 100
+                });
+            }
+            
+            // Inicializar Niagara Background
+            await initializeNiagaraBackground();
+            
+            // Configurar controles
+            setupNiagaraControls();
+            
+            // Configurar botão de acesso administrativo
+            setupAdminAccess();
+            
+            console.log('🌊 BGAPP com Niagara Background carregado com sucesso!');
+        });
+        
+        // Configurar acesso administrativo
+        function setupAdminAccess() {
+            console.log('🔐 Configurando acesso administrativo...');
+            
+            const adminBtn = document.getElementById('admin-access-btn');
+            
+            adminBtn.addEventListener('click', () => {
+                // Mostrar modal de confirmação
+                showAdminAccessModal();
+            });
+        }
+        
+        function showAdminAccessModal() {
+            // Criar modal de acesso administrativo
+            const modal = document.createElement('div');
+            modal.id = 'admin-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(10px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: rgba(15, 23, 42, 0.95);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                    border-radius: 20px;
+                    padding: 40px;
+                    max-width: 450px;
+                    width: 90%;
+                    text-align: center;
+                    transform: scale(0.9);
+                    transition: transform 0.3s ease;
+                ">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🔐</div>
+                    <h3 style="color: #ef4444; font-size: 24px; margin-bottom: 15px; font-weight: 700;">
+                        Acesso Administrativo
+                    </h3>
+                    <p style="color: #94a3b8; margin-bottom: 30px; line-height: 1.6;">
+                        Você será redirecionado para o dashboard administrativo do BGAPP com login automático.
+                    </p>
+                    <div style="
+                        background: rgba(239, 68, 68, 0.1);
+                        border: 1px solid rgba(239, 68, 68, 0.3);
+                        border-radius: 10px;
+                        padding: 15px;
+                        margin-bottom: 25px;
+                        font-family: 'Courier New', monospace;
+                        font-size: 13px;
+                        color: #cbd5e1;
+                    ">
+                        <div><strong>URL:</strong> bgapp-admin.pages.dev</div>
+                        <div><strong>Usuário:</strong> Admin</div>
+                        <div><strong>Senha:</strong> ••••••••••</div>
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <button id="admin-confirm" style="
+                            background: linear-gradient(135deg, #ef4444, #dc2626);
+                            border: none;
+                            color: white;
+                            padding: 12px 25px;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 14px;
+                        ">
+                            🚀 Acessar Dashboard
+                        </button>
+                        <button id="admin-cancel" style="
+                            background: transparent;
+                            border: 1px solid rgba(148, 163, 184, 0.5);
+                            color: #94a3b8;
+                            padding: 12px 25px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 14px;
+                        ">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Animar entrada
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.querySelector('div > div').style.transform = 'scale(1)';
+            }, 50);
+            
+            // Configurar eventos
+            document.getElementById('admin-confirm').addEventListener('click', () => {
+                accessAdminDashboard();
+            });
+            
+            document.getElementById('admin-cancel').addEventListener('click', () => {
+                closeAdminModal();
+            });
+            
+            // Fechar clicando fora
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeAdminModal();
+                }
+            });
+            
+            // Fechar com ESC
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') {
+                    closeAdminModal();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            });
+        }
+        
+        function accessAdminDashboard() {
+            console.log('🔐 Acessando dashboard administrativo...');
+            
+            // Mostrar loading
+            const modal = document.getElementById('admin-modal');
+            modal.innerHTML = `
+                <div style="
+                    background: rgba(15, 23, 42, 0.95);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(96, 165, 250, 0.3);
+                    border-radius: 20px;
+                    padding: 40px;
+                    max-width: 350px;
+                    width: 90%;
+                    text-align: center;
+                ">
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border: 3px solid rgba(96, 165, 250, 0.3);
+                        border-top: 3px solid #60a5fa;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto 20px;
+                    "></div>
+                    <p style="color: #60a5fa; font-weight: 600;">Redirecionando...</p>
+                    <p style="color: #94a3b8; font-size: 12px; margin-top: 10px;">
+                        Preparando credenciais de acesso
+                    </p>
+                </div>
+            `;
+            
+            // Simular processo de autenticação e redirecionar
+            setTimeout(() => {
+                // Criar formulário para POST com credenciais (método mais seguro)
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://bgapp-admin.pages.dev/';
+                form.target = '_blank';
+                form.style.display = 'none';
+                
+                // Adicionar campos de credenciais
+                const usernameField = document.createElement('input');
+                usernameField.type = 'hidden';
+                usernameField.name = 'username';
+                usernameField.value = 'Admin';
+                form.appendChild(usernameField);
+                
+                const passwordField = document.createElement('input');
+                passwordField.type = 'hidden';
+                passwordField.name = 'password';
+                passwordField.value = 'Kianda2025';
+                form.appendChild(passwordField);
+                
+                const autoLoginField = document.createElement('input');
+                autoLoginField.type = 'hidden';
+                autoLoginField.name = 'auto_login';
+                autoLoginField.value = 'true';
+                form.appendChild(autoLoginField);
+                
+                document.body.appendChild(form);
+                
+                // Enviar formulário
+                form.submit();
+                
+                // Limpar
+                document.body.removeChild(form);
+                closeAdminModal();
+                
+                // Mostrar notificação de sucesso
+                showSuccessNotification();
+                
+            }, 1500);
+        }
+        
+        function closeAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.parentNode.removeChild(modal);
+                    }
+                }, 300);
+            }
+        }
+        
+        function showSuccessNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(34, 197, 94, 0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 10000;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span>✅</span>
+                    <span>Dashboard administrativo aberto em nova aba</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Pausar animações quando a aba não está visível (performance)
+        document.addEventListener('visibilitychange', () => {
+            isNiagaraActive = !document.hidden;
+        });
+        
+        // Log de boas-vindas
+        console.log(`
+🌊 BGAPP - NIAGARA ENHANCED
+===========================
+
+Plataforma Científica de Classe Mundial com fundo oceânico cinematográfico!
+
+Recursos:
+- Fundo Niagara Underwater Effects
+- Controles minimizáveis
+- Performance otimizada para background  
+- Integração completa com conteúdo
+
+Desenvolvido por MareDatum - BGAPP Team
+        `);
+    </script>
+</body>
+</html>

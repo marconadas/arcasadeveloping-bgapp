@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste AdminMobileMenu - Simulação Admin.html</title>
+    <style>
+        /* Estilos básicos para simular o admin.html */
+        body { margin: 0; font-family: system-ui; }
+        
+        .admin-container { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open { transform: translateX(0); }
+        
+        .main-content { flex: 1; margin-left: 0; }
+        
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-header {
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-menu-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .sidebar-content {
+            padding: 20px;
+        }
+        
+        .test-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 400px;
+            z-index: 2000;
+        }
+        
+        .status { padding: 8px; margin: 5px 0; border-radius: 4px; font-family: monospace; font-size: 12px; }
+        .success { background: #d4f6db; color: #155724; }
+        .error { background: #fdd8da; color: #721c24; }
+        .warning { background: #fff4e6; color: #856404; }
+        
+        button { margin: 5px; padding: 8px 16px; background: #007AFF; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #0051D0; }
+        
+        @media (min-width: 769px) {
+            .sidebar { transform: translateX(0); position: relative; }
+            .main-content { margin-left: 280px; }
+            .mobile-menu-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <h2>BGAPP Admin</h2>
+                <p>Menu lateral para teste</p>
+                <ul>
+                    <li><a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a></li>
+                    <li><a href="#services" class="nav-link" data-section="services">Serviços</a></li>
+                    <li><a href="#config" class="nav-link" data-section="config">Configurações</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="mobile-header">
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu">
+                    ☰
+                </button>
+                <h1>Teste AdminMobileMenu</h1>
+            </div>
+            
+            <div style="padding: 20px;">
+                <h2>Instruções:</h2>
+                <ol>
+                    <li>Redimensione a janela para menos de 768px</li>
+                    <li>Clique no botão ☰ para abrir o menu</li>
+                    <li>Clique no overlay (fundo escuro) para fechar</li>
+                    <li>Pressione ESC para fechar</li>
+                    <li>Verifique o console para logs de debug</li>
+                </ol>
+            </div>
+        </main>
+    </div>
+
+    <!-- Test Panel -->
+    <div class="test-panel">
+        <h3>🧪 Status do Teste</h3>
+        <div id="test-status"></div>
+        <button onclick="runTest()">Executar Teste</button>
+        <button onclick="toggleMenu()">Toggle Menu</button>
+        <button onclick="debugInfo()">Debug Info</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/admin-mobile-final.js"></script>
+    
+    <script>
+        // Test functions
+        function updateStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('test-status');
+            const statusClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'warning';
+            statusDiv.innerHTML += `<div class="${statusClass}">${message}</div>`;
+        }
+
+        function runTest() {
+            document.getElementById('test-status').innerHTML = '';
+            updateStatus('🔍 Iniciando teste...', 'warning');
+            
+            setTimeout(() => {
+                // Test 1: Check if class exists
+                if (typeof AdminMobileMenu !== 'undefined') {
+                    updateStatus('✅ AdminMobileMenu class encontrada');
+                } else {
+                    updateStatus('❌ AdminMobileMenu class NÃO encontrada', 'error');
+                    return;
+                }
+                
+                // Test 2: Check if instance exists
+                if (typeof adminMobileMenu !== 'undefined') {
+                    updateStatus('✅ adminMobileMenu instance encontrada');
+                } else {
+                    updateStatus('⚠️ adminMobileMenu instance não encontrada, criando...', 'warning');
+                    try {
+                        window.adminMobileMenu = new AdminMobileMenu();
+                        updateStatus('✅ adminMobileMenu criado com sucesso');
+                    } catch (e) {
+                        updateStatus('❌ Erro ao criar adminMobileMenu: ' + e.message, 'error');
+                        return;
+                    }
+                }
+                
+                // Test 3: Check initialization
+                if (adminMobileMenu.isInitialized()) {
+                    updateStatus('✅ AdminMobileMenu inicializado corretamente');
+                } else {
+                    updateStatus('⚠️ AdminMobileMenu não inicializado completamente', 'warning');
+                }
+                
+                // Test 4: Check methods
+                const methods = ['isMenuOpen', 'isInitialized', 'destroy'];
+                methods.forEach(method => {
+                    if (typeof adminMobileMenu[method] === 'function') {
+                        updateStatus(`✅ Método ${method} disponível`);
+                    } else {
+                        updateStatus(`❌ Método ${method} NÃO disponível`, 'error');
+                    }
+                });
+                
+                updateStatus('🎉 Teste concluído!', 'success');
+            }, 500);
+        }
+
+        function toggleMenu() {
+            if (typeof adminMobileMenu !== 'undefined') {
+                adminMobileMenu.toggleMobileMenu();
+                updateStatus(`📱 Menu ${adminMobileMenu.isMenuOpen() ? 'aberto' : 'fechado'}`, 'warning');
+            } else {
+                updateStatus('❌ adminMobileMenu não disponível', 'error');
+            }
+        }
+
+        function debugInfo() {
+            console.log('🔍 DEBUG INFO:');
+            console.log('- AdminMobileMenu class:', typeof AdminMobileMenu);
+            console.log('- adminMobileMenu instance:', typeof adminMobileMenu);
+            console.log('- Document ready state:', document.readyState);
+            console.log('- Window width:', window.innerWidth);
+            
+            if (typeof debugAdminMobile === 'function') {
+                debugAdminMobile();
+            }
+            
+            updateStatus('🛠️ Debug info enviado para console', 'warning');
+        }
+
+        // Auto-run test when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runTest, 1000);
+        });
+
+        // Log page load events
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOMContentLoaded event fired');
+        });
+
+        window.addEventListener('load', () => {
+            console.log('🌐 Window load event fired');
+        });
+    </script>
+</body>
+</html>

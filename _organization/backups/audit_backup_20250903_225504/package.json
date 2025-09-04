@@ -1,0 +1,34 @@
+{
+  "name": "bgapp",
+  "version": "1.0.0",
+  "description": "Este repositório contém a implementação de uma plataforma Python especializada para investigação científica da **Zona Econômica Especial Marítima de Angola**. O sistema integra dados ambientais, biodiversidade e telemetria, suportando análises de biomassa, migração e ordenamento espacial com OGC APIs, STAC e integração com QGIS.",
+  "main": "test_api_function.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "wrangler pages deploy infra/frontend --project-name bgapp-arcasadeveloping",
+    "deploy:preview": "wrangler pages deploy infra/frontend --project-name bgapp-arcasadeveloping --branch preview",
+    "wrangler:login": "wrangler login",
+    "wrangler:whoami": "wrangler whoami",
+    "pages:create": "wrangler pages project create bgapp-arcasadeveloping",
+    "pages:list": "wrangler pages project list"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@deck.gl/core": "^9.0.0",
+    "@deck.gl/layers": "^9.0.0",
+    "@deck.gl/aggregation-layers": "^9.0.0",
+    "@lottiefiles/lottie-player": "^2.0.0",
+    "gsap": "^3.12.0",
+    "three": "^0.160.0",
+    "lottie-web": "^5.12.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.33.1"
+  }
+}

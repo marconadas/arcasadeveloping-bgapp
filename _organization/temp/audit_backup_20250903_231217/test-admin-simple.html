@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Simples - AdminMobileMenu</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #f5f5f7; }
+        .test-box { background: white; padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .success { border-left: 4px solid #34C759; background: #d4f6db; }
+        .error { border-left: 4px solid #FF3B30; background: #fdd8da; }
+        .warning { border-left: 4px solid #FF9500; background: #fff4e6; }
+        button { padding: 10px 20px; background: #007AFF; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 5px; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste AdminMobileMenu</h1>
+    
+    <div class="test-box">
+        <h3>Instruções:</h3>
+        <p>1. Abra o <strong>admin.html</strong> numa nova aba</p>
+        <p>2. Abra o DevTools Console (F12)</p>
+        <p>3. Execute os comandos abaixo no console</p>
+    </div>
+
+    <div class="test-box">
+        <h3>Comandos para testar no Console:</h3>
+        
+        <h4>1. Verificar se classes estão disponíveis:</h4>
+        <pre>console.log('AdminMobileMenu:', typeof AdminMobileMenu);
+console.log('adminMobileMenu:', typeof adminMobileMenu);</pre>
+        
+        <h4>2. Teste completo automático:</h4>
+        <pre>testAdmin().then(results => console.table(results));</pre>
+        
+        <h4>3. Teste rápido:</h4>
+        <pre>adminTester.quickTest();</pre>
+        
+        <h4>4. Verificar inicialização:</h4>
+        <pre>if (adminMobileMenu) {
+    console.log('Inicializado:', adminMobileMenu.isInitialized());
+    console.log('Menu aberto:', adminMobileMenu.isMenuOpen());
+} else {
+    console.log('adminMobileMenu não encontrado');
+}</pre>
+
+        <h4>5. Forçar inicialização (se necessário):</h4>
+        <pre>if (typeof AdminMobileMenu !== 'undefined' && !adminMobileMenu) {
+    adminMobileMenu = new AdminMobileMenu();
+    console.log('AdminMobileMenu inicializado manualmente');
+}</pre>
+    </div>
+
+    <div class="test-box">
+        <h3>Resultados Esperados:</h3>
+        <ul>
+            <li>✅ <code>typeof AdminMobileMenu</code> deve retornar "function"</li>
+            <li>✅ <code>typeof adminMobileMenu</code> deve retornar "object"</li>
+            <li>✅ <code>adminMobileMenu.isInitialized()</code> deve retornar true</li>
+            <li>✅ Console deve mostrar "AdminMobileMenu: Elementos encontrados e eventos configurados"</li>
+        </ul>
+    </div>
+
+    <div class="test-box warning">
+        <h3>⚠️ Se der erro:</h3>
+        <ol>
+            <li>Verifique se todos os arquivos JS foram carregados (Network tab)</li>
+            <li>Procure por erros no Console</li>
+            <li>Certifique-se que os elementos DOM existem (mobile-menu-btn, sidebar, mobile-overlay)</li>
+            <li>Tente executar os comandos após a página carregar completamente</li>
+        </ol>
+    </div>
+
+    <div class="test-box">
+        <h3>Teste do Menu Mobile:</h3>
+        <p>No admin.html, redimensione a janela para menos de 768px e:</p>
+        <ul>
+            <li>Clique no botão ☰ (hambúrguer)</li>
+            <li>Menu lateral deve abrir</li>
+            <li>Clique no overlay (fundo escuro) para fechar</li>
+            <li>Pressione ESC para fechar</li>
+        </ul>
+    </div>
+
+    <button onclick="window.open('admin.html', '_blank')">Abrir Admin.html</button>
+    <button onclick="copyToClipboard()">Copiar Comandos de Teste</button>
+
+    <script>
+        function copyToClipboard() {
+            const commands = `// Teste AdminMobileMenu
+console.log('AdminMobileMenu:', typeof AdminMobileMenu);
+console.log('adminMobileMenu:', typeof adminMobileMenu);
+
+// Teste completo
+testAdmin().then(results => console.table(results));
+
+// Teste rápido
+adminTester.quickTest();
+
+// Verificar inicialização
+if (adminMobileMenu) {
+    console.log('Inicializado:', adminMobileMenu.isInitialized());
+    console.log('Menu aberto:', adminMobileMenu.isMenuOpen());
+} else {
+    console.log('adminMobileMenu não encontrado');
+}`;
+
+            navigator.clipboard.writeText(commands).then(() => {
+                alert('Comandos copiados! Cole no Console do admin.html');
+            });
+        }
+    </script>
+</body>
+</html>

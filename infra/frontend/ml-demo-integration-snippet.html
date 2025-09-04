@@ -1,0 +1,231 @@
+<!-- 
+🎨 ML Demo Interface Enhancement Snippet
+Adicione este código à página ml-demo.html para melhorar a interface
+SEM AFETAR O MAPA DECK.GL!
+
+INSTRUÇÕES:
+1. Adicione no <head> da página ml-demo.html
+2. Mantém mapa deck.gl 100% funcional
+3. Melhora apenas interface de controle
+4. Performance visual otimizada
+-->
+
+<!-- CSS Melhorado (adicionar no <head>) -->
+<link rel="stylesheet" href="/static/css/ml-demo-enhanced-ui.css">
+
+<!-- Script de Melhorias (adicionar antes do </body>) -->
+<script src="/static/js/ml-demo-ui-enhancer.js"></script>
+
+<!-- Script de Integração com Sistema de Retenção (opcional) -->
+<script src="/static/js/ml-demo-retention-integration.js"></script>
+
+<!-- Melhorias Inline para Elementos Específicos -->
+<style>
+/* Melhorias específicas que não afetam o mapa */
+.ml-demo-title {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+/* Melhorar botões existentes SEM afetar mapa */
+button:not(.map-control):not([class*="deck"]):not([class*="leaflet"]) {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+button:not(.map-control):not([class*="deck"]):not([class*="leaflet"]):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Melhorar seções vazias */
+div:contains("Aguardando inicialização"):not([class*="map"]):not([class*="deck"]) {
+    background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de shimmer para elementos carregando */
+.shimmer-effect {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.4) 50%, 
+        rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+</style>
+
+<script>
+// Script inline para melhorias imediatas
+(function() {
+    'use strict';
+    
+    console.log('🎨 Aplicando melhorias visuais à página ML Demo...');
+    
+    // Função para aplicar melhorias sem afetar mapa
+    function applyImmediateEnhancements() {
+        // 1. Melhorar título principal
+        const title = document.querySelector('h1');
+        if (title && !title.closest('[class*="map"]')) {
+            title.className = 'ml-demo-title';
+        }
+        
+        // 2. Melhorar status cards
+        const statusElements = document.querySelectorAll('.status-card, [class*="status"]');
+        statusElements.forEach(element => {
+            if (!isMapRelated(element)) {
+                element.style.transition = 'all 0.3s ease';
+                element.style.borderRadius = '12px';
+                element.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+            }
+        });
+        
+        // 3. Adicionar indicador de melhorias
+        addEnhancementIndicator();
+        
+        // 4. Melhorar elementos vazios
+        enhanceEmptyElements();
+    }
+    
+    function isMapRelated(element) {
+        if (!element) return false;
+        
+        const mapKeywords = ['map', 'deck', 'leaflet', 'canvas', 'webgl'];
+        const className = element.className || '';
+        const id = element.id || '';
+        
+        return mapKeywords.some(keyword => 
+            className.includes(keyword) || id.includes(keyword)
+        ) || element.tagName.toLowerCase() === 'canvas';
+    }
+    
+    function addEnhancementIndicator() {
+        const indicator = document.createElement('div');
+        indicator.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            animation: slideInUp 0.5s ease-out;
+        `;
+        indicator.innerHTML = '🎨 Interface Enhanced';
+        document.body.appendChild(indicator);
+        
+        // Remover após 5 segundos
+        setTimeout(() => indicator.remove(), 5000);
+    }
+    
+    function enhanceEmptyElements() {
+        // Melhorar elementos que dizem "Aguardando inicialização"
+        const emptyElements = Array.from(document.querySelectorAll('*')).filter(el => 
+            el.textContent.includes('Aguardando') && !isMapRelated(el)
+        );
+        
+        emptyElements.forEach(element => {
+            element.style.cssText += `
+                background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
+                border: 1px solid rgba(59, 130, 246, 0.2);
+                border-radius: 12px;
+                padding: 1rem;
+                color: #3b82f6;
+                font-weight: 600;
+                position: relative;
+                overflow: hidden;
+            `;
+            
+            // Adicionar efeito de loading
+            element.innerHTML += `
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+                    animation: loading-sweep 2s infinite;
+                "></div>
+            `;
+        });
+    }
+    
+    // CSS para animações inline
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes loading-sweep {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Aplicar melhorias quando DOM estiver pronto
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyImmediateEnhancements);
+    } else {
+        // Aguardar um pouco para garantir que mapa carregou
+        setTimeout(applyImmediateEnhancements, 500);
+    }
+    
+    console.log('✅ Melhorias visuais aplicadas à página ML Demo!');
+})();
+</script>
+
+<!-- 
+RESULTADO ESPERADO:
+✅ Interface moderna com glassmorphism
+✅ Botões com animações suaves
+✅ Cards de status melhorados
+✅ Notificações elegantes
+✅ Indicadores visuais
+✅ Responsividade otimizada
+✅ Mapa deck.gl 100% intacto!
+
+PARA USAR:
+1. Copie este conteúdo
+2. Cole no <head> da página ml-demo.html
+3. A interface será automaticamente melhorada!
+-->

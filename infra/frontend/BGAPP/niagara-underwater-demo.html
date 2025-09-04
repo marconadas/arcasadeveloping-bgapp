@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Niagara Underwater Effects Demo | Efeitos Subaquáticos Cinematográficos</title>
+    
+    <!-- Meta tags para SEO e compartilhamento -->
+    <meta name="description" content="Demonstração dos efeitos subaquáticos cinematográficos do BGAPP inspirados no Unreal Engine - Cascatas subaquáticas, partículas Niagara e iluminação volumétrica">
+    <meta name="keywords" content="BGAPP, Niagara, Underwater, Ocean, Angola, Marine, Biodiversity, Unreal Engine, WebGL, Three.js">
+    <meta name="author" content="MareDatum - BGAPP Team">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="BGAPP - Niagara Underwater Effects Demo">
+    <meta property="og:description" content="Efeitos subaquáticos cinematográficos inspirados no Unreal Engine">
+    <meta property="og:image" content="./assets/images/bgapp-niagara-preview.jpg">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="./favicon.ico">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    
+    <!-- Bibliotecas Three.js e dependências (ES Modules) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <!-- Estilos -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a1929 0%, #1e3a8a 50%, #0f172a 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        
+        .logo .icon {
+            font-size: 28px;
+        }
+        
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            border-radius: 20px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Container principal */
+        .main-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Canvas container */
+        #ocean-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #001122 0%, #000508 100%);
+        }
+        
+        /* Painel de controles */
+        .controls-panel {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 280px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            z-index: 900;
+        }
+        
+        .controls-panel h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-group:last-child {
+            border-bottom: none;
+        }
+        
+        .control-item {
+            margin-bottom: 12px;
+        }
+        
+        .control-item label {
+            display: block;
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+        
+        .control-item input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .control-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #60a5fa;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .control-item input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #60a5fa;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .control-item select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+        }
+        
+        .control-item button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-item button:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+        }
+        
+        .control-item button:active {
+            transform: translateY(0);
+        }
+        
+        /* Informações do sistema */
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: #94a3b8;
+            z-index: 900;
+        }
+        
+        .info-panel .title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a1929 0%, #1e3a8a 50%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-animation {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(96, 165, 250, 0.3);
+            border-top: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #60a5fa;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .loading-subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .controls-panel {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                top: auto;
+                max-height: 300px;
+                min-width: auto;
+            }
+            
+            .info-panel {
+                display: none;
+            }
+            
+            .header-info {
+                display: none;
+            }
+        }
+        
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+        
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            margin-bottom: -5px;
+        }
+        
+        /* Animações de entrada */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Botão de fullscreen */
+        .fullscreen-btn {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            z-index: 900;
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: #60a5fa;
+        }
+        
+        /* Indicador de qualidade */
+        .quality-indicator {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 900;
+        }
+        
+        .quality-high { border-color: #22c55e; color: #22c55e; }
+        .quality-medium { border-color: #eab308; color: #eab308; }
+        .quality-low { border-color: #ef4444; color: #ef4444; }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation"></div>
+        <div class="loading-text">Inicializando Niagara Underwater Effects</div>
+        <div class="loading-subtitle">
+            Carregando shaders avançados, sistemas de partículas e efeitos cinematográficos...
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="header fade-in">
+        <div class="header-content">
+            <div class="logo">
+                <span class="icon">🌊</span>
+                <span>BGAPP Niagara Demo</span>
+            </div>
+            <div class="header-info">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Sistema Ativo</span>
+                </div>
+                <span>Unreal Engine Inspired | Angola Ocean</span>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Container principal -->
+    <div class="main-container">
+        <div id="ocean-container"></div>
+    </div>
+    
+    <!-- Painel de controles -->
+    <div class="controls-panel fade-in">
+        <h3>🎛️ Controles Niagara</h3>
+        
+        <div class="control-group">
+            <h4 style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">🌊 Oceano</h4>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Altura das ondas oceânicas">Altura das Ondas</label>
+                <input type="range" id="wave-height" min="0.5" max="5.0" step="0.1" value="2.0">
+            </div>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Velocidade das ondas">Velocidade das Ondas</label>
+                <input type="range" id="wave-speed" min="0.2" max="3.0" step="0.1" value="1.0">
+            </div>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Força do vento oceânico">Força do Vento</label>
+                <input type="range" id="wind-strength" min="0.1" max="3.0" step="0.1" value="1.2">
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h4 style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">💫 Cascatas Subaquáticas</h4>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Intensidade das cascatas tipo Niagara Falls">Intensidade das Cascatas</label>
+                <input type="range" id="waterfall-intensity" min="0.5" max="5.0" step="0.1" value="2.5">
+            </div>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Número máximo de partículas">Contagem de Partículas</label>
+                <select id="particle-count">
+                    <option value="5000">5K - Performance</option>
+                    <option value="10000">10K - Balanceado</option>
+                    <option value="15000" selected>15K - Qualidade</option>
+                    <option value="25000">25K - Ultra</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h4 style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">✨ Efeitos Visuais</h4>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Intensidade dos caustics subaquáticos">Caustics Intensity</label>
+                <input type="range" id="caustics-intensity" min="0.5" max="4.0" step="0.1" value="2.0">
+            </div>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Intensidade da iluminação volumétrica">Iluminação Volumétrica</label>
+                <input type="range" id="volumetric-intensity" min="0.2" max="3.0" step="0.1" value="1.5">
+            </div>
+            
+            <div class="control-item">
+                <label class="tooltip" data-tooltip="Força das correntes oceânicas">Força das Correntes</label>
+                <input type="range" id="current-strength" min="0.2" max="2.5" step="0.1" value="1.2">
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h4 style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">⚙️ Sistema</h4>
+            
+            <div class="control-item">
+                <label>Modo de Performance</label>
+                <select id="performance-mode">
+                    <option value="low">Baixa - Mobile</option>
+                    <option value="medium">Média - Laptop</option>
+                    <option value="high" selected>Alta - Desktop</option>
+                    <option value="ultra">Ultra - High-End</option>
+                </select>
+            </div>
+            
+            <div class="control-item">
+                <button id="reset-camera">🎥 Resetar Câmera</button>
+            </div>
+            
+            <div class="control-item">
+                <button id="toggle-auto-rotate">🔄 Auto Rotação</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Botão fullscreen -->
+    <button class="fullscreen-btn tooltip" data-tooltip="Tela cheia" id="fullscreen-btn">
+        ⛶
+    </button>
+    
+    <!-- Indicador de qualidade -->
+    <div id="quality-indicator" class="quality-indicator quality-high">
+        QUALIDADE: ALTA
+    </div>
+    
+    <!-- Painel de informações -->
+    <div class="info-panel fade-in">
+        <div class="title">SISTEMA NIAGARA STATUS</div>
+        <div id="fps-counter">FPS: --</div>
+        <div id="particle-counter">Partículas: --</div>
+        <div id="memory-usage">Memória: --</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div>Cascatas: 4 ativas</div>
+            <div>Correntes: 3 campos</div>
+            <div>God Rays: 5 volumes</div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module">
+        // Importar Three.js e dependências
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        
+        // Importar sistema Niagara (simulado para demonstração)
+        let oceanSystem = null;
+        let isInitialized = false;
+        
+        // Configurações iniciais
+        const config = {
+            waveHeight: 2.0,
+            waveSpeed: 1.0,
+            windStrength: 1.2,
+            waterfallIntensity: 2.5,
+            maxParticles: 15000,
+            causticsIntensity: 2.0,
+            volumetricIntensity: 1.5,
+            currentStrength: 1.2,
+            performanceMode: 'high'
+        };
+        
+        // Inicialização
+        async function initializeDemo() {
+            try {
+                console.log('🚀 Iniciando demo Niagara Underwater Effects...');
+                
+                // Simular carregamento
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Criar sistema oceânico (implementação simplificada para demo)
+                await createOceanSystem();
+                
+                // Configurar controles
+                setupControls();
+                
+                // Configurar eventos
+                setupEventListeners();
+                
+                // Ocultar loading screen
+                hideLoadingScreen();
+                
+                isInitialized = true;
+                console.log('✅ Demo inicializado com sucesso');
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar demo:', error);
+                showError('Erro ao carregar o sistema Niagara');
+            }
+        }
+        
+        async function createOceanSystem() {
+            console.log('🌊 Criando sistema oceânico...');
+            
+            // Para esta demonstração, vamos criar uma visualização Three.js básica
+            // Em produção, aqui seria usado o EnhancedOceanNiagaraIntegration
+            
+            const container = document.getElementById('ocean-container');
+            
+            // Scene
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x001122);
+            scene.fog = new THREE.FogExp2(0x001122, 0.002);
+            
+            // Camera
+            const camera = new THREE.PerspectiveCamera(
+                75,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                2000
+            );
+            camera.position.set(0, 20, 50);
+            
+            // Renderer
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            
+            container.appendChild(renderer.domElement);
+            
+            // Oceano básico (placeholder para o sistema completo)
+            const oceanGeometry = new THREE.PlaneGeometry(400, 400, 256, 256);
+            const oceanMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 },
+                    waveHeight: { value: config.waveHeight },
+                    waveSpeed: { value: config.waveSpeed },
+                    causticsIntensity: { value: config.causticsIntensity }
+                },
+                vertexShader: `
+                    uniform float time;
+                    uniform float waveHeight;
+                    uniform float waveSpeed;
+                    varying vec2 vUv;
+                    varying vec3 vPosition;
+                    
+                    void main() {
+                        vUv = uv;
+                        vec3 pos = position;
+                        
+                        // Ondas simples
+                        pos.z += sin(pos.x * 0.02 + time * waveSpeed) * waveHeight;
+                        pos.z += cos(pos.y * 0.015 + time * waveSpeed * 0.8) * waveHeight * 0.7;
+                        pos.z += sin(pos.x * 0.03 + pos.y * 0.02 + time * waveSpeed * 1.2) * waveHeight * 0.3;
+                        
+                        vPosition = pos;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float time;
+                    uniform float causticsIntensity;
+                    varying vec2 vUv;
+                    varying vec3 vPosition;
+                    
+                    void main() {
+                        vec3 color = vec3(0.1, 0.3, 0.8);
+                        
+                        // Caustics simples
+                        float caustics = sin(vUv.x * 10.0 + time) * cos(vUv.y * 8.0 + time * 0.8);
+                        caustics = max(0.0, caustics) * causticsIntensity * 0.3;
+                        color += vec3(0.4, 0.8, 1.0) * caustics;
+                        
+                        // Profundidade
+                        float depth = clamp(-vPosition.z / 20.0, 0.0, 1.0);
+                        color = mix(color, vec3(0.0, 0.1, 0.3), depth);
+                        
+                        gl_FragColor = vec4(color, 0.8);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            
+            const oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+            oceanMesh.rotation.x = -Math.PI / 2;
+            scene.add(oceanMesh);
+            
+            // Iluminação
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            sunLight.position.set(50, 100, 50);
+            scene.add(sunLight);
+            
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.3);
+            scene.add(ambientLight);
+            
+            // Controles
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 10;
+            controls.maxDistance = 200;
+            controls.maxPolarAngle = Math.PI / 2;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.5;
+            
+            // Sistema de partículas simples (placeholder)
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = config.maxParticles / 10; // Reduzido para demo
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 200;
+                positions[i * 3 + 1] = Math.random() * -50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x60a5fa,
+                size: 0.5,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            // Clock para animação
+            const clock = new THREE.Clock();
+            let frameCount = 0;
+            let lastTime = performance.now();
+            
+            // Loop de animação
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                const deltaTime = clock.getDelta();
+                const elapsedTime = clock.getElapsedTime();
+                
+                // Atualizar oceano
+                oceanMaterial.uniforms.time.value = elapsedTime;
+                
+                // Atualizar partículas
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3 + 1] += 0.1; // Movimento ascendente
+                    if (positions[i * 3 + 1] > 0) {
+                        positions[i * 3 + 1] = -50;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+                
+                // Rotacionar partículas
+                particles.rotation.y += 0.001;
+                
+                // Atualizar controles
+                controls.update();
+                
+                // Render
+                renderer.render(scene, camera);
+                
+                // Atualizar estatísticas
+                updateStats();
+            }
+            
+            function updateStats() {
+                frameCount++;
+                const now = performance.now();
+                
+                if (now - lastTime >= 1000) {
+                    const fps = Math.round((frameCount * 1000) / (now - lastTime));
+                    document.getElementById('fps-counter').textContent = `FPS: ${fps}`;
+                    document.getElementById('particle-counter').textContent = `Partículas: ${config.maxParticles}`;
+                    
+                    if (performance.memory) {
+                        const memory = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                        document.getElementById('memory-usage').textContent = `Memória: ${memory}MB`;
+                    }
+                    
+                    frameCount = 0;
+                    lastTime = now;
+                }
+            }
+            
+            // Responsividade
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            // Armazenar referências
+            oceanSystem = {
+                scene,
+                camera,
+                renderer,
+                controls,
+                oceanMaterial,
+                particles,
+                animate
+            };
+            
+            // Iniciar animação
+            animate();
+        }
+        
+        function setupControls() {
+            console.log('🎛️ Configurando controles...');
+            
+            // Wave Height
+            document.getElementById('wave-height').addEventListener('input', (e) => {
+                config.waveHeight = parseFloat(e.target.value);
+                if (oceanSystem) {
+                    oceanSystem.oceanMaterial.uniforms.waveHeight.value = config.waveHeight;
+                }
+            });
+            
+            // Wave Speed
+            document.getElementById('wave-speed').addEventListener('input', (e) => {
+                config.waveSpeed = parseFloat(e.target.value);
+                if (oceanSystem) {
+                    oceanSystem.oceanMaterial.uniforms.waveSpeed.value = config.waveSpeed;
+                }
+            });
+            
+            // Caustics Intensity
+            document.getElementById('caustics-intensity').addEventListener('input', (e) => {
+                config.causticsIntensity = parseFloat(e.target.value);
+                if (oceanSystem) {
+                    oceanSystem.oceanMaterial.uniforms.causticsIntensity.value = config.causticsIntensity;
+                }
+            });
+            
+            // Performance Mode
+            document.getElementById('performance-mode').addEventListener('change', (e) => {
+                config.performanceMode = e.target.value;
+                updateQualityIndicator();
+                
+                // Ajustar partículas baseado na performance
+                const particleCounts = {
+                    'low': 5000,
+                    'medium': 10000,
+                    'high': 15000,
+                    'ultra': 25000
+                };
+                config.maxParticles = particleCounts[config.performanceMode];
+                document.getElementById('particle-count').value = config.maxParticles;
+            });
+            
+            // Reset Camera
+            document.getElementById('reset-camera').addEventListener('click', () => {
+                if (oceanSystem) {
+                    oceanSystem.camera.position.set(0, 20, 50);
+                    oceanSystem.controls.target.set(0, 0, 0);
+                    oceanSystem.controls.update();
+                }
+            });
+            
+            // Toggle Auto Rotate
+            document.getElementById('toggle-auto-rotate').addEventListener('click', () => {
+                if (oceanSystem) {
+                    oceanSystem.controls.autoRotate = !oceanSystem.controls.autoRotate;
+                    const btn = document.getElementById('toggle-auto-rotate');
+                    btn.textContent = oceanSystem.controls.autoRotate ? '⏸️ Parar Rotação' : '🔄 Auto Rotação';
+                }
+            });
+        }
+        
+        function setupEventListeners() {
+            console.log('📡 Configurando event listeners...');
+            
+            // Fullscreen
+            document.getElementById('fullscreen-btn').addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'f':
+                    case 'F':
+                        document.getElementById('fullscreen-btn').click();
+                        break;
+                    case 'r':
+                    case 'R':
+                        document.getElementById('reset-camera').click();
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        document.getElementById('toggle-auto-rotate').click();
+                        break;
+                }
+            });
+        }
+        
+        function updateQualityIndicator() {
+            const indicator = document.getElementById('quality-indicator');
+            const mode = config.performanceMode.toUpperCase();
+            
+            indicator.textContent = `QUALIDADE: ${mode}`;
+            indicator.className = 'quality-indicator';
+            
+            switch(config.performanceMode) {
+                case 'low':
+                    indicator.classList.add('quality-low');
+                    break;
+                case 'medium':
+                    indicator.classList.add('quality-medium');
+                    break;
+                case 'high':
+                case 'ultra':
+                    indicator.classList.add('quality-high');
+                    break;
+            }
+        }
+        
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+        
+        function showError(message) {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.innerHTML = `
+                <div style="color: #ef4444; font-size: 24px; margin-bottom: 20px;">❌</div>
+                <div style="color: #ef4444; font-size: 18px; font-weight: 600; margin-bottom: 10px;">Erro</div>
+                <div style="color: #94a3b8; font-size: 14px;">${message}</div>
+            `;
+        }
+        
+        // Inicializar quando a página carregar
+        window.addEventListener('load', initializeDemo);
+        
+        // Log de boas-vindas
+        console.log(`
+🌊 BGAPP NIAGARA UNDERWATER EFFECTS DEMO
+========================================
+
+Bem-vindo à demonstração dos efeitos subaquáticos cinematográficos do BGAPP!
+
+Inspirado no Unreal Engine e nas técnicas de simulação oceânica:
+- Cascatas subaquáticas tipo "Niagara Falls"
+- Sistemas de partículas avançados
+- Iluminação volumétrica
+- Caustics dinâmicas
+- Correntes oceânicas realísticas
+
+Controles:
+- F: Tela cheia
+- R: Resetar câmera  
+- Espaço: Alternar auto-rotação
+- Mouse: Navegar pela cena
+
+Desenvolvido por MareDatum - BGAPP Team
+        `);
+    </script>
+</body>
+</html>

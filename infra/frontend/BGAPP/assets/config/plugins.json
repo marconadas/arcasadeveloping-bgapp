@@ -1,0 +1,444 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-01T16:00:00Z",
+  "config": {
+    "autoDiscovery": true,
+    "healthCheckInterval": 30000,
+    "pluginTimeout": 10000,
+    "maxRetries": 3,
+    "circuitBreakerThreshold": 5,
+    "enableFallbacks": true,
+    "logLevel": "info"
+  },
+  "plugins": {
+    "obis": {
+      "id": "obis",
+      "name": "OBIS",
+      "version": "1.2.0",
+      "type": "Biodiversidade",
+      "description": "Ocean Biodiversity Information System",
+      "module": "src.bgapp.ingest.obis",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 1,
+      "baseUrl": "https://api.obis.org/v3",
+      "fallback": "admin-api",
+      "endpoints": {
+        "occurrences": "/occurrence",
+        "species": "/taxon",
+        "datasets": "/dataset"
+      },
+      "healthCheck": "/",
+      "timeout": 15000,
+      "retries": 3,
+      "circuitBreakerThreshold": 5,
+      "rateLimit": {
+        "requests": 100,
+        "window": 60000
+      },
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 300000
+      },
+      "quality": {
+        "sla": 99.5,
+        "maxResponseTime": 5000,
+        "monitoring": true
+      }
+    },
+    "cmems": {
+      "id": "cmems",
+      "name": "CMEMS",
+      "version": "1.1.0",
+      "type": "Oceanografia",
+      "description": "Copernicus Marine Environment Monitoring Service",
+      "module": "src.bgapp.ingest.cmems_chla",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 2,
+      "baseUrl": "https://my.cmems-du.eu/motu-web/Motu",
+      "fallback": "admin-api",
+      "endpoints": {
+        "chlorophyll": "/productdownload",
+        "sst": "/productdownload",
+        "currents": "/productdownload"
+      },
+      "healthCheck": "/ping",
+      "timeout": 30000,
+      "retries": 2,
+      "circuitBreakerThreshold": 3,
+      "authentication": {
+        "type": "basic",
+        "credentials": "env:CMEMS_USER:CMEMS_PASS"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 600000
+      },
+      "quality": {
+        "sla": 95.0,
+        "maxResponseTime": 15000,
+        "monitoring": true
+      }
+    },
+    "cdse_sentinel": {
+      "id": "cdse_sentinel",
+      "name": "CDSE Sentinel",
+      "version": "2.0.0",
+      "type": "Satélite",
+      "description": "Copernicus Data Space Ecosystem - Sentinel via openEO",
+      "module": "src.bgapp.ingest.cdse_sentinel",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 3,
+      "isNew": true,
+      "baseUrl": "https://openeo.dataspace.copernicus.eu/openeo/1.2.0",
+      "fallback": "admin-api",
+      "endpoints": {
+        "collections": "/collections",
+        "processes": "/processes",
+        "jobs": "/jobs"
+      },
+      "healthCheck": "/",
+      "timeout": 45000,
+      "retries": 2,
+      "circuitBreakerThreshold": 4,
+      "authentication": {
+        "type": "oauth2",
+        "tokenUrl": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+        "credentials": "env:CDSE_CLIENT_ID:CDSE_CLIENT_SECRET"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 900000
+      },
+      "quality": {
+        "sla": 98.0,
+        "maxResponseTime": 20000,
+        "monitoring": true
+      }
+    },
+    "modis": {
+      "id": "modis",
+      "name": "MODIS",
+      "version": "1.0.0",
+      "type": "Satélite",
+      "description": "MODIS NDVI/EVI vegetation indices",
+      "module": "src.bgapp.ingest.modis_ndvi",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 4,
+      "baseUrl": "https://modis.gsfc.nasa.gov/data/dataprod",
+      "fallback": "admin-api",
+      "endpoints": {
+        "ndvi": "/mod13",
+        "evi": "/mod13",
+        "lst": "/mod11"
+      },
+      "healthCheck": "/",
+      "timeout": 20000,
+      "retries": 3,
+      "circuitBreakerThreshold": 5,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 1800000
+      },
+      "quality": {
+        "sla": 97.0,
+        "maxResponseTime": 10000,
+        "monitoring": true
+      }
+    },
+    "erddap": {
+      "id": "erddap",
+      "name": "ERDDAP",
+      "version": "1.0.0",
+      "type": "Oceanografia",
+      "description": "NOAA ERDDAP - Environmental Research Division Data Access Program",
+      "module": "src.bgapp.ingest.erddap_sst",
+      "autoLoad": false,
+      "enabled": false,
+      "priority": 5,
+      "baseUrl": "https://coastwatch.pfeg.noaa.gov/erddap",
+      "fallback": "admin-api",
+      "endpoints": {
+        "griddap": "/griddap",
+        "tabledap": "/tabledap",
+        "info": "/info"
+      },
+      "healthCheck": "/version",
+      "timeout": 25000,
+      "retries": 2,
+      "circuitBreakerThreshold": 3,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 600000
+      },
+      "quality": {
+        "sla": 90.0,
+        "maxResponseTime": 15000,
+        "monitoring": false,
+        "reason": "Service temporarily unavailable"
+      }
+    },
+    "fisheries": {
+      "id": "fisheries",
+      "name": "Fisheries Angola",
+      "version": "1.0.0",
+      "type": "Pesca",
+      "description": "Estatísticas pesqueiras de Angola",
+      "module": "src.bgapp.ingest.fisheries_angola",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 6,
+      "baseUrl": "http://localhost:8000/admin-api",
+      "fallback": null,
+      "endpoints": {
+        "statistics": "/fisheries/statistics",
+        "catches": "/fisheries/catches",
+        "vessels": "/fisheries/vessels"
+      },
+      "healthCheck": "/fisheries/health",
+      "timeout": 10000,
+      "retries": 2,
+      "circuitBreakerThreshold": 3,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 1800000
+      },
+      "quality": {
+        "sla": 99.0,
+        "maxResponseTime": 5000,
+        "monitoring": true
+      }
+    },
+    "copernicus_real": {
+      "id": "copernicus_real",
+      "name": "Copernicus Real",
+      "version": "1.0.0",
+      "type": "Tempo Real",
+      "description": "Dados em tempo real do Copernicus",
+      "module": "src.bgapp.ingest.copernicus_real",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 7,
+      "baseUrl": "https://marine.copernicus.eu/services",
+      "fallback": "admin-api",
+      "endpoints": {
+        "current": "/current-conditions",
+        "forecast": "/forecasts",
+        "alerts": "/alerts"
+      },
+      "healthCheck": "/status",
+      "timeout": 8000,
+      "retries": 3,
+      "circuitBreakerThreshold": 4,
+      "authentication": {
+        "type": "api_key",
+        "credentials": "env:COPERNICUS_API_KEY"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 300000
+      },
+      "quality": {
+        "sla": 99.9,
+        "maxResponseTime": 3000,
+        "monitoring": true
+      }
+    },
+    "cds_era5": {
+      "id": "cds_era5",
+      "name": "CDS ERA5",
+      "version": "1.0.0",
+      "type": "Clima",
+      "description": "Climate Data Store - ERA5 reanalysis",
+      "module": "src.bgapp.ingest.cds_era5",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 8,
+      "baseUrl": "https://cds.climate.copernicus.eu/api/v2",
+      "fallback": "admin-api",
+      "endpoints": {
+        "retrieve": "/resources",
+        "status": "/tasks",
+        "download": "/download"
+      },
+      "healthCheck": "/status",
+      "timeout": 60000,
+      "retries": 1,
+      "circuitBreakerThreshold": 2,
+      "authentication": {
+        "type": "api_key",
+        "credentials": "env:CDS_API_KEY"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 3600000
+      },
+      "quality": {
+        "sla": 95.0,
+        "maxResponseTime": 30000,
+        "monitoring": true
+      }
+    },
+    "angola_sources": {
+      "id": "angola_sources",
+      "name": "Angola Sources",
+      "version": "1.0.0",
+      "type": "Nacional",
+      "description": "Fontes de dados nacionais angolanas",
+      "module": "src.bgapp.ingest.angola_sources",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 9,
+      "baseUrl": "http://localhost:8000/admin-api",
+      "fallback": null,
+      "endpoints": {
+        "inip": "/angola/inip",
+        "uan_marine": "/angola/uan",
+        "minagrip": "/angola/minagrip"
+      },
+      "healthCheck": "/angola/health",
+      "timeout": 15000,
+      "retries": 2,
+      "circuitBreakerThreshold": 3,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 1800000
+      },
+      "quality": {
+        "sla": 95.0,
+        "maxResponseTime": 8000,
+        "monitoring": true
+      }
+    },
+    "admin-api": {
+      "id": "admin-api",
+      "name": "Admin API",
+      "version": "1.0.0",
+      "type": "Core",
+      "description": "API administrativa principal",
+      "module": "core",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 0,
+      "baseUrl": "http://localhost:8000/admin-api",
+      "fallback": null,
+      "endpoints": {
+        "services": "/services/status",
+        "connectors": "/connectors",
+        "collections": "/collections",
+        "health": "/health"
+      },
+      "healthCheck": "/health",
+      "timeout": 5000,
+      "retries": 1,
+      "circuitBreakerThreshold": 10,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": false
+      },
+      "quality": {
+        "sla": 99.9,
+        "maxResponseTime": 2000,
+        "monitoring": true,
+        "critical": true
+      }
+    },
+    "pygeoapi": {
+      "id": "pygeoapi",
+      "name": "PyGeoAPI",
+      "version": "1.0.0",
+      "type": "Geospatial",
+      "description": "OGC API Features implementation",
+      "module": "core",
+      "autoLoad": true,
+      "enabled": true,
+      "priority": 1,
+      "baseUrl": "http://localhost:5080",
+      "fallback": "admin-api",
+      "endpoints": {
+        "collections": "/collections",
+        "conformance": "/conformance",
+        "openapi": "/openapi"
+      },
+      "healthCheck": "/",
+      "timeout": 8000,
+      "retries": 2,
+      "circuitBreakerThreshold": 5,
+      "authentication": {
+        "type": "none"
+      },
+      "cache": {
+        "enabled": true,
+        "ttl": 600000
+      },
+      "quality": {
+        "sla": 98.0,
+        "maxResponseTime": 5000,
+        "monitoring": true,
+        "critical": false
+      }
+    }
+  },
+  "middleware": [
+    {
+      "name": "authentication",
+      "enabled": true,
+      "priority": 1
+    },
+    {
+      "name": "rateLimit",
+      "enabled": true,
+      "priority": 2
+    },
+    {
+      "name": "cache",
+      "enabled": true,
+      "priority": 3
+    },
+    {
+      "name": "logging",
+      "enabled": true,
+      "priority": 4
+    },
+    {
+      "name": "metrics",
+      "enabled": true,
+      "priority": 5
+    }
+  ],
+  "quality": {
+    "monitoring": {
+      "enabled": true,
+      "interval": 30000,
+      "alerting": true
+    },
+    "sla": {
+      "default": 95.0,
+      "critical": 99.0
+    },
+    "performance": {
+      "maxResponseTime": 10000,
+      "alertThreshold": 15000
+    }
+  }
+}

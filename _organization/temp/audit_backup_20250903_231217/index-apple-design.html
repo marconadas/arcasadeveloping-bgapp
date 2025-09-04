@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP - Design Apple</title>
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; 
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+                           https://unpkg.com 
+                           https://cdnjs.cloudflare.com; 
+                 style-src 'self' 'unsafe-inline' 
+                          https://unpkg.com 
+                          https://netdna.bootstrapcdn.com; 
+                 font-src 'self' 
+                          https://unpkg.com 
+                          https://netdna.bootstrapcdn.com 
+                          data:; 
+                 img-src 'self' data: blob: 
+                        https://tiles.maps.eox.at 
+                        https://services.sentinel-hub.com 
+                        https://tiles.arcgis.com
+                        https://*.tile.openstreetmap.org
+                        https://*.basemaps.cartocdn.com
+                        https://server.arcgisonline.com; 
+                 connect-src 'self' 
+                            https://tiles.maps.eox.at 
+                            https://services.sentinel-hub.com 
+                            https://copernicus.eu 
+                            wss:;">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    /* APPLE DESIGN SYSTEM */
+    :root {
+      /* Apple Color Palette */
+      --apple-blue: #007AFF;
+      --apple-green: #34C759;
+      --apple-orange: #FF9500;
+      --apple-red: #FF3B30;
+      --apple-purple: #AF52DE;
+      --apple-pink: #FF2D92;
+      --apple-yellow: #FFCC00;
+      --apple-teal: #5AC8FA;
+      
+      /* Grays */
+      --gray-1: #8E8E93;
+      --gray-2: #AEAEB2;
+      --gray-3: #C7C7CC;
+      --gray-4: #D1D1D6;
+      --gray-5: #E5E5EA;
+      --gray-6: #F2F2F7;
+      
+      /* Dark mode */
+      --dark-1: #1C1C1E;
+      --dark-2: #2C2C2E;
+      --dark-3: #3A3A3C;
+      --dark-4: #48484A;
+      --dark-5: #636366;
+      --dark-6: #8E8E93;
+      
+      /* Semantic colors */
+      --background: #FFFFFF;
+      --surface: rgba(255, 255, 255, 0.8);
+      --surface-elevated: rgba(255, 255, 255, 0.95);
+      --text-primary: #000000;
+      --text-secondary: var(--gray-1);
+      --border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.12);
+      
+      /* Typography */
+      --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      
+      /* Border radius */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      
+      /* Transitions */
+      --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-smooth: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: var(--dark-1);
+        --surface: rgba(28, 28, 30, 0.8);
+        --surface-elevated: rgba(44, 44, 46, 0.95);
+        --text-primary: #FFFFFF;
+        --text-secondary: var(--dark-6);
+        --border: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    /* Base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: var(--font-system);
+      background: var(--background);
+      color: var(--text-primary);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Map container - full screen */
+    #map {
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1 !important;
+    }
+    
+    /* Floating control panel */
+    #control-panel {
+      position: fixed;
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      width: 320px;
+      max-height: calc(100vh - 48px);
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      border: 1px solid var(--border);
+      z-index: 1000;
+      transform: translateX(0);
+      transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #control-panel.collapsed {
+      transform: translateX(-280px);
+      opacity: 0.9;
+    }
+    
+    /* Panel header */
+    .panel-header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    /* Toggle button */
+    .panel-toggle {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--gray-5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-secondary);
+    }
+    
+    .panel-toggle:hover {
+      background: var(--gray-4);
+      transform: scale(1.05);
+    }
+    
+    .panel-toggle:active {
+      transform: scale(0.95);
+    }
+    
+    /* Panel content */
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md);
+    }
+    
+    /* Sections */
+    .control-section {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .section-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    /* Button groups */
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    /* Buttons */
+    .control-btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      min-height: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .control-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .control-btn:hover::before {
+      opacity: 0.1;
+    }
+    
+    .control-btn:active {
+      transform: scale(0.95);
+    }
+    
+    /* Button variants */
+    .btn-ocean {
+      background: var(--apple-teal);
+      color: white;
+    }
+    
+    .btn-meteo {
+      background: var(--apple-orange);
+      color: white;
+    }
+    
+    .btn-control {
+      background: var(--gray-5);
+      color: var(--text-primary);
+    }
+    
+    .btn-primary {
+      background: var(--apple-blue);
+      color: white;
+    }
+    
+    .btn-danger {
+      background: var(--apple-red);
+      color: white;
+    }
+    
+    .control-btn.active {
+      background: var(--apple-green) !important;
+      color: white;
+      box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
+    }
+    
+    /* Date input */
+    .date-input {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .date-input:focus {
+      outline: none;
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+    
+    /* Status indicator */
+    .status-section {
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--apple-green);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Floating toggle button (when panel is collapsed) */
+    #floating-toggle {
+      position: fixed;
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 50%;
+      box-shadow: var(--shadow-elevated);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      z-index: 1001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      font-size: 20px;
+      transition: all var(--transition-fast);
+    }
+    
+    #floating-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    #floating-toggle:active {
+      transform: scale(0.95);
+    }
+    
+    #floating-toggle.show {
+      display: flex;
+    }
+    
+    /* Legend */
+    .legend {
+      position: fixed;
+      bottom: var(--spacing-lg);
+      right: var(--spacing-lg);
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: var(--spacing-md);
+      font-size: 12px;
+      max-width: 200px;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .legend.show {
+      display: block;
+      animation: slideInUp 0.3s ease-out;
+    }
+    
+    @keyframes slideInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Keyboard shortcuts indicator */
+    .keyboard-hint {
+      position: fixed;
+      bottom: var(--spacing-lg);
+      left: var(--spacing-lg);
+      background: var(--surface-elevated);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 11px;
+      color: var(--text-secondary);
+      z-index: 1000;
+      opacity: 0;
+      animation: fadeInOut 4s ease-in-out;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; }
+      20%, 80% { opacity: 1; }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      #control-panel {
+        width: calc(100vw - 32px);
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        top: var(--spacing-md);
+        max-height: 60vh;
+      }
+      
+      #control-panel.collapsed {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      
+      #floating-toggle {
+        top: var(--spacing-md);
+        left: var(--spacing-md);
+      }
+      
+      .button-group {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Focus styles */
+    .control-btn:focus,
+    .panel-toggle:focus,
+    #floating-toggle:focus {
+      outline: 2px solid var(--apple-blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Full screen map -->
+  <div id="map"></div>
+  
+  <!-- Floating control panel -->
+  <div id="control-panel">
+    <div class="panel-header">
+      <div class="panel-title">
+        🌊 BGAPP
+      </div>
+      <button class="panel-toggle" id="panel-toggle" aria-label="Recolher painel">
+        <span>←</span>
+      </button>
+    </div>
+    
+    <div class="panel-content">
+      <!-- Date filter section -->
+      <div class="control-section">
+        <div class="section-header">
+          📅 Filtros Temporais
+        </div>
+        <input type="date" class="date-input" id="dateMin" value="2024-06-01">
+        <button class="control-btn btn-primary" id="apply">
+          🔍 Aplicar Filtro
+        </button>
+      </div>
+      
+      <!-- Oceanographic variables -->
+      <div class="control-section">
+        <div class="section-header">
+          🌡️ Variáveis Oceanográficas
+        </div>
+        <div class="button-group">
+          <button class="control-btn btn-ocean" id="btn-sst">
+            🌡️ SST
+          </button>
+          <button class="control-btn btn-ocean" id="btn-salinity">
+            🧂 Salinidade
+          </button>
+          <button class="control-btn btn-ocean" id="btn-chlorophyll">
+            🌿 Clorofila
+          </button>
+        </div>
+      </div>
+      
+      <!-- Vector fields -->
+      <div class="control-section">
+        <div class="section-header">
+          💨 Campos Vetoriais
+        </div>
+        <div class="button-group">
+          <button class="control-btn btn-meteo" id="btn-currents">
+            🌊 Correntes
+          </button>
+          <button class="control-btn btn-meteo" id="btn-wind">
+            💨 Vento
+          </button>
+        </div>
+      </div>
+      
+      <!-- Controls -->
+      <div class="control-section">
+        <div class="section-header">
+          ⚙️ Controles
+        </div>
+        <div class="button-group">
+          <button class="control-btn btn-control" id="btn-clear">
+            🗑️ Limpar
+          </button>
+          <button class="control-btn btn-control" id="btn-animate">
+            <span id="animate-icon">▶️</span>
+            <span id="animate-text">Animar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="status-section">
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span id="system-status">Sistema Online</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Floating toggle button (shown when panel is collapsed) -->
+  <button id="floating-toggle" aria-label="Mostrar painel de controles">
+    ⚙️
+  </button>
+  
+  <!-- Legend -->
+  <div class="legend" id="legend">
+    <h4 style="margin-bottom: 8px;">Legenda</h4>
+    <div id="legend-content"></div>
+  </div>
+  
+  <!-- Keyboard shortcuts hint -->
+  <div class="keyboard-hint">
+    Pressione 'H' para ajuda ou 'Espaço' para recolher painel
+  </div>
+  
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/zee_angola_official.js?v=fresh"></script>
+  
+  <script>
+    console.log('🚀 BGAPP Apple Design - Inicialização');
+    
+    let map;
+    let panelCollapsed = false;
+    
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('✅ DOM Ready - Apple Design');
+      
+      initializeMap();
+      setupControls();
+      setupKeyboardShortcuts();
+      setupAccessibility();
+    });
+    
+    function initializeMap() {
+      try {
+        // Create map
+        map = L.map('map', {
+          center: [-12.5, 13.5],
+          zoom: 6,
+          zoomControl: true,
+          attributionControl: true
+        });
+        
+        // Add OpenStreetMap
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 19,
+          crossOrigin: true
+        });
+        
+        osmLayer.addTo(map);
+        console.log('✅ Mapa criado e OSM adicionado');
+        
+        // Add ZEE layers after delay
+        setTimeout(() => {
+          addZEELayers();
+        }, 1000);
+        
+        // Add test marker
+        setTimeout(() => {
+          const marker = L.marker([-12.5, 13.5]).addTo(map);
+          marker.bindPopup('🎨 Design Apple Aplicado!<br>✨ Interface Premium');
+        }, 1500);
+        
+      } catch (error) {
+        console.error('❌ Erro ao criar mapa:', error);
+      }
+    }
+    
+    function addZEELayers() {
+      try {
+        if (typeof angolaZEEOfficial !== 'undefined') {
+          L.polygon(angolaZEEOfficial, {
+            color: '#007AFF',
+            weight: 2,
+            fillOpacity: 0.15,
+            fillColor: '#007AFF',
+            opacity: 0.8
+          }).addTo(map).bindPopup('🌊 ZEE Angola - OFICIAL');
+          
+          console.log('✅ ZEE Angola adicionada');
+        }
+        
+        if (typeof cabindaZEEOfficial !== 'undefined') {
+          L.polygon(cabindaZEEOfficial, {
+            color: '#AF52DE',
+            weight: 2,
+            fillOpacity: 0.15,
+            fillColor: '#AF52DE',
+            opacity: 0.8
+          }).addTo(map).bindPopup('🏛️ ZEE Cabinda - OFICIAL');
+          
+          console.log('✅ ZEE Cabinda adicionada');
+        }
+      } catch (error) {
+        console.warn('⚠️ Erro ao adicionar ZEE layers:', error);
+      }
+    }
+    
+    function setupControls() {
+      const panel = document.getElementById('control-panel');
+      const panelToggle = document.getElementById('panel-toggle');
+      const floatingToggle = document.getElementById('floating-toggle');
+      
+      // Panel toggle functionality
+      panelToggle.addEventListener('click', () => {
+        togglePanel();
+      });
+      
+      floatingToggle.addEventListener('click', () => {
+        togglePanel();
+      });
+      
+      // Button controls
+      const buttons = [
+        'apply', 'btn-sst', 'btn-salinity', 'btn-chlorophyll',
+        'btn-currents', 'btn-wind', 'btn-clear', 'btn-animate'
+      ];
+      
+      buttons.forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+          button.addEventListener('click', (e) => {
+            handleButtonClick(buttonId, e.target);
+          });
+        }
+      });
+    }
+    
+    function togglePanel() {
+      const panel = document.getElementById('control-panel');
+      const floatingToggle = document.getElementById('floating-toggle');
+      const panelToggle = document.getElementById('panel-toggle');
+      
+      panelCollapsed = !panelCollapsed;
+      
+      if (panelCollapsed) {
+        panel.classList.add('collapsed');
+        floatingToggle.classList.add('show');
+        panelToggle.innerHTML = '<span>→</span>';
+        
+        // Trigger map resize after animation
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 300);
+      } else {
+        panel.classList.remove('collapsed');
+        floatingToggle.classList.remove('show');
+        panelToggle.innerHTML = '<span>←</span>';
+        
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 300);
+      }
+      
+      console.log(`📱 Painel ${panelCollapsed ? 'recolhido' : 'expandido'}`);
+    }
+    
+    function handleButtonClick(buttonId, button) {
+      if (buttonId === 'btn-clear') {
+        // Clear all active buttons
+        document.querySelectorAll('.control-btn.active').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        console.log('🗑️ Controles limpos');
+        
+      } else if (buttonId === 'btn-animate') {
+        // Toggle animation
+        button.classList.toggle('active');
+        const icon = document.getElementById('animate-icon');
+        const text = document.getElementById('animate-text');
+        const isActive = button.classList.contains('active');
+        
+        if (isActive) {
+          icon.textContent = '⏸️';
+          text.textContent = 'Pausar';
+        } else {
+          icon.textContent = '▶️';
+          text.textContent = 'Animar';
+        }
+        console.log(`🎬 Animação ${isActive ? 'iniciada' : 'pausada'}`);
+        
+      } else {
+        // Toggle regular button
+        button.classList.toggle('active');
+        console.log(`🎯 ${buttonId} toggled:`, button.classList.contains('active'));
+      }
+      
+      // Add haptic feedback (if supported)
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }
+    
+    function setupKeyboardShortcuts() {
+      document.addEventListener('keydown', (e) => {
+        switch(e.key.toLowerCase()) {
+          case ' ':
+            e.preventDefault();
+            togglePanel();
+            break;
+          case 'h':
+            showHelp();
+            break;
+          case 'escape':
+            if (!panelCollapsed) {
+              togglePanel();
+            }
+            break;
+        }
+      });
+    }
+    
+    function setupAccessibility() {
+      // Add aria-labels and improve keyboard navigation
+      const buttons = document.querySelectorAll('.control-btn');
+      buttons.forEach(button => {
+        button.setAttribute('tabindex', '0');
+        button.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            button.click();
+          }
+        });
+      });
+    }
+    
+    function showHelp() {
+      const helpText = `
+        🎹 Atalhos de Teclado:
+        • Espaço - Recolher/Expandir painel
+        • H - Mostrar ajuda
+        • Esc - Fechar painel
+        
+        🖱️ Gestos:
+        • Clique nos botões para ativar/desativar
+        • Arraste o mapa para navegar
+        • Scroll para zoom
+      `;
+      
+      alert(helpText);
+    }
+    
+    // Auto-hide panel on mobile after inactivity
+    if (window.innerWidth <= 768) {
+      let inactivityTimer;
+      const resetTimer = () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+          if (!panelCollapsed) {
+            togglePanel();
+          }
+        }, 5000);
+      };
+      
+      document.addEventListener('touchstart', resetTimer);
+      document.addEventListener('touchmove', resetTimer);
+    }
+  </script>
+</body>
+</html>

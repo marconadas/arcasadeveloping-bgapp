@@ -1,0 +1,96 @@
+# Dependências principais
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+psutil==5.9.6
+psycopg2-binary==2.9.9
+asyncpg==0.29.0
+requests==2.31.0
+pydantic>=2.9.1
+python-multipart==0.0.6
+PyYAML==6.0.1
+aiohttp>=3.9.4
+numpy==1.24.3
+
+# Dependências de segurança
+PyJWT==2.8.0
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+bcrypt==4.1.2
+
+# Logging estruturado
+structlog==23.2.0
+python-json-logger==2.0.7
+
+# Rate limiting e middleware
+slowapi==0.1.9
+redis==5.0.1
+
+# Cache e processamento assíncrono
+aioredis==2.0.1
+celery==5.3.4
+flower==2.0.1
+
+# Monitorização e alertas
+prometheus-client==0.19.0
+# alertmanager-client==0.1.0  # Pacote não disponível
+
+# Backup e disaster recovery
+boto3==1.34.0
+botocore==1.34.0
+
+# Machine Learning
+scikit-learn==1.3.0
+pandas==2.0.3
+numpy==1.24.3
+joblib==1.3.2
+xgboost==1.7.6
+# tensorflow==2.13.0  # Opcional - comentado para reduzir tamanho
+
+# API Gateway
+httpx==0.25.0
+starlette==0.27.0
+
+# Enterprise Authentication
+PyJWT==2.8.0
+bcrypt==4.1.2
+pyotp==2.9.0
+qrcode[pil]==7.4.2
+email-validator==2.1.0
+
+# Validação e configuração
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+
+# Segurança adicional
+cryptography>=42.0.0
+sqlalchemy==2.0.23
+
+# Scheduler
+croniter==6.0.0
+
+# Dependências dos conectores de ingestão
+pandas>=1.5.0
+erddapy>=2.0.0
+cdsapi>=0.6.1
+xarray>=2022.1.0
+netcdf4>=1.6.0
+
+# Bibliotecas específicas para ingestão de dados
+openeo>=0.22.0  # Para CDSE Sentinel
+copernicusmarine>=1.2.3,<3.0.0  # Para CMEMS
+
+# Dependências científicas essenciais
+shapely>=2.0.0
+matplotlib>=3.7.0
+scipy>=1.10.0
+networkx>=3.0
+pandas==2.0.3
+
+# Dependências geoespaciais (que NÃO precisam de GDAL)
+pyproj>=3.6.0
+
+# Dependências para validação de dados
+jsonschema>=4.19.0
+
+# Instalar geopandas SEM fiona (evita GDAL)
+# Nota: geopandas será instalado manualmente sem dependências GDAL

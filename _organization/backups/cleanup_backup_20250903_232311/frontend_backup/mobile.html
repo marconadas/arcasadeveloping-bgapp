@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BGAPP Mobile - Campo Angola</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    * { box-sizing: border-box; }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 0; 
+      padding: 0;
+      background: #f8f9fa;
+      overflow-x: hidden;
+    }
+    
+    /* Header fixo */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 12px 16px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header .subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+      margin: 2px 0 0 0;
+    }
+    
+    /* Status de conectividade */
+    .connection-status {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .connection-status.online { background: #28a745; }
+    .connection-status.offline { background: #dc3545; }
+    
+    /* Container principal */
+    .main-container {
+      margin-top: 70px;
+      padding-bottom: 80px;
+    }
+    
+    /* Tabs de navegação */
+    .tab-nav {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid #dee2e6;
+      position: sticky;
+      top: 70px;
+      z-index: 999;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      color: #6c757d;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+    
+    .tab-btn.active {
+      color: #1e3c72;
+      border-bottom-color: #1e3c72;
+      background: #f8f9fa;
+    }
+    
+    /* Conteúdo das tabs */
+    .tab-content {
+      display: none;
+      padding: 16px;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Mapa mobile */
+    #map {
+      height: 300px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    
+    /* Cards compactos */
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid #e9ecef;
+    }
+    
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e3c72;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .card-title .icon {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    
+    /* KPIs mobile */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .kpi-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .kpi-value {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .kpi-label {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+    
+    /* Formulário de coleta */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 4px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    /* Botões */
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #1e3c72;
+      color: white;
+    }
+    
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+    
+    .btn-warning {
+      background: #ffc107;
+      color: #212529;
+    }
+    
+    .btn-block {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    
+    /* Lista de observações */
+    .observation-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .observation-item {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .observation-item .species {
+      font-weight: 600;
+      color: #1e3c72;
+      margin-bottom: 4px;
+    }
+    
+    .observation-item .details {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .observation-item .sync-status {
+      float: right;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+    
+    .sync-status.synced {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .sync-status.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    /* GPS Status */
+    .gps-status {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: #e9ecef;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    
+    .gps-status.active {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .gps-status .icon {
+      margin-right: 8px;
+    }
+    
+    /* Filtros compactos */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .filter-row select {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      z-index: 1000;
+    }
+    
+    .nav-item {
+      flex: 1;
+      padding: 8px 4px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 10px;
+      color: #6c757d;
+    }
+    
+    .nav-item.active {
+      color: #1e3c72;
+      background: #f8f9fa;
+    }
+    
+    .nav-item .icon {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    
+    /* Alertas */
+    .alert {
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    /* Loading spinner */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #1e3c72;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .header h1 { font-size: 16px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      #map { height: 250px; }
+      .tab-btn { font-size: 11px; }
+    }
+    
+    /* PWA styles */
+    .install-prompt {
+      background: #1e3c72;
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+    }
+    
+    .install-prompt button {
+      background: white;
+      color: #1e3c72;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>
+      <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+      BGAPP Mobile
+    </h1>
+    <div class="subtitle">Investigação Marinha • Angola</div>
+    <div class="connection-status" id="connectionStatus">●</div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('overview')">
+      <div class="icon">📊</div>
+      Resumo
+    </button>
+    <button class="tab-btn" onclick="showTab('map')">
+      <div class="icon">🗺️</div>
+      Mapa
+    </button>
+    <button class="tab-btn" onclick="showTab('collect')">
+      <div class="icon">📝</div>
+      Coletar
+    </button>
+    <button class="tab-btn" onclick="showTab('sync')">
+      <div class="icon">🔄</div>
+      Sincronizar
+    </button>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    
+    <!-- Overview Tab -->
+    <div id="overview" class="tab-content active">
+      <!-- GPS Status -->
+      <div class="gps-status" id="gpsStatus">
+        <span class="icon">📍</span>
+        <span id="gpsText">Aguardando localização...</span>
+      </div>
+      
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value" id="totalObservations">0</div>
+          <div class="kpi-label">Observações</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="todayCount">0</div>
+          <div class="kpi-label">Hoje</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="speciesCount">0</div>
+          <div class="kpi-label">Espécies</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="pendingSync">0</div>
+          <div class="kpi-label">Pendentes</div>
+        </div>
+      </div>
+      
+      <!-- Recent Observations -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🐟</span>
+          Observações Recentes
+        </div>
+        <div class="observation-list" id="recentObservations">
+          <div class="observation-item">
+            <div class="species">Nenhuma observação ainda</div>
+            <div class="details">Comece a coletar dados usando a aba "Coletar"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Tab -->
+    <div id="map-tab" class="tab-content">
+      <div class="filter-row">
+        <select id="mapFilter">
+          <option value="all">Todas as observações</option>
+          <option value="today">Hoje</option>
+          <option value="week">Esta semana</option>
+          <option value="month">Este mês</option>
+        </select>
+        <button class="btn btn-primary" onclick="centerOnLocation()">📍 Minha Localização</button>
+      </div>
+      
+      <div id="map"></div>
+      
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">ℹ️</span>
+          Informações do Mapa
+        </div>
+        <div id="mapInfo">
+          <p><strong>Coordenadas:</strong> <span id="currentCoords">-</span></p>
+          <p><strong>Observações visíveis:</strong> <span id="visibleCount">0</span></p>
+          <p><strong>Última atualização:</strong> <span id="lastUpdate">-</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Collection Tab -->
+    <div id="collect" class="tab-content">
+      <form id="observationForm">
+        <div class="form-group">
+          <label>Espécie *</label>
+          <select id="speciesSelect" required>
+            <option value="">Selecionar espécie...</option>
+            <option value="Tursiops truncatus">Golfinho-roaz (Tursiops truncatus)</option>
+            <option value="Thunnus albacares">Atum-amarelo (Thunnus albacares)</option>
+            <option value="Sardina pilchardus">Sardinha (Sardina pilchardus)</option>
+            <option value="Merluccius capensis">Pescada-do-cabo (Merluccius capensis)</option>
+            <option value="Caretta caretta">Tartaruga-cabeçuda (Caretta caretta)</option>
+            <option value="Pelecanus onocrotalus">Pelicano-branco (Pelecanus onocrotalus)</option>
+            <option value="other">Outra espécie...</option>
+          </select>
+        </div>
+        
+        <div class="form-group" id="otherSpeciesGroup" style="display: none;">
+          <label>Nome da espécie</label>
+          <input type="text" id="otherSpecies" placeholder="Nome científico ou comum">
+        </div>
+        
+        <div class="form-group">
+          <label>Número de indivíduos</label>
+          <input type="number" id="individualCount" min="1" value="1">
+        </div>
+        
+        <div class="form-group">
+          <label>Comportamento observado</label>
+          <select id="behavior">
+            <option value="">Selecionar...</option>
+            <option value="feeding">Alimentação</option>
+            <option value="resting">Repouso</option>
+            <option value="traveling">Deslocamento</option>
+            <option value="socializing">Socialização</option>
+            <option value="breeding">Reprodução</option>
+            <option value="other">Outro</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Profundidade estimada (m)</label>
+          <input type="number" id="depth" min="0" step="0.1">
+        </div>
+        
+        <div class="form-group">
+          <label>Observações</label>
+          <textarea id="notes" placeholder="Descreva a observação, condições ambientais, etc."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Localização</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="number" id="latitude" placeholder="Latitude" step="0.0001" readonly>
+            <input type="number" id="longitude" placeholder="Longitude" step="0.0001" readonly>
+            <button type="button" class="btn btn-warning" onclick="getCurrentLocation()">📍 GPS</button>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success btn-block">💾 Salvar Observação</button>
+      </form>
+    </div>
+
+    <!-- Sync Tab -->
+    <div id="sync" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">☁️</span>
+          Status de Sincronização
+        </div>
+        
+        <div id="syncStatus">
+          <div class="alert alert-warning">
+            <strong>Offline:</strong> Dados serão sincronizados quando houver conexão.
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-block" onclick="syncData()">
+          🔄 Sincronizar Agora
+        </button>
+        
+        <button class="btn btn-warning btn-block" onclick="exportLocalData()">
+          📤 Exportar Dados Locais
+        </button>
+        
+        <div class="loading" id="syncLoading">
+          <div class="spinner"></div>
+          <p>Sincronizando dados...</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">📊</span>
+          Estatísticas Locais
+        </div>
+        <div id="localStats">
+          <p><strong>Observações armazenadas:</strong> <span id="localCount">0</span></p>
+          <p><strong>Não sincronizadas:</strong> <span id="unsyncedCount">0</span></p>
+          <p><strong>Espaço usado:</strong> <span id="storageUsed">0 KB</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/zee_angola_official.js?v=20250831"></script>
+  <script>
+    // Estado global da aplicação
+    let app = {
+      map: null,
+      currentPosition: null,
+      observations: [],
+      isOnline: navigator.onLine,
+      currentTab: 'overview'
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeApp();
+      loadLocalData();
+      updateConnectionStatus();
+      requestLocation();
+    });
+
+    // Eventos de conectividade
+    window.addEventListener('online', function() {
+      app.isOnline = true;
+      updateConnectionStatus();
+      showAlert('Conexão restaurada!', 'success');
+    });
+
+    window.addEventListener('offline', function() {
+      app.isOnline = false;
+      updateConnectionStatus();
+      showAlert('Modo offline ativado', 'warning');
+    });
+
+    function initializeApp() {
+      // Inicializar mapa
+      app.map = L.map('map').setView([-12.5, 13.5], 6);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(app.map);
+
+      // === CABINDA - Mobile ===
+      const cabindaMobile = [
+        [-4.2610419, 11.4559051], [-4.7878434, 11.8243991], [-5.5632888, 12.2277172]
+      ];
+
+      // === ANGOLA CONTINENTAL - Mobile ===
+      const angolaMainlandMobile = [
+        [-6.0221909, 12.4036959], [-8.387412, 13.392435], [-10.671465, 13.775745], 
+        [-12.244371, 13.652239], [-14.412332, 12.355035], [-16.498178, 11.824207], 
+        [-18.922632, 12.462018]
+      ];
+
+      // === ZEE OFICIAL MOBILE ===
+      // Usar dados oficiais do Marine Regions
+      const angolaZeeMobile = typeof angolaZEEOfficial !== 'undefined' 
+        ? angolaZEEOfficial 
+        : [[-18.02, 13.35], [-5.55, 12.2], [-5.55, 8.9], [-18.02, 10.05], [-18.02, 13.35]];
+
+      const cabindaZeeMobile = typeof cabindaZEEOfficial !== 'undefined' 
+        ? cabindaZEEOfficial 
+        : [[-4.37, 11.85], [-4.62, 12.35], [-5.4, 10.8], [-5.4, 7.8], [-4.37, 8.9], [-4.37, 11.85]];
+      
+      console.log('📱 Mobile ZEE:', angolaZeeMobile.length, 'pontos Angola +', cabindaZeeMobile.length, 'pontos Cabinda');
+      
+      // Adicionar ZEE de Cabinda (roxo, mobile) - OFICIAL
+      L.polygon(cabindaZeeMobile, {
+        color: '#9b59b6',
+        weight: 2,
+        fillOpacity: 0.2,
+        fillColor: '#9b59b6',
+        opacity: 0.8
+      }).addTo(app.map).bindPopup('🌊 ZEE Cabinda - OFICIAL<br>📱 Marine Regions');
+
+      // Adicionar ZEE de Angola Continental (azul, mobile) - OFICIAL
+      L.polygon(angolaZeeMobile, {
+        color: '#0066cc',
+        weight: 2,
+        fillOpacity: 0.2,
+        fillColor: '#0080ff',
+        opacity: 0.8
+      }).addTo(app.map).bindPopup('🌊 ZEE Angola - OFICIAL<br>📱 495.866 km² (Marine Regions)');
+
+      // Adicionar costa de Cabinda (roxo, mobile)
+      L.polyline(cabindaMobile, {
+        color: '#9b59b6',
+        weight: 2,
+        opacity: 0.8,
+        dashArray: '4, 2'
+      }).addTo(app.map).bindPopup('📍 Cabinda<br>📱 Província');
+
+      // Adicionar costa de Angola Continental (laranja, mobile)
+      L.polyline(angolaMainlandMobile, {
+        color: '#ff6600',
+        weight: 2,
+        opacity: 0.8,
+        dashArray: '6, 3'
+      }).addTo(app.map).bindPopup('📍 Angola<br>📱 Continental');
+
+      // Event listeners
+      document.getElementById('observationForm').addEventListener('submit', saveObservation);
+      document.getElementById('speciesSelect').addEventListener('change', toggleOtherSpecies);
+      
+      // Atualizar estatísticas
+      updateStatistics();
+    }
+
+    function showTab(tabName) {
+      // Ocultar todas as tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Mostrar tab selecionada
+      document.getElementById(tabName === 'map' ? 'map-tab' : tabName).classList.add('active');
+      event.target.closest('.tab-btn').classList.add('active');
+      
+      app.currentTab = tabName;
+
+      // Ações específicas por tab
+      if (tabName === 'map') {
+        setTimeout(() => {
+          app.map.invalidateSize();
+          updateMapObservations();
+        }, 100);
+      } else if (tabName === 'sync') {
+        updateSyncStatus();
+      }
+    }
+
+    function updateConnectionStatus() {
+      const status = document.getElementById('connectionStatus');
+      if (app.isOnline) {
+        status.textContent = '● Online';
+        status.className = 'connection-status online';
+      } else {
+        status.textContent = '● Offline';
+        status.className = 'connection-status offline';
+      }
+    }
+
+    function requestLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            app.currentPosition = position;
+            updateGPSStatus(true);
+            document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
+            document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+            document.getElementById('currentCoords').textContent = 
+              `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          },
+          error => {
+            updateGPSStatus(false);
+            console.error('Erro GPS:', error);
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      }
+    }
+
+    function updateGPSStatus(active) {
+      const gpsStatus = document.getElementById('gpsStatus');
+      const gpsText = document.getElementById('gpsText');
+      
+      if (active) {
+        gpsStatus.classList.add('active');
+        gpsText.textContent = 'GPS ativo • Localização obtida';
+      } else {
+        gpsStatus.classList.remove('active');
+        gpsText.textContent = 'GPS indisponível • Use coordenadas manuais';
+      }
+    }
+
+    function getCurrentLocation() {
+      requestLocation();
+    }
+
+    function centerOnLocation() {
+      if (app.currentPosition) {
+        app.map.setView([
+          app.currentPosition.coords.latitude,
+          app.currentPosition.coords.longitude
+        ], 12);
+      } else {
+        showAlert('Localização GPS não disponível', 'warning');
+      }
+    }
+
+    function toggleOtherSpecies() {
+      const select = document.getElementById('speciesSelect');
+      const otherGroup = document.getElementById('otherSpeciesGroup');
+      
+      if (select.value === 'other') {
+        otherGroup.style.display = 'block';
+        document.getElementById('otherSpecies').required = true;
+      } else {
+        otherGroup.style.display = 'none';
+        document.getElementById('otherSpecies').required = false;
+      }
+    }
+
+    function saveObservation(event) {
+      event.preventDefault();
+      
+      const form = document.getElementById('observationForm');
+      const formData = new FormData(form);
+      
+      // Validar coordenadas
+      const lat = parseFloat(document.getElementById('latitude').value);
+      const lon = parseFloat(document.getElementById('longitude').value);
+      
+      if (!lat || !lon) {
+        showAlert('Coordenadas GPS são obrigatórias', 'warning');
+        return;
+      }
+      
+      // Criar observação
+      const observation = {
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        species: document.getElementById('speciesSelect').value === 'other' ? 
+                document.getElementById('otherSpecies').value : 
+                document.getElementById('speciesSelect').value,
+        individualCount: parseInt(document.getElementById('individualCount').value) || 1,
+        behavior: document.getElementById('behavior').value,
+        depth: parseFloat(document.getElementById('depth').value) || null,
+        notes: document.getElementById('notes').value,
+        latitude: lat,
+        longitude: lon,
+        synced: false,
+        source: 'mobile_app'
+      };
+      
+      // Salvar localmente
+      app.observations.push(observation);
+      saveLocalData();
+      
+      // Limpar formulário
+      form.reset();
+      document.getElementById('latitude').value = app.currentPosition ? app.currentPosition.coords.latitude.toFixed(6) : '';
+      document.getElementById('longitude').value = app.currentPosition ? app.currentPosition.coords.longitude.toFixed(6) : '';
+      
+      // Atualizar interface
+      updateStatistics();
+      updateRecentObservations();
+      showAlert('Observação salva com sucesso!', 'success');
+      
+      // Voltar para overview
+      showTab('overview');
+    }
+
+    function updateStatistics() {
+      const today = new Date().toDateString();
+      const todayCount = app.observations.filter(obs => 
+        new Date(obs.timestamp).toDateString() === today
+      ).length;
+      
+      const speciesSet = new Set(app.observations.map(obs => obs.species));
+      const pendingSync = app.observations.filter(obs => !obs.synced).length;
+      
+      document.getElementById('totalObservations').textContent = app.observations.length;
+      document.getElementById('todayCount').textContent = todayCount;
+      document.getElementById('speciesCount').textContent = speciesSet.size;
+      document.getElementById('pendingSync').textContent = pendingSync;
+    }
+
+    function updateRecentObservations() {
+      const container = document.getElementById('recentObservations');
+      const recent = app.observations.slice(-5).reverse();
+      
+      if (recent.length === 0) {
+        container.innerHTML = `
+          <div class="observation-item">
+            <div class="species">Nenhuma observação ainda</div>
+            <div class="details">Comece a coletar dados usando a aba "Coletar"</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = recent.map(obs => `
+        <div class="observation-item">
+          <div class="species">${obs.species}</div>
+          <div class="details">
+            ${new Date(obs.timestamp).toLocaleString('pt-PT')} • 
+            ${obs.individualCount} indivíduo(s) • 
+            ${obs.latitude.toFixed(4)}, ${obs.longitude.toFixed(4)}
+          </div>
+          <div class="sync-status ${obs.synced ? 'synced' : 'pending'}">
+            ${obs.synced ? 'Sincronizado' : 'Pendente'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateMapObservations() {
+      // Limpar marcadores existentes
+      app.map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+          app.map.removeLayer(layer);
+        }
+      });
+      
+      // Adicionar observações ao mapa
+      app.observations.forEach(obs => {
+        const marker = L.marker([obs.latitude, obs.longitude])
+          .bindPopup(`
+            <strong>${obs.species}</strong><br>
+            ${new Date(obs.timestamp).toLocaleString('pt-PT')}<br>
+            ${obs.individualCount} indivíduo(s)<br>
+            ${obs.behavior ? 'Comportamento: ' + obs.behavior : ''}
+          `);
+        marker.addTo(app.map);
+      });
+      
+      document.getElementById('visibleCount').textContent = app.observations.length;
+      document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('pt-PT');
+    }
+
+    function saveLocalData() {
+      try {
+        localStorage.setItem('bgapp_observations', JSON.stringify(app.observations));
+        localStorage.setItem('bgapp_last_sync', new Date().toISOString());
+      } catch (error) {
+        console.error('Erro ao salvar dados localmente:', error);
+        showAlert('Erro ao salvar dados localmente', 'warning');
+      }
+    }
+
+    function loadLocalData() {
+      try {
+        const stored = localStorage.getItem('bgapp_observations');
+        if (stored) {
+          app.observations = JSON.parse(stored);
+          updateStatistics();
+          updateRecentObservations();
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados locais:', error);
+      }
+    }
+
+    function syncData() {
+      if (!app.isOnline) {
+        showAlert('Sem conexão com a internet', 'warning');
+        return;
+      }
+      
+      const loading = document.getElementById('syncLoading');
+      loading.style.display = 'block';
+      
+      // Simular sincronização (substituir por chamada real à API)
+      setTimeout(() => {
+        app.observations.forEach(obs => obs.synced = true);
+        saveLocalData();
+        updateStatistics();
+        updateRecentObservations();
+        updateSyncStatus();
+        loading.style.display = 'none';
+        showAlert('Dados sincronizados com sucesso!', 'success');
+      }, 2000);
+    }
+
+    function updateSyncStatus() {
+      const statusDiv = document.getElementById('syncStatus');
+      const pendingCount = app.observations.filter(obs => !obs.synced).length;
+      
+      if (app.isOnline) {
+        if (pendingCount === 0) {
+          statusDiv.innerHTML = `
+            <div class="alert alert-success">
+              <strong>Sincronizado:</strong> Todos os dados estão atualizados.
+            </div>
+          `;
+        } else {
+          statusDiv.innerHTML = `
+            <div class="alert alert-warning">
+              <strong>Pendente:</strong> ${pendingCount} observação(ões) aguardando sincronização.
+            </div>
+          `;
+        }
+      } else {
+        statusDiv.innerHTML = `
+          <div class="alert alert-warning">
+            <strong>Offline:</strong> Dados serão sincronizados quando houver conexão.
+          </div>
+        `;
+      }
+      
+      // Atualizar estatísticas locais
+      document.getElementById('localCount').textContent = app.observations.length;
+      document.getElementById('unsyncedCount').textContent = pendingCount;
+      
+      const storageUsed = JSON.stringify(app.observations).length;
+      document.getElementById('storageUsed').textContent = `${(storageUsed / 1024).toFixed(1)} KB`;
+    }
+
+    function exportLocalData() {
+      if (app.observations.length === 0) {
+        showAlert('Nenhum dado para exportar', 'warning');
+        return;
+      }
+      
+      const dataStr = JSON.stringify(app.observations, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bgapp_observacoes_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      
+      URL.revokeObjectURL(url);
+      showAlert('Dados exportados com sucesso!', 'success');
+    }
+
+    function showAlert(message, type) {
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.textContent = message;
+      
+      document.body.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

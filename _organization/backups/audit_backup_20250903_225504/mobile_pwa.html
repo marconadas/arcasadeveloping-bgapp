@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    
+    <title>BGAPP Mobile - Trabalho de Campo</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #28a745;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-mobile {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-mobile {
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-mobile {
+            background: linear-gradient(45deg, var(--primary), #17a2b8);
+            color: white;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item-mobile {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .nav-item-mobile.active {
+            color: var(--primary);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--secondary), #20c997);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            font-size: 1.5rem;
+            z-index: 999;
+        }
+
+        .form-control-mobile {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem;
+        }
+
+        .camera-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="mb-0">
+                    <i class="fas fa-fish text-primary me-2"></i>
+                    BGAPP Mobile
+                </h5>
+                <small class="text-muted">
+                    <span class="status-indicator" id="connection-status"></span>
+                    <span id="connection-text">Verificando...</span>
+                </small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" onclick="syncData()">
+                <i class="fas fa-sync-alt" id="sync-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <div id="home-section" class="section active">
+        <div class="card-mobile">
+            <h6 class="fw-bold mb-3">
+                <i class="fas fa-chart-line text-primary me-2"></i>
+                Resumo de Hoje
+            </h6>
+            <div class="row text-center">
+                <div class="col-4">
+                    <div class="h4 text-primary mb-1" id="today-observations">0</div>
+                    <small class="text-muted">Observações</small>
+                </div>
+                <div class="col-4">
+                    <div class="h4 text-success mb-1" id="today-species">0</div>
+                    <small class="text-muted">Espécies</small>
+                </div>
+                <div class="col-4">
+                    <div class="h4 text-info mb-1" id="today-photos">0</div>
+                    <small class="text-muted">Fotos</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-mobile">
+            <h6 class="fw-bold mb-3">Ações Rápidas</h6>
+            <div class="row g-2">
+                <div class="col-6">
+                    <button class="btn btn-primary-mobile btn-mobile w-100" onclick="startNewObservation()">
+                        <i class="fas fa-plus me-1"></i>
+                        Nova Observação
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-success btn-mobile w-100" onclick="capturePhoto()">
+                        <i class="fas fa-camera me-1"></i>
+                        Fotografar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observation Form Section -->
+    <div id="observation-section" class="section">
+        <div class="card-mobile">
+            <h6 class="fw-bold mb-3">Nova Observação</h6>
+            
+            <form id="observation-form">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Espécie</label>
+                    <select class="form-control-mobile form-select" id="species-select" required>
+                        <option value="">Selecionar espécie...</option>
+                        <option value="Epinephelus marginatus">Garoupa</option>
+                        <option value="Thunnus albacares">Atum Rabilho</option>
+                        <option value="Caretta caretta">Tartaruga Cabeçuda</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Fotografia</label>
+                    <div class="camera-preview" id="photo-preview" onclick="openCamera()">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-camera fa-3x mb-2"></i>
+                            <div>Toque para fotografar</div>
+                        </div>
+                    </div>
+                    <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantidade</label>
+                    <input type="number" class="form-control-mobile" id="count-input" min="1" value="1" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Observações</label>
+                    <textarea class="form-control-mobile" id="notes" rows="3" placeholder="Notas adicionais..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Localização</label>
+                    <div class="form-control-mobile bg-light" id="location-display">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        Obtendo coordenadas...
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-outline-secondary btn-mobile w-100" onclick="cancelObservation()">
+                            Cancelar
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success btn-mobile w-100">
+                            <i class="fas fa-save me-1"></i>
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Section -->
+    <div id="data-section" class="section">
+        <div class="card-mobile">
+            <h6 class="fw-bold mb-3">Meus Dados</h6>
+            
+            <div class="row text-center mb-3">
+                <div class="col-4">
+                    <div class="h5 text-primary mb-1" id="total-observations">0</div>
+                    <small class="text-muted">Total</small>
+                </div>
+                <div class="col-4">
+                    <div class="h5 text-success mb-1" id="synced-observations">0</div>
+                    <small class="text-muted">Sincronizadas</small>
+                </div>
+                <div class="col-4">
+                    <div class="h5 text-warning mb-1" id="pending-observations">0</div>
+                    <small class="text-muted">Pendentes</small>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-mobile" onclick="exportData('csv')">
+                    <i class="fas fa-file-csv me-2"></i>
+                    Exportar CSV
+                </button>
+                <button class="btn btn-outline-success btn-mobile" onclick="exportData('json')">
+                    <i class="fas fa-file-code me-2"></i>
+                    Exportar JSON
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div id="settings-section" class="section">
+        <div class="card-mobile">
+            <h6 class="fw-bold mb-3">Configurações</h6>
+
+            <div class="mb-4">
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="auto-sync" checked>
+                    <label class="form-check-label" for="auto-sync">
+                        Sincronização Automática
+                    </label>
+                </div>
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="location-tracking" checked>
+                    <label class="form-check-label" for="location-tracking">
+                        Rastreamento de Localização
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-info btn-mobile" onclick="clearCache()">
+                    <i class="fas fa-trash me-2"></i>
+                    Limpar Cache
+                </button>
+                <button class="btn btn-outline-warning btn-mobile" onclick="resetApp()">
+                    <i class="fas fa-redo me-2"></i>
+                    Reset Aplicação
+                </button>
+            </div>
+
+            <div class="mt-4 small text-muted">
+                <div><strong>Versão:</strong> 1.2.0</div>
+                <div><strong>PWA:</strong> Ativa</div>
+                <div><strong>Offline:</strong> Suportado</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-btn" onclick="startNewObservation()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="d-flex">
+            <a href="#" class="nav-item-mobile active" onclick="showSection('home')">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="#" class="nav-item-mobile" onclick="showSection('observation')">
+                <i class="fas fa-plus-circle"></i>
+                <span>Observar</span>
+            </a>
+            <a href="#" class="nav-item-mobile" onclick="showSection('data')">
+                <i class="fas fa-database"></i>
+                <span>Dados</span>
+            </a>
+            <a href="#" class="nav-item-mobile" onclick="showSection('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Config</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // App State
+        let appState = {
+            online: navigator.onLine,
+            location: null,
+            observations: JSON.parse(localStorage.getItem('bgapp_observations') || '[]'),
+            currentSection: 'home'
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando BGAPP Mobile PWA...');
+            
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registrado'))
+                    .catch(err => console.log('❌ Erro SW:', err));
+            }
+            
+            // Get location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        appState.location = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        };
+                        updateLocationDisplay();
+                    },
+                    error => console.log('❌ Erro localização:', error)
+                );
+            }
+            
+            // Connection status
+            updateConnectionStatus();
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+            
+            // Form submission
+            document.getElementById('observation-form').addEventListener('submit', handleSubmit);
+            document.getElementById('photo-input').addEventListener('change', handlePhoto);
+            
+            // Update UI
+            updateStats();
+        });
+
+        // Update Connection Status
+        function updateConnectionStatus() {
+            appState.online = navigator.onLine;
+            const indicator = document.getElementById('connection-status');
+            const text = document.getElementById('connection-text');
+            
+            if (appState.online) {
+                indicator.className = 'status-indicator status-online';
+                text.textContent = 'Online';
+            } else {
+                indicator.className = 'status-indicator status-offline';
+                text.textContent = 'Offline';
+            }
+        }
+
+        // Update Location Display
+        function updateLocationDisplay() {
+            if (appState.location) {
+                document.getElementById('location-display').innerHTML = `
+                    <i class="fas fa-map-marker-alt text-success me-2"></i>
+                    ${appState.location.latitude.toFixed(6)}, ${appState.location.longitude.toFixed(6)}
+                `;
+            }
+        }
+
+        // Show Section
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(`${section}-section`).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item-mobile').forEach(nav => nav.classList.remove('active'));
+            event.target.closest('.nav-item-mobile').classList.add('active');
+            
+            appState.currentSection = section;
+        }
+
+        // Start New Observation
+        function startNewObservation() {
+            showSection('observation');
+            document.getElementById('observation-form').reset();
+        }
+
+        // Open Camera
+        function openCamera() {
+            document.getElementById('photo-input').click();
+        }
+
+        // Handle Photo
+        function handlePhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('photo-preview').innerHTML = 
+                        `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle Form Submit
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const observation = {
+                id: Date.now().toString(),
+                species: document.getElementById('species-select').value,
+                count: parseInt(document.getElementById('count-input').value),
+                notes: document.getElementById('notes').value,
+                location: appState.location,
+                timestamp: new Date().toISOString(),
+                synced: false
+            };
+            
+            // Add photo if captured
+            const photoInput = document.getElementById('photo-input');
+            if (photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    observation.photo = e.target.result;
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            }
+            
+            // Save locally
+            appState.observations.push(observation);
+            localStorage.setItem('bgapp_observations', JSON.stringify(appState.observations));
+            
+            // Try to sync if online
+            if (appState.online) {
+                await syncObservation(observation);
+            }
+            
+            // Update UI and return home
+            updateStats();
+            showNotification('Observação salva!', 'success');
+            showSection('home');
+        }
+
+        // Sync Observation
+        async function syncObservation(observation) {
+            try {
+                const response = await fetch('http://localhost:8085/admin-api/api/observations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(observation)
+                });
+                
+                if (response.ok) {
+                    observation.synced = true;
+                    localStorage.setItem('bgapp_observations', JSON.stringify(appState.observations));
+                }
+            } catch (error) {
+                console.log('❌ Erro sincronização:', error);
+            }
+        }
+
+        // Sync Data
+        async function syncData() {
+            const icon = document.getElementById('sync-icon');
+            icon.classList.add('fa-spin');
+            
+            const pending = appState.observations.filter(obs => !obs.synced);
+            
+            for (const obs of pending) {
+                await syncObservation(obs);
+            }
+            
+            icon.classList.remove('fa-spin');
+            updateStats();
+            showNotification('Sincronização concluída!', 'success');
+        }
+
+        // Update Stats
+        function updateStats() {
+            const today = new Date().toDateString();
+            const todayObs = appState.observations.filter(obs => 
+                new Date(obs.timestamp).toDateString() === today
+            );
+            
+            document.getElementById('today-observations').textContent = todayObs.length;
+            document.getElementById('today-species').textContent = 
+                new Set(todayObs.map(obs => obs.species)).size;
+            document.getElementById('today-photos').textContent = 
+                todayObs.filter(obs => obs.photo).length;
+            
+            document.getElementById('total-observations').textContent = appState.observations.length;
+            document.getElementById('synced-observations').textContent = 
+                appState.observations.filter(obs => obs.synced).length;
+            document.getElementById('pending-observations').textContent = 
+                appState.observations.filter(obs => !obs.synced).length;
+        }
+
+        // Export Data
+        function exportData(format) {
+            const data = appState.observations;
+            
+            if (format === 'csv') {
+                const csv = [
+                    ['ID', 'Espécie', 'Quantidade', 'Notas', 'Latitude', 'Longitude', 'Data/Hora'],
+                    ...data.map(obs => [
+                        obs.id, obs.species, obs.count, obs.notes || '',
+                        obs.location?.latitude || '', obs.location?.longitude || '',
+                        obs.timestamp
+                    ])
+                ].map(row => row.join(',')).join('\n');
+                
+                downloadFile(csv, 'observacoes_bgapp.csv', 'text/csv');
+            } else {
+                downloadFile(JSON.stringify(data, null, 2), 'observacoes_bgapp.json', 'application/json');
+            }
+        }
+
+        // Download File
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Utility Functions
+        function cancelObservation() {
+            showSection('home');
+        }
+
+        function capturePhoto() {
+            openCamera();
+        }
+
+        function clearCache() {
+            if (confirm('Limpar cache?')) {
+                localStorage.clear();
+                showNotification('Cache limpo!', 'success');
+            }
+        }
+
+        function resetApp() {
+            if (confirm('Reset completo?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function showNotification(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `position-fixed top-0 end-0 m-3 alert alert-${type}`;
+            toast.textContent = message;
+            toast.style.zIndex = '9999';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        console.log('📱 BGAPP Mobile PWA pronta - 5x mais eficiência na coleta!');
+    </script>
+</body>
+</html>

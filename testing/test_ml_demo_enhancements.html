@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Teste das Melhorias ML Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .test-item {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .test-passed {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+        .test-failed {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .test-pending {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        .url-box {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Sanity Check - Melhorias ML Demo</h1>
+        <p>Verificando se as melhorias visuais e sistema de retenção estão ativos na página ML Demo.</p>
+        
+        <div class="url-box">
+            <strong>URLs para testar:</strong><br>
+            • https://bgapp-frontend.pages.dev/ml-demo<br>
+            • https://4fd24870.bgapp-frontend.pages.dev/ml-demo (nova versão)
+        </div>
+        
+        <div id="test-results">
+            <div class="test-item test-pending">
+                <h3>🔄 Executando Testes...</h3>
+                <p>Verificando disponibilidade dos recursos...</p>
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>📋 Checklist Manual</h3>
+            <p>Verifique manualmente na página ML Demo:</p>
+            <ul>
+                <li>✅ <strong>CSS Enhanced</strong>: Interface com glassmorphism e gradientes?</li>
+                <li>✅ <strong>Scripts Ativos</strong>: Console mostra "🎨 Interface Enhanced Loading..."?</li>
+                <li>✅ <strong>Insights Preenchidos</strong>: Seções não dizem "Aguardando análise..."?</li>
+                <li>✅ <strong>Métricas Atualizadas</strong>: Predições > 0, Cache Hit Rate real?</li>
+                <li>✅ <strong>Notificações</strong>: Aparecem notificações de boas-vindas?</li>
+                <li>✅ <strong>Indicador de Cache</strong>: Canto inferior esquerdo com status?</li>
+                <li>✅ <strong>Mapa Intacto</strong>: deck.gl funciona normalmente?</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        class MLDemoSanityChecker {
+            constructor() {
+                this.tests = [];
+                this.runSanityCheck();
+            }
+            
+            async runSanityCheck() {
+                console.log('🧪 Iniciando sanity check das melhorias ML Demo...');
+                
+                const tests = [
+                    { name: 'CSS Enhanced Disponível', test: () => this.testCSSAvailability() },
+                    { name: 'JS Enhancer Disponível', test: () => this.testJSAvailability() },
+                    { name: 'Retention Script Disponível', test: () => this.testRetentionScript() },
+                    { name: 'HTML Atualizado', test: () => this.testHTMLUpdated() },
+                    { name: 'Cache Busting', test: () => this.testCacheBusting() }
+                ];
+                
+                const results = [];
+                
+                for (const { name, test } of tests) {
+                    try {
+                        console.log(`▶️ Testando: ${name}`);
+                        const result = await test();
+                        results.push({ name, status: 'passed', details: result });
+                        console.log(`✅ ${name}: PASSOU`);
+                    } catch (error) {
+                        results.push({ name, status: 'failed', error: error.message });
+                        console.log(`❌ ${name}: FALHOU - ${error.message}`);
+                    }
+                }
+                
+                this.displayResults(results);
+            }
+            
+            async testCSSAvailability() {
+                const response = await fetch('https://bgapp-frontend.pages.dev/static/css/ml-demo-enhanced-ui.css');
+                if (!response.ok) {
+                    throw new Error(`CSS não disponível: ${response.status}`);
+                }
+                const css = await response.text();
+                if (!css.includes('ML Demo Enhanced UI Styles')) {
+                    throw new Error('CSS não contém estilos esperados');
+                }
+                return { size: css.length, status: 'available' };
+            }
+            
+            async testJSAvailability() {
+                const response = await fetch('https://bgapp-frontend.pages.dev/static/js/ml-demo-ui-enhancer.js');
+                if (!response.ok) {
+                    throw new Error(`JS não disponível: ${response.status}`);
+                }
+                const js = await response.text();
+                if (!js.includes('MLDemoUIEnhancer')) {
+                    throw new Error('JS não contém classe esperada');
+                }
+                return { size: js.length, status: 'available' };
+            }
+            
+            async testRetentionScript() {
+                const response = await fetch('https://bgapp-frontend.pages.dev/static/js/ml-demo-retention-integration.js');
+                if (!response.ok) {
+                    throw new Error(`Retention script não disponível: ${response.status}`);
+                }
+                const js = await response.text();
+                if (!js.includes('MLDemoRetentionIntegration')) {
+                    throw new Error('Retention script não contém classe esperada');
+                }
+                return { size: js.length, status: 'available' };
+            }
+            
+            async testHTMLUpdated() {
+                const response = await fetch('https://bgapp-frontend.pages.dev/ml-demo');
+                if (!response.ok) {
+                    throw new Error(`HTML não disponível: ${response.status}`);
+                }
+                const html = await response.text();
+                
+                const checks = {
+                    cssLink: html.includes('ml-demo-enhanced-ui.css'),
+                    jsEnhancer: html.includes('ml-demo-ui-enhancer.js'),
+                    retentionScript: html.includes('ml-demo-retention-integration.js'),
+                    insightIds: html.includes('id="ocean-insights"') && html.includes('id="biodiversity-insights"')
+                };
+                
+                const failed = Object.entries(checks).filter(([key, value]) => !value).map(([key]) => key);
+                
+                if (failed.length > 0) {
+                    throw new Error(`HTML não atualizado: ${failed.join(', ')}`);
+                }
+                
+                return checks;
+            }
+            
+            async testCacheBusting() {
+                const response = await fetch('https://bgapp-frontend.pages.dev/ml-demo', {
+                    cache: 'no-cache',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                const html = await response.text();
+                
+                if (!html.includes('v=2.0.0&t=20250904')) {
+                    throw new Error('Cache busting não ativo');
+                }
+                
+                return { cacheBusting: 'active', version: '2.0.0' };
+            }
+            
+            displayResults(results) {
+                const container = document.getElementById('test-results');
+                
+                const passedCount = results.filter(r => r.status === 'passed').length;
+                const totalCount = results.length;
+                
+                let html = `
+                    <div class="test-item ${passedCount === totalCount ? 'test-passed' : 'test-failed'}">
+                        <h3>📊 Resumo: ${passedCount}/${totalCount} testes passaram</h3>
+                        ${passedCount === totalCount ? 
+                            '<p>✅ Todos os recursos estão disponíveis!</p>' :
+                            '<p>❌ Alguns recursos não estão acessíveis.</p>'
+                        }
+                    </div>
+                `;
+                
+                results.forEach(result => {
+                    html += `
+                        <div class="test-item ${result.status === 'passed' ? 'test-passed' : 'test-failed'}">
+                            <h4>${result.status === 'passed' ? '✅' : '❌'} ${result.name}</h4>
+                            ${result.status === 'passed' ? 
+                                `<p>✅ PASSOU: ${JSON.stringify(result.details)}</p>` :
+                                `<p>❌ FALHOU: ${result.error}</p>`
+                            }
+                        </div>
+                    `;
+                });
+                
+                // Instruções baseadas no resultado
+                if (passedCount === totalCount) {
+                    html += `
+                        <div class="test-item test-passed">
+                            <h3>🎉 Próximos Passos</h3>
+                            <p>Todos os recursos estão disponíveis! Para ver as melhorias:</p>
+                            <ol>
+                                <li><strong>Limpe o cache do browser</strong> (Ctrl+F5 ou Cmd+Shift+R)</li>
+                                <li><strong>Aceda à página</strong>: <a href="https://bgapp-frontend.pages.dev/ml-demo" target="_blank">https://bgapp-frontend.pages.dev/ml-demo</a></li>
+                                <li><strong>Abra DevTools</strong> (F12) e verifique console</li>
+                                <li><strong>Procure por</strong>: "🎨 Interface Enhanced Loading..."</li>
+                                <li><strong>Aguarde 2-3 segundos</strong> para scripts carregarem</li>
+                            </ol>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="test-item test-failed">
+                            <h3>🔧 Ações Necessárias</h3>
+                            <p>Alguns recursos não estão disponíveis. Verifique:</p>
+                            <ul>
+                                <li>Deploy foi concluído com sucesso?</li>
+                                <li>Arquivos estão na pasta static/ correta?</li>
+                                <li>Cache do Cloudflare foi limpo?</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+                
+                console.log('🧪 Sanity check concluído');
+                console.log(`📊 Resultado: ${passedCount}/${totalCount} testes passaram`);
+            }
+        }
+        
+        // Inicializar teste
+        new MLDemoSanityChecker();
+    </script>
+</body>
+</html>

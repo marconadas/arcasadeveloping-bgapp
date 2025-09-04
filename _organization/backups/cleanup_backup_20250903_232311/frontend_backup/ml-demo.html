@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP ML Demo - Machine Learning Integrado</title>
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+    
+    <!-- ML Components CSS -->
+    <link rel="stylesheet" href="assets/css/ml-components.css?v=1.0.0">
+    
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-container {
+            padding: 2rem 0;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-map {
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #6f42c1;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-implemented {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-demo {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #6f42c1, #17a2b8);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
+            color: white;
+        }
+        
+        .demo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #6f42c1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .demo-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-controls {
+                flex-direction: column;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="demo-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h2 mb-2">🧠 BGAPP Machine Learning Demo</h1>
+                    <p class="lead mb-0">Demonstração das funcionalidades de IA integradas ao frontend</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="status-badge status-implemented">Sistema Implementado</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container demo-container">
+        
+        <!-- Status Overview -->
+        <div class="demo-section">
+            <h3>📊 Status do Sistema</h3>
+            <div class="demo-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="ml-service-status">🔄</div>
+                    <div class="stat-label">MLService</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="models-count">-</div>
+                    <div class="stat-label">Modelos Disponíveis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="filters-count">-</div>
+                    <div class="stat-label">Filtros Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="cache-hits">-</div>
+                    <div class="stat-label">Cache Hit Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Map Demo -->
+        <div class="demo-section">
+            <h3>🗺️ Mapa com Overlays Preditivos</h3>
+            <p>Mapa interativo com filtros de Machine Learning integrados. Os overlays mostram predições em tempo real baseadas nos modelos treinados.</p>
+            
+            <div class="demo-controls">
+                <button class="btn btn-demo" onclick="demoMapFeatures()">
+                    🚀 Demonstrar Filtros ML
+                </button>
+                <button class="btn btn-demo" onclick="testPredictions()">
+                    🔮 Testar Predições
+                </button>
+                <button class="btn btn-demo" onclick="showMLStats()">
+                    📊 Estatísticas ML
+                </button>
+                <button class="btn btn-demo" onclick="clearDemoData()">
+                    🧹 Limpar Demo
+                </button>
+            </div>
+            
+            <!-- Controles Avançados de Visualização -->
+            <div class="demo-controls" style="margin-top: 1rem; border-top: 1px solid #e0e0e0; padding-top: 1rem;">
+                <h5 style="margin-bottom: 1rem; color: #6f42c1;">🎨 Visualizações Avançadas</h5>
+                <button class="btn btn-demo" onclick="createBiodiversityHeatmap()" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    🔥 Heatmap Biodiversidade
+                </button>
+                <button class="btn btn-demo" onclick="createSpeciesClusters()" style="background: linear-gradient(135deg, #17a2b8, #20c997);">
+                    🐠 Clusters de Espécies
+                </button>
+                <button class="btn btn-demo" onclick="createMigrationPaths()" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+                    🐋 Rotas de Migração
+                </button>
+                <button class="btn btn-demo" onclick="createRiskZones()" style="background: linear-gradient(135deg, #dc3545, #fd7e14);">
+                    ⚠️ Zonas de Risco
+                </button>
+                <button class="btn btn-demo" onclick="createAllMLVisualizations()" style="background: linear-gradient(135deg, #6f42c1, #17a2b8);">
+                    🎨 Todas as Visualizações
+                </button>
+                <button class="btn btn-demo" onclick="clearMLVisualizations()" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                    🧹 Limpar Visualizações
+                </button>
+            </div>
+            
+            <!-- Controles de Integração de Serviços -->
+            <div class="demo-controls" style="margin-top: 1rem; border-top: 1px solid #e0e0e0; padding-top: 1rem;">
+                <h5 style="margin-bottom: 1rem; color: #17a2b8;">🚀 Integração com Serviços BGAPP</h5>
+                <button class="btn btn-demo" onclick="integrateAllBGAPPServices()" style="background: linear-gradient(135deg, #17a2b8, #6f42c1);">
+                    🔗 Integrar Todos os Serviços
+                </button>
+                <button class="btn btn-demo" onclick="showServicesStatus()" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    📊 Status dos Serviços
+                </button>
+                <button class="btn btn-demo" onclick="openServicesDashboard()" style="background: linear-gradient(135deg, #fd7e14, #e83e8c);">
+                    🎛️ Dashboard de Serviços
+                </button>
+                <button class="btn btn-demo" onclick="clearServicesIntegration()" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                    🧹 Limpar Integrações
+                </button>
+            </div>
+            
+            <div id="demo-map" class="demo-map"></div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="demo-section">
+            <h3>🚀 Funcionalidades Implementadas</h3>
+            <div class="feature-grid">
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h5>MLService Layer</h5>
+                    <p>Camada de comunicação robusta com a API de ML, incluindo cache inteligente, retry automático e tratamento de erros.</p>
+                    <span class="status-badge status-implemented">Implementado</span>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h5>Overlays Preditivos</h5>
+                    <p>Sistema de camadas inteligentes no mapa que mostram predições de biodiversidade, zonas de pesca e áreas de conservação.</p>
+                    <span class="status-badge status-implemented">Implementado</span>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎛️</div>
+                    <h5>Painel de Controle ML</h5>
+                    <p>Interface intuitiva para gerenciar filtros preditivos, com controles de visibilidade, atualização e configuração.</p>
+                    <span class="status-badge status-implemented">Implementado</span>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h5>Predições em Tempo Real</h5>
+                    <p>Sistema que faz predições instantâneas baseadas na localização do usuário e parâmetros ambientais.</p>
+                    <span class="status-badge status-demo">Demo</span>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h5>Widgets Inteligentes</h5>
+                    <p>Componentes de dashboard que se adaptam automaticamente e mostram insights gerados por IA.</p>
+                    <span class="status-badge status-demo">Demo</span>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h5>Mobile ML Features</h5>
+                    <p>Funcionalidades de reconhecimento de espécies e coleta inteligente de dados para dispositivos móveis.</p>
+                    <span class="status-badge status-demo">Demo</span>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="demo-section">
+            <h3>🔧 Detalhes Técnicos</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Arquitetura</h5>
+                    <ul>
+                        <li><strong>Frontend:</strong> JavaScript ES6+ com Leaflet.js</li>
+                        <li><strong>Comunicação:</strong> Fetch API com retry e cache</li>
+                        <li><strong>Visualização:</strong> GeoJSON com marcadores dinâmicos</li>
+                        <li><strong>Performance:</strong> Cache hierárquico e lazy loading</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Funcionalidades</h5>
+                    <ul>
+                        <li><strong>Cache Inteligente:</strong> TTL de 5 minutos com invalidação automática</li>
+                        <li><strong>Retry Logic:</strong> 3 tentativas com backoff exponencial</li>
+                        <li><strong>Event System:</strong> Comunicação entre componentes</li>
+                        <li><strong>Responsive Design:</strong> Interface adaptativa para mobile</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h5 class="mt-4">Log de Atividades</h5>
+            <div id="demo-log" class="demo-log">
+                <div>🚀 Sistema de ML Demo inicializado...</div>
+                <div>📡 Aguardando conexão com MLService...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/ml-service.js?v=1.0.0"></script>
+    <script src="assets/js/ml-map-overlays.js?v=1.0.0"></script>
+    <script src="assets/js/ml-enhanced-visualizations.js?v=1.0.0"></script>
+    <script src="assets/js/ml-services-integration.js?v=1.0.0"></script>
+    
+    <script>
+        // Demo Controller
+        class MLDemo {
+            constructor() {
+                this.map = null;
+                this.mlOverlays = null;
+                this.logContainer = document.getElementById('demo-log');
+                this.stats = {
+                    predictions: 0,
+                    cacheHits: 0,
+                    totalRequests: 0
+                };
+            }
+
+            async initialize() {
+                this.log('🚀 Inicializando ML Demo...');
+                
+                try {
+                    // Inicializar mapa
+                    await this.initializeMap();
+                    
+                    // Aguardar MLService
+                    await this.waitForMLService();
+                    
+                    // Inicializar overlays
+                    await this.initializeMLOverlays();
+                    
+                    // Configurar event listeners
+                    this.setupEventListeners();
+                    
+                    // Atualizar estatísticas
+                    this.updateStats();
+                    
+                    this.log('✅ ML Demo inicializado com sucesso!');
+                    
+                } catch (error) {
+                    this.log(`❌ Erro na inicialização: ${error.message}`);
+                }
+            }
+
+            async initializeMap() {
+                this.log('🗺️ Criando mapa...');
+                
+                this.map = L.map('demo-map', {
+                    center: [-12.5, 13.5],
+                    zoom: 6,
+                    zoomControl: true
+                });
+
+                // Adicionar camada base
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(this.map);
+
+                this.log('✅ Mapa criado');
+            }
+
+            async waitForMLService() {
+                this.log('📡 Aguardando MLService...');
+                
+                return new Promise((resolve) => {
+                    const checkMLService = () => {
+                        if (window.mlService && window.mlService.initialize) {
+                            this.log('✅ MLService disponível');
+                            resolve();
+                        } else {
+                            setTimeout(checkMLService, 500);
+                        }
+                    };
+                    checkMLService();
+                });
+            }
+
+            async initializeMLOverlays() {
+                this.log('🧠 Inicializando overlays ML...');
+                
+                if (window.MLMapOverlays) {
+                    this.mlOverlays = new MLMapOverlays(this.map, window.mlService);
+                    await this.mlOverlays.initialize();
+                    
+                    // Tornar disponível globalmente para botões
+                    window.mlOverlays = this.mlOverlays;
+                    
+                    this.log('✅ Overlays ML inicializados');
+                } else {
+                    this.log('⚠️ MLMapOverlays não disponível');
+                }
+            }
+
+            setupEventListeners() {
+                // Escutar eventos do MLService
+                if (window.mlService) {
+                    window.mlService.on('initialized', (data) => {
+                        this.log(`🧠 MLService inicializado: ${data.models} modelos, ${data.filters} filtros`);
+                        this.updateStats();
+                    });
+
+                    window.mlService.on('prediction', (data) => {
+                        this.stats.predictions++;
+                        this.log(`🔮 Predição realizada: ${data.modelType} (confiança: ${(data.result.confidence * 100).toFixed(1)}%)`);
+                        this.updateStats();
+                    });
+
+                    window.mlService.on('error', (data) => {
+                        this.log(`❌ Erro ML: ${data.error}`);
+                    });
+                }
+            }
+
+            async updateStats() {
+                try {
+                    // Status do MLService
+                    const serviceStatus = window.mlService ? '✅' : '❌';
+                    document.getElementById('ml-service-status').textContent = serviceStatus;
+
+                    if (window.mlService) {
+                        // Modelos disponíveis
+                        try {
+                            const models = await window.mlService.getModels();
+                            document.getElementById('models-count').textContent = models.total || 0;
+                        } catch (e) {
+                            document.getElementById('models-count').textContent = 'N/A';
+                        }
+
+                        // Filtros ativos
+                        try {
+                            const filters = await window.mlService.getFilters();
+                            document.getElementById('filters-count').textContent = filters.active || 0;
+                        } catch (e) {
+                            document.getElementById('filters-count').textContent = 'N/A';
+                        }
+
+                        // Cache stats
+                        const cacheStats = window.mlService.getCacheStats();
+                        const hitRate = (cacheStats.hitRate * 100).toFixed(1);
+                        document.getElementById('cache-hits').textContent = `${hitRate}%`;
+                    }
+                } catch (error) {
+                    this.log(`⚠️ Erro atualizando stats: ${error.message}`);
+                }
+            }
+
+            log(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                this.logContainer.appendChild(logEntry);
+                this.logContainer.scrollTop = this.logContainer.scrollHeight;
+            }
+        }
+
+        // Funções de demonstração
+        async function demoMapFeatures() {
+            mlDemo.log('🚀 Demonstrando filtros ML...');
+            
+            if (mlDemo.mlOverlays) {
+                const stats = mlDemo.mlOverlays.getStats();
+                mlDemo.log(`📊 Filtros disponíveis: ${stats.totalFilters}`);
+                mlDemo.log(`👁️ Filtros ativos: ${stats.activeFilters}`);
+                mlDemo.log(`📍 Total de pontos: ${stats.totalPoints}`);
+                
+                // Simular ativação de filtros
+                if (stats.totalFilters > 0) {
+                    mlDemo.log('🎯 Ativando filtros automaticamente...');
+                    // Aqui seria implementada a ativação automática
+                }
+            } else {
+                mlDemo.log('⚠️ Overlays ML não disponíveis');
+            }
+        }
+
+        async function testPredictions() {
+            mlDemo.log('🔮 Testando predições...');
+            
+            if (window.mlService) {
+                try {
+                    const center = mlDemo.map.getCenter();
+                    const prediction = await window.mlService.predict('biodiversity_predictor', {
+                        latitude: center.lat,
+                        longitude: center.lng,
+                        temperature: 25.0,
+                        depth: 20.0
+                    });
+                    
+                    mlDemo.log(`✅ Predição realizada: ${JSON.stringify(prediction.prediction)}`);
+                    mlDemo.log(`🎯 Confiança: ${(prediction.confidence * 100).toFixed(1)}%`);
+                    
+                } catch (error) {
+                    mlDemo.log(`❌ Erro na predição: ${error.message}`);
+                }
+            } else {
+                mlDemo.log('⚠️ MLService não disponível');
+            }
+        }
+
+        async function showMLStats() {
+            mlDemo.log('📊 Obtendo estatísticas ML...');
+            
+            if (window.mlService) {
+                try {
+                    const stats = await window.mlService.getStats();
+                    mlDemo.log(`📈 Estatísticas: ${JSON.stringify(stats, null, 2)}`);
+                } catch (error) {
+                    mlDemo.log(`❌ Erro obtendo stats: ${error.message}`);
+                }
+            }
+            
+            mlDemo.updateStats();
+        }
+
+        function clearDemoData() {
+            mlDemo.log('🧹 Limpando dados de demonstração...');
+            
+            if (window.mlService) {
+                window.mlService.clearCache();
+                mlDemo.log('✅ Cache limpo');
+            }
+            
+            // Limpar log (manter últimas 5 linhas)
+            const logLines = mlDemo.logContainer.children;
+            while (logLines.length > 5) {
+                mlDemo.logContainer.removeChild(logLines[0]);
+            }
+            
+            mlDemo.log('🧹 Limpeza concluída');
+        }
+
+        // === FUNÇÕES DE VISUALIZAÇÕES AVANÇADAS ===
+        
+        let enhancedVisualizations = null;
+        let servicesIntegration = null;
+
+        async function initializeEnhancedVisualizations() {
+            if (!enhancedVisualizations && window.MLEnhancedVisualizations && mlDemo.map) {
+                enhancedVisualizations = new MLEnhancedVisualizations(mlDemo.map, window.mlService);
+                mlDemo.log('🎨 Visualizações avançadas inicializadas');
+            }
+        }
+
+        async function createBiodiversityHeatmap() {
+            mlDemo.log('🔥 Criando heatmap de biodiversidade...');
+            await initializeEnhancedVisualizations();
+            if (enhancedVisualizations) {
+                await enhancedVisualizations.createBiodiversityHeatmap();
+                mlDemo.log('✅ Heatmap de biodiversidade criado');
+            }
+        }
+
+        async function createSpeciesClusters() {
+            mlDemo.log('🐠 Criando clusters de espécies...');
+            await initializeEnhancedVisualizations();
+            if (enhancedVisualizations) {
+                await enhancedVisualizations.createSpeciesClusters();
+                mlDemo.log('✅ Clusters de espécies criados');
+            }
+        }
+
+        async function createMigrationPaths() {
+            mlDemo.log('🐋 Criando rotas de migração...');
+            await initializeEnhancedVisualizations();
+            if (enhancedVisualizations) {
+                await enhancedVisualizations.createMigrationPaths();
+                mlDemo.log('✅ Rotas de migração criadas');
+            }
+        }
+
+        async function createRiskZones() {
+            mlDemo.log('⚠️ Criando zonas de risco...');
+            await initializeEnhancedVisualizations();
+            if (enhancedVisualizations) {
+                await enhancedVisualizations.createRiskZones();
+                mlDemo.log('✅ Zonas de risco criadas');
+            }
+        }
+
+        async function createAllMLVisualizations() {
+            mlDemo.log('🎨 Criando todas as visualizações ML...');
+            await initializeEnhancedVisualizations();
+            if (enhancedVisualizations) {
+                await enhancedVisualizations.createAllVisualizations();
+                mlDemo.log('✅ Todas as visualizações ML criadas!');
+            }
+        }
+
+        function clearMLVisualizations() {
+            mlDemo.log('🧹 Limpando visualizações ML...');
+            if (enhancedVisualizations) {
+                enhancedVisualizations.clearAllLayers();
+                mlDemo.log('✅ Visualizações ML limpas');
+            }
+        }
+
+        // === FUNÇÕES DE INTEGRAÇÃO DE SERVIÇOS ===
+
+        async function initializeServicesIntegration() {
+            if (!servicesIntegration && window.MLServicesIntegration && mlDemo.map) {
+                servicesIntegration = new MLServicesIntegration(mlDemo.map, window.mlService);
+                window.servicesIntegration = servicesIntegration; // Global para botões
+                mlDemo.log('🔗 Integração de serviços inicializada');
+            }
+        }
+
+        async function integrateAllBGAPPServices() {
+            mlDemo.log('🚀 Integrando todos os serviços BGAPP...');
+            await initializeServicesIntegration();
+            if (servicesIntegration) {
+                const successCount = await servicesIntegration.integrateAllServices();
+                mlDemo.log(`✅ ${successCount}/4 serviços integrados com sucesso`);
+            }
+        }
+
+        async function showServicesStatus() {
+            mlDemo.log('📊 Verificando status dos serviços...');
+            try {
+                const response = await fetch('https://bgapp-workflow.majearcasa.workers.dev/services');
+                const data = await response.json();
+                const onlineServices = data.services.filter(s => s.clientAccess).length;
+                mlDemo.log(`📊 Status: ${onlineServices} serviços online`);
+                alert(`📊 Status dos Serviços BGAPP:\n\n✅ ${onlineServices} serviços online\n🔗 Todos os serviços integráveis disponíveis`);
+            } catch (error) {
+                mlDemo.log(`❌ Erro verificando serviços: ${error.message}`);
+            }
+        }
+
+        function openServicesDashboard() {
+            mlDemo.log('🎛️ Abrindo dashboard de serviços...');
+            if (servicesIntegration && servicesIntegration.isIntegrated) {
+                mlDemo.log('✅ Dashboard já disponível no mapa');
+            } else {
+                integrateAllBGAPPServices();
+            }
+        }
+
+        function clearServicesIntegration() {
+            mlDemo.log('🧹 Limpando integrações de serviços...');
+            if (servicesIntegration) {
+                servicesIntegration.clearAllIntegrations();
+                mlDemo.log('✅ Integrações de serviços limpas');
+            }
+        }
+
+        // Inicializar demo quando página carregar
+        let mlDemo;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            mlDemo = new MLDemo();
+            mlDemo.initialize();
+        });
+    </script>
+</body>
+</html>

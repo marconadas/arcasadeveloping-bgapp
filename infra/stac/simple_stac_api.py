@@ -177,4 +177,4 @@ async def search(limit: int = 10):
 
 if __name__ == '__main__':
     print("🚀 Starting BGAPP Simple STAC API...")
-    uvicorn.run(app, host='0.0.0.0', port=8080)
+    uvicorn.run(app, host='0.0.0.0', port=8081)

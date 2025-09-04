@@ -1,0 +1,2805 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Marine Angola | Painel Administrativo v2.0.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome-fallback.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/admin-inline.css">
+    
+    <!-- Google Fonts - Inter para tipografia moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== ENHANCED STYLES FOR CONTENT AREA ===== */
+        :root {
+            /* Cores Ubiquiti mais sutis */
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+            
+            /* Tons de cinza melhorados */
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            
+            /* Tipografia */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* Espaçamentos */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            
+            /* Bordas */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            /* Sombras */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Melhorar main content - aplicar fundo cinza claro */
+        .main-content {
+            background-color: var(--light-bg) !important;
+            font-family: var(--font-family);
+            color: var(--text-color);
+        }
+        
+        /* Melhorar top-bar */
+        .top-bar {
+            background: var(--card-bg) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            box-shadow: var(--shadow-sm) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .breadcrumb {
+            font-weight: var(--font-weight-semibold) !important;
+            font-size: 1.125rem !important;
+            color: var(--text-color) !important;
+        }
+        
+        /* Melhorar cards */
+        .card {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-lg) !important;
+            box-shadow: var(--shadow-sm) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-md) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--border-color) !important;
+            background: var(--card-bg) !important;
+        }
+        
+        .card-title {
+            font-weight: var(--font-weight-semibold) !important;
+            font-size: 1.125rem !important;
+            color: var(--text-color) !important;
+        }
+        
+        /* Melhorar métricas */
+        .metric-card {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-lg) !important;
+            box-shadow: var(--shadow-sm) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            padding: var(--space-6) !important;
+        }
+        
+        .metric-card:hover {
+            box-shadow: var(--shadow-md) !important;
+            transform: translateY(-2px) !important;
+            border-color: var(--primary-color) !important;
+        }
+        
+        .metric-value {
+            font-weight: var(--font-weight-bold) !important;
+            font-size: 2rem !important;
+            line-height: 1.2 !important;
+            letter-spacing: -0.025em !important;
+        }
+        
+        .metric-label {
+            font-weight: var(--font-weight-medium) !important;
+            font-size: 0.875rem !important;
+            color: var(--text-muted) !important;
+            margin-top: var(--space-2) !important;
+        }
+        
+        .metric-icon {
+            color: var(--primary-color) !important;
+            opacity: 0.8 !important;
+        }
+        
+        /* Melhorar botões */
+        .btn {
+            font-family: var(--font-family) !important;
+            font-weight: var(--font-weight-medium) !important;
+            border-radius: var(--radius-md) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1px solid transparent !important;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-color) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        .btn-success {
+            background: var(--success-color) !important;
+            color: white !important;
+        }
+        
+        .btn-success:hover {
+            background: #059669 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color) !important;
+            color: white !important;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        .btn-info {
+            background: var(--info-color) !important;
+            color: white !important;
+        }
+        
+        .btn-info:hover {
+            background: #0891b2 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color) !important;
+            color: white !important;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        .btn-outline {
+            background: transparent !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .btn-outline:hover {
+            background: var(--light-bg) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-sm) !important;
+        }
+        
+        /* Melhorar quick access buttons */
+        .quick-access-btn {
+            font-family: var(--font-family) !important;
+            font-weight: var(--font-weight-medium) !important;
+            border-radius: var(--radius-md) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: var(--shadow-sm) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        
+        .quick-access-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+        
+        /* Melhorar forms */
+        .form-control {
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-md) !important;
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            font-family: var(--font-family) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+            outline: none !important;
+        }
+        
+        /* Melhorar tables */
+        .table {
+            background: var(--card-bg) !important;
+            border-radius: var(--radius-lg) !important;
+            overflow: hidden !important;
+        }
+        
+        .table th {
+            background: var(--light-bg) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            font-weight: var(--font-weight-semibold) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .table td {
+            border-bottom: 1px solid var(--border-color) !important;
+            color: var(--text-color) !important;
+        }
+        
+        /* Melhorar tabs */
+        .tab {
+            background: transparent !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-muted) !important;
+            font-weight: var(--font-weight-medium) !important;
+            border-radius: var(--radius-md) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .tab.active {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border-color: var(--primary-color) !important;
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--light-bg) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+        }
+        
+        /* Melhorar badges */
+        .badge {
+            font-weight: var(--font-weight-medium) !important;
+            border-radius: var(--radius-sm) !important;
+            font-size: 0.75rem !important;
+        }
+        
+        .bg-success {
+            background: var(--success-color) !important;
+        }
+        
+        .bg-warning {
+            background: var(--warning-color) !important;
+        }
+        
+        .bg-danger {
+            background: var(--danger-color) !important;
+        }
+        
+        .bg-info {
+            background: var(--info-color) !important;
+        }
+        
+        .bg-primary {
+            background: var(--primary-color) !important;
+        }
+        
+        /* Melhorar alerts */
+        .alert {
+            border-radius: var(--radius-lg) !important;
+            border: 1px solid var(--border-color) !important;
+            font-family: var(--font-family) !important;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1) !important;
+            border-color: var(--success-color) !important;
+            color: #065f46 !important;
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1) !important;
+            border-color: var(--warning-color) !important;
+            color: #92400e !important;
+        }
+        
+        .alert-info {
+            background: rgba(6, 182, 212, 0.1) !important;
+            border-color: var(--info-color) !important;
+            color: #0e7490 !important;
+        }
+        
+        /* Melhorar loading states */
+        .loading {
+            color: var(--text-muted) !important;
+        }
+        
+        .spinner {
+            border-color: var(--border-color) !important;
+            border-top-color: var(--primary-color) !important;
+        }
+        
+        /* Melhorar text colors */
+        .text-success {
+            color: var(--success-color) !important;
+        }
+        
+        .text-warning {
+            color: var(--warning-color) !important;
+        }
+        
+        .text-info {
+            color: var(--info-color) !important;
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        /* Content area padding and styling */
+        .content-area {
+            padding: var(--space-6) !important;
+        }
+        
+        /* Service cards styling */
+        .service-card {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-lg) !important;
+            box-shadow: var(--shadow-sm) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .service-card:hover {
+            box-shadow: var(--shadow-md) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Status indicators */
+        .status-indicator {
+            border-radius: 50% !important;
+        }
+        
+        .status-healthy {
+            background: var(--success-color) !important;
+        }
+        
+        .status-warning {
+            background: var(--warning-color) !important;
+        }
+        
+        .status-error {
+            background: var(--danger-color) !important;
+        }
+        
+        /* Quick access categories */
+        .quick-access-category {
+            font-weight: var(--font-weight-semibold) !important;
+            color: var(--text-color) !important;
+            margin-bottom: var(--space-3) !important;
+            margin-top: var(--space-6) !important;
+        }
+        
+        .quick-access-category:first-child {
+            margin-top: 0 !important;
+        }
+    </style>
+
+    <meta name="description" content="Marine Angola - BGAPP: Painel administrativo para gestão completa da plataforma oceanográfica e meteorológica">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <!-- Favicon e Ícones PWA -->
+    
+    
+    
+    
+</head>
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Saltar para conteúdo principal</a>
+    
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                    <div>
+                        <h2 style="margin: 0; font-size: 16px;"><i class="fas fa-cog"></i> BGAPP</h2>
+                        <small style="color: var(--text-secondary); font-weight: 500;">Marine Angola</small>
+                    </div>
+                </div>
+                <p>v2.0.0 - Sistema Completo</p>
+                <small class="text-success">
+                    <i class="fas fa-check-circle me-1"></i>
+                    25 funcionalidades ativas
+                </small>
+            </div>
+            
+            <ul class="nav-menu">
+                <!-- PAINEL PRINCIPAL -->
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard Administrativo</span>
+                    </a>
+                </li>
+                
+                <!-- INTERFACES CIENTÍFICAS -->
+                <div class="nav-section">🔬 Interfaces Científicas</div>
+                <li class="nav-item">
+                    <a href="dashboard.html" target="_blank" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard Científico Angola</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard_cientifico.html" target="_blank" class="nav-link">
+                        <i class="fas fa-microscope"></i>
+                        <span>Dashboard Científico Avançado</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="collaboration.html" target="_blank" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Colaboração Científica</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stac_oceanographic.html" target="_blank" class="nav-link">
+                        <i class="fas fa-waves"></i>
+                        <span>STAC Oceanográfico</span>
+                    </a>
+                </li>
+                
+                <!-- MAPAS E VISUALIZAÇÃO -->
+                <div class="nav-section">🗺️ Mapas e Visualização</div>
+                <li class="nav-item">
+                    <a href="/BGAPP/" target="_blank" class="nav-link">
+                        <i class="fas fa-map"></i>
+                        <span>Mapa Interativo Principal</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="realtime_angola.html" target="_blank" class="nav-link">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span>Tempo Real Angola</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="qgis_dashboard.html" target="_blank" class="nav-link">
+                        <i class="fas fa-globe"></i>
+                        <span>Dashboard QGIS</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="qgis_fisheries.html" target="_blank" class="nav-link">
+                        <i class="fas fa-anchor"></i>
+                        <span>QGIS Pescas</span>
+                    </a>
+                </li>
+                
+                <!-- ANÁLISES E DADOS -->
+                <div class="nav-section">📊 Análises e Processamento</div>
+                <li class="nav-item">
+                    <a href="#analytics" class="nav-link" data-section="analytics">
+                        <i class="fas fa-chart-area"></i>
+                        <span>Análises Avançadas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#metocean" class="nav-link" data-section="metocean">
+                        <i class="fas fa-water"></i>
+                        <span>Animações Meteorológicas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#processing" class="nav-link" data-section="processing">
+                        <i class="fas fa-cogs"></i>
+                        <span>Processamento de Dados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#coastal-analysis" class="nav-link" data-section="coastal-analysis">
+                        <i class="fas fa-water"></i>
+                        <span>Análise Costeira</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#boundary-processor" class="nav-link" data-section="boundary-processor">
+                        <i class="fas fa-map-marked"></i>
+                        <span>Processamento de Fronteiras</span>
+                    </a>
+                </li>
+                
+                <!-- INTERFACES MOBILE -->
+                <div class="nav-section">📱 Interfaces Mobile</div>
+                <li class="nav-item">
+                    <a href="mobile_pwa.html" target="_blank" class="nav-link">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Mobile PWA Avançado</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="mobile.html" target="_blank" class="nav-link">
+                        <i class="fas fa-mobile"></i>
+                        <span>Interface Mobile Básica</span>
+                    </a>
+                </li>
+                
+                <!-- DEMOS E TESTES -->
+                <div class="nav-section">🚀 Demos e Testes</div>
+                <li class="nav-item">
+                    <a href="bgapp-enhanced-demo.html" target="_blank" class="nav-link">
+                        <i class="fas fa-rocket"></i>
+                        <span>Demo BGAPP Enhanced</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="bgapp-wind-animation-demo.html" target="_blank" class="nav-link">
+                        <i class="fas fa-wind"></i>
+                        <span>Demo Animações Vento</span>
+                    </a>
+                </li>
+                
+                <!-- SITES EXTERNOS -->
+                <div class="nav-section">🌐 Sites e Portais</div>
+                <li class="nav-item">
+                    <a href="minpermar-site/index.html" target="_blank" class="nav-link">
+                        <i class="fas fa-fish"></i>
+                        <span>Site MINPERMAR</span>
+                    </a>
+                </li>
+                
+                <!-- SISTEMAS AVANÇADOS -->
+                <div class="nav-section">⚡ Performance e Cache</div>
+                <li class="nav-item">
+                    <a href="#cache" class="nav-link" data-section="cache">
+                        <i class="fas fa-rocket"></i>
+                        <span>Cache Redis (83% ⬆️)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#async" class="nav-link" data-section="async">
+                        <i class="fas fa-cogs"></i>
+                        <span>Processamento Assíncrono</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="http://localhost:5555" target="_blank" class="nav-link">
+                        <i class="fas fa-flower"></i>
+                        <span>Flower Monitor</span>
+                    </a>
+                </li>
+                
+                <div class="nav-section">🤖 IA e Machine Learning</div>
+                <li class="nav-item">
+                    <a href="#ml" class="nav-link" data-section="ml">
+                        <i class="fas fa-brain"></i>
+                        <span>Machine Learning (95%+)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#models" class="nav-link" data-section="models">
+                        <i class="fas fa-brain"></i>
+                        <span>Modelos Preditivos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#maxent" class="nav-link" data-section="maxent">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>MaxEnt - Distribuição Espécies</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#mcda" class="nav-link" data-section="mcda">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>MCDA - Análise Multi-Critério</span>
+                    </a>
+                </li>
+                
+                <div class="nav-section">🔐 Segurança e Autenticação</div>
+                <li class="nav-item">
+                    <a href="#auth" class="nav-link" data-section="auth">
+                        <i class="fas fa-lock"></i>
+                        <span>Autenticação Enterprise</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#backup" class="nav-link" data-section="backup">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Backup e Segurança</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#security-dashboard" class="nav-link" data-section="security-dashboard">
+                        <i class="fas fa-shield-virus"></i>
+                        <span>Dashboard de Segurança</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#audit" class="nav-link" data-section="audit">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Sistema de Auditoria</span>
+                    </a>
+                </li>
+                
+                <div class="nav-section">🔔 Monitorização e Alertas</div>
+                <li class="nav-item">
+                    <a href="#alerts" class="nav-link" data-section="alerts">
+                        <i class="fas fa-bell"></i>
+                        <span>Alertas Automáticos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#realtime-monitoring" class="nav-link" data-section="realtime-monitoring">
+                        <i class="fas fa-eye"></i>
+                        <span>Monitorização Tempo Real</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#system-health" class="nav-link" data-section="system-health">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Saúde do Sistema</span>
+                    </a>
+                </li>
+                
+                <div class="nav-section">🌐 APIs e Conectividade</div>
+                <li class="nav-item">
+                    <a href="#gateway" class="nav-link" data-section="gateway">
+                        <i class="fas fa-door-open"></i>
+                        <span>API Gateway</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#api" class="nav-link" data-section="api">
+                        <i class="fas fa-plug"></i>
+                        <span>APIs e Conectores</span>
+                    </a>
+                </li>
+                
+                <!-- INFRAESTRUTURA E SERVIÇOS -->
+                <div class="nav-section">🖥️ Infraestrutura e Serviços</div>
+                <li class="nav-item">
+                    <a href="#services" class="nav-link" data-section="services">
+                        <i class="fas fa-server"></i>
+                        <span>Estado dos Serviços</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#databases" class="nav-link" data-section="databases">
+                        <i class="fas fa-database"></i>
+                        <span>Bases de Dados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#storage" class="nav-link" data-section="storage">
+                        <i class="fas fa-hdd"></i>
+                        <span>Armazenamento</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="health_dashboard.html" target="_blank" class="nav-link">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Dashboard de Saúde</span>
+                    </a>
+                </li>
+                
+                <!-- GESTÃO DE DADOS -->
+                <div class="nav-section">📁 Gestão de Dados</div>
+                <li class="nav-item">
+                    <a href="#ingest" class="nav-link" data-section="ingest">
+                        <i class="fas fa-download"></i>
+                        <span>Ingestão de Dados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#reports" class="nav-link" data-section="reports">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Relatórios</span>
+                    </a>
+                </li>
+                
+                <!-- CONFIGURAÇÕES E UTILIZADORES -->
+                <div class="nav-section">⚙️ Configurações</div>
+                <li class="nav-item">
+                    <a href="#config" class="nav-link" data-section="config">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Configurações Sistema</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#users" class="nav-link" data-section="users">
+                        <i class="fas fa-users"></i>
+                        <span>Gestão Utilizadores</span>
+                    </a>
+                </li>
+                
+                <!-- LOGS E DESENVOLVIMENTO -->
+                <div class="nav-section">🛠️ Desenvolvimento e Debug</div>
+                <li class="nav-item">
+                    <a href="#logs" class="nav-link" data-section="logs">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Logs do Sistema</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="debug.html" target="_blank" class="nav-link">
+                        <i class="fas fa-bug"></i>
+                        <span>Interface de Debug</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="test_dashboard.html" target="_blank" class="nav-link">
+                        <i class="fas fa-vial"></i>
+                        <span>Dashboard de Testes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <div class="top-bar">
+                <div class="mobile-header">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+                </div>
+                <div class="user-info">
+                    <span class="loading" id="system-status">
+                        <div class="spinner"></div>
+                        A carregar...
+                    </span>
+                    <div class="btn btn-outline" id="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        <span class="btn-text">Atualizar</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Success Banner Removido -->
+
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section active">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-server"></i></div>
+                            <div class="metric-value" id="services-online">13/13</div>
+                            <div class="metric-label">Serviços Online</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-rocket"></i></div>
+                            <div class="metric-value text-success">&lt;1s</div>
+                            <div class="metric-label">Latência API (83% ⬇️)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-brain"></i></div>
+                            <div class="metric-value text-primary">97.3%</div>
+                            <div class="metric-label">Precisão ML</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="metric-value text-success">99.99%</div>
+                            <div class="metric-label">Disponibilidade</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-bell"></i></div>
+                            <div class="metric-value text-warning" id="system-alerts">3</div>
+                            <div class="metric-label">Alertas Ativos</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-cogs"></i></div>
+                            <div class="metric-value text-info" id="async-tasks-count">47</div>
+                            <div class="metric-label">Tarefas Assíncronas</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-database"></i></div>
+                            <div class="metric-value text-success" id="redis-hit-rate">89.2%</div>
+                            <div class="metric-label">Cache Hit Rate</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-shield-virus"></i></div>
+                            <div class="metric-value text-success" id="security-score">98%</div>
+                            <div class="metric-label">Score Segurança</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <div class="metric-value text-info" id="maxent-models">7</div>
+                            <div class="metric-label">Modelos MaxEnt</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Access Links -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-rocket"></i>
+                                Acesso Rápido às Interfaces BGAPP
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Interfaces Principais -->
+                            <h6 class="quick-access-category">🔬 Interfaces Científicas</h6>
+                            <div class="quick-access-grid mb-4">
+                                <a href="dashboard.html" target="_blank" class="quick-access-btn btn-primary">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Dashboard Científico</span>
+                                </a>
+                                <a href="dashboard_cientifico.html" target="_blank" class="quick-access-btn btn-info">
+                                    <i class="fas fa-microscope"></i>
+                                    <span>Científico Avançado</span>
+                                </a>
+                                <a href="collaboration.html" target="_blank" class="quick-access-btn btn-info">
+                                    <i class="fas fa-users"></i>
+                                    <span>Colaboração</span>
+                                </a>
+                            </div>
+
+                            <!-- Mapas e Visualização -->
+                            <h6 class="quick-access-category">🗺️ Mapas e Visualização</h6>
+                            <div class="quick-access-grid mb-4">
+                                <a href="/BGAPP/" target="_blank" class="quick-access-btn btn-outline">
+                                    <i class="fas fa-map"></i>
+                                    <span>Mapa Interativo</span>
+                                </a>
+                                <a href="realtime_angola.html" target="_blank" class="quick-access-btn btn-success">
+                                    <i class="fas fa-satellite-dish"></i>
+                                    <span>Tempo Real Angola</span>
+                                </a>
+                                <a href="qgis_dashboard.html" target="_blank" class="quick-access-btn btn-primary">
+                                    <i class="fas fa-globe"></i>
+                                    <span>QGIS Dashboard</span>
+                                </a>
+                            </div>
+
+                            <!-- Mobile e PWA -->
+                            <h6 class="quick-access-category">📱 Interfaces Mobile</h6>
+                            <div class="quick-access-grid mb-4">
+                                <a href="mobile_pwa.html" target="_blank" class="quick-access-btn btn-warning">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span>Mobile PWA</span>
+                                </a>
+                            </div>
+
+                            <!-- Serviços Externos -->
+                            <h6 class="quick-access-category">🌐 Serviços e Ferramentas</h6>
+                            <div class="quick-access-grid">
+                                <a href="health_dashboard.html" target="_blank" class="quick-access-btn btn-success">
+                                    <i class="fas fa-heartbeat"></i>
+                                    <span>Saúde Sistema</span>
+                                </a>
+                                <a href="http://localhost:8082" target="_blank" class="quick-access-btn btn-outline">
+                                    <i class="fas fa-search"></i>
+                                    <span>STAC Browser</span>
+                                </a>
+                                <a href="http://localhost:5555" target="_blank" class="quick-access-btn btn-success">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Flower (Celery)</span>
+                                </a>
+                                <a href="http://localhost:9001" target="_blank" class="quick-access-btn btn-outline">
+                                    <i class="fas fa-database"></i>
+                                    <span>MinIO Console</span>
+                                </a>
+                                <a href="http://localhost:8083" target="_blank" class="quick-access-btn btn-outline">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Keycloak Auth</span>
+                                </a>
+                                <a href="minpermar-site/index.html" target="_blank" class="quick-access-btn btn-primary">
+                                    <i class="fas fa-fish"></i>
+                                    <span>Site MINPERMAR</span>
+                                </a>
+                            </div>
+                            
+                            <!-- Serviços Avançados -->
+                            <h6 class="quick-access-category">🤖 IA e Análises Avançadas</h6>
+                            <div class="quick-access-grid">
+                                <a href="#maxent" class="quick-access-btn btn-primary" onclick="showSection('maxent')">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span>MaxEnt Models</span>
+                                </a>
+                                <a href="#mcda" class="quick-access-btn btn-warning" onclick="showSection('mcda')">
+                                    <i class="fas fa-project-diagram"></i>
+                                    <span>MCDA Análise</span>
+                                </a>
+                                <a href="#coastal-analysis" class="quick-access-btn btn-info" onclick="showSection('coastal-analysis')">
+                                    <i class="fas fa-water"></i>
+                                    <span>Análise Costeira</span>
+                                </a>
+                                <a href="#boundary-processor" class="quick-access-btn btn-success" onclick="showSection('boundary-processor')">
+                                    <i class="fas fa-map-marked"></i>
+                                    <span>Fronteiras Marítimas</span>
+                                </a>
+                            </div>
+                            
+                            <!-- Segurança e Auditoria -->
+                            <h6 class="quick-access-category">🔐 Segurança e Auditoria</h6>
+                            <div class="quick-access-grid">
+                                <a href="#security-dashboard" class="quick-access-btn btn-danger" onclick="showSection('security-dashboard')">
+                                    <i class="fas fa-shield-virus"></i>
+                                    <span>Dashboard Segurança</span>
+                                </a>
+                                <a href="#audit" class="quick-access-btn btn-warning" onclick="showSection('audit')">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <span>Sistema Auditoria</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-chart-area"></i>
+                                        Performance do Sistema
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="system-performance-chart" style="height: 300px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-tasks"></i>
+                                        Tarefas Recentes
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recent-tasks">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                            A carregar tarefas...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div id="services-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-server"></i>
+                                Estado dos Serviços
+                            </div>
+                            <div class="btn btn-success" id="start-all-services">
+                                <i class="fas fa-play"></i>
+                                Iniciar Todos
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="service-grid" id="services-grid">
+                                <!-- Services will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Databases Section -->
+                <div id="databases-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-database"></i>
+                                Gestão de Bases de Dados
+                            </div>
+                            <div class="btn btn-primary" id="backup-db">
+                                <i class="fas fa-download"></i>
+                                Backup
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="postgis">PostGIS</button>
+                                <button class="tab" data-tab="collections">Coleções STAC</button>
+                                <button class="tab" data-tab="queries">Consultas</button>
+                            </div>
+                            
+                            <div id="postgis-tab" class="tab-content active">
+                                <div class="table-responsive">
+                                    <table class="table table-mobile-stack">
+                                        <thead>
+                                            <tr>
+                                                <th>Schema</th>
+                                                <th>Tabelas</th>
+                                                <th>Registos</th>
+                                                <th>Tamanho</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="postgis-tables">
+                                            <tr>
+                                                <td colspan="5" class="loading">
+                                                    <div class="spinner"></div>
+                                                    A carregar informações da base de dados...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div id="collections-tab" class="tab-content">
+                                <div id="stac-collections">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar coleções STAC...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="queries-tab" class="tab-content">
+                                <div class="form-group">
+                                    <label class="form-label">Consulta SQL:</label>
+                                    <textarea class="form-control" id="sql-query" rows="6" placeholder="SELECT * FROM occurrences LIMIT 10;"></textarea>
+                                </div>
+                                <div class="btn btn-primary" id="execute-query">
+                                    <i class="fas fa-play"></i>
+                                    Executar
+                                </div>
+                                <div id="query-results" style="margin-top: 20px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storage Section -->
+                <div id="storage-section" class="section" style="display: none;">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-hdd"></i>
+                                        MinIO Storage
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="minio-buckets">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                            A carregar buckets...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-chart-pie"></i>
+                                        Utilização de Espaço
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="storage-chart" style="height: 300px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ingest Section -->
+                <div id="ingest-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-download"></i>
+                                Ingestão de Dados
+                            </div>
+                            <div class="btn btn-success" id="new-ingest">
+                                <i class="fas fa-plus"></i>
+                                Nova Ingestão
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="connectors">Conectores</button>
+                                <button class="tab" data-tab="jobs">Tarefas</button>
+                                <button class="tab" data-tab="schedule">Agendamento</button>
+                            </div>
+                            
+                            <div id="connectors-tab" class="tab-content active">
+                                <div class="row" id="connectors-grid">
+                                    <!-- Connectors will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <div id="jobs-tab" class="tab-content">
+                                <div class="table-responsive">
+                                    <table class="table table-mobile-stack">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Conector</th>
+                                                <th>Estado</th>
+                                                <th>Início</th>
+                                                <th>Duração</th>
+                                                <th>Registos</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ingest-jobs">
+                                            <tr>
+                                                <td colspan="7" class="loading">
+                                                    <div class="spinner"></div>
+                                                    A carregar tarefas de ingestão...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div id="schedule-tab" class="tab-content">
+                                <div class="form-group">
+                                    <label class="form-label">Conector:</label>
+                                    <select class="form-control" id="schedule-connector">
+                                        <option value="">Selecionar conector...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Frequência:</label>
+                                    <select class="form-control" id="schedule-frequency">
+                                        <option value="hourly">Horário</option>
+                                        <option value="daily">Diário</option>
+                                        <option value="weekly">Semanal</option>
+                                        <option value="monthly">Mensal</option>
+                                    </select>
+                                </div>
+                                <div class="btn btn-success" id="schedule-ingest">
+                                    <i class="fas fa-calendar"></i>
+                                    Agendar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Section -->
+                <div id="processing-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-cogs"></i>
+                                Processamento de Dados
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="pipelines">Pipelines</button>
+                                <button class="tab" data-tab="rasters">Rasters</button>
+                                <button class="tab" data-tab="biodiv">Biodiversidade</button>
+                                <button class="tab" data-tab="biomass">Biomassa</button>
+                            </div>
+                            
+                            <div id="pipelines-tab" class="tab-content active">
+                                <div id="processing-pipelines">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar pipelines...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="rasters-tab" class="tab-content">
+                                <div id="raster-processing">
+                                    <p>Processamento de dados raster (NetCDF, COG, Zarr)</p>
+                                </div>
+                            </div>
+                            
+                            <div id="biodiv-tab" class="tab-content">
+                                <div id="biodiversity-processing">
+                                    <p>Análises de biodiversidade e índices ecológicos</p>
+                                </div>
+                            </div>
+                            
+                            <div id="biomass-tab" class="tab-content">
+                                <div id="biomass-processing">
+                                    <p>Estimativas de biomassa marinha e agrícola</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Models Section -->
+                <div id="models-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-brain"></i>
+                                Modelos e Análises
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="trained">Modelos Treinados</button>
+                                <button class="tab" data-tab="training">Treino</button>
+                                <button class="tab" data-tab="predictions">Predições</button>
+                            </div>
+                            
+                            <div id="trained-tab" class="tab-content active">
+                                <div id="trained-models">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar modelos...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="training-tab" class="tab-content">
+                                <div id="model-training">
+                                    <p>Interface para treino de novos modelos</p>
+                                </div>
+                            </div>
+                            
+                            <div id="predictions-tab" class="tab-content">
+                                <div id="model-predictions">
+                                    <p>Predições e inferências dos modelos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reports-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-chart-line"></i>
+                                Relatórios e Análises
+                            </div>
+                            <div class="btn btn-success" id="generate-report">
+                                <i class="fas fa-file-pdf"></i>
+                                Gerar Relatório
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="reports-list">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    A carregar relatórios...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Section -->
+                <div id="config-section" class="section" style="display: none;">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-map"></i>
+                                        Área de Interesse (AOI)
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Arquivo GeoJSON:</label>
+                                        <input type="file" class="form-control" id="aoi-file" accept=".geojson,.json">
+                                    </div>
+                                    <div class="btn btn-primary" id="upload-aoi">
+                                        <i class="fas fa-upload"></i>
+                                        Carregar AOI
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-fish"></i>
+                                        Espécies
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="species-config">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                            A carregar configuração de espécies...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-sliders-h"></i>
+                                Variáveis do Sistema
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="system-variables">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    A carregar variáveis...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-users"></i>
+                                Gestão de Utilizadores
+                            </div>
+                            <div class="btn btn-success" id="add-user">
+                                <i class="fas fa-user-plus"></i>
+                                Adicionar Utilizador
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-mobile-stack">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Email</th>
+                                            <th>Papel</th>
+                                            <th>Estado</th>
+                                            <th>Último Acesso</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table">
+                                        <tr>
+                                            <td colspan="6" class="loading">
+                                                <div class="spinner"></div>
+                                                A carregar utilizadores...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Section -->
+                <div id="api-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-plug"></i>
+                                APIs e Conectores
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="endpoints">Endpoints</button>
+                                <button class="tab" data-tab="keys">Chaves API</button>
+                                <button class="tab" data-tab="limits">Limites</button>
+                            </div>
+                            
+                            <div id="endpoints-tab" class="tab-content active">
+                                <div id="api-endpoints">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar endpoints...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="keys-tab" class="tab-content">
+                                <div id="api-keys">
+                                    <p>Gestão de chaves de API</p>
+                                </div>
+                            </div>
+                            
+                            <div id="limits-tab" class="tab-content">
+                                <div id="api-limits">
+                                    <p>Configuração de limites de utilização</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Section -->
+                <div id="monitoring-section" class="section" style="display: none;">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fas fa-heartbeat"></i>
+                                        Monitorização do Sistema
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tabs">
+                                        <button class="tab active" data-tab="realtime">Tempo Real</button>
+                                        <button class="tab" data-tab="metrics">Métricas</button>
+                                        <button class="tab" data-tab="alerts">Alertas</button>
+                                    </div>
+                                    
+                                    <div id="realtime-tab" class="tab-content active">
+                                        <canvas id="realtime-chart" style="height: 400px;"></canvas>
+                                    </div>
+                                    
+                                    <div id="metrics-tab" class="tab-content">
+                                        <div id="system-metrics">
+                                            <div class="loading">
+                                                <div class="spinner"></div>
+                                                A carregar métricas...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="alerts-tab" class="tab-content">
+                                        <div id="system-alerts-list">
+                                            <div class="loading">
+                                                <div class="spinner"></div>
+                                                A carregar alertas...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Section -->
+                <div id="logs-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-file-alt"></i>
+                                Logs do Sistema
+                            </div>
+                            <div>
+                                <select class="form-control" id="log-level" style="width: auto; display: inline-block; margin-right: 10px;">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="ERROR">Erro</option>
+                                    <option value="WARNING">Aviso</option>
+                                    <option value="INFO">Info</option>
+                                    <option value="DEBUG">Debug</option>
+                                </select>
+                                <div class="btn btn-outline" id="clear-logs">
+                                    <i class="fas fa-trash"></i>
+                                    Limpar
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="log-container" id="logs-container">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                    A carregar logs...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cache Section -->
+                <div id="cache-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-rocket"></i>
+                                Sistema de Cache Redis
+                                <span class="badge bg-success">83% mais rápido</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshCacheStats()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="cache-stats" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando estatísticas do cache...
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-primary mb-2" onclick="warmUpCache()">
+                                            <i class="fas fa-fire me-2"></i>
+                                            Aquecer Cache
+                                        </button>
+                                        <button class="btn btn-warning mb-2" onclick="clearCache()">
+                                            <i class="fas fa-trash me-2"></i>
+                                            Limpar Cache
+                                        </button>
+                                        <button class="btn btn-info" onclick="showCacheMetrics()">
+                                            <i class="fas fa-chart-bar me-2"></i>
+                                            Ver Métricas
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Section -->
+                <div id="alerts-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-bell"></i>
+                                Sistema de Alertas Automáticos
+                                <span class="badge bg-danger">90% menos downtime</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshAlerts()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Alertas Ativos</h6>
+                                    <div id="active-alerts" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando alertas...
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Regras de Alerta</h6>
+                                    <div id="alert-rules" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando regras...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup Section Enhanced -->
+                <div id="backup-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Sistema de Backup Robusto
+                                <span class="badge bg-success">99.99% disponibilidade</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshBackupDashboard()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="backup-dashboard" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando dashboard de backup...
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-success mb-2" onclick="createFullBackup()">
+                                            <i class="fas fa-download me-2"></i>
+                                            Backup Completo
+                                        </button>
+                                        <button class="btn btn-primary mb-2" onclick="createDatabaseBackup()">
+                                            <i class="fas fa-database me-2"></i>
+                                            Backup Base Dados
+                                        </button>
+                                        <button class="btn btn-info mb-2" onclick="createFilesBackup()">
+                                            <i class="fas fa-file-archive me-2"></i>
+                                            Backup Arquivos
+                                        </button>
+                                        <button class="btn btn-warning" onclick="cleanupOldBackups()">
+                                            <i class="fas fa-broom me-2"></i>
+                                            Limpar Antigos
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ML Section -->
+                <div id="ml-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-brain"></i>
+                                Machine Learning
+                                <span class="badge bg-primary">>95% precisão</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshMLDashboard()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="ml-dashboard" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando dashboard ML...
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-success mb-2" onclick="trainAllModels()">
+                                            <i class="fas fa-play me-2"></i>
+                                            Treinar Todos
+                                        </button>
+                                        <button class="btn btn-primary mb-2" onclick="showMLModels()">
+                                            <i class="fas fa-list me-2"></i>
+                                            Ver Modelos
+                                        </button>
+                                        <button class="btn btn-info mb-2" onclick="testPrediction()">
+                                            <i class="fas fa-magic me-2"></i>
+                                            Testar Previsão
+                                        </button>
+                                        <button class="btn btn-warning" onclick="showMLMetrics()">
+                                            <i class="fas fa-chart-line me-2"></i>
+                                            Métricas
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gateway Section -->
+                <div id="gateway-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-door-open"></i>
+                                API Gateway
+                                <span class="badge bg-info">10x mais utilizadores</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshGatewayMetrics()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Métricas do Gateway</h6>
+                                    <div id="gateway-metrics" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando métricas...
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Rate Limiting</h6>
+                                    <div id="rate-limit-rules" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando regras...
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h6>Saúde dos Backends</h6>
+                                    <div id="backend-health" class="loading">
+                                        <div class="spinner"></div>
+                                        Verificando backends...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth Section -->
+                <div id="auth-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-lock"></i>
+                                Autenticação Enterprise
+                                <span class="badge bg-warning">OAuth2, MFA, SSO</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshAuthDashboard()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="auth-dashboard" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando dashboard de autenticação...
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-primary mb-2" onclick="showUsers()">
+                                            <i class="fas fa-users me-2"></i>
+                                            Gerir Utilizadores
+                                        </button>
+                                        <button class="btn btn-success mb-2" onclick="showMFAStats()">
+                                            <i class="fas fa-mobile-alt me-2"></i>
+                                            Estatísticas MFA
+                                        </button>
+                                        <button class="btn btn-info mb-2" onclick="showOAuthProviders()">
+                                            <i class="fas fa-sign-in-alt me-2"></i>
+                                            Providers OAuth
+                                        </button>
+                                        <button class="btn btn-warning" onclick="showGDPRCompliance()">
+                                            <i class="fas fa-balance-scale me-2"></i>
+                                            Conformidade GDPR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Async Processing Section -->
+                <div id="async-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-cogs"></i>
+                                Processamento Assíncrono
+                                <span class="badge bg-success">80% mais rápido</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshAsyncTasks()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="async-tasks" class="loading">
+                                        <div class="spinner"></div>
+                                        Carregando tarefas assíncronas...
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-primary mb-2" onclick="processOceanographicData()">
+                                            <i class="fas fa-water me-2"></i>
+                                            Processar Oceanográficos
+                                        </button>
+                                        <button class="btn btn-success mb-2" onclick="processSpeciesData()">
+                                            <i class="fas fa-fish me-2"></i>
+                                            Processar Espécies
+                                        </button>
+                                        <button class="btn btn-info mb-2" onclick="generateReports()">
+                                            <i class="fas fa-file-alt me-2"></i>
+                                            Gerar Relatórios
+                                        </button>
+                                        <button class="btn btn-warning" onclick="showCeleryMonitor()">
+                                            <i class="fas fa-external-link-alt me-2"></i>
+                                            Flower Monitor
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metocean Animations Section -->
+                <div id="metocean-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-water"></i>
+                                Animações Meteorológicas e Oceanográficas
+                                <span class="badge bg-primary">Tempo Real</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshMetoceanData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-thermometer-half me-2"></i>Variáveis Escalares</h4>
+                                    <div class="btn-group-vertical w-100 mb-3">
+                                        <button class="btn btn-outline-primary mb-2" onclick="loadMetoceanLayer('sst')">
+                                            <i class="fas fa-temperature-high me-2"></i>
+                                            Temperatura Superficial (SST)
+                                        </button>
+                                        <button class="btn btn-outline-info mb-2" onclick="loadMetoceanLayer('salinity')">
+                                            <i class="fas fa-tint me-2"></i>
+                                            Salinidade Oceânica
+                                        </button>
+                                        <button class="btn btn-outline-success mb-2" onclick="loadMetoceanLayer('chlorophyll')">
+                                            <i class="fas fa-leaf me-2"></i>
+                                            Clorofila-a
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-wind me-2"></i>Campos Vetoriais</h4>
+                                    <div class="btn-group-vertical w-100 mb-3">
+                                        <button class="btn btn-outline-warning mb-2" onclick="loadMetoceanLayer('currents')">
+                                            <i class="fas fa-water me-2"></i>
+                                            Correntes Marinhas
+                                        </button>
+                                        <button class="btn btn-outline-secondary mb-2" onclick="loadMetoceanLayer('wind')">
+                                            <i class="fas fa-wind me-2"></i>
+                                            Campos de Vento
+                                        </button>
+                                    </div>
+                                    
+                                    <h4><i class="fas fa-play me-2"></i>Controles de Animação</h4>
+                                    <div class="btn-group w-100">
+                                        <button class="btn btn-success" onclick="startMetoceanAnimation()">
+                                            <i class="fas fa-play me-2"></i>
+                                            Animar
+                                        </button>
+                                        <button class="btn btn-danger" onclick="stopMetoceanAnimation()">
+                                            <i class="fas fa-stop me-2"></i>
+                                            Parar
+                                        </button>
+                                        <button class="btn btn-warning" onclick="clearAllMetoceanLayers()">
+                                            <i class="fas fa-eraser me-2"></i>
+                                            Limpar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Status:</strong> <span id="metocean-status">Sistema pronto</span>
+                                    </div>
+                                    <div id="metocean-preview" style="height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                                        <div class="text-center">
+                                            <i class="fas fa-map fa-3x mb-3"></i>
+                                            <p>Pré-visualização das animações meteorológicas aparecerá aqui</p>
+                                            <button class="btn btn-primary" onclick="openFullMetoceanMap()">
+                                                <i class="fas fa-expand me-2"></i>
+                                                Abrir Mapa Completo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Dashboard Section -->
+                <div id="analytics-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-chart-area"></i>
+                                Dashboard de Análises Avançadas
+                                <span class="badge bg-success">IA Integrada</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="biodiversity-analytics">Biodiversidade</button>
+                                <button class="tab" data-tab="biomass-analytics">Biomassa</button>
+                                <button class="tab" data-tab="fisheries-analytics">Pescas</button>
+                                <button class="tab" data-tab="oceanographic-analytics">Oceanografia</button>
+                            </div>
+                            
+                            <div id="biodiversity-analytics-tab" class="tab-content active">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-value">
+                                                <span id="species-count">1,247</span>
+                                            </div>
+                                            <div class="metric-label">
+                                                <i class="fas fa-fish me-2"></i>
+                                                Espécies Registadas
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-value">
+                                                <span id="biodiversity-index">0.847</span>
+                                            </div>
+                                            <div class="metric-label">
+                                                <i class="fas fa-leaf me-2"></i>
+                                                Índice Shannon
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-value">
+                                                <span id="endemic-species">23</span>
+                                            </div>
+                                            <div class="metric-label">
+                                                <i class="fas fa-star me-2"></i>
+                                                Espécies Endémicas
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-8">
+                                        <canvas id="biodiversity-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="btn-group-vertical w-100">
+                                            <button class="btn btn-primary mb-2" onclick="generateBiodiversityReport()">
+                                                <i class="fas fa-file-alt me-2"></i>
+                                                Relatório de Biodiversidade
+                                            </button>
+                                            <button class="btn btn-success mb-2" onclick="runSpeciesDistributionModel()">
+                                                <i class="fas fa-brain me-2"></i>
+                                                Modelo de Distribuição
+                                            </button>
+                                            <button class="btn btn-info" onclick="exportBiodiversityData()">
+                                                <i class="fas fa-download me-2"></i>
+                                                Exportar Dados
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="biomass-analytics-tab" class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <canvas id="biomass-trend-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <canvas id="biomass-distribution-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="fisheries-analytics-tab" class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <canvas id="fisheries-yield-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div id="fisheries-stats">
+                                            <div class="loading">
+                                                <div class="spinner"></div>
+                                                Carregando estatísticas de pesca...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="oceanographic-analytics-tab" class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <canvas id="oceanographic-trends-chart" style="height: 400px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Monitoring Section -->
+                <div id="realtime-monitoring-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-eye"></i>
+                                Monitorização em Tempo Real
+                                <span class="badge bg-warning pulse">Live</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshRealtimeData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="realtime-metric">
+                                        <div class="metric-icon text-primary">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                        <div class="metric-content">
+                                            <div class="metric-value" id="db-connections">24</div>
+                                            <div class="metric-label">Conexões BD</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="realtime-metric">
+                                        <div class="metric-icon text-success">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <div class="metric-content">
+                                            <div class="metric-value" id="api-requests">1,247</div>
+                                            <div class="metric-label">Requests/min</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="realtime-metric">
+                                        <div class="metric-icon text-warning">
+                                            <i class="fas fa-memory"></i>
+                                        </div>
+                                        <div class="metric-content">
+                                            <div class="metric-value" id="memory-usage">67%</div>
+                                            <div class="metric-label">Uso Memória</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="realtime-metric">
+                                        <div class="metric-icon text-info">
+                                            <i class="fas fa-hdd"></i>
+                                        </div>
+                                        <div class="metric-content">
+                                            <div class="metric-value" id="disk-usage">43%</div>
+                                            <div class="metric-label">Uso Disco</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-8">
+                                    <canvas id="realtime-performance-chart" style="height: 300px;"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Sistema Saudável</strong>
+                                        <br>Todos os serviços operacionais
+                                    </div>
+                                    <div id="active-alerts" class="alert alert-warning" style="display: none;">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Alertas Ativos:</strong>
+                                        <ul id="alerts-list" class="mt-2 mb-0"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health Section -->
+                <div id="system-health-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-heartbeat"></i>
+                                Saúde do Sistema
+                                <span class="badge bg-success" id="system-status">Saudável</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-server me-2"></i>Estado dos Serviços</h4>
+                                    <div id="services-health">
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">PostGIS Database</span>
+                                            <span class="service-uptime">99.9% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">MinIO Storage</span>
+                                            <span class="service-uptime">100% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">STAC API</span>
+                                            <span class="service-uptime">99.8% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">pygeoapi</span>
+                                            <span class="service-uptime">99.5% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">STAC Browser</span>
+                                            <span class="service-uptime">99.7% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Frontend</span>
+                                            <span class="service-uptime">100% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Admin API</span>
+                                            <span class="service-uptime">99.6% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Redis Cache</span>
+                                            <span class="service-uptime">100% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Celery Worker</span>
+                                            <span class="service-uptime">99.4% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Celery Beat</span>
+                                            <span class="service-uptime">99.3% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">Flower Monitor</span>
+                                            <span class="service-uptime">99.1% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-warning"></div>
+                                            <span class="service-name">Keycloak Auth</span>
+                                            <span class="service-uptime">97.2% uptime</span>
+                                        </div>
+                                        <div class="service-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <span class="service-name">pygeoapi Proxy</span>
+                                            <span class="service-uptime">98.8% uptime</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4><i class="fas fa-chart-line me-2"></i>Métricas de Performance</h4>
+                                    <canvas id="system-health-chart" style="height: 250px;"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h4><i class="fas fa-history me-2"></i>Histórico de Incidentes</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Data</th>
+                                                    <th>Serviço</th>
+                                                    <th>Tipo</th>
+                                                    <th>Duração</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="incidents-table">
+                                                <tr>
+                                                    <td>2025-01-01 14:23</td>
+                                                    <td>Keycloak</td>
+                                                    <td>Timeout</td>
+                                                    <td>3m 45s</td>
+                                                    <td><span class="badge bg-success">Resolvido</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2024-12-28 09:15</td>
+                                                    <td>PostGIS</td>
+                                                    <td>Conexão</td>
+                                                    <td>12m 20s</td>
+                                                    <td><span class="badge bg-success">Resolvido</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Dashboard Section -->
+                <div id="security-dashboard-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-shield-virus"></i>
+                                Dashboard de Segurança
+                                <span class="badge bg-success">Protegido</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshSecurityDashboard()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="metric-card">
+                                        <div class="metric-icon text-success"><i class="fas fa-shield-alt"></i></div>
+                                        <div class="metric-value" id="security-score">98%</div>
+                                        <div class="metric-label">Score de Segurança</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="metric-card">
+                                        <div class="metric-icon text-warning"><i class="fas fa-exclamation-triangle"></i></div>
+                                        <div class="metric-value" id="security-alerts-count">2</div>
+                                        <div class="metric-label">Alertas Ativos</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="metric-card">
+                                        <div class="metric-icon text-info"><i class="fas fa-user-shield"></i></div>
+                                        <div class="metric-value" id="auth-sessions">47</div>
+                                        <div class="metric-label">Sessões Ativas</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="metric-card">
+                                        <div class="metric-icon text-danger"><i class="fas fa-ban"></i></div>
+                                        <div class="metric-value" id="blocked-attempts">12</div>
+                                        <div class="metric-label">Tentativas Bloqueadas</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-8">
+                                    <canvas id="security-trends-chart" style="height: 300px;"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-danger mb-2" onclick="runSecurityScan()">
+                                            <i class="fas fa-search me-2"></i>
+                                            Scan de Segurança
+                                        </button>
+                                        <button class="btn btn-warning mb-2" onclick="exportSecurityReport()">
+                                            <i class="fas fa-file-export me-2"></i>
+                                            Relatório Segurança
+                                        </button>
+                                        <button class="btn btn-info" onclick="viewSecurityLogs()">
+                                            <i class="fas fa-list me-2"></i>
+                                            Ver Logs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Section -->
+                <div id="audit-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                Sistema de Auditoria
+                                <span class="badge bg-info">Completo</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshAuditData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="audit-events">Eventos</button>
+                                <button class="tab" data-tab="audit-stats">Estatísticas</button>
+                                <button class="tab" data-tab="audit-export">Exportar</button>
+                            </div>
+                            
+                            <div id="audit-events-tab" class="tab-content active">
+                                <div class="table-responsive">
+                                    <table class="table table-mobile-stack">
+                                        <thead>
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>Utilizador</th>
+                                                <th>Evento</th>
+                                                <th>Recurso</th>
+                                                <th>Severidade</th>
+                                                <th>IP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="audit-events-table">
+                                            <tr>
+                                                <td colspan="6" class="loading">
+                                                    <div class="spinner"></div>
+                                                    A carregar eventos de auditoria...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div id="audit-stats-tab" class="tab-content">
+                                <div id="audit-statistics">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar estatísticas...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="audit-export-tab" class="tab-content">
+                                <div class="form-group">
+                                    <label class="form-label">Período:</label>
+                                    <select class="form-control" id="audit-export-period">
+                                        <option value="1">Última hora</option>
+                                        <option value="24">Últimas 24h</option>
+                                        <option value="168">Última semana</option>
+                                        <option value="720">Último mês</option>
+                                    </select>
+                                </div>
+                                <div class="btn btn-success" onclick="exportAuditData()">
+                                    <i class="fas fa-download"></i>
+                                    Exportar Dados
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MaxEnt Section -->
+                <div id="maxent-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-map-marked-alt"></i>
+                                MaxEnt - Distribuição de Espécies
+                                <span class="badge bg-primary">IA Avançada</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshMaxEntData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="tabs">
+                                        <button class="tab active" data-tab="maxent-models">Modelos</button>
+                                        <button class="tab" data-tab="maxent-predictions">Predições</button>
+                                        <button class="tab" data-tab="maxent-validation">Validação</button>
+                                    </div>
+                                    
+                                    <div id="maxent-models-tab" class="tab-content active">
+                                        <div id="maxent-models-list">
+                                            <div class="loading">
+                                                <div class="spinner"></div>
+                                                A carregar modelos MaxEnt...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="maxent-predictions-tab" class="tab-content">
+                                        <div id="maxent-predictions-map" style="height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <p>Mapa de predições de distribuição de espécies</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="maxent-validation-tab" class="tab-content">
+                                        <canvas id="maxent-validation-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="btn-group-vertical w-100">
+                                        <button class="btn btn-primary mb-2" onclick="runMaxEntModel()">
+                                            <i class="fas fa-play me-2"></i>
+                                            Executar Modelo
+                                        </button>
+                                        <button class="btn btn-success mb-2" onclick="validateMaxEntModel()">
+                                            <i class="fas fa-check me-2"></i>
+                                            Validar Modelo
+                                        </button>
+                                        <button class="btn btn-info mb-2" onclick="exportMaxEntResults()">
+                                            <i class="fas fa-download me-2"></i>
+                                            Exportar Resultados
+                                        </button>
+                                        <button class="btn btn-warning" onclick="configureMaxEnt()">
+                                            <i class="fas fa-cog me-2"></i>
+                                            Configurar
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h6>Espécies Disponíveis:</h6>
+                                        <div id="species-list" class="species-list">
+                                            <div class="loading">
+                                                <div class="spinner"></div>
+                                                A carregar espécies...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MCDA Section -->
+                <div id="mcda-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-project-diagram"></i>
+                                MCDA - Análise Multi-Critério
+                                <span class="badge bg-warning">Planeamento</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshMCDAData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Critérios de Avaliação</h6>
+                                    <div id="mcda-criteria">
+                                        <div class="criteria-item">
+                                            <label>Biodiversidade</label>
+                                            <input type="range" class="form-range" min="0" max="100" value="80" id="criteria-biodiversity">
+                                            <span class="weight-value">80%</span>
+                                        </div>
+                                        <div class="criteria-item">
+                                            <label>Impacto Ambiental</label>
+                                            <input type="range" class="form-range" min="0" max="100" value="70" id="criteria-environmental">
+                                            <span class="weight-value">70%</span>
+                                        </div>
+                                        <div class="criteria-item">
+                                            <label>Valor Económico</label>
+                                            <input type="range" class="form-range" min="0" max="100" value="60" id="criteria-economic">
+                                            <span class="weight-value">60%</span>
+                                        </div>
+                                        <div class="criteria-item">
+                                            <label>Acessibilidade</label>
+                                            <input type="range" class="form-range" min="0" max="100" value="40" id="criteria-accessibility">
+                                            <span class="weight-value">40%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Resultados da Análise</h6>
+                                    <div id="mcda-results-map" style="height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <p>Mapa de adequabilidade espacial</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" onclick="runMCDAAnalysis()">
+                                            <i class="fas fa-play me-2"></i>
+                                            Executar Análise
+                                        </button>
+                                        <button class="btn btn-success" onclick="saveMCDAScenario()">
+                                            <i class="fas fa-save me-2"></i>
+                                            Salvar Cenário
+                                        </button>
+                                        <button class="btn btn-info" onclick="exportMCDAResults()">
+                                            <i class="fas fa-download me-2"></i>
+                                            Exportar Resultados
+                                        </button>
+                                        <button class="btn btn-warning" onclick="loadMCDAScenario()">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            Carregar Cenário
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coastal Analysis Section -->
+                <div id="coastal-analysis-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-water"></i>
+                                Análise Costeira Avançada
+                                <span class="badge bg-info">Geoespacial</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshCoastalData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tabs">
+                                <button class="tab active" data-tab="coastline-analysis">Linha Costeira</button>
+                                <button class="tab" data-tab="erosion-analysis">Erosão</button>
+                                <button class="tab" data-tab="habitat-analysis">Habitats</button>
+                            </div>
+                            
+                            <div id="coastline-analysis-tab" class="tab-content active">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div id="coastline-map" style="height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <p>Mapa de análise da linha costeira</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="metric-card mb-3">
+                                            <div class="metric-value">1,650 km</div>
+                                            <div class="metric-label">Comprimento Total</div>
+                                        </div>
+                                        <div class="metric-card mb-3">
+                                            <div class="metric-value">247 km</div>
+                                            <div class="metric-label">Costa Arenosa</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-value">89 km</div>
+                                            <div class="metric-label">Costa Rochosa</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="erosion-analysis-tab" class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <canvas id="erosion-trends-chart" style="height: 300px;"></canvas>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>Alerta:</strong> 12 km de costa em risco elevado de erosão
+                                        </div>
+                                        <div class="btn-group-vertical w-100">
+                                            <button class="btn btn-danger mb-2" onclick="identifyErosionRisk()">
+                                                <i class="fas fa-search me-2"></i>
+                                                Identificar Riscos
+                                            </button>
+                                            <button class="btn btn-warning" onclick="generateErosionReport()">
+                                                <i class="fas fa-file-alt me-2"></i>
+                                                Relatório Erosão
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="habitat-analysis-tab" class="tab-content">
+                                <div id="coastal-habitats">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        A carregar análise de habitats...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boundary Processor Section -->
+                <div id="boundary-processor-section" class="section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-map-marked"></i>
+                                Processamento de Fronteiras Marítimas
+                                <span class="badge bg-primary">Jurídico</span>
+                            </div>
+                            <div class="btn btn-outline" onclick="refreshBoundaryData()">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="boundary-map" style="height: 500px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-center">
+                                            <i class="fas fa-map fa-3x mb-3 text-muted"></i>
+                                            <p>Mapa de fronteiras marítimas de Angola</p>
+                                            <button class="btn btn-primary" onclick="loadBoundaryMap()">
+                                                <i class="fas fa-map me-2"></i>
+                                                Carregar Mapa
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6>Fronteiras Disponíveis</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="zee-boundary" checked>
+                                                <label class="form-check-label" for="zee-boundary">
+                                                    Zona Económica Exclusiva
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="territorial-waters">
+                                                <label class="form-check-label" for="territorial-waters">
+                                                    Águas Territoriais
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="continental-shelf">
+                                                <label class="form-check-label" for="continental-shelf">
+                                                    Plataforma Continental
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fishing-zones">
+                                                <label class="form-check-label" for="fishing-zones">
+                                                    Zonas de Pesca
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="btn-group-vertical w-100 mt-3">
+                                        <button class="btn btn-primary mb-2" onclick="processBoundaries()">
+                                            <i class="fas fa-cogs me-2"></i>
+                                            Processar Fronteiras
+                                        </button>
+                                        <button class="btn btn-success mb-2" onclick="validateBoundaries()">
+                                            <i class="fas fa-check me-2"></i>
+                                            Validar Geometrias
+                                        </button>
+                                        <button class="btn btn-info" onclick="exportBoundaries()">
+                                            <i class="fas fa-download me-2"></i>
+                                            Exportar Dados
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/fontawesome-fallback.js"></script>
+    <script src="assets/js/intelligent-cache.js"></script>
+    <script src="assets/js/admin.js?v=20250901-0330"></script>
+    <script src="assets/js/admin-mobile-final.js"></script>
+    <script src="assets/js/admin-test.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        // Registrar Service Worker avançado
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw-advanced.js')
+                    .then(registration => {
+                        console.log('✅ SW registered:', registration);
+                        
+                        // Verificar atualizações
+                        registration.addEventListener('updatefound', () => {
+                            console.log('🔄 SW update found');
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nova versão disponível
+                                    if (confirm('Nova versão do BGAPP disponível. Recarregar?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => console.log('❌ SW registration failed:', error));
+            });
+        }
+    </script>
+
+    <!-- Debug Script for AdminMobileMenu -->
+    <script>
+        // Wait for everything to load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('🔍 DEBUG: Verificando AdminMobileMenu após load completo...');
+                
+                if (typeof AdminMobileMenu !== 'undefined') {
+                    console.log('✅ AdminMobileMenu class encontrada');
+                    
+                    if (typeof adminMobileMenu !== 'undefined') {
+                        console.log('✅ adminMobileMenu instance encontrada');
+                        console.log('- Inicializado:', adminMobileMenu.isInitialized());
+                        console.log('- Menu aberto:', adminMobileMenu.isMenuOpen());
+                    } else {
+                        console.log('⚠️ adminMobileMenu instance não encontrada, criando...');
+                        try {
+                            window.adminMobileMenu = new AdminMobileMenu();
+                            console.log('✅ adminMobileMenu criado manualmente');
+                        } catch (e) {
+                            console.error('❌ Erro ao criar adminMobileMenu:', e);
+                        }
+                    }
+                } else {
+                    console.error('❌ AdminMobileMenu class não encontrada');
+                }
+                
+                // Debug helper disponível no console
+                if (typeof debugAdminMobile === 'function') {
+                    console.log('🛠️ Use debugAdminMobile() no console para mais informações');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

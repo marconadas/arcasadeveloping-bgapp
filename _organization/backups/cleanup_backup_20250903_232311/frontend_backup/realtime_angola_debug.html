@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP Real-Time • Angola Maritime Portal [DEBUG]</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f3460 0%, #16537e 100%);
+      color: white;
+      overflow-x: hidden;
+    }
+    
+    /* Debug Panel */
+    .debug-panel {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #00ff00;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      max-width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10000;
+      border: 1px solid #00ff00;
+    }
+    
+    .debug-panel h4 {
+      color: #ffff00;
+      margin-bottom: 5px;
+    }
+    
+    .debug-status {
+      margin: 2px 0;
+    }
+    
+    .debug-ok { color: #00ff00; }
+    .debug-error { color: #ff4444; }
+    .debug-warning { color: #ffaa00; }
+    
+    /* Header estilo Portus */
+    .header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #00d4ff, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    .status-indicators {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-online { background: #00ff88; }
+    .status-warning { background: #ffaa00; }
+    .status-offline { background: #ff4444; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Dashboard Grid */
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto 1fr;
+      gap: 20px;
+      min-height: calc(100vh - 80px);
+    }
+    
+    /* Cards estilo Portus */
+    .card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-icon {
+      font-size: 20px;
+    }
+    
+    .last-update {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    
+    /* KPIs em tempo real */
+    .realtime-kpis {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .kpi-card {
+      background: linear-gradient(135deg, rgba(0,212,255,0.2) 0%, rgba(22,83,126,0.2) 100%);
+      border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .kpi-value {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      background: linear-gradient(45deg, #00d4ff, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .kpi-label {
+      font-size: 12px;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .kpi-trend {
+      font-size: 10px;
+      margin-top: 4px;
+    }
+    
+    .trend-up { color: #00ff88; }
+    .trend-down { color: #ff4444; }
+    .trend-stable { color: #ffaa00; }
+    
+    /* Mapa principal */
+    .main-map {
+      grid-column: 1 / 3;
+      grid-row: 2 / 4;
+    }
+    
+    #map {
+      height: 100%;
+      min-height: 400px;
+      border-radius: 12px;
+    }
+    
+    /* Painel lateral */
+    .side-panel {
+      grid-column: 3;
+      grid-row: 2 / 4;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    /* Dados oceanográficos */
+    .ocean-data {
+      flex: 1;
+    }
+    
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .data-item {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    
+    .data-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00d4ff;
+    }
+    
+    .data-unit {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+    
+    /* Alertas */
+    .alerts-section {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .alert-item {
+      background: rgba(255,170,0,0.1);
+      border-left: 3px solid #ffaa00;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    
+    .alert-critical {
+      background: rgba(255,68,68,0.1);
+      border-left-color: #ff4444;
+    }
+    
+    .alert-info {
+      background: rgba(0,212,255,0.1);
+      border-left-color: #00d4ff;
+    }
+    
+    /* Controles */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .btn.active {
+      background: #00d4ff;
+      border-color: #00d4ff;
+      color: #0f3460;
+    }
+    
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #00d4ff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .debug-panel {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin: 10px;
+      }
+      
+      .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+      }
+      
+      .main-map {
+        grid-column: 1;
+        grid-row: 3;
+      }
+      
+      .side-panel {
+        grid-column: 1;
+        grid-row: 4;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Debug Panel -->
+  <div class="debug-panel" id="debugPanel">
+    <h4>🔍 DEBUG STATUS</h4>
+    <div id="debugStatus">Inicializando...</div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">🌊 BGAPP Real-Time [DEBUG]</div>
+        <div class="subtitle">
+          Portal Marítimo de Angola • Sistema de Monitorização em Tempo Real<br>
+          <small>Modo Debug Ativo • Dados Copernicus Marine</small>
+        </div>
+      </div>
+      
+      <div class="status-indicators">
+        <div class="status-item">
+          <div class="status-dot status-offline" id="copernicusStatus"></div>
+          <span>Copernicus Marine</span>
+        </div>
+        <div class="status-item">
+          <div class="status-dot status-offline" id="apiStatus"></div>
+          <span>BGAPP API</span>
+        </div>
+        <div class="status-item">
+          <div class="status-dot status-offline" id="dataStatus"></div>
+          <span>Dados Tempo Real</span>
+        </div>
+        <div class="status-item">
+          🕐 <span id="currentTime">--:--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    
+    <!-- KPIs em Tempo Real -->
+    <div class="realtime-kpis">
+      <div class="kpi-card">
+        <div class="kpi-value" id="sst-value">--°C</div>
+        <div class="kpi-label">Temperatura Superficial</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-value" id="chl-value">--</div>
+        <div class="kpi-label">Clorofila-a (mg/m³)</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-value" id="current-value">--</div>
+        <div class="kpi-label">Corrente (m/s)</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-value" id="wind-value">--</div>
+        <div class="kpi-label">Vento (km/h)</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-value" id="vessels-value">--</div>
+        <div class="kpi-label">Embarcações Ativas</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-value" id="observations-value">--</div>
+        <div class="kpi-label">Observações Hoje</div>
+        <div class="kpi-trend trend-stable">→ Carregando...</div>
+      </div>
+    </div>
+    
+    <!-- Mapa Principal -->
+    <div class="card main-map">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="card-icon">🗺️</span>
+          Zona Econômica Exclusiva de Angola [DEBUG]
+        </div>
+        <div class="last-update">
+          Atualizado: <span id="mapUpdate">--:--</span>
+          <span class="loading" id="mapLoading" style="display: none;"></span>
+        </div>
+      </div>
+      <div id="map"></div>
+      <div class="controls">
+        <button class="btn active" onclick="toggleLayer('sst')">🌡️ SST</button>
+        <button class="btn" onclick="toggleLayer('chlorophyll')">🌱 Clorofila</button>
+        <button class="btn" onclick="toggleLayer('currents')">🌊 Correntes</button>
+        <button class="btn" onclick="toggleDebugInfo()">🔍 Debug Info</button>
+        <button class="btn" onclick="testDataSources()">🧪 Test APIs</button>
+      </div>
+    </div>
+    
+    <!-- Painel Lateral -->
+    <div class="side-panel">
+      
+      <!-- Dados Oceanográficos -->
+      <div class="card ocean-data">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🌊</span>
+            Dados Oceanográficos
+          </div>
+          <div class="last-update">
+            Copernicus Marine
+            <span class="loading" id="oceanLoading" style="display: none;"></span>
+          </div>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-item">
+            <div class="data-value" id="upwelling-index">--</div>
+            <div class="data-unit">Índice Upwelling</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="salinity">--</div>
+            <div class="data-unit">Salinidade (PSU)</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="ph-value">--</div>
+            <div class="data-unit">pH</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="oxygen">--</div>
+            <div class="data-unit">O₂ (mg/L)</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Debug Info -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🔧</span>
+            Debug Information
+          </div>
+        </div>
+        
+        <div id="debugInfo" style="font-family: monospace; font-size: 10px;">
+          <div>Leaflet: <span id="leafletStatus">❌ Não carregado</span></div>
+          <div>Mapa: <span id="mapStatus">❌ Não inicializado</span></div>
+          <div>Dados JSON: <span id="jsonStatus">❌ Não carregado</span></div>
+          <div>Scripts JS: <span id="jsStatus">❌ Verificando...</span></div>
+        </div>
+      </div>
+      
+      <!-- Estatísticas Rápidas -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">📊</span>
+            Status Sistema
+          </div>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-item">
+            <div class="data-value" id="systemStatus">INIT</div>
+            <div class="data-unit">Sistema</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="errorCount">0</div>
+            <div class="data-unit">Erros</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="loadTime">--</div>
+            <div class="data-unit">Tempo (ms)</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value" id="memoryUsage">--</div>
+            <div class="data-unit">Memória</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // === DEBUG SYSTEM ===
+    let debugLog = [];
+    let errorCount = 0;
+    let startTime = Date.now();
+    
+    function logDebug(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString('pt-PT');
+      debugLog.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+      
+      if (type === 'error') {
+        errorCount++;
+        document.getElementById('errorCount').textContent = errorCount;
+      }
+      
+      updateDebugPanel();
+      console.log(`🔍 DEBUG [${type}]:`, message);
+    }
+    
+    function updateDebugPanel() {
+      const panel = document.getElementById('debugStatus');
+      const latest = debugLog.slice(-8).join('\n');
+      panel.innerHTML = latest.replace(/\n/g, '<br>');
+    }
+    
+    // === APP STATE ===
+    let app = {
+      map: null,
+      activeLayers: [],
+      lastUpdate: new Date(),
+      dataUpdateInterval: null,
+      isUpdating: false,
+      scriptsLoaded: {
+        leaflet: false,
+        aguasInternas: false,
+        zeeAngola: false,
+        coastlines: false,
+        eoxLayers: false
+      }
+    };
+
+    // === INITIALIZATION ===
+    document.addEventListener('DOMContentLoaded', function() {
+      logDebug('DOM carregado, iniciando sistema...', 'info');
+      
+      // Verificar Leaflet
+      if (typeof L !== 'undefined') {
+        logDebug('Leaflet carregado com sucesso', 'success');
+        document.getElementById('leafletStatus').innerHTML = '✅ Carregado';
+        app.scriptsLoaded.leaflet = true;
+      } else {
+        logDebug('ERRO: Leaflet não encontrado', 'error');
+        document.getElementById('leafletStatus').innerHTML = '❌ ERRO';
+      }
+      
+      // Inicializar componentes
+      initializeMap();
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      // Testar carregamento de dados
+      setTimeout(testDataSources, 2000);
+      
+      // Atualizar tempo de carregamento
+      const loadTime = Date.now() - startTime;
+      document.getElementById('loadTime').textContent = loadTime + 'ms';
+      
+      logDebug(`Sistema inicializado em ${loadTime}ms`, 'success');
+    });
+
+    function initializeMap() {
+      logDebug('Inicializando mapa...', 'info');
+      
+      try {
+        if (!app.scriptsLoaded.leaflet) {
+          throw new Error('Leaflet não está disponível');
+        }
+        
+        // Criar mapa básico
+        app.map = L.map('map').setView([-12.5, 13.5], 6);
+        logDebug('Mapa Leaflet criado com sucesso', 'success');
+        document.getElementById('mapStatus').innerHTML = '✅ Inicializado';
+        
+        // Adicionar tile layer básico
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(app.map);
+        logDebug('Tile layer OpenStreetMap adicionado', 'success');
+        
+        // Adicionar ZEE básica (fallback)
+        addBasicZEE();
+        
+        // Tentar carregar scripts adicionais
+        loadAdditionalScripts();
+        
+        updateMapTimestamp();
+        
+      } catch (error) {
+        logDebug(`ERRO ao inicializar mapa: ${error.message}`, 'error');
+        document.getElementById('mapStatus').innerHTML = '❌ ERRO';
+        document.getElementById('systemStatus').textContent = 'ERROR';
+      }
+    }
+    
+    function addBasicZEE() {
+      logDebug('Adicionando ZEE básica (fallback)...', 'info');
+      
+      // ZEE simplificada de Angola
+      const angolaZEE = [
+        [-5.55, 12.2], [-6.05, 12.35], [-8.0, 12.48], [-10.5, 12.78], 
+        [-12.28, 12.98], [-14.5, 13.22], [-16.0, 13.18], [-18.02, 13.35],
+        [-18.02, 10.05], [-16.0, 9.88], [-14.5, 9.92], [-12.28, 9.68],
+        [-10.5, 9.48], [-8.0, 9.18], [-6.05, 9.05], [-5.55, 8.9], [-5.55, 12.2]
+      ];
+      
+      try {
+        const zeeLayer = L.polygon(angolaZEE, {
+          color: '#0066cc',
+          weight: 2,
+          fillOpacity: 0.2,
+          fillColor: '#0080ff',
+          opacity: 0.8
+        }).addTo(app.map);
+        
+        zeeLayer.bindPopup(`
+          <div style="font-size: 12px;">
+            <strong>🌊 ZEE de Angola - Básica</strong><br>
+            📍 Versão simplificada para debug<br>
+            📊 ${angolaZEE.length} pontos<br>
+            🎯 Status: Fallback ativo
+          </div>
+        `);
+        
+        logDebug('ZEE básica adicionada com sucesso', 'success');
+        
+      } catch (error) {
+        logDebug(`ERRO ao adicionar ZEE: ${error.message}`, 'error');
+      }
+    }
+    
+    function loadAdditionalScripts() {
+      logDebug('Tentando carregar scripts adicionais...', 'info');
+      
+      const scripts = [
+        'assets/js/aguas_internas.js',
+        'assets/js/zee_angola_official.js',
+        'assets/js/coastlines_official.js',
+        'assets/js/eox-layers.js'
+      ];
+      
+      scripts.forEach((scriptPath, index) => {
+        const script = document.createElement('script');
+        script.src = scriptPath;
+        script.onload = () => {
+          logDebug(`Script carregado: ${scriptPath}`, 'success');
+          updateScriptStatus(scriptPath, true);
+        };
+        script.onerror = () => {
+          logDebug(`ERRO ao carregar: ${scriptPath}`, 'error');
+          updateScriptStatus(scriptPath, false);
+        };
+        document.head.appendChild(script);
+      });
+    }
+    
+    function updateScriptStatus(scriptPath, success) {
+      const statusElement = document.getElementById('jsStatus');
+      const scriptName = scriptPath.split('/').pop();
+      
+      if (success) {
+        statusElement.innerHTML += `<br>✅ ${scriptName}`;
+      } else {
+        statusElement.innerHTML += `<br>❌ ${scriptName}`;
+      }
+    }
+    
+    function testDataSources() {
+      logDebug('Testando fontes de dados...', 'info');
+      
+      // Testar JSON do Copernicus
+      fetch('copernicus_authenticated_angola.json')
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          logDebug('Dados Copernicus carregados com sucesso', 'success');
+          document.getElementById('jsonStatus').innerHTML = '✅ Carregado';
+          document.getElementById('copernicusStatus').className = 'status-dot status-online';
+          
+          // Atualizar KPIs com dados reais
+          if (data.real_time_data && data.real_time_data.length > 0) {
+            const avgSST = data.real_time_data.reduce((sum, item) => sum + item.sst, 0) / data.real_time_data.length;
+            document.getElementById('sst-value').textContent = avgSST.toFixed(1) + '°C';
+            logDebug(`SST média calculada: ${avgSST.toFixed(1)}°C`, 'info');
+          }
+          
+        })
+        .catch(error => {
+          logDebug(`ERRO ao carregar dados Copernicus: ${error.message}`, 'error');
+          document.getElementById('jsonStatus').innerHTML = '❌ ERRO';
+          document.getElementById('copernicusStatus').className = 'status-dot status-offline';
+          
+          // Usar dados fallback
+          loadFallbackData();
+        });
+    }
+    
+    function loadFallbackData() {
+      logDebug('Carregando dados fallback...', 'info');
+      
+      // Simular dados básicos
+      document.getElementById('sst-value').textContent = '24.3°C';
+      document.getElementById('chl-value').textContent = '2.8';
+      document.getElementById('current-value').textContent = '0.45';
+      document.getElementById('wind-value').textContent = '12';
+      document.getElementById('vessels-value').textContent = '47';
+      document.getElementById('observations-value').textContent = '156';
+      
+      document.getElementById('upwelling-index').textContent = '0.73';
+      document.getElementById('salinity').textContent = '35.2';
+      document.getElementById('ph-value').textContent = '8.1';
+      document.getElementById('oxygen').textContent = '6.8';
+      
+      document.getElementById('systemStatus').textContent = 'FALLBACK';
+      logDebug('Dados fallback carregados', 'success');
+    }
+    
+    function updateMapTimestamp() {
+      const now = new Date();
+      document.getElementById('mapUpdate').textContent = now.toLocaleTimeString('pt-PT');
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('currentTime').textContent = now.toLocaleTimeString('pt-PT');
+    }
+
+    function toggleLayer(layerType) {
+      logDebug(`Camada selecionada: ${layerType}`, 'info');
+      
+      // Atualizar botões
+      document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+    
+    function toggleDebugInfo() {
+      const panel = document.getElementById('debugPanel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      logDebug('Painel debug alternado', 'info');
+    }
+    
+    // Monitorar performance
+    setInterval(() => {
+      if (performance.memory) {
+        const memoryMB = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+        document.getElementById('memoryUsage').textContent = memoryMB + 'MB';
+      }
+    }, 5000);
+    
+    // Status dos serviços
+    document.getElementById('apiStatus').className = 'status-dot status-online';
+    document.getElementById('dataStatus').className = 'status-dot status-warning';
+    
+    logDebug('Sistema de debug inicializado', 'success');
+  </script>
+</body>
+</html>

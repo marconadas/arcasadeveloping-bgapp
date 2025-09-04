@@ -1,0 +1,102 @@
+[
+  {
+    "_id": "env-production",
+    "name": "🌊 BGAPP Production",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "data": [
+      {
+        "name": "BASE_URL",
+        "value": "https://bgapp-api.majearcasa.workers.dev"
+      },
+      {
+        "name": "STAC_URL", 
+        "value": "https://bgapp-stac.majearcasa.workers.dev"
+      },
+      {
+        "name": "PYGEOAPI_URL",
+        "value": "https://bgapp-pygeoapi.majearcasa.workers.dev"
+      },
+      {
+        "name": "KEYCLOAK_URL",
+        "value": "https://bgapp-auth.majearcasa.workers.dev"
+      },
+      {
+        "name": "FLOWER_URL",
+        "value": "https://bgapp-monitor.majearcasa.workers.dev"
+      },
+      {
+        "name": "AUTH_TOKEN",
+        "value": "bgapp_admin_28D4Pf0OMN0nABk0xnpCMbEszH5Q4lF8Ovksw_RdGnk"
+      },
+      {
+        "name": "KEYCLOAK_TOKEN",
+        "value": "kc_sDDSViEDq5pjmbqYb1Kw7QpoyfAALj36jVfMaLUV3yfclsxtexLsxQ"
+      },
+      {
+        "name": "SERVICE_NAME",
+        "value": "copernicus"
+      },
+      {
+        "name": "COLLECTION_ID",
+        "value": "angola-marine-data"
+      },
+      {
+        "name": "BUCKET_NAME",
+        "value": "bgapp-data"
+      }
+    ]
+  },
+  {
+    "_id": "env-development",
+    "name": "🔧 BGAPP Development", 
+    "default": false,
+    "sortNum": 20000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "data": [
+      {
+        "name": "BASE_URL",
+        "value": "http://localhost:8000"
+      },
+      {
+        "name": "STAC_URL",
+        "value": "https://bgapp-stac.majearcasa.workers.dev"
+      },
+      {
+        "name": "PYGEOAPI_URL", 
+        "value": "http://localhost:5080"
+      },
+      {
+        "name": "KEYCLOAK_URL",
+        "value": "http://localhost:8083"
+      },
+      {
+        "name": "FLOWER_URL",
+        "value": "http://localhost:5555"
+      },
+      {
+        "name": "AUTH_TOKEN",
+        "value": "dev-token-12345"
+      },
+      {
+        "name": "KEYCLOAK_TOKEN",
+        "value": "dev-kc-token-67890"
+      },
+      {
+        "name": "SERVICE_NAME",
+        "value": "test-service"
+      },
+      {
+        "name": "COLLECTION_ID",
+        "value": "test-collection"
+      },
+      {
+        "name": "BUCKET_NAME",
+        "value": "test-bucket"
+      }
+    ]
+  }
+]

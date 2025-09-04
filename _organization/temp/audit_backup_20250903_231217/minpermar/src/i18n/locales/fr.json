@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos de MINPERMAR",
+    "fisheries": "Pêches et Ressources Marines",
+    "aquaculture": "Aquaculture",
+    "blueEconomy": "Économie Bleue",
+    "services": "Services aux Citoyens",
+    "education": "Éducation et Formation",
+    "studies": "Études et Rapports",
+    "news": "Actualités et Événements",
+    "transparency": "Transparence",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Ministère des Pêches et des Ressources Marines",
+    "subtitle": "Promouvoir le développement durable des ressources marines de l'Angola",
+    "cta": "Explorer les Services",
+    "learnMore": "En Savoir Plus"
+  },
+  "about": {
+    "mission": "Mission",
+    "vision": "Vision",
+    "values": "Valeurs",
+    "missionText": "Promouvoir le développement durable des pêches et des ressources marines, garantissant la sécurité alimentaire et la croissance économique en Angola.",
+    "visionText": "Être reconnu comme un ministère d'excellence dans la gestion des ressources marines, contribuant à l'économie bleue nationale.",
+    "valuesText": "Durabilité, Transparence, Innovation, Inclusion Sociale et Responsabilité Environnementale."
+  },
+  "services": {
+    "title": "Services Numériques",
+    "licensing": "Licences de Pêche",
+    "certification": "Certification des Produits",
+    "consultation": "Consultation Technique",
+    "reporting": "Signalement en Ligne"
+  },
+  "stats": {
+    "fishermenRegistered": "Pêcheurs Enregistrés",
+    "aquacultureFarms": "Fermes Aquacoles",
+    "protectedAreas": "Aires Protégées",
+    "annualProduction": "Production Annuelle (tonnes)"
+  },
+  "footer": {
+    "description": "Ministère des Pêches et des Ressources Marines de l'Angola - Promouvoir le développement durable des ressources marines.",
+    "quickLinks": "Liens Rapides",
+    "contact": "Contact",
+    "followUs": "Suivez-nous",
+    "address": "Luanda, Angola",
+    "phone": "+244 222 000 000",
+    "email": "info@minpermar.gov.ao"
+  },
+  "common": {
+    "readMore": "Lire Plus",
+    "viewAll": "Voir Tout",
+    "download": "Télécharger",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur lors du chargement des données"
+  }
+}

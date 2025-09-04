@@ -1,0 +1,28 @@
+crs: EPSG:4326
+
+ocean:
+  chl:
+    source: cmems
+    dataset_id: GLOBAL_ANALYSISFORECAST_BGC_001_028
+    variable: chl
+    unit: mg m-3
+  sst:
+    source: erddap
+    dataset_id: ncdcOwTemperatures
+    variable: sea_surface_temperature
+
+agri:
+  ndvi:
+    source: modis
+    product: MOD13Q1
+    resolution: 250m
+  evi:
+    source: modis
+    product: MOD13Q1
+    resolution: 250m
+
+biodiversity:
+  obis:
+    base_url: https://api.obis.org/v3
+  gbif:
+    base_url: https://api.gbif.org/v1

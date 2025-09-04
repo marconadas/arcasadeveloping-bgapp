@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  admin-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:8085"
+    environment:
+      - NODE_ENV=production
+      - ADMIN_API_URL=http://localhost:8000
+      - ML_API_URL=http://localhost:8000
+      - PYGEOAPI_URL=http://localhost:5080
+      - STAC_API_URL=http://localhost:8081
+      - MINIO_URL=http://localhost:9000
+      - REDIS_URL=redis://localhost:6379
+    restart: unless-stopped
+    container_name: bgapp-admin-dashboard
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

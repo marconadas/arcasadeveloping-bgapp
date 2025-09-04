@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <title>Debug Frontend API</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+        .error { background: #ffe6e6; }
+        .success { background: #e6ffe6; }
+        button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Debug Frontend API</h1>
+    <button onclick="testJobs()">Testar Jobs API</button>
+    <button onclick="testCORS()">Testar CORS</button>
+    <button onclick="testConfig()">Mostrar Config</button>
+    
+    <div id="results"></div>
+
+    <script>
+        // Mesma configuração do admin.js
+        const CONFIG = {
+            API_BASE: window.location.hostname === 'localhost' ? 'http://localhost:5080' : `${window.location.protocol}//${window.location.host}/api`,
+            ADMIN_API: window.location.hostname === 'localhost' ? 'http://localhost:8085/admin-api' : `${window.location.protocol}//${window.location.host}/admin-api`,
+            REFRESH_INTERVAL: 30000,
+            REQUEST_TIMEOUT: 10000,
+        };
+        
+        function log(title, data, isError = false) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'result ' + (isError ? 'error' : 'success');
+            div.innerHTML = `<strong>${title}:</strong>\n${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`;
+            results.appendChild(div);
+        }
+        
+        function testConfig() {
+            log('Configuração', {
+                hostname: window.location.hostname,
+                protocol: window.location.protocol,
+                host: window.location.host,
+                API_BASE: CONFIG.API_BASE,
+                ADMIN_API: CONFIG.ADMIN_API
+            });
+        }
+        
+        async function testCORS() {
+            try {
+                log('Testando CORS', 'Fazendo requisição OPTIONS...');
+                const response = await fetch(`${CONFIG.ADMIN_API}/ingest/jobs`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET'
+                    }
+                });
+                log('CORS Response', `Status: ${response.status}\nHeaders: ${JSON.stringify([...response.headers.entries()], null, 2)}`);
+            } catch (error) {
+                log('CORS Error', error.message, true);
+            }
+        }
+        
+        async function testJobs() {
+            try {
+                log('Testando Jobs API', 'Fazendo requisição GET...');
+                
+                const response = await fetch(`${CONFIG.ADMIN_API}/ingest/jobs`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                log('Response Status', `${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                log('Jobs Data', data);
+                
+                // Testar se conseguimos processar os dados como no admin.js
+                const jobs = data.jobs || [];
+                log('Jobs Count', `${jobs.length} jobs encontrados`);
+                
+                if (jobs.length > 0) {
+                    log('First Job', jobs[0]);
+                }
+                
+            } catch (error) {
+                log('Jobs API Error', error.message, true);
+                log('Error Details', error.stack, true);
+            }
+        }
+        
+        // Teste automático
+        window.onload = function() {
+            testConfig();
+            setTimeout(testJobs, 1000);
+        };
+    </script>
+</body>
+</html>

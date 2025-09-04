@@ -1,0 +1,815 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1848,
+          -5.555
+        ]
+      },
+      "properties": {
+        "id": "cabinda",
+        "name": "Porto de Cabinda",
+        "zone": "zona_norte",
+        "type": "major_port",
+        "capacity_boats": 150,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market"
+        ],
+        "main_species": [
+          "Thunnus albacares",
+          "Katsuwonus pelamis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "artisanal"
+        ],
+        "population": 8500,
+        "facilities": {
+          "docking_capacity": 45,
+          "cold_storage_tons": 500,
+          "ice_production_daily": 15,
+          "fuel_tanks_liters": 50000,
+          "market_area_m2": 2500
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834976"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.3689,
+          -6.1364
+        ]
+      },
+      "properties": {
+        "id": "soyo",
+        "name": "Porto de Soyo",
+        "zone": "zona_norte",
+        "type": "regional_port",
+        "capacity_boats": 85,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Sardinella aurita",
+          "Thunnus albacares"
+        ],
+        "fleet_types": [
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 4200,
+        "facilities": {
+          "docking_capacity": 25,
+          "cold_storage_tons": 200,
+          "ice_production_daily": 8,
+          "fuel_tanks_liters": 20000,
+          "market_area_m2": 1200
+        },
+        "category": "fishing_port",
+        "importance": "medium",
+        "last_updated": "2025-08-31T19:33:39.834981"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.2343,
+          -8.8115
+        ]
+      },
+      "properties": {
+        "id": "luanda",
+        "name": "Porto de Luanda (Pesqueiro)",
+        "zone": "zona_norte",
+        "type": "major_port",
+        "capacity_boats": 200,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market",
+          "processing_plant"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Engraulis encrasicolus"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 12000,
+        "facilities": {
+          "docking_capacity": 60,
+          "cold_storage_tons": 800,
+          "ice_production_daily": 25,
+          "fuel_tanks_liters": 75000,
+          "market_area_m2": 4000,
+          "processing_capacity_daily": 50
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834985"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.1167,
+          -7.85
+        ]
+      },
+      "properties": {
+        "id": "ambriz",
+        "name": "Porto de Ambriz",
+        "zone": "zona_centro",
+        "type": "local_port",
+        "capacity_boats": 45,
+        "infrastructure": [
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Scomber japonicus"
+        ],
+        "fleet_types": [
+          "artisanal"
+        ],
+        "population": 2100,
+        "facilities": {
+          "docking_capacity": 15,
+          "fuel_tanks_liters": 8000,
+          "market_area_m2": 600
+        },
+        "category": "fishing_port",
+        "importance": "low",
+        "last_updated": "2025-08-31T19:33:39.834987"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.55,
+          -12.35
+        ]
+      },
+      "properties": {
+        "id": "lobito",
+        "name": "Porto de Lobito (Pesqueiro)",
+        "zone": "zona_centro",
+        "type": "major_port",
+        "capacity_boats": 180,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market",
+          "processing_plant"
+        ],
+        "main_species": [
+          "Sardina pilchardus",
+          "Engraulis encrasicolus",
+          "Scomber japonicus"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial",
+          "artisanal"
+        ],
+        "population": 9500,
+        "facilities": {
+          "docking_capacity": 55,
+          "cold_storage_tons": 600,
+          "ice_production_daily": 20,
+          "fuel_tanks_liters": 60000,
+          "market_area_m2": 3200,
+          "processing_capacity_daily": 40
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834990"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.4058,
+          -12.5763
+        ]
+      },
+      "properties": {
+        "id": "benguela",
+        "name": "Porto de Benguela",
+        "zone": "zona_sul",
+        "type": "major_port",
+        "capacity_boats": 160,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "repair_yard",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Trachurus capensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 7800,
+        "facilities": {
+          "docking_capacity": 50,
+          "cold_storage_tons": 550,
+          "ice_production_daily": 18,
+          "fuel_tanks_liters": 55000,
+          "market_area_m2": 2800
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834993"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1528,
+          -15.1944
+        ]
+      },
+      "properties": {
+        "id": "namibe",
+        "name": "Porto de Namibe",
+        "zone": "zona_sul",
+        "type": "regional_port",
+        "capacity_boats": 95,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Dentex angolensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 5200,
+        "facilities": {
+          "docking_capacity": 30,
+          "cold_storage_tons": 300,
+          "ice_production_daily": 12,
+          "fuel_tanks_liters": 35000,
+          "market_area_m2": 1800
+        },
+        "category": "fishing_port",
+        "importance": "very_high",
+        "last_updated": "2025-08-31T19:33:39.834996"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9167,
+          -15.7833
+        ]
+      },
+      "properties": {
+        "id": "tombwa",
+        "name": "Porto de Tombwa",
+        "zone": "zona_sul",
+        "type": "regional_port",
+        "capacity_boats": 75,
+        "infrastructure": [
+          "cold_storage",
+          "fuel_station",
+          "market"
+        ],
+        "main_species": [
+          "Merluccius capensis",
+          "Dentex angolensis"
+        ],
+        "fleet_types": [
+          "industrial",
+          "semi_industrial"
+        ],
+        "population": 3800,
+        "facilities": {
+          "docking_capacity": 25,
+          "cold_storage_tons": 250,
+          "ice_production_daily": 10,
+          "fuel_tanks_liters": 25000,
+          "market_area_m2": 1400
+        },
+        "category": "fishing_port",
+        "importance": "high",
+        "last_updated": "2025-08-31T19:33:39.834998"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1167,
+          -5.25
+        ]
+      },
+      "properties": {
+        "id": "landana",
+        "name": "Vila de Landana",
+        "zone": "zona_norte",
+        "population": 1200,
+        "main_activity": "pesca_artisanal",
+        "boats": 35,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.83,
+        "last_updated": "2025-08-31T19:33:39.835656"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.2833,
+          -5.5333
+        ]
+      },
+      "properties": {
+        "id": "cacongo",
+        "name": "Vila de Cacongo",
+        "zone": "zona_norte",
+        "population": 850,
+        "main_activity": "pesca_artisanal",
+        "boats": 28,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.835662"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.2167,
+          -8.9333
+        ]
+      },
+      "properties": {
+        "id": "mussulo",
+        "name": "Vila do Mussulo",
+        "zone": "zona_norte",
+        "population": 2100,
+        "main_activity": "pesca_artisanal",
+        "boats": 65,
+        "infrastructure": [
+          "market",
+          "fuel_station"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.835666"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.3,
+          -9.55
+        ]
+      },
+      "properties": {
+        "id": "cabo_ledo",
+        "name": "Vila do Cabo Ledo",
+        "zone": "zona_centro",
+        "population": 950,
+        "main_activity": "pesca_artisanal",
+        "boats": 32,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.835669"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.7667,
+          -10.7167
+        ]
+      },
+      "properties": {
+        "id": "porto_amboim",
+        "name": "Vila de Porto Amboim",
+        "zone": "zona_centro",
+        "population": 3200,
+        "main_activity": "pesca_semi_industrial",
+        "boats": 85,
+        "infrastructure": [
+          "market",
+          "fuel_station",
+          "cold_storage"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.835672"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.8417,
+          -11.2056
+        ]
+      },
+      "properties": {
+        "id": "sumbe",
+        "name": "Vila do Sumbe",
+        "zone": "zona_centro",
+        "population": 1800,
+        "main_activity": "pesca_artisanal",
+        "boats": 52,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.83,
+        "last_updated": "2025-08-31T19:33:39.835675"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.25,
+          -12.8
+        ]
+      },
+      "properties": {
+        "id": "baia_azul",
+        "name": "Vila da Baía Azul",
+        "zone": "zona_sul",
+        "population": 1100,
+        "main_activity": "pesca_artisanal",
+        "boats": 38,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.5,
+        "last_updated": "2025-08-31T19:33:39.835678"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.3167,
+          -12.5667
+        ]
+      },
+      "properties": {
+        "id": "baia_farta",
+        "name": "Vila da Baía Farta",
+        "zone": "zona_sul",
+        "population": 2500,
+        "main_activity": "pesca_semi_industrial",
+        "boats": 72,
+        "infrastructure": [
+          "market",
+          "fuel_station",
+          "cold_storage"
+        ],
+        "access_road": true,
+        "electricity": true,
+        "water_supply": true,
+        "school": true,
+        "health_center": true,
+        "category": "fishing_village",
+        "development_index": 1.0,
+        "last_updated": "2025-08-31T19:33:39.835681"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5333,
+          -13.85
+        ]
+      },
+      "properties": {
+        "id": "lucira",
+        "name": "Vila de Lucira",
+        "zone": "zona_sul",
+        "population": 1600,
+        "main_activity": "pesca_artisanal",
+        "boats": 45,
+        "infrastructure": [
+          "market",
+          "boat_repair"
+        ],
+        "access_road": true,
+        "electricity": false,
+        "water_supply": true,
+        "school": true,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.67,
+        "last_updated": "2025-08-31T19:33:39.835684"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.0167,
+          -15.3833
+        ]
+      },
+      "properties": {
+        "id": "bentiaba",
+        "name": "Vila de Bentiaba",
+        "zone": "zona_sul",
+        "population": 800,
+        "main_activity": "pesca_artisanal",
+        "boats": 25,
+        "infrastructure": [
+          "market"
+        ],
+        "access_road": false,
+        "electricity": false,
+        "water_supply": false,
+        "school": false,
+        "health_center": false,
+        "category": "fishing_village",
+        "development_index": 0.0,
+        "last_updated": "2025-08-31T19:33:39.835686"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.25,
+          -8.82
+        ]
+      },
+      "properties": {
+        "name": "Fábrica de Conservas de Luanda",
+        "coordinates": [
+          13.25,
+          -8.82
+        ],
+        "zone": "zona_norte",
+        "type": "canning_factory",
+        "capacity_daily_tons": 25,
+        "products": [
+          "canned_sardines",
+          "canned_tuna"
+        ],
+        "employees": 180,
+        "category": "processing_plant",
+        "last_updated": "2025-08-31T19:33:39.836110"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.56,
+          -12.36
+        ]
+      },
+      "properties": {
+        "name": "Fábrica de Farinha de Peixe - Lobito",
+        "coordinates": [
+          13.56,
+          -12.36
+        ],
+        "zone": "zona_centro",
+        "type": "fishmeal_plant",
+        "capacity_daily_tons": 40,
+        "products": [
+          "fishmeal",
+          "fish_oil"
+        ],
+        "employees": 85,
+        "category": "processing_plant",
+        "last_updated": "2025-08-31T19:33:39.836114"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.24,
+          -8.805
+        ]
+      },
+      "properties": {
+        "name": "Estaleiro Naval de Luanda",
+        "coordinates": [
+          13.24,
+          -8.805
+        ],
+        "zone": "zona_norte",
+        "type": "shipyard",
+        "capacity_boats": 15,
+        "services": [
+          "construction",
+          "major_repair",
+          "maintenance"
+        ],
+        "employees": 120,
+        "category": "shipyard",
+        "last_updated": "2025-08-31T19:33:39.836116"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.41,
+          -12.58
+        ]
+      },
+      "properties": {
+        "name": "Estaleiro de Benguela",
+        "coordinates": [
+          13.41,
+          -12.58
+        ],
+        "zone": "zona_sul",
+        "type": "repair_yard",
+        "capacity_boats": 8,
+        "services": [
+          "repair",
+          "maintenance"
+        ],
+        "employees": 45,
+        "category": "shipyard",
+        "last_updated": "2025-08-31T19:33:39.836118"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.232,
+          -8.813
+        ]
+      },
+      "properties": {
+        "name": "Mercado do Peixe de Luanda",
+        "coordinates": [
+          13.232,
+          -8.813
+        ],
+        "zone": "zona_norte",
+        "type": "wholesale_market",
+        "area_m2": 5000,
+        "vendors": 150,
+        "daily_volume_tons": 80,
+        "category": "fish_market",
+        "last_updated": "2025-08-31T19:33:39.836119"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.548,
+          -12.352
+        ]
+      },
+      "properties": {
+        "name": "Mercado do Peixe de Lobito",
+        "coordinates": [
+          13.548,
+          -12.352
+        ],
+        "zone": "zona_centro",
+        "type": "wholesale_market",
+        "area_m2": 3500,
+        "vendors": 95,
+        "daily_volume_tons": 45,
+        "category": "fish_market",
+        "last_updated": "2025-08-31T19:33:39.836121"
+      }
+    }
+  ],
+  "metadata": {
+    "title": "Infraestruturas Pesqueiras Consolidadas de Angola",
+    "description": "Conjunto completo de infraestruturas pesqueiras angolanas",
+    "source": "BGAPP Angola Fisheries Infrastructure Generator",
+    "total_features": 24,
+    "categories": [
+      "fishing_port",
+      "fishing_village",
+      "processing_plant",
+      "shipyard",
+      "fish_market"
+    ],
+    "zones": [
+      "zona_norte",
+      "zona_centro",
+      "zona_sul"
+    ],
+    "generation_date": "2025-08-31T19:33:39.836396",
+    "coordinate_system": "EPSG:4326"
+  }
+}

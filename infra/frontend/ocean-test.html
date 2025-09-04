@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 BGAPP - Enhanced Ocean System (Offline)</title>
+    
+    <!-- Three.js CDN com fallback -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    
+    <!-- Enhanced Ocean Offline (local) -->
+    <script src="assets/js/enhanced-ocean-offline-v1.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c1445 0%, #1a237e 50%, #003d82 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        #ocean-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #status-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #00bcd4;
+            min-width: 320px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .status-header {
+            color: #00bcd4;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .status-item {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-label {
+            font-weight: 500;
+        }
+        
+        .status-value {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .status-ok { background: #4caf50; color: white; }
+        .status-warning { background: #ff9800; color: white; }
+        .status-error { background: #f44336; color: white; }
+        .status-info { background: #2196f3; color: white; }
+        
+        #controls-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #00bcd4;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #00bcd4, #2196f3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: block;
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
+            background: linear-gradient(45deg, #00acc1, #1976d2);
+        }
+        
+        .control-button:active {
+            transform: translateY(0);
+        }
+        
+        #info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #00bcd4;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .info-text {
+            font-size: 14px;
+            line-height: 1.4;
+            color: #e0e0e0;
+        }
+        
+        .highlight {
+            color: #00bcd4;
+            font-weight: bold;
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 188, 212, 0.3);
+            border-radius: 50%;
+            border-top-color: #00bcd4;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #status-panel, #controls-panel {
+                position: relative;
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            #ocean-container {
+                height: 60vh;
+            }
+            
+            #info-panel {
+                position: relative;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="ocean-container"></div>
+    
+    <div id="status-panel">
+        <div class="status-header">🌊 Status do Sistema</div>
+        <div class="status-item">
+            <span class="status-label">Modo:</span>
+            <span id="mode-status" class="status-value status-info">Inicializando...</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Qualidade:</span>
+            <span id="quality-status" class="status-value status-info">Detectando...</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">WebGL:</span>
+            <span id="webgl-status" class="status-value status-info">Verificando...</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Shaders:</span>
+            <span id="shader-status" class="status-value status-info">Compilando...</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">FPS:</span>
+            <span id="fps-status" class="status-value status-info">--</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Status:</span>
+            <span id="system-status" class="status-value status-info">Carregando...</span>
+        </div>
+    </div>
+    
+    <div id="controls-panel">
+        <h3 style="color: #00bcd4; margin-bottom: 15px; text-align: center;">🎮 Controles</h3>
+        <button class="control-button" onclick="toggleQuality()">⚙️ Alterar Qualidade</button>
+        <button class="control-button" onclick="resetSystem()">🔄 Reiniciar Sistema</button>
+        <button class="control-button" onclick="toggleInfo()">ℹ️ Mostrar Informações</button>
+        <button class="control-button" onclick="exportStatus()">📊 Exportar Status</button>
+        <button class="control-button" onclick="goBack()">← Voltar ao BGAPP</button>
+    </div>
+    
+    <div id="info-panel">
+        <div class="info-text">
+            <span class="highlight">BGAPP Enhanced Ocean System (Offline)</span><br>
+            Sistema de renderização oceânica avançado que funciona completamente offline.
+            Utiliza shaders WebGL otimizados com fallback automático para máxima compatibilidade.
+            <br><br>
+            <span class="highlight">Recursos:</span>
+            • Ondas Gerstner realísticas • Efeitos de caustics • Espuma dinâmica • Qualidade adaptativa
+            <br><br>
+            <span class="highlight">URLs de Acesso:</span><br>
+            • https://main.bgapp-arcasadeveloping.pages.dev/BGAPP/ocean-test<br>
+            • https://main.bgapp-arcasadeveloping.pages.dev/BGAPP/enhanced-ocean
+        </div>
+    </div>
+
+    <script>
+        class OfflineOceanDemo {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.oceanMesh = null;
+                this.oceanSystem = null;
+                
+                // Performance tracking
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+                this.currentFPS = 0;
+                
+                // Quality levels
+                this.qualityLevels = ['basic', 'low', 'medium', 'high'];
+                this.currentQualityIndex = 2; // Start with medium
+                
+                this.init();
+            }
+            
+            async init() {
+                console.log('🚀 Inicializando Demo Ocean Offline...');
+                
+                // Verificar dependências
+                await this.checkDependencies();
+                
+                // Inicializar Three.js
+                await this.initThreeJS();
+                
+                // Inicializar sistema oceânico
+                await this.initOceanSystem();
+                
+                // Criar oceano
+                this.createOcean();
+                
+                // Iniciar renderização
+                this.startRenderLoop();
+                
+                // Iniciar monitoramento
+                this.startMonitoring();
+                
+                console.log('✅ Demo Ocean Offline inicializada!');
+            }
+            
+            async checkDependencies() {
+                // Verificar Three.js
+                if (typeof THREE !== 'undefined') {
+                    this.updateStatus('system-status', 'Three.js OK', 'status-ok');
+                } else {
+                    this.updateStatus('system-status', 'Three.js ERRO', 'status-error');
+                    throw new Error('Three.js não disponível');
+                }
+                
+                // Verificar Enhanced Ocean
+                if (typeof SafeOceanOfflineIntegration !== 'undefined') {
+                    this.updateStatus('system-status', 'Ocean OK', 'status-ok');
+                } else {
+                    this.updateStatus('system-status', 'Ocean ERRO', 'status-error');
+                    throw new Error('Enhanced Ocean não disponível');
+                }
+            }
+            
+            async initThreeJS() {
+                // Cena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x001122);
+                
+                // Câmera
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(0, 15, 25);
+                this.camera.lookAt(0, 0, 0);
+                
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: true,
+                    alpha: true,
+                    powerPreference: "high-performance"
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x001122, 1);
+                this.renderer.shadowMap.enabled = true;
+                
+                document.getElementById('ocean-container').appendChild(this.renderer.domElement);
+                
+                // Verificar WebGL
+                const gl = this.renderer.getContext();
+                if (gl) {
+                    this.updateStatus('webgl-status', 'Suportado', 'status-ok');
+                    console.log('✅ WebGL inicializado');
+                } else {
+                    this.updateStatus('webgl-status', 'Não Suportado', 'status-error');
+                }
+                
+                // Iluminação
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+                this.scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+                directionalLight.position.set(50, 50, 50);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+                
+                // Luz do sol para efeitos oceânicos
+                const sunLight = new THREE.DirectionalLight(0xfff8dc, 0.8);
+                sunLight.position.set(100, 100, 50);
+                this.scene.add(sunLight);
+            }
+            
+            async initOceanSystem() {
+                try {
+                    this.oceanSystem = new SafeOceanOfflineIntegration({
+                        enableEnhancedShaders: true,
+                        enableSafetyChecks: true
+                    });
+                    
+                    // Aguardar inicialização
+                    let attempts = 0;
+                    while (!this.oceanSystem.isInitialized && attempts < 20) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        attempts++;
+                    }
+                    
+                    const status = this.oceanSystem.getStatus();
+                    
+                    if (status.initialized) {
+                        this.updateStatus('mode-status', 'Offline', 'status-ok');
+                        this.updateStatus('quality-status', status.system?.quality || 'medium', 'status-ok');
+                        this.updateStatus('shader-status', status.system?.shaders ? 'OK' : 'Fallback', 
+                                        status.system?.shaders ? 'status-ok' : 'status-warning');
+                        console.log('✅ Sistema oceânico offline inicializado:', status);
+                    } else {
+                        throw new Error('Falha na inicialização do sistema oceânico');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erro no sistema oceânico:', error);
+                    this.updateStatus('mode-status', 'Fallback', 'status-warning');
+                    this.updateStatus('quality-status', 'Básica', 'status-warning');
+                    this.updateStatus('shader-status', 'Fallback', 'status-warning');
+                }
+            }
+            
+            createOcean() {
+                // Geometria do oceano
+                const oceanGeometry = new THREE.PlaneGeometry(200, 200, 128, 128);
+                
+                // Material oceânico
+                let oceanMaterial;
+                if (this.oceanSystem) {
+                    oceanMaterial = this.oceanSystem.getOceanMaterial(this.scene, this.camera, this.renderer);
+                } else {
+                    oceanMaterial = new THREE.MeshLambertMaterial({
+                        color: 0x006994,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                }
+                
+                // Mesh do oceano
+                this.oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+                this.oceanMesh.rotation.x = -Math.PI / 2;
+                this.oceanMesh.receiveShadow = true;
+                this.scene.add(this.oceanMesh);
+                
+                console.log('🌊 Oceano criado com sucesso');
+            }
+            
+            startRenderLoop() {
+                const animate = () => {
+                    requestAnimationFrame(animate);
+                    
+                    const currentTime = performance.now();
+                    const deltaTime = (currentTime - this.lastTime) * 0.001;
+                    
+                    // Calcular FPS
+                    this.frameCount++;
+                    if (currentTime - this.lastTime >= 1000) {
+                        this.currentFPS = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+                        this.updateStatus('fps-status', this.currentFPS, 
+                            this.currentFPS >= 30 ? 'status-ok' : 
+                            this.currentFPS >= 20 ? 'status-warning' : 'status-error');
+                        this.frameCount = 0;
+                        this.lastTime = currentTime;
+                    }
+                    
+                    // Atualizar uniforms do oceano
+                    if (this.oceanSystem && this.oceanMesh) {
+                        this.oceanSystem.updateUniforms(this.oceanMesh.material, deltaTime);
+                    }
+                    
+                    // Rotação suave da câmera
+                    const time = currentTime * 0.0005;
+                    this.camera.position.x = Math.sin(time) * 30;
+                    this.camera.position.z = Math.cos(time) * 30;
+                    this.camera.lookAt(0, 0, 0);
+                    
+                    // Renderizar
+                    this.renderer.render(this.scene, this.camera);
+                };
+                
+                animate();
+                console.log('🎬 Loop de renderização iniciado');
+            }
+            
+            startMonitoring() {
+                setInterval(() => {
+                    if (this.oceanSystem) {
+                        const status = this.oceanSystem.getStatus();
+                        
+                        if (!status.initialized) {
+                            this.updateStatus('system-status', 'Problemas', 'status-warning');
+                        } else {
+                            this.updateStatus('system-status', 'Funcionando', 'status-ok');
+                        }
+                    }
+                }, 2000);
+            }
+            
+            updateStatus(elementId, text, className = 'status-info') {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = text;
+                    element.className = `status-value ${className}`;
+                }
+            }
+        }
+        
+        // Funções de controle
+        let oceanDemo;
+        
+        function toggleQuality() {
+            if (!oceanDemo) return;
+            
+            oceanDemo.currentQualityIndex = (oceanDemo.currentQualityIndex + 1) % oceanDemo.qualityLevels.length;
+            const newQuality = oceanDemo.qualityLevels[oceanDemo.currentQualityIndex];
+            
+            console.log(`🎯 Alterando qualidade para: ${newQuality}`);
+            oceanDemo.updateStatus('quality-status', newQuality, 'status-info');
+            
+            // Recriar sistema com nova qualidade
+            if (oceanDemo.oceanSystem) {
+                oceanDemo.oceanSystem.dispose();
+                oceanDemo.initOceanSystem();
+            }
+        }
+        
+        function resetSystem() {
+            console.log('🔄 Reiniciando sistema...');
+            
+            if (oceanDemo) {
+                if (oceanDemo.oceanSystem) {
+                    oceanDemo.oceanSystem.dispose();
+                }
+                
+                // Reinicializar
+                setTimeout(() => {
+                    oceanDemo.initOceanSystem().then(() => {
+                        oceanDemo.createOcean();
+                        console.log('✅ Sistema reiniciado');
+                    });
+                }, 500);
+            }
+        }
+        
+        function toggleInfo() {
+            const infoPanel = document.getElementById('info-panel');
+            if (infoPanel.style.display === 'none') {
+                infoPanel.style.display = 'block';
+            } else {
+                infoPanel.style.display = 'none';
+            }
+        }
+        
+        function exportStatus() {
+            if (!oceanDemo || !oceanDemo.oceanSystem) return;
+            
+            const status = {
+                timestamp: new Date().toISOString(),
+                fps: oceanDemo.currentFPS,
+                system: oceanDemo.oceanSystem.getStatus(),
+                quality: oceanDemo.qualityLevels[oceanDemo.currentQualityIndex],
+                browser: navigator.userAgent,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    pixelRatio: window.devicePixelRatio
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(status, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bgapp-ocean-status-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            console.log('📊 Status exportado:', status);
+        }
+        
+        function goBack() {
+            window.location.href = '/BGAPP/';
+        }
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            oceanDemo = new OfflineOceanDemo();
+        });
+        
+        // Redimensionar
+        window.addEventListener('resize', () => {
+            if (oceanDemo && oceanDemo.camera && oceanDemo.renderer) {
+                oceanDemo.camera.aspect = window.innerWidth / window.innerHeight;
+                oceanDemo.camera.updateProjectionMatrix();
+                oceanDemo.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+        
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (oceanDemo && oceanDemo.oceanSystem) {
+                oceanDemo.oceanSystem.dispose();
+            }
+        });
+    </script>
+</body>
+</html>

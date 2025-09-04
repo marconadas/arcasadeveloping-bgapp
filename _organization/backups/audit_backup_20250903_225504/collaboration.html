@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP - Colaboração Científica Angola</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    body { 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; 
+      margin: 0; 
+      background: #f8f9fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 16px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .header .subtitle {
+      margin: 4px 0 0 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 20px;
+    }
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid #e1e8ed;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e3c72;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Mapa colaborativo */
+    #map {
+      height: 400px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    
+    /* Anotações */
+    .annotation {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    
+    .annotation.validated {
+      background: #d4edda;
+      border-color: #c3e6cb;
+    }
+    
+    .annotation.disputed {
+      background: #f8d7da;
+      border-color: #f5c6cb;
+    }
+    
+    .annotation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .annotation-author {
+      font-weight: 600;
+      color: #1e3c72;
+      font-size: 14px;
+    }
+    
+    .annotation-date {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .annotation-content {
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    
+    .annotation-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary { background: #1e3c72; color: white; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-warning { background: #ffc107; color: #212529; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    /* Formulários */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #495057;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    /* Lista de investigadores */
+    .researcher-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .researcher-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .researcher-item:last-child {
+      border-bottom: none;
+    }
+    
+    .researcher-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1e3c72;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 12px;
+    }
+    
+    .researcher-info {
+      flex: 1;
+    }
+    
+    .researcher-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .researcher-institution {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .researcher-status {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    
+    .status-online {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-offline {
+      background: #e2e3e5;
+      color: #6c757d;
+    }
+    
+    /* Chat/Comentários */
+    .comments-section {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8f9fa;
+    }
+    
+    .comment {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid #1e3c72;
+    }
+    
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .comment-author {
+      font-weight: 600;
+      color: #1e3c72;
+      font-size: 14px;
+    }
+    
+    .comment-time {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .comment-content {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    /* Validação por pares */
+    .validation-panel {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .validation-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .validation-item:last-child {
+      border-bottom: none;
+    }
+    
+    .validation-info {
+      flex: 1;
+    }
+    
+    .validation-species {
+      font-weight: 500;
+      color: #1e3c72;
+    }
+    
+    .validation-details {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .validation-actions {
+      display: flex;
+      gap: 4px;
+    }
+    
+    /* Notificações */
+    .notification {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    
+    .notification.success {
+      background: #d4edda;
+      border-color: #c3e6cb;
+    }
+    
+    .notification.error {
+      background: #f8d7da;
+      border-color: #f5c6cb;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      #map {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🤝 Colaboração Científica</h1>
+    <div class="subtitle">Plataforma de Investigação Colaborativa • Biodiversidade Marinha Angola</div>
+  </div>
+
+  <div class="container">
+    <div class="main-content">
+      <!-- Mapa Colaborativo -->
+      <div class="card">
+        <h2 class="card-title">🗺️ Mapa Colaborativo</h2>
+        <div id="map"></div>
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button class="btn btn-primary" onclick="addAnnotation()">📝 Adicionar Anotação</button>
+          <button class="btn btn-warning" onclick="toggleAnnotations()">👁️ Mostrar/Ocultar Anotações</button>
+          <button class="btn btn-secondary" onclick="exportAnnotations()">📤 Exportar</button>
+        </div>
+      </div>
+
+      <!-- Validação por Pares -->
+      <div class="card">
+        <h2 class="card-title">✅ Validação por Pares</h2>
+        <div class="validation-panel" id="validationPanel">
+          <div class="validation-item">
+            <div class="validation-info">
+              <div class="validation-species">Tursiops truncatus</div>
+              <div class="validation-details">Observado por Dr. Silva • 15/12/2024 • Luanda (-8.8, 13.2)</div>
+            </div>
+            <div class="validation-actions">
+              <button class="btn btn-success" onclick="validateObservation('obs1', true)">✓</button>
+              <button class="btn btn-danger" onclick="validateObservation('obs1', false)">✗</button>
+              <button class="btn btn-warning" onclick="requestMoreInfo('obs1')">?</button>
+            </div>
+          </div>
+          
+          <div class="validation-item">
+            <div class="validation-info">
+              <div class="validation-species">Dentex angolensis</div>
+              <div class="validation-details">Observado por Prof. Santos • 14/12/2024 • Benguela (-12.8, 13.4)</div>
+            </div>
+            <div class="validation-actions">
+              <button class="btn btn-success" onclick="validateObservation('obs2', true)">✓</button>
+              <button class="btn btn-danger" onclick="validateObservation('obs2', false)">✗</button>
+              <button class="btn btn-warning" onclick="requestMoreInfo('obs2')">?</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Discussões Científicas -->
+      <div class="card">
+        <h2 class="card-title">💬 Discussões Científicas</h2>
+        <div class="comments-section" id="commentsSection">
+          <div class="comment">
+            <div class="comment-header">
+              <span class="comment-author">Dr. Maria Silva (UAN)</span>
+              <span class="comment-time">há 2 horas</span>
+            </div>
+            <div class="comment-content">
+              Observei um aumento significativo na população de golfinhos-roaz na baía de Luanda. 
+              Alguém tem dados similares para outras áreas da costa norte?
+            </div>
+          </div>
+          
+          <div class="comment">
+            <div class="comment-header">
+              <span class="comment-author">Prof. João Santos (INIP)</span>
+              <span class="comment-time">há 1 hora</span>
+            </div>
+            <div class="comment-content">
+              @Dr. Silva - Confirmo dados similares em Cabinda. Pode estar relacionado com 
+              a melhoria da qualidade da água após as medidas de controle de poluição.
+            </div>
+          </div>
+        </div>
+        
+        <form id="commentForm" style="margin-top: 16px;">
+          <div class="form-group">
+            <textarea id="commentText" placeholder="Adicionar comentário científico..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">💬 Enviar Comentário</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <!-- Investigadores Online -->
+      <div class="card">
+        <h3 class="card-title">👥 Investigadores Ativos</h3>
+        <div class="researcher-list">
+          <div class="researcher-item">
+            <div class="researcher-avatar">MS</div>
+            <div class="researcher-info">
+              <div class="researcher-name">Dr. Maria Silva</div>
+              <div class="researcher-institution">Universidade Agostinho Neto</div>
+            </div>
+            <div class="researcher-status status-online">Online</div>
+          </div>
+          
+          <div class="researcher-item">
+            <div class="researcher-avatar">JS</div>
+            <div class="researcher-info">
+              <div class="researcher-name">Prof. João Santos</div>
+              <div class="researcher-institution">INIP</div>
+            </div>
+            <div class="researcher-status status-online">Online</div>
+          </div>
+          
+          <div class="researcher-item">
+            <div class="researcher-avatar">AL</div>
+            <div class="researcher-info">
+              <div class="researcher-name">Dr. Ana Lopes</div>
+              <div class="researcher-institution">MINAGRIP</div>
+            </div>
+            <div class="researcher-status status-offline">Offline</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notificações -->
+      <div class="card">
+        <h3 class="card-title">🔔 Notificações</h3>
+        <div id="notificationsPanel">
+          <div class="notification">
+            <strong>Nova validação:</strong> Dr. Silva validou sua observação de Sardina pilchardus
+          </div>
+          <div class="notification success">
+            <strong>Consenso alcançado:</strong> Identificação de Merluccius capensis confirmada por 3 especialistas
+          </div>
+          <div class="notification">
+            <strong>Discussão ativa:</strong> Debate sobre migração de tartarugas em Namibe
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário de Anotação -->
+      <div class="card" id="annotationForm" style="display: none;">
+        <h3 class="card-title">📝 Nova Anotação</h3>
+        <form id="newAnnotationForm">
+          <div class="form-group">
+            <label>Tipo de Anotação</label>
+            <select id="annotationType" required>
+              <option value="">Selecionar...</option>
+              <option value="observation">Observação de Espécie</option>
+              <option value="habitat">Características do Habitat</option>
+              <option value="threat">Ameaça Identificada</option>
+              <option value="methodology">Questão Metodológica</option>
+              <option value="discussion">Ponto de Discussão</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Título</label>
+            <input type="text" id="annotationTitle" placeholder="Título da anotação" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea id="annotationDescription" placeholder="Descreva sua observação ou comentário..." required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Coordenadas</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="annotationLat" placeholder="Latitude" step="0.0001" readonly>
+              <input type="number" id="annotationLon" placeholder="Longitude" step="0.0001" readonly>
+            </div>
+            <small>Clique no mapa para selecionar localização</small>
+          </div>
+          
+          <div style="display: flex; gap: 8px;">
+            <button type="submit" class="btn btn-primary">💾 Salvar Anotação</button>
+            <button type="button" class="btn btn-secondary" onclick="cancelAnnotation()">❌ Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Estatísticas de Colaboração -->
+      <div class="card">
+        <h3 class="card-title">📊 Estatísticas</h3>
+        <div style="font-size: 14px;">
+          <p><strong>Anotações criadas:</strong> <span id="totalAnnotations">23</span></p>
+          <p><strong>Validações realizadas:</strong> <span id="totalValidations">47</span></p>
+          <p><strong>Discussões ativas:</strong> <span id="activeDiscussions">8</span></p>
+          <p><strong>Consensos alcançados:</strong> <span id="consensusReached">15</span></p>
+          <p><strong>Investigadores ativos:</strong> <span id="activeResearchers">12</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/zee_angola_official.js?v=20250831"></script>
+  <script>
+    // Estado da aplicação
+    let app = {
+      map: null,
+      annotations: [],
+      currentUser: 'Dr. Investigador',
+      selectedLocation: null,
+      annotationsVisible: true
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeMap();
+      loadSampleAnnotations();
+      setupEventListeners();
+    });
+
+    function initializeMap() {
+      // Mapa centrado na costa angolana
+      app.map = L.map('map').setView([-12.5, 13.5], 6);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(app.map);
+
+      // === CABINDA - Colaboração ===
+      const cabindaCollaboration = [
+        [-4.2610419, 11.4559051], [-4.7878434, 11.8243991], [-5.2157171, 12.1402804], 
+        [-5.5186752, 12.2329437], [-5.5632888, 12.2277172]
+      ];
+
+      // === ANGOLA CONTINENTAL - Colaboração ===
+      const angolaMainlandCollaboration = [
+        [-6.0221909, 12.4036959], [-6.994221, 12.829412], [-8.387412, 13.392435], 
+        [-9.347036, 13.157238], [-10.671465, 13.775745], [-11.811188, 13.794773], 
+        [-12.244371, 13.652239], [-13.419154, 12.531063], [-14.412332, 12.355035], 
+        [-15.630326, 11.996153], [-16.498178, 11.824207], [-17.585523, 11.736716], 
+        [-18.922632, 12.462018]
+      ];
+
+      // === ZEE OFICIAL COLLABORATION ===
+      // Usar dados oficiais do Marine Regions
+      const angolaZeeCollab = typeof angolaZEEOfficial !== 'undefined' 
+        ? angolaZEEOfficial 
+        : [[-18.02, 13.35], [-5.55, 12.2], [-5.55, 8.9], [-18.02, 10.05], [-18.02, 13.35]];
+
+      const cabindaZeeCollab = typeof cabindaZEEOfficial !== 'undefined' 
+        ? cabindaZEEOfficial 
+        : [[-4.37, 11.85], [-4.62, 12.35], [-5.4, 10.8], [-5.4, 7.8], [-4.37, 8.9], [-4.37, 11.85]];
+      
+      console.log('🤝 Collaboration ZEE:', angolaZeeCollab.length, 'pontos Angola +', cabindaZeeCollab.length, 'pontos Cabinda');
+      
+      // Adicionar ZEE de Cabinda (roxo) - OFICIAL
+      L.polygon(cabindaZeeCollab, {
+        color: '#9b59b6',
+        weight: 2,
+        fillOpacity: 0.2,
+        fillColor: '#9b59b6',
+        opacity: 0.8
+      }).addTo(app.map).bindPopup('🌊 ZEE Cabinda - OFICIAL<br>🤝 Marine Regions');
+
+      // Adicionar ZEE de Angola Continental (azul) - OFICIAL
+      L.polygon(angolaZeeCollab, {
+        color: '#0066cc',
+        weight: 2,
+        fillOpacity: 0.2,
+        fillColor: '#0080ff',
+        opacity: 0.8
+      }).addTo(app.map).bindPopup('🌊 ZEE Angola - OFICIAL<br>🤝 495.866 km² (Marine Regions)');
+
+      // Adicionar costa de Cabinda (roxo)
+      L.polyline(cabindaCollaboration, {
+        color: '#9b59b6',
+        weight: 2,
+        opacity: 0.9,
+        dashArray: '6, 3'
+      }).addTo(app.map).bindPopup('📍 Costa Cabinda<br>🏛️ (sem RDC)');
+
+      // Adicionar costa de Angola Continental (laranja)
+      L.polyline(angolaMainlandCollaboration, {
+        color: '#ff6600',
+        weight: 3,
+        opacity: 0.9,
+        dashArray: '8, 4'
+      }).addTo(app.map).bindPopup('📍 Costa Angola Continental<br>🛰️ Dados OSM (sem RDC)');
+
+      // Click no mapa para anotações
+      app.map.on('click', function(e) {
+        if (document.getElementById('annotationForm').style.display !== 'none') {
+          app.selectedLocation = e.latlng;
+          document.getElementById('annotationLat').value = e.latlng.lat.toFixed(6);
+          document.getElementById('annotationLon').value = e.latlng.lng.toFixed(6);
+        }
+      });
+    }
+
+    function loadSampleAnnotations() {
+      // Dados de exemplo
+      app.annotations = [
+        {
+          id: 'ann1',
+          type: 'observation',
+          title: 'Avistamento de Baleias-jubarte',
+          description: 'Grupo de 4 baleias-jubarte observado durante migração sazonal',
+          author: 'Dr. Maria Silva',
+          date: '2024-12-15T10:30:00Z',
+          location: [-8.8, 13.2],
+          validated: true,
+          comments: 2
+        },
+        {
+          id: 'ann2',
+          type: 'habitat',
+          title: 'Zona de Upwelling Ativa',
+          description: 'Intensa atividade de upwelling observada, alta concentração de clorofila-a',
+          author: 'Prof. João Santos',
+          date: '2024-12-14T15:45:00Z',
+          location: [-15.5, 12.0],
+          validated: false,
+          comments: 5
+        },
+        {
+          id: 'ann3',
+          type: 'threat',
+          title: 'Poluição por Plásticos',
+          description: 'Concentração elevada de microplásticos detectada em amostras de água',
+          author: 'Dr. Ana Lopes',
+          date: '2024-12-13T09:15:00Z',
+          location: [-12.8, 13.4],
+          validated: false,
+          comments: 8
+        }
+      ];
+
+      displayAnnotations();
+    }
+
+    function displayAnnotations() {
+      // Limpar marcadores existentes
+      app.map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+          app.map.removeLayer(layer);
+        }
+      });
+
+      if (!app.annotationsVisible) return;
+
+      // Adicionar anotações ao mapa
+      app.annotations.forEach(annotation => {
+        const icon = getAnnotationIcon(annotation.type, annotation.validated);
+        
+        const marker = L.marker(annotation.location, { icon })
+          .bindPopup(`
+            <div style="max-width: 200px;">
+              <h4 style="margin: 0 0 8px 0; color: #1e3c72;">${annotation.title}</h4>
+              <p style="margin: 0 0 8px 0; font-size: 12px;">${annotation.description}</p>
+              <div style="font-size: 11px; color: #6c757d;">
+                <strong>${annotation.author}</strong><br>
+                ${new Date(annotation.date).toLocaleString('pt-PT')}<br>
+                ${annotation.comments} comentário(s) • ${annotation.validated ? '✅ Validado' : '⏳ Pendente'}
+              </div>
+              <div style="margin-top: 8px;">
+                <button onclick="openAnnotationDetail('${annotation.id}')" style="background: #1e3c72; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Ver Detalhes</button>
+              </div>
+            </div>
+          `);
+        
+        marker.addTo(app.map);
+      });
+    }
+
+    function getAnnotationIcon(type, validated) {
+      const colors = {
+        observation: '#2ecc71',
+        habitat: '#3498db', 
+        threat: '#e74c3c',
+        methodology: '#f39c12',
+        discussion: '#9b59b6'
+      };
+      
+      const color = colors[type] || '#6c757d';
+      const opacity = validated ? 1.0 : 0.7;
+      
+      return L.divIcon({
+        html: `<div style="background: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; opacity: ${opacity}; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      });
+    }
+
+    function setupEventListeners() {
+      // Formulário de comentários
+      document.getElementById('commentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        addComment();
+      });
+
+      // Formulário de anotações
+      document.getElementById('newAnnotationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveAnnotation();
+      });
+    }
+
+    function addAnnotation() {
+      document.getElementById('annotationForm').style.display = 'block';
+      document.getElementById('annotationForm').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelAnnotation() {
+      document.getElementById('annotationForm').style.display = 'none';
+      document.getElementById('newAnnotationForm').reset();
+      app.selectedLocation = null;
+    }
+
+    function saveAnnotation() {
+      const form = document.getElementById('newAnnotationForm');
+      const formData = new FormData(form);
+      
+      if (!app.selectedLocation) {
+        alert('Por favor, clique no mapa para selecionar uma localização');
+        return;
+      }
+
+      const newAnnotation = {
+        id: 'ann' + Date.now(),
+        type: document.getElementById('annotationType').value,
+        title: document.getElementById('annotationTitle').value,
+        description: document.getElementById('annotationDescription').value,
+        author: app.currentUser,
+        date: new Date().toISOString(),
+        location: [app.selectedLocation.lat, app.selectedLocation.lng],
+        validated: false,
+        comments: 0
+      };
+
+      app.annotations.push(newAnnotation);
+      displayAnnotations();
+      cancelAnnotation();
+      
+      showNotification('Anotação criada com sucesso!', 'success');
+      updateStatistics();
+    }
+
+    function toggleAnnotations() {
+      app.annotationsVisible = !app.annotationsVisible;
+      displayAnnotations();
+    }
+
+    function addComment() {
+      const commentText = document.getElementById('commentText').value;
+      if (!commentText.trim()) return;
+
+      const commentsSection = document.getElementById('commentsSection');
+      const newComment = document.createElement('div');
+      newComment.className = 'comment';
+      newComment.innerHTML = `
+        <div class="comment-header">
+          <span class="comment-author">${app.currentUser}</span>
+          <span class="comment-time">agora</span>
+        </div>
+        <div class="comment-content">${commentText}</div>
+      `;
+
+      commentsSection.insertBefore(newComment, commentsSection.firstChild);
+      document.getElementById('commentText').value = '';
+      
+      showNotification('Comentário adicionado!', 'success');
+    }
+
+    function validateObservation(obsId, isValid) {
+      const action = isValid ? 'validou' : 'rejeitou';
+      const status = isValid ? 'success' : 'error';
+      
+      showNotification(`Você ${action} a observação ${obsId}`, status);
+      
+      // Atualizar interface (simular)
+      const validationItem = event.target.closest('.validation-item');
+      if (validationItem) {
+        validationItem.style.opacity = '0.5';
+        setTimeout(() => {
+          validationItem.remove();
+        }, 1000);
+      }
+      
+      updateStatistics();
+    }
+
+    function requestMoreInfo(obsId) {
+      showNotification(`Solicitação de informações adicionais enviada para ${obsId}`, 'warning');
+    }
+
+    function exportAnnotations() {
+      const data = {
+        type: 'FeatureCollection',
+        metadata: {
+          source: 'BGAPP Collaborative Annotations',
+          export_date: new Date().toISOString(),
+          total_annotations: app.annotations.length
+        },
+        features: app.annotations.map(ann => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ann.location[1], ann.location[0]]
+          },
+          properties: {
+            id: ann.id,
+            type: ann.type,
+            title: ann.title,
+            description: ann.description,
+            author: ann.author,
+            date: ann.date,
+            validated: ann.validated,
+            comments: ann.comments
+          }
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `anotacoes_colaborativas_${new Date().toISOString().split('T')[0]}.geojson`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showNotification('Anotações exportadas com sucesso!', 'success');
+    }
+
+    function openAnnotationDetail(annotationId) {
+      const annotation = app.annotations.find(a => a.id === annotationId);
+      if (!annotation) return;
+
+      alert(`Detalhes da Anotação:\n\nTítulo: ${annotation.title}\nAutor: ${annotation.author}\nData: ${new Date(annotation.date).toLocaleString('pt-PT')}\nDescrição: ${annotation.description}`);
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      
+      document.getElementById('notificationsPanel').insertBefore(
+        notification, 
+        document.getElementById('notificationsPanel').firstChild
+      );
+      
+      // Remover após 5 segundos
+      setTimeout(() => {
+        notification.remove();
+      }, 5000);
+    }
+
+    function updateStatistics() {
+      // Simular atualizações das estatísticas
+      const currentAnnotations = parseInt(document.getElementById('totalAnnotations').textContent);
+      const currentValidations = parseInt(document.getElementById('totalValidations').textContent);
+      
+      document.getElementById('totalAnnotations').textContent = app.annotations.length;
+      document.getElementById('totalValidations').textContent = currentValidations + 1;
+    }
+
+    // Simular atividade de outros usuários
+    setInterval(() => {
+      const activities = [
+        'Nova observação validada por Dr. Silva',
+        'Prof. Santos adicionou comentário sobre migração',
+        'Discussão atualizada: Impacto climático nas correntes',
+        'Dr. Lopes confirmou identificação de espécie'
+      ];
+      
+      const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+      showNotification(randomActivity, 'success');
+    }, 30000); // A cada 30 segundos
+  </script>
+</body>
+</html>

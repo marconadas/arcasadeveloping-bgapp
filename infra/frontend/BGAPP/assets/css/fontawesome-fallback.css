@@ -1,0 +1,295 @@
+/**
+ * FontAwesome Fallback CSS
+ * Fallback básico para ícones essenciais caso o CDN falhe
+ */
+
+/* Base para ícones quando FontAwesome não carrega */
+.fa-fallback {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    width: 1em;
+    text-align: center;
+}
+
+/* Fallbacks para ícones mais usados */
+.fas.fa-cog::before,
+.fa-cog::before {
+    content: "⚙️";
+}
+
+.fas.fa-tachometer-alt::before,
+.fa-tachometer-alt::before {
+    content: "📊";
+}
+
+.fas.fa-chart-line::before,
+.fa-chart-line::before {
+    content: "📈";
+}
+
+.fas.fa-microscope::before,
+.fa-microscope::before {
+    content: "🔬";
+}
+
+.fas.fa-users::before,
+.fa-users::before {
+    content: "👥";
+}
+
+.fas.fa-waves::before,
+.fa-waves::before {
+    content: "🌊";
+}
+
+.fas.fa-map::before,
+.fa-map::before {
+    content: "🗺️";
+}
+
+.fas.fa-satellite-dish::before,
+.fa-satellite-dish::before {
+    content: "📡";
+}
+
+.fas.fa-globe::before,
+.fa-globe::before {
+    content: "🌍";
+}
+
+.fas.fa-anchor::before,
+.fa-anchor::before {
+    content: "⚓";
+}
+
+.fas.fa-chart-area::before,
+.fa-chart-area::before {
+    content: "📊";
+}
+
+.fas.fa-water::before,
+.fa-water::before {
+    content: "💧";
+}
+
+.fas.fa-cogs::before,
+.fa-cogs::before {
+    content: "⚙️";
+}
+
+.fas.fa-mobile-alt::before,
+.fa-mobile-alt::before,
+.fas.fa-mobile::before,
+.fa-mobile::before {
+    content: "📱";
+}
+
+.fas.fa-rocket::before,
+.fa-rocket::before {
+    content: "🚀";
+}
+
+.fas.fa-wind::before,
+.fa-wind::before {
+    content: "💨";
+}
+
+.fas.fa-fish::before,
+.fa-fish::before {
+    content: "🐟";
+}
+
+.fas.fa-server::before,
+.fa-server::before {
+    content: "🖥️";
+}
+
+.fas.fa-database::before,
+.fa-database::before {
+    content: "💾";
+}
+
+.fas.fa-hdd::before,
+.fa-hdd::before {
+    content: "💽";
+}
+
+.fas.fa-heartbeat::before,
+.fa-heartbeat::before {
+    content: "💓";
+}
+
+.fas.fa-download::before,
+.fa-download::before {
+    content: "⬇️";
+}
+
+.fas.fa-sliders-h::before,
+.fa-sliders-h::before {
+    content: "🎛️";
+}
+
+.fas.fa-file-alt::before,
+.fa-file-alt::before {
+    content: "📄";
+}
+
+.fas.fa-bug::before,
+.fa-bug::before {
+    content: "🐛";
+}
+
+.fas.fa-vial::before,
+.fa-vial::before {
+    content: "🧪";
+}
+
+.fas.fa-sync-alt::before,
+.fa-sync-alt::before {
+    content: "🔄";
+}
+
+.fas.fa-bars::before,
+.fa-bars::before {
+    content: "☰";
+}
+
+.fas.fa-bell::before,
+.fa-bell::before {
+    content: "🔔";
+}
+
+.fas.fa-shield-alt::before,
+.fa-shield-alt::before {
+    content: "🛡️";
+}
+
+.fas.fa-brain::before,
+.fa-brain::before {
+    content: "🧠";
+}
+
+.fas.fa-door-open::before,
+.fa-door-open::before {
+    content: "🚪";
+}
+
+.fas.fa-plug::before,
+.fa-plug::before {
+    content: "🔌";
+}
+
+.fas.fa-lock::before,
+.fa-lock::before {
+    content: "🔒";
+}
+
+.fas.fa-eye::before,
+.fa-eye::before {
+    content: "👁️";
+}
+
+.fas.fa-check-circle::before,
+.fa-check-circle::before {
+    content: "✅";
+}
+
+.fas.fa-exclamation-triangle::before,
+.fa-exclamation-triangle::before {
+    content: "⚠️";
+}
+
+.fas.fa-times::before,
+.fa-times::before {
+    content: "❌";
+}
+
+.fas.fa-plus::before,
+.fa-plus::before {
+    content: "➕";
+}
+
+.fas.fa-minus::before,
+.fa-minus::before {
+    content: "➖";
+}
+
+.fas.fa-search::before,
+.fa-search::before {
+    content: "🔍";
+}
+
+.fas.fa-trash::before,
+.fa-trash::before {
+    content: "🗑️";
+}
+
+.fas.fa-edit::before,
+.fa-edit::before {
+    content: "✏️";
+}
+
+.fas.fa-save::before,
+.fa-save::before {
+    content: "💾";
+}
+
+.fas.fa-upload::before,
+.fa-upload::before {
+    content: "⬆️";
+}
+
+.fas.fa-play::before,
+.fa-play::before {
+    content: "▶️";
+}
+
+.fas.fa-pause::before,
+.fa-pause::before {
+    content: "⏸️";
+}
+
+.fas.fa-stop::before,
+.fa-stop::before {
+    content: "⏹️";
+}
+
+.fas.fa-info-circle::before,
+.fa-info-circle::before {
+    content: "ℹ️";
+}
+
+.fas.fa-question-circle::before,
+.fa-question-circle::before {
+    content: "❓";
+}
+
+/* Fallback quando FontAwesome não carrega */
+@supports not (font-family: "Font Awesome 6 Free") {
+    .fas, .fa {
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+}
+
+/* Detecção se FontAwesome não carregou */
+.fontawesome-test::before {
+    content: "\f013"; /* fa-cog */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+/* Se o teste falhar, aplicar fallbacks */
+.no-fontawesome .fas,
+.no-fontawesome .fa {
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Estilos para garantir boa aparência dos fallbacks */
+.no-fontawesome .fas::before,
+.no-fontawesome .fa::before {
+    font-size: 0.9em;
+    vertical-align: middle;
+}

@@ -1,0 +1,251 @@
+[
+  {
+    "_id": "req-dashboard-stats",
+    "colId": "bgapp-main-collection",
+    "containerId": "dashboard-folder-id",
+    "name": "📊 Dashboard Statistics",
+    "url": "{{BASE_URL}}/dashboard/stats",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-health-check",
+    "colId": "bgapp-main-collection",
+    "containerId": "dashboard-folder-id",
+    "name": "❤️ Health Check",
+    "url": "{{BASE_URL}}/health",
+    "method": "GET",
+    "sortNum": 10100,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-system-metrics",
+    "colId": "bgapp-main-collection",
+    "containerId": "dashboard-folder-id",
+    "name": "📈 System Metrics",
+    "url": "{{BASE_URL}}/metrics",
+    "method": "GET",
+    "sortNum": 10200,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-services-list",
+    "colId": "bgapp-main-collection",
+    "containerId": "services-folder-id",
+    "name": "🔧 List All Services",
+    "url": "{{BASE_URL}}/services",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-service-start",
+    "colId": "bgapp-main-collection",
+    "containerId": "services-folder-id",
+    "name": "▶️ Start Service",
+    "url": "{{BASE_URL}}/services/{{SERVICE_NAME}}/start",
+    "method": "POST",
+    "sortNum": 20100,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-ml-models",
+    "colId": "bgapp-main-collection",
+    "containerId": "ml-folder-id",
+    "name": "🧠 Get ML Models",
+    "url": "{{BASE_URL}}/ml/models",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-ml-predict",
+    "colId": "bgapp-main-collection",
+    "containerId": "ml-folder-id",
+    "name": "🎯 Make ML Prediction",
+    "url": "{{BASE_URL}}/ml/predict",
+    "method": "POST",
+    "sortNum": 30200,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"modelId\": \"marine-species-prediction\",\n  \"features\": {\n    \"temperature\": 25.5,\n    \"depth\": 100,\n    \"salinity\": 35.2,\n    \"latitude\": -12.5,\n    \"longitude\": 18.5\n  }\n}"
+    },
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-biodiversity",
+    "colId": "bgapp-main-collection",
+    "containerId": "ml-folder-id",
+    "name": "🐟 Biodiversity Studies",
+    "url": "{{BASE_URL}}/biodiversity-studies",
+    "method": "GET",
+    "sortNum": 30300,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [
+      {
+        "name": "page",
+        "value": "1",
+        "isPath": false
+      },
+      {
+        "name": "pageSize",
+        "value": "50",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "req-stac-collections",
+    "colId": "bgapp-main-collection",
+    "containerId": "stac-folder-id",
+    "name": "🛰️ STAC Collections",
+    "url": "{{STAC_URL}}/collections",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-stac-search",
+    "colId": "bgapp-main-collection",
+    "containerId": "stac-folder-id",
+    "name": "🔍 STAC Search",
+    "url": "{{STAC_URL}}/search",
+    "method": "POST",
+    "sortNum": 40300,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"collections\": [\"{{COLLECTION_ID}}\"],\n  \"bbox\": [11, -18, 24, -4],\n  \"datetime\": \"2024-01-01T00:00:00Z/2024-12-31T23:59:59Z\",\n  \"limit\": 50\n}"
+    },
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-maps-list",
+    "colId": "bgapp-main-collection",
+    "containerId": "maps-folder-id",
+    "name": "🗺️ All Maps",
+    "url": "{{BASE_URL}}/api/maps",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "req-maps-create",
+    "colId": "bgapp-main-collection",
+    "containerId": "maps-folder-id",
+    "name": "➕ Create Marine Map",
+    "url": "{{BASE_URL}}/api/maps",
+    "method": "POST",
+    "sortNum": 50100,
+    "created": "2024-12-27T12:00:00.000Z",
+    "modified": "2024-12-27T12:00:00.000Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{AUTH_TOKEN}}"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"Marine Biodiversity Angola\",\n  \"description\": \"Interactive map showing marine biodiversity data for Angola\",\n  \"category\": \"biodiversity\",\n  \"config\": {\n    \"center\": [-12.5, 18.5],\n    \"zoom\": 6,\n    \"layers\": []\n  }\n}"
+    },
+    "params": [],
+    "tests": []
+  }
+]

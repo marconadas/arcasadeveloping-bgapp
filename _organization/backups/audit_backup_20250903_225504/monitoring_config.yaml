@@ -1,0 +1,24 @@
+alerts:
+  alert_thresholds:
+    cpu_critical: 95
+    cpu_warning: 80
+    disk_critical: 95
+    disk_warning: 85
+    memory_critical: 95
+    memory_warning: 85
+  email_notifications: true
+  enabled: true
+  webhook_notifications: false
+health_checks:
+  enabled: true
+  interval_seconds: 60
+  retry_count: 3
+  timeout_seconds: 30
+metrics:
+  aggregation_intervals:
+  - 1m
+  - 5m
+  - 1h
+  - 1d
+  collection_enabled: true
+  retention_days: 90

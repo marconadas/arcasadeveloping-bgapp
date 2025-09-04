@@ -1,0 +1,105 @@
+{
+  "id": "bgapp-production-env",
+  "name": "🌊 BGAPP Production Environment",
+  "values": [
+    {
+      "key": "BASE_URL",
+      "value": "https://bgapp-api.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "STAC_URL",
+      "value": "https://bgapp-stac.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "PYGEOAPI_URL",
+      "value": "https://bgapp-pygeoapi.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "KEYCLOAK_URL",
+      "value": "https://bgapp-auth.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "FLOWER_URL",
+      "value": "https://bgapp-monitor.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "FRONTEND_URL",
+      "value": "https://bgapp-frontend.pages.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "ADMIN_URL",
+      "value": "https://bgapp-admin.pages.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "MINIO_URL",
+      "value": "https://bgapp-storage.majearcasa.workers.dev",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "AUTH_TOKEN",
+      "value": "bgapp_admin_28D4Pf0OMN0nABk0xnpCMbEszH5Q4lF8Ovksw_RdGnk",
+      "enabled": true,
+      "type": "secret"
+    },
+    {
+      "key": "KEYCLOAK_TOKEN",
+      "value": "kc_sDDSViEDq5pjmbqYb1Kw7QpoyfAALj36jVfMaLUV3yfclsxtexLsxQ",
+      "enabled": true,
+      "type": "secret"
+    },
+    {
+      "key": "SERVICE_NAME",
+      "value": "copernicus",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "COLLECTION_ID",
+      "value": "angola-marine-data",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "BUCKET_NAME",
+      "value": "bgapp-data",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "REALM_NAME",
+      "value": "bgapp",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "USER_ID",
+      "value": "admin-user-id",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "MAP_ID",
+      "value": "marine-biodiversity-map",
+      "enabled": true,
+      "type": "default"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2024-12-27T12:00:00.000Z",
+  "_postman_exported_using": "Postman/10.0.0"
+}
