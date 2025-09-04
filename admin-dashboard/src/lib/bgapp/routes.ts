@@ -59,6 +59,19 @@ export const bgappRoutes: BGAPPRoute[] = [
     component: 'ServicesIntegrationComplete'
   },
 
+  // ENHANCED OCEAN SYSTEM
+  {
+    id: 'enhanced-ocean-system',
+    label: '🌊 Enhanced Ocean System',
+    icon: GlobeAltIcon,
+    category: 'scientific',
+    description: 'Sistema de renderização oceânica avançado com shaders Unreal Engine',
+    badge: 'NOVO',
+    isNew: true,
+    component: 'EnhancedOceanSystem',
+    iframeUrl: '/bgapp-enhanced-ocean-system.html'
+  },
+
   // MACHINE LEARNING SYSTEM
   {
     id: 'ml-system',
@@ -102,6 +115,16 @@ export const bgappRoutes: BGAPPRoute[] = [
         category: 'ml',
         description: 'Pipeline automático de treino de modelos',
         component: 'MLAutoIngestion'
+      },
+      {
+        id: 'ml-retention-system',
+        label: '🧠 Base de Retenção ML',
+        icon: CircleStackIcon,
+        category: 'ml',
+        description: 'Sistema de cache e otimização de performance ML',
+        badge: 'PERFORMANCE',
+        isNew: true,
+        component: 'MLRetentionDashboard'
       }
     ]
   },
@@ -218,7 +241,7 @@ export const bgappRoutes: BGAPPRoute[] = [
     label: '🔬 Hub Científico',
     icon: BeakerIcon,
     category: 'scientific',
-    description: 'Portal unificado para 46 interfaces científicas',
+    description: 'Portal unificado para 43 interfaces científicas (incluindo ML Demo deck.gl)',
     badge: 'HUB',
     isNew: true,
     children: [
@@ -228,7 +251,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: ChartBarIcon,
         category: 'scientific',
         description: 'Interface científica principal para dados oceanográficos',
-        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/dashboard_cientifico.html',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/dashboard_cientifico.html',
         component: 'ScientificDashboard'
       },
       {
@@ -237,8 +260,19 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: EyeIcon,
         category: 'scientific',
         description: 'Dados oceanográficos em tempo real da costa angolana',
-        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/realtime_angola.html',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/realtime_angola.html',
         component: 'RealtimeAngola'
+      },
+      {
+        id: 'ml-demo-deckgl-final',
+        label: 'ML Demo deck.gl WebGL2',
+        icon: ChartBarIcon,
+        category: 'scientific',
+        description: 'Demo avançado de Machine Learning com deck.gl WebGL2 e visualizações Unreal Engine',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/ml-demo-deckgl-final',
+        component: 'MLDemoDecKGLFinal',
+        badge: 'WebGL2',
+        isNew: true
       },
       {
         id: 'qgis-tools',
@@ -253,7 +287,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: MapIcon,
             category: 'scientific',
             description: 'Dashboard QGIS principal',
-            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_dashboard.html'
+            iframeUrl: 'https://bgapp-frontend.pages.dev/qgis_dashboard.html'
           },
           {
             id: 'qgis-fisheries',
@@ -261,7 +295,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: MapIcon,
             category: 'scientific',
             description: 'Sistema QGIS para gestão pesqueira',
-            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/qgis_fisheries.html'
+            iframeUrl: 'https://bgapp-frontend.pages.dev/qgis_fisheries.html'
           }
         ]
       },
@@ -271,7 +305,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: BoltIcon,
         category: 'scientific',
         description: 'Animações avançadas de vento e correntes',
-        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/bgapp-wind-animation-demo.html',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html',
         component: 'WeatherAnimations'
       },
       {
@@ -280,7 +314,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: GlobeAltIcon,
         category: 'scientific',
         description: 'Plataforma de colaboração para investigadores',
-        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/collaboration.html',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/collaboration.html',
         component: 'ScientificCollaboration'
       },
       {
@@ -289,7 +323,7 @@ export const bgappRoutes: BGAPPRoute[] = [
         icon: CloudArrowUpIcon,
         category: 'scientific',
         description: 'Catálogo STAC para dados marinhos',
-        iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/stac_oceanographic.html',
+        iframeUrl: 'https://bgapp-frontend.pages.dev/stac.html',
         component: 'STACOceanographic'
       },
       {
@@ -305,7 +339,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: DevicePhoneMobileIcon,
             category: 'scientific',
             description: 'Aplicação web progressiva otimizada',
-            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile_pwa.html'
+            iframeUrl: 'https://bgapp-frontend.pages.dev/mobile_pwa.html'
           },
           {
             id: 'mobile-basic',
@@ -313,7 +347,7 @@ export const bgappRoutes: BGAPPRoute[] = [
             icon: DevicePhoneMobileIcon,
             category: 'scientific',
             description: 'Interface mobile simplificada',
-            iframeUrl: 'https://befb0797.bgapp-arcasadeveloping.pages.dev/mobile.html'
+            iframeUrl: 'https://bgapp-frontend.pages.dev/mobile.html'
           }
         ]
       }
@@ -470,7 +504,7 @@ export const htmlInterfaces = {
   // Specialized Tools
   wind_animations: `${getServiceUrl('frontend')}/bgapp-wind-animation-demo.html`,
   collaboration: `${getServiceUrl('frontend')}/collaboration.html`,
-  stac_oceanographic: `${getServiceUrl('frontend')}/stac_oceanographic.html`,
+  stac: `${getServiceUrl('frontend')}/stac.html`,
   
   // Mobile Interfaces
   mobile_pwa: `${getServiceUrl('frontend')}/mobile_pwa.html`,

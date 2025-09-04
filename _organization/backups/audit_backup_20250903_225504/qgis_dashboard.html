@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Dashboard QGIS Interativo</title>
+    
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #40E0D0;
+            --accent-color: #FF6B35;
+            --dark-color: #1a1a1a;
+            --light-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .dashboard-header .subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .control-panel {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .control-section {
+            margin-bottom: 2rem;
+        }
+
+        .control-section h3 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+            outline: 0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #236B47;
+            border-color: #236B47;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        .temporal-controls {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .time-slider {
+            margin: 1rem 0;
+        }
+
+        .layer-control {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .layer-item {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .layer-item:last-child {
+            border-bottom: none;
+        }
+
+        .layer-checkbox {
+            margin-right: 0.75rem;
+        }
+
+        .layer-label {
+            flex: 1;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .layer-opacity {
+            width: 80px;
+            margin-left: 1rem;
+        }
+
+        .stats-panel {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .stat-value {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.9);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .loading .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .export-controls {
+            background: #e8f5e8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .date-range input {
+            flex: 1;
+        }
+
+        .animation-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .play-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .play-button:hover {
+            background: #e55a2b;
+            transform: scale(1.05);
+        }
+
+        .speed-control {
+            flex: 1;
+            margin-left: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 50vh;
+            }
+            
+            .main-content {
+                height: 50vh;
+            }
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 6px;
+        }
+
+        .alert-success {
+            color: #0f5132;
+            background-color: #d1edcc;
+            border-color: #badbcc;
+        }
+
+        .alert-warning {
+            color: #664d03;
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .collapsible:hover {
+            background-color: #f8f9fa;
+        }
+
+        .collapsible::after {
+            content: '\f107';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            float: right;
+            transition: transform 0.2s;
+        }
+
+        .collapsible.active::after {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding-top: 1rem;
+        }
+
+        .collapsible.active + .collapsible-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1><i class="fas fa-map-marked-alt"></i> Dashboard QGIS Interativo</h1>
+        <div class="subtitle">Visualizações avançadas para análise espacial e temporal - Angola</div>
+    </div>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar Controls -->
+        <div class="sidebar">
+            <!-- Temporal Controls -->
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3 class="collapsible active">
+                        <i class="fas fa-clock"></i> Controles Temporais
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="temporal-controls">
+                            <div class="form-group">
+                                <label class="form-label">Período de Análise</label>
+                                <div class="date-range">
+                                    <input type="date" class="form-control" id="start-date" value="2024-01-01">
+                                    <span>até</span>
+                                    <input type="date" class="form-control" id="end-date" value="2024-12-31">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Variável Temporal</label>
+                                <select class="form-select" id="temporal-variable">
+                                    <option value="chlorophyll_a">Clorofila-a</option>
+                                    <option value="sea_surface_temperature">Temperatura Superficial</option>
+                                    <option value="fish_biomass">Biomassa de Peixes</option>
+                                    <option value="migration_density">Densidade de Migração</option>
+                                </select>
+                            </div>
+                            
+                            <div class="time-slider">
+                                <label class="form-label">Slider Temporal</label>
+                                <div id="time-slider"></div>
+                                <div id="time-display" class="text-center mt-2">Janeiro 2024</div>
+                            </div>
+                            
+                            <div class="animation-controls">
+                                <button class="play-button" id="play-animation" title="Reproduzir Animação">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <div class="speed-control">
+                                    <label class="form-label">Velocidade</label>
+                                    <input type="range" class="form-range" id="animation-speed" min="1" max="10" value="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layer Controls -->
+                <div class="control-section">
+                    <h3 class="collapsible active">
+                        <i class="fas fa-layers"></i> Camadas do Mapa
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="layer-control">
+                            <div class="layer-item">
+                                <input type="checkbox" class="layer-checkbox" id="layer-fishing" checked>
+                                <label class="layer-label" for="layer-fishing">🏭 Infraestruturas Pesqueiras</label>
+                                <input type="range" class="layer-opacity" min="0" max="100" value="80">
+                            </div>
+                            
+                            <div class="layer-item">
+                                <input type="checkbox" class="layer-checkbox" id="layer-zee">
+                                <label class="layer-label" for="layer-zee">🌊 Zona Econômica Exclusiva</label>
+                                <input type="range" class="layer-opacity" min="0" max="100" value="50">
+                            </div>
+                            
+                            <div class="layer-item">
+                                <input type="checkbox" class="layer-checkbox" id="layer-migration">
+                                <label class="layer-label" for="layer-migration">🐟 Rotas de Migração</label>
+                                <input type="range" class="layer-opacity" min="0" max="100" value="70">
+                            </div>
+                            
+                            <div class="layer-item">
+                                <input type="checkbox" class="layer-checkbox" id="layer-environmental">
+                                <label class="layer-label" for="layer-environmental">🌿 Dados Ambientais</label>
+                                <input type="range" class="layer-opacity" min="0" max="100" value="60">
+                            </div>
+                            
+                            <div class="layer-item">
+                                <input type="checkbox" class="layer-checkbox" id="layer-bathymetry">
+                                <label class="layer-label" for="layer-bathymetry">🏔️ Batimetria</label>
+                                <input type="range" class="layer-opacity" min="0" max="100" value="40">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Tools -->
+                <div class="control-section">
+                    <h3 class="collapsible">
+                        <i class="fas fa-tools"></i> Ferramentas de Análise
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Análise</label>
+                            <select class="form-select" id="analysis-type">
+                                <option value="hotspots">Identificar Hotspots</option>
+                                <option value="connectivity">Análise de Conectividade</option>
+                                <option value="buffer">Zonas Buffer</option>
+                                <option value="biomass">Cálculo de Biomassa</option>
+                                <option value="mcda">Análise Multicritério</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Região de Interesse</label>
+                            <select class="form-select" id="analysis-region">
+                                <option value="angola_full">Angola Completa</option>
+                                <option value="north_zone">Zona Norte</option>
+                                <option value="center_zone">Zona Centro</option>
+                                <option value="south_zone">Zona Sul</option>
+                                <option value="custom">Área Personalizada</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100" id="run-analysis">
+                            <i class="fas fa-play"></i> Executar Análise
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Export Controls -->
+                <div class="control-section">
+                    <h3 class="collapsible">
+                        <i class="fas fa-download"></i> Exportação
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="export-controls">
+                            <div class="form-group">
+                                <label class="form-label">Formato de Exportação</label>
+                                <select class="form-select" id="export-format">
+                                    <option value="interactive_map">Mapa Interativo (HTML)</option>
+                                    <option value="static_image">Imagem Estática (PNG)</option>
+                                    <option value="pdf_report">Relatório PDF</option>
+                                    <option value="geojson">Dados GeoJSON</option>
+                                    <option value="csv">Dados CSV</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Nome do Arquivo</label>
+                                <input type="text" class="form-control" id="export-filename" placeholder="bgapp_export_2024">
+                            </div>
+                            
+                            <button class="btn btn-accent w-100" id="export-map">
+                                <i class="fas fa-download"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div class="control-section">
+                    <h3 class="collapsible">
+                        <i class="fas fa-chart-bar"></i> Estatísticas
+                    </h3>
+                    <div class="collapsible-content">
+                        <div class="stats-panel">
+                            <div class="stat-item">
+                                <span class="stat-label">Portos Pesqueiros</span>
+                                <span class="stat-value" id="stat-ports">8</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Vilas Pescatórias</span>
+                                <span class="stat-value" id="stat-villages">12</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Rotas de Migração</span>
+                                <span class="stat-value" id="stat-routes">--</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Área Total (km²)</span>
+                                <span class="stat-value" id="stat-area">518,000</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Última Atualização</span>
+                                <span class="stat-value" id="stat-updated">Hoje</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Map Content -->
+        <div class="main-content">
+            <div class="map-container">
+                <div id="map"></div>
+                
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <div>Carregando dados...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Global variables
+        let map;
+        let layerGroups = {};
+        let animationInterval;
+        let isPlaying = false;
+        let currentTimeIndex = 0;
+        let timeData = [];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            initializeControls();
+            initializeTimeSlider();
+            loadInitialData();
+            setupEventListeners();
+        });
+
+        // Initialize Leaflet map
+        function initializeMap() {
+            // Create map centered on Angola
+            map = L.map('map', {
+                center: [-11.5, 17.5],
+                zoom: 6,
+                zoomControl: true,
+                preferCanvas: true
+            });
+
+            // Add base layers
+            const baseLayers = {
+                'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }),
+                'Satélite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri'
+                }),
+                'Oceano': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri'
+                })
+            };
+
+            // Add default base layer
+            baseLayers['OpenStreetMap'].addTo(map);
+
+            // Initialize layer groups
+            layerGroups = {
+                fishing: L.layerGroup(),
+                zee: L.layerGroup(),
+                migration: L.layerGroup(),
+                environmental: L.layerGroup(),
+                bathymetry: L.layerGroup()
+            };
+
+            // Add layer control
+            L.control.layers(baseLayers, {
+                '🏭 Infraestruturas Pesqueiras': layerGroups.fishing,
+                '🌊 Zona Econômica Exclusiva': layerGroups.zee,
+                '🐟 Rotas de Migração': layerGroups.migration,
+                '🌿 Dados Ambientais': layerGroups.environmental,
+                '🏔️ Batimetria': layerGroups.bathymetry
+            }).addTo(map);
+
+            // Add scale control
+            L.control.scale().addTo(map);
+
+            console.log('✅ Mapa inicializado');
+        }
+
+        // Initialize time slider
+        function initializeTimeSlider() {
+            const slider = document.getElementById('time-slider');
+            
+            noUiSlider.create(slider, {
+                start: [0],
+                connect: false,
+                range: {
+                    'min': 0,
+                    'max': 11
+                },
+                step: 1,
+                tooltips: false,
+                format: {
+                    to: function(value) {
+                        return Math.round(value);
+                    },
+                    from: function(value) {
+                        return Number(value);
+                    }
+                }
+            });
+
+            // Update display when slider changes
+            slider.noUiSlider.on('update', function(values) {
+                const monthIndex = parseInt(values[0]);
+                const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                               'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                document.getElementById('time-display').textContent = `${months[monthIndex]} 2024`;
+                
+                currentTimeIndex = monthIndex;
+                updateTemporalData();
+            });
+
+            console.log('✅ Slider temporal inicializado');
+        }
+
+        // Initialize controls
+        function initializeControls() {
+            // Setup collapsible sections
+            document.querySelectorAll('.collapsible').forEach(element => {
+                element.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Initialize layer controls
+            document.querySelectorAll('.layer-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const layerId = this.id.replace('layer-', '');
+                    toggleLayer(layerId, this.checked);
+                });
+            });
+
+            // Initialize opacity controls
+            document.querySelectorAll('.layer-opacity').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const layerId = this.parentElement.querySelector('.layer-checkbox').id.replace('layer-', '');
+                    setLayerOpacity(layerId, this.value / 100);
+                });
+            });
+
+            console.log('✅ Controles inicializados');
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            showLoading(true);
+            
+            try {
+                // Load fishing infrastructure
+                await loadFishingInfrastructure();
+                
+                // Load ZEE boundaries
+                await loadZEEBoundaries();
+                
+                // Update statistics
+                updateStatistics();
+                
+                console.log('✅ Dados iniciais carregados');
+            } catch (error) {
+                console.error('Erro ao carregar dados iniciais:', error);
+                showAlert('Erro ao carregar dados iniciais', 'danger');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Load fishing infrastructure
+        async function loadFishingInfrastructure() {
+            try {
+                const response = await fetch('/fisheries/statistics');
+                const data = await response.json();
+                
+                // Create markers for fishing infrastructure
+                if (data.success && data.infrastructure) {
+                    data.infrastructure.forEach(item => {
+                        const marker = L.circleMarker([item.latitude, item.longitude], {
+                            radius: 8,
+                            fillColor: item.type === 'porto' ? '#40E0D0' : '#90EE90',
+                            color: item.type === 'porto' ? '#2E8B57' : '#228B22',
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.7
+                        });
+                        
+                        marker.bindPopup(`
+                            <div style="font-family: Arial, sans-serif;">
+                                <h4 style="margin: 0; color: #2E8B57;">${item.name}</h4>
+                                <hr style="margin: 5px 0;">
+                                <p><strong>Tipo:</strong> ${item.type}</p>
+                                <p><strong>População:</strong> ${item.population?.toLocaleString() || 'N/A'}</p>
+                                <p><strong>Zona:</strong> ${item.zone || 'N/A'}</p>
+                            </div>
+                        `);
+                        
+                        layerGroups.fishing.addLayer(marker);
+                    });
+                }
+                
+                // Add to map if checkbox is checked
+                if (document.getElementById('layer-fishing').checked) {
+                    layerGroups.fishing.addTo(map);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar infraestruturas pesqueiras:', error);
+            }
+        }
+
+        // Load ZEE boundaries
+        async function loadZEEBoundaries() {
+            try {
+                // For demonstration, create a simplified ZEE polygon
+                const zeeCoordinates = [
+                    [-5.0, 11.0],
+                    [-5.0, 13.0],
+                    [-18.0, 13.0],
+                    [-18.0, 11.0],
+                    [-5.0, 11.0]
+                ];
+                
+                const zeePolygon = L.polygon(zeeCoordinates, {
+                    color: '#0066CC',
+                    fillColor: '#87CEEB',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.3
+                });
+                
+                zeePolygon.bindPopup('Zona Econômica Exclusiva de Angola');
+                layerGroups.zee.addLayer(zeePolygon);
+                
+            } catch (error) {
+                console.error('Erro ao carregar fronteiras ZEE:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Play/pause animation
+            document.getElementById('play-animation').addEventListener('click', toggleAnimation);
+            
+            // Run analysis
+            document.getElementById('run-analysis').addEventListener('click', runAnalysis);
+            
+            // Export map
+            document.getElementById('export-map').addEventListener('click', exportMap);
+            
+            // Temporal variable change
+            document.getElementById('temporal-variable').addEventListener('change', updateTemporalData);
+        }
+
+        // Toggle layer visibility
+        function toggleLayer(layerId, visible) {
+            if (visible) {
+                if (!map.hasLayer(layerGroups[layerId])) {
+                    layerGroups[layerId].addTo(map);
+                }
+            } else {
+                if (map.hasLayer(layerGroups[layerId])) {
+                    map.removeLayer(layerGroups[layerId]);
+                }
+            }
+        }
+
+        // Set layer opacity
+        function setLayerOpacity(layerId, opacity) {
+            layerGroups[layerId].eachLayer(function(layer) {
+                if (layer.setStyle) {
+                    layer.setStyle({
+                        fillOpacity: opacity,
+                        opacity: Math.min(opacity + 0.2, 1)
+                    });
+                }
+            });
+        }
+
+        // Toggle animation
+        function toggleAnimation() {
+            const button = document.getElementById('play-animation');
+            const icon = button.querySelector('i');
+            
+            if (isPlaying) {
+                // Pause animation
+                clearInterval(animationInterval);
+                isPlaying = false;
+                icon.className = 'fas fa-play';
+                button.title = 'Reproduzir Animação';
+            } else {
+                // Start animation
+                const speed = parseInt(document.getElementById('animation-speed').value);
+                const interval = 1000 / speed; // milliseconds
+                
+                animationInterval = setInterval(() => {
+                    currentTimeIndex = (currentTimeIndex + 1) % 12;
+                    document.getElementById('time-slider').noUiSlider.set([currentTimeIndex]);
+                }, interval);
+                
+                isPlaying = true;
+                icon.className = 'fas fa-pause';
+                button.title = 'Pausar Animação';
+            }
+        }
+
+        // Update temporal data
+        function updateTemporalData() {
+            const variable = document.getElementById('temporal-variable').value;
+            
+            // Clear existing environmental data
+            layerGroups.environmental.clearLayers();
+            
+            // Generate sample temporal data based on current time index
+            generateTemporalData(variable, currentTimeIndex);
+            
+            // Update layer if visible
+            if (document.getElementById('layer-environmental').checked) {
+                if (!map.hasLayer(layerGroups.environmental)) {
+                    layerGroups.environmental.addTo(map);
+                }
+            }
+        }
+
+        // Generate temporal data
+        function generateTemporalData(variable, timeIndex) {
+            const bounds = [[-18, 11], [-5, 24]]; // Angola bounds
+            const numPoints = 50;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const lat = bounds[0][0] + Math.random() * (bounds[1][0] - bounds[0][0]);
+                const lon = bounds[0][1] + Math.random() * (bounds[1][1] - bounds[0][1]);
+                
+                let value, color, unit;
+                
+                switch (variable) {
+                    case 'chlorophyll_a':
+                        value = 0.1 + Math.random() * 2.0 + 0.3 * Math.sin(2 * Math.PI * timeIndex / 12);
+                        color = value < 0.5 ? 'blue' : value < 1.0 ? 'green' : 'orange';
+                        unit = 'mg/m³';
+                        break;
+                    case 'sea_surface_temperature':
+                        value = 20 + Math.random() * 8 + 3 * Math.sin(2 * Math.PI * (timeIndex - 2) / 12);
+                        color = value < 22 ? 'blue' : value < 26 ? 'green' : 'red';
+                        unit = '°C';
+                        break;
+                    case 'fish_biomass':
+                        value = 50 + Math.random() * 200 + 50 * Math.sin(2 * Math.PI * timeIndex / 12);
+                        color = value < 100 ? 'red' : value < 200 ? 'orange' : 'green';
+                        unit = 'kg/km²';
+                        break;
+                    default:
+                        value = Math.random() * 100;
+                        color = 'blue';
+                        unit = 'unidade';
+                }
+                
+                const marker = L.circleMarker([lat, lon], {
+                    radius: 4,
+                    fillColor: color,
+                    color: color,
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0.6
+                });
+                
+                marker.bindPopup(`
+                    <div style="font-family: Arial, sans-serif;">
+                        <h4 style="margin: 0; color: #2E8B57;">${variable.replace('_', ' ').toUpperCase()}</h4>
+                        <p><strong>Valor:</strong> ${value.toFixed(2)} ${unit}</p>
+                        <p><strong>Coordenadas:</strong> ${lat.toFixed(4)}, ${lon.toFixed(4)}</p>
+                    </div>
+                `);
+                
+                layerGroups.environmental.addLayer(marker);
+            }
+        }
+
+        // Run analysis
+        async function runAnalysis() {
+            const analysisType = document.getElementById('analysis-type').value;
+            const region = document.getElementById('analysis-region').value;
+            
+            showLoading(true);
+            
+            try {
+                let endpoint;
+                let data = {};
+                
+                switch (analysisType) {
+                    case 'hotspots':
+                        endpoint = '/qgis/spatial/hotspots';
+                        data = {
+                            point_data: generateSamplePoints(),
+                            analysis_field: 'biomass'
+                        };
+                        break;
+                    case 'connectivity':
+                        endpoint = '/qgis/spatial/connectivity-analysis';
+                        data = {
+                            habitats: generateSampleHabitats(),
+                            species_mobility: 50.0
+                        };
+                        break;
+                    case 'buffer':
+                        endpoint = '/qgis/spatial/buffer-zones';
+                        data = {
+                            geometries: generateSampleGeometries(),
+                            buffer_distance: 5000
+                        };
+                        break;
+                    case 'biomass':
+                        endpoint = '/qgis/biomass/angola-assessment';
+                        break;
+                    case 'mcda':
+                        endpoint = '/qgis/mcda/sustainable-fishing-zones';
+                        break;
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`Análise ${analysisType} executada com sucesso!`, 'success');
+                    // Process and display results
+                    displayAnalysisResults(result);
+                } else {
+                    showAlert(`Erro na análise: ${result.message}`, 'danger');
+                }
+                
+            } catch (error) {
+                console.error('Erro na análise:', error);
+                showAlert('Erro ao executar análise', 'danger');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Export map
+        async function exportMap() {
+            const format = document.getElementById('export-format').value;
+            const filename = document.getElementById('export-filename').value || 'bgapp_export';
+            
+            showLoading(true);
+            
+            try {
+                if (format === 'interactive_map') {
+                    const response = await fetch('/qgis2web/export-map', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            map_type: 'comprehensive',
+                            filename: `${filename}.html`,
+                            include_fishing: document.getElementById('layer-fishing').checked,
+                            include_migration: document.getElementById('layer-migration').checked,
+                            include_environmental: document.getElementById('layer-environmental').checked,
+                            include_temporal: true
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlert(`Mapa exportado: ${result.file_name}`, 'success');
+                        // Open exported map in new tab
+                        window.open(result.url, '_blank');
+                    } else {
+                        showAlert('Erro na exportação', 'danger');
+                    }
+                } else {
+                    showAlert(`Exportação em formato ${format} será implementada em breve`, 'warning');
+                }
+                
+            } catch (error) {
+                console.error('Erro na exportação:', error);
+                showAlert('Erro ao exportar mapa', 'danger');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            // This would typically fetch real statistics from the API
+            document.getElementById('stat-updated').textContent = new Date().toLocaleDateString('pt-BR');
+        }
+
+        // Display analysis results
+        function displayAnalysisResults(results) {
+            // This would process and display the analysis results on the map
+            console.log('Resultados da análise:', results);
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showAlert(message, type) {
+            // Create alert element
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            // Insert at top of sidebar
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.insertBefore(alert, sidebar.firstChild);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        function generateSamplePoints() {
+            const points = [];
+            for (let i = 0; i < 10; i++) {
+                points.push({
+                    coordinates: [11 + Math.random() * 13, -18 + Math.random() * 13],
+                    biomass: 50 + Math.random() * 200
+                });
+            }
+            return points;
+        }
+
+        function generateSampleHabitats() {
+            return [
+                {type: "Point", coordinates: [13.2317, -8.8383], habitat_type: "coral_reef"},
+                {type: "Point", coordinates: [13.4049, -12.5756], habitat_type: "seagrass"}
+            ];
+        }
+
+        function generateSampleGeometries() {
+            return [
+                {type: "Point", coordinates: [13.2317, -8.8383]},
+                {type: "Point", coordinates: [13.4049, -12.5756]}
+            ];
+        }
+
+        console.log('✅ Dashboard QGIS inicializado');
+    </script>
+</body>
+</html>

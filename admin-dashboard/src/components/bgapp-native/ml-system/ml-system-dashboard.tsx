@@ -30,6 +30,35 @@ export default function MLSystemDashboard() {
     refetch: refetchModels
   } = useMLData('models', () => bgappAPI.getMLModels());
 
+  // 📊 Métricas ML em tempo real do worker
+  const [mlMetrics, setMLMetrics] = useState({
+    models_active: 0,
+    average_accuracy: 0,
+    total_predictions: 0,
+    models_loaded: 0
+  });
+
+  const fetchMLMetrics = async () => {
+    try {
+      const response = await fetch('https://bgapp-admin-api-worker.majearcasa.workers.dev/api/ml/stats');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          setMLMetrics(data.data);
+          console.log('🧠 ML Metrics atualizadas:', data.data);
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ ML Metrics não disponíveis:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMLMetrics();
+    const interval = setInterval(fetchMLMetrics, 30000); // Atualizar a cada 30s
+    return () => clearInterval(interval);
+  }, []);
+
   const [selectedModel, setSelectedModel] = useState<MLModel | null>(null);
   const [isTraining, setIsTraining] = useState<Record<string, boolean>>({});
 
@@ -91,7 +120,7 @@ export default function MLSystemDashboard() {
             🧠 Sistema Machine Learning BGAPP
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            5 modelos avançados com &gt;95% precisão - {models?.length || 0} modelos carregados
+            {mlMetrics.models_loaded || 5} modelos avançados com {mlMetrics.average_accuracy ? `${mlMetrics.average_accuracy.toFixed(1)}%` : '>95%'} precisão - {mlMetrics.models_loaded || models?.length || 0} modelos carregados
           </p>
           {modelsUsingFallback && (
             <div className="flex items-center gap-2 mt-2">
@@ -113,7 +142,7 @@ export default function MLSystemDashboard() {
               <div>
                 <p className="text-sm text-gray-600">Modelos Ativos</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {models?.filter(m => m.isDeployed).length || 0}
+                  {mlMetrics.models_active || models?.filter(m => m.isDeployed).length || 0}
                 </p>
               </div>
               <CheckCircleIcon className="h-8 w-8 text-green-600" />
@@ -127,7 +156,8 @@ export default function MLSystemDashboard() {
               <div>
                 <p className="text-sm text-gray-600">Precisão Média</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {models ? `${(models.reduce((acc, m) => acc + m.accuracy, 0) / models.length).toFixed(1)}%` : '0%'}
+                  {mlMetrics.average_accuracy ? `${mlMetrics.average_accuracy.toFixed(1)}%` : 
+                   models ? `${(models.reduce((acc, m) => acc + m.accuracy, 0) / models.length).toFixed(1)}%` : 'NaN%'}
                 </p>
               </div>
               <ChartBarIcon className="h-8 w-8 text-blue-600" />
@@ -141,7 +171,8 @@ export default function MLSystemDashboard() {
               <div>
                 <p className="text-sm text-gray-600">Predições Totais</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {models ? models.reduce((acc, m) => acc + m.predictionCount, 0).toLocaleString() : '0'}
+                  {mlMetrics.total_predictions ? mlMetrics.total_predictions.toLocaleString() : 
+                   models ? models.reduce((acc, m) => acc + m.predictionCount, 0).toLocaleString() : '0'}
                 </p>
               </div>
               <BoltIcon className="h-8 w-8 text-purple-600" />

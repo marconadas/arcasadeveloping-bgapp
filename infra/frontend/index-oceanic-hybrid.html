@@ -1,0 +1,1533 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>BGAPP - Plataforma Científica Avançada para Biodiversidade Marinha de Angola</title>
+  
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+                             https://unpkg.com 
+                             https://cdnjs.cloudflare.com
+                             https://cdn.plot.ly
+                             https://d3js.org; 
+                   style-src 'self' 'unsafe-inline' 
+                            https://unpkg.com 
+                            https://cdnjs.cloudflare.com; 
+                   font-src 'self' 
+                            https://unpkg.com 
+                            https://cdnjs.cloudflare.com 
+                            data:; 
+                   img-src 'self' data: blob:; 
+                   connect-src 'self' 
+                              http://localhost:8000
+                              http://localhost:5080
+                              https://bgapp-admin.pages.dev;">
+  
+    <!-- Meta Tags SEO -->
+    <meta name="description" content="BGAPP - Plataforma Científica Avançada: Sistema de análise de biodiversidade marinha para Angola, integrando Machine Learning, visualizações 3D e dados oceanográficos em tempo real.">
+    <meta name="keywords" content="BGAPP, biodiversidade marinha, Angola, Machine Learning, oceanografia, ZEE Angola, análise científica, espécies marinhas">
+    <meta name="author" content="MareDatum Consultoria - BGAPP Development Team">
+  
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="BGAPP">
+    <link rel="manifest" href="/BGAPP/manifest.json">
+    <meta name="msapplication-TileImage" content="/assets/img/icon-144.png">
+    <meta name="msapplication-TileColor" content="#0066cc">
+  
+    <!-- Bibliotecas Avançadas -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+    <!-- Enhanced Ocean 3D System -->
+    <script src="assets/js/enhanced-ocean-shaders-v1.js"></script>
+    <script src="assets/js/advanced-3d-marine-visualization-v2.js"></script>
+    <script src="assets/js/unreal-engine-inspired-dashboard.js"></script>
+    <script src="assets/js/safe-ocean-integration-v1.js"></script>
+  
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* =====================================================
+       BGAPP - SISTEMA OCEÂNICO HÍBRIDO 3D + CONTEÚDO 🌊
+       =====================================================
+       
+       Combinação do fundo oceânico 3D avançado (Unreal Engine)
+       com o conteúdo da demonstração científica
+       
+       ===================================================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+      /* Cores Oceânicas BGAPP */
+      --ocean-deep: #0c1445;
+      --ocean-medium: #1a237e;
+      --ocean-light: #003d82;
+      --coral-accent: #00bcd4;
+      --wave-blue: #2196f3;
+      --marine-green: #4caf50;
+      --sunset-orange: #ff9800;
+      --deep-current: rgba(0, 188, 212, 0.1);
+      
+      /* Superfícies Oceânicas */
+      --surface-elevated: rgba(12, 20, 69, 0.85);
+      --border-wave: rgba(0, 188, 212, 0.3);
+      --shadow-depth: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --transition-flow: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --radius-coral: 16px;
+      --spacing-tide: 24px;
+      --spacing-current: 16px;
+      
+      /* Hierarquia das Profundidades */
+      --z-ocean-background: 1;
+      --z-content: 10;
+      --z-header: 1000;
+      --z-modals: 2000;
+      
+      /* Texto Marinho */
+      --text-foam: #ffffff;
+      --text-wave: #e3f2fd;
+      --text-current: #b3e5fc;
+      --text-depth: #81d4fa;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent; /* Permitir fundo 3D */
+        color: var(--text-foam);
+        overflow-x: hidden;
+        line-height: 1.6;
+        min-height: 100vh;
+        position: relative;
+    }
+    
+    /* =====================================================
+       FUNDO OCEÂNICO 3D FIXO 🌊
+       ===================================================== */
+    
+    #ocean-3d-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: var(--z-ocean-background);
+        pointer-events: none;
+        background: linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-medium) 50%, var(--ocean-light) 100%);
+    }
+    
+    /* Camada de conteúdo sobre o oceano 3D */
+    .content-layer {
+        position: relative;
+        z-index: var(--z-content);
+        background: rgba(12, 20, 69, 0.05); /* Overlay muito sutil */
+        backdrop-filter: blur(0.5px);
+    }
+    
+    /* =====================================================
+       HEADER OCEÂNICO PROFISSIONAL 🌊
+       ===================================================== */
+    
+    .header {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(20px);
+        padding: 20px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: var(--z-header);
+        border-bottom: 2px solid var(--coral-accent);
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 30px;
+    }
+
+    .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .title-section h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: var(--text-current);
+        font-weight: 300;
+    }
+
+    .stats-header {
+        display: flex;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--coral-accent);
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: var(--text-wave);
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .admin-access-btn {
+        background: linear-gradient(45deg, var(--sunset-orange), #ff6b35) !important;
+        color: white !important;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .admin-access-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        background: linear-gradient(45deg, #ff6b35, var(--sunset-orange)) !important;
+    }
+
+    /* =====================================================
+       HERO SECTION SOBRE OCEANO 3D 🌊
+       ===================================================== */
+    
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        background: transparent; /* Deixar o fundo 3D aparecer */
+    }
+
+    .hero-content {
+        text-align: center;
+        z-index: 2;
+        max-width: 1000px;
+        padding: 0 30px;
+        background: rgba(12, 20, 69, 0.7); /* Overlay para legibilidade */
+        border-radius: var(--radius-coral);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-wave);
+        margin: 20px;
+        padding: 60px 40px;
+    }
+
+    .hero-title {
+        font-size: 5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue), #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 20px rgba(0, 188, 212, 0.3);
+        animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .hero-subtitle {
+        font-size: 2rem;
+        font-weight: 300;
+        margin-bottom: 30px;
+        color: var(--text-wave);
+    }
+
+    .hero-description {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        margin-bottom: 40px;
+        color: var(--text-current);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-stats {
+        font-size: 1rem;
+        color: var(--coral-accent);
+        font-weight: 600;
+        padding: 20px;
+        background: rgba(0, 188, 212, 0.2);
+        border-radius: var(--radius-coral);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        backdrop-filter: blur(5px);
+    }
+
+    /* =====================================================
+       SEÇÕES DE CONTEÚDO SOBRE OCEANO 3D 🐠
+       ===================================================== */
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        text-align: center;
+        color: var(--text-current);
+        margin-bottom: 60px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .capabilities {
+        padding: 100px 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(12, 20, 69, 0.3); /* Overlay para legibilidade */
+        border-radius: var(--radius-coral);
+        backdrop-filter: blur(10px);
+    }
+
+    .capabilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-top: 60px;
+    }
+
+    .capability-card {
+        background: rgba(12, 20, 69, 0.8);
+        border-radius: var(--radius-coral);
+        padding: 40px 30px;
+        border: 1px solid var(--border-wave);
+        backdrop-filter: blur(20px);
+        transition: all var(--transition-flow);
+        box-shadow: var(--shadow-depth);
+    }
+
+    .capability-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 188, 212, 0.3);
+        border-color: var(--coral-accent);
+        background: rgba(12, 20, 69, 0.9);
+    }
+
+    .capability-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 25px rgba(0, 188, 212, 0.3);
+    }
+
+    .capability-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-foam);
+    }
+
+    .capability-description {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--text-wave);
+        margin-bottom: 25px;
+    }
+
+    .capability-features {
+        list-style: none;
+        padding: 0;
+    }
+
+    .capability-features li {
+        padding: 8px 0;
+        color: var(--text-current);
+        font-size: 0.95rem;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .capability-features li:before {
+        content: '🌊';
+        position: absolute;
+        left: 0;
+        top: 8px;
+    }
+
+    /* =====================================================
+       MÉTRICAS EM TEMPO REAL 📊
+       ===================================================== */
+    
+    .metrics-dashboard {
+        padding: 100px 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(0, 188, 212, 0.1);
+        border-radius: var(--radius-coral);
+        backdrop-filter: blur(15px);
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 60px;
+    }
+
+    .metric-card {
+        background: rgba(12, 20, 69, 0.8);
+        border-radius: var(--radius-coral);
+        padding: 30px;
+        text-align: center;
+        border: 1px solid var(--border-wave);
+        backdrop-filter: blur(20px);
+        transition: all var(--transition-flow);
+        box-shadow: var(--shadow-depth);
+    }
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 188, 212, 0.3);
+        background: rgba(12, 20, 69, 0.9);
+    }
+
+    .metric-value {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .metric-label {
+        font-size: 1rem;
+        color: var(--text-wave);
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .metric-trend {
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+    .trend-up {
+        background: rgba(76, 175, 80, 0.3);
+        color: var(--marine-green);
+        border: 1px solid rgba(76, 175, 80, 0.5);
+    }
+
+    .trend-stable {
+        background: rgba(0, 188, 212, 0.3);
+        color: var(--coral-accent);
+        border: 1px solid rgba(0, 188, 212, 0.5);
+    }
+
+    /* =====================================================
+       MODELOS ML SOBRE OCEANO 3D 🧠
+       ===================================================== */
+    
+    .ml-showcase {
+        padding: 100px 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(12, 20, 69, 0.3);
+        border-radius: var(--radius-coral);
+        backdrop-filter: blur(15px);
+    }
+
+    .ml-models-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 60px;
+    }
+
+    .ml-model-card {
+        background: rgba(12, 20, 69, 0.8);
+        border-radius: var(--radius-coral);
+        padding: 30px;
+        border: 1px solid var(--border-wave);
+        backdrop-filter: blur(20px);
+        transition: all var(--transition-flow);
+        box-shadow: var(--shadow-depth);
+        position: relative;
+    }
+
+    .ml-model-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 188, 212, 0.3);
+        background: rgba(12, 20, 69, 0.9);
+    }
+
+    .accuracy-badge {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        background: linear-gradient(45deg, var(--marine-green), #66bb6a);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    }
+
+    .ml-model-card h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--text-foam);
+        margin-top: 10px;
+    }
+
+    .ml-model-card p {
+        color: var(--text-current);
+        line-height: 1.6;
+    }
+
+    /* =====================================================
+       FOOTER PROFISSIONAL 🏢
+       ===================================================== */
+    
+    .footer {
+        background: rgba(12, 20, 69, 0.9);
+        padding: 80px 30px 40px;
+        border-top: 2px solid var(--coral-accent);
+        backdrop-filter: blur(20px);
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .footer-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .footer-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-wave);
+        margin-bottom: 40px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .contact-info {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-current);
+        font-size: 1rem;
+    }
+
+    .contact-item i {
+        color: var(--coral-accent);
+        font-size: 1.2rem;
+    }
+
+    /* =====================================================
+       RESPONSIVIDADE OCEÂNICA 📱
+       ===================================================== */
+    
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+        }
+        
+        .stats-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+        }
+        
+        .capabilities-grid,
+        .metrics-grid,
+        .ml-models-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .contact-info {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .admin-access-btn {
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+
+        .hero-content {
+            margin: 10px;
+            padding: 40px 20px;
+        }
+    }
+
+    /* =====================================================
+       CONTROLES DO OCEANO 3D 🎮
+       ===================================================== */
+    
+    .ocean-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(12, 20, 69, 0.9);
+        border-radius: var(--radius-coral);
+        padding: 15px;
+        border: 1px solid var(--border-wave);
+        backdrop-filter: blur(20px);
+        z-index: 500;
+    }
+
+    .ocean-control-btn {
+        background: linear-gradient(45deg, var(--coral-accent), var(--wave-blue));
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        margin: 3px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .ocean-control-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+    }
+
+    .ocean-control-btn.active {
+        background: linear-gradient(45deg, var(--marine-green), #66bb6a);
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    }
+  </style>
+</head>
+<body>
+    <!-- Fundo Oceânico 3D -->
+    <div id="ocean-3d-background"></div>
+    
+    <!-- Camada de Conteúdo -->
+    <div class="content-layer">
+        <!-- Header Oceânico -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">🌊</div>
+                    <div class="title-section">
+                        <h1>BGAPP</h1>
+                        <div class="subtitle">Plataforma Científica Avançada - Biodiversidade Marinha de Angola</div>
+                    </div>
+                </div>
+                
+                <div class="stats-header">
+                    <div class="stat-item">
+                        <div class="stat-value">61+</div>
+                        <div class="stat-label">Funcionalidades</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">95%+</div>
+                        <div class="stat-label">Precisão ML</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">518K</div>
+                        <div class="stat-label">km² ZEE Angola</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Espécies Catalogadas</div>
+                    </div>
+                    
+                    <a href="https://bgapp-admin.pages.dev/" target="_blank" class="admin-access-btn">
+                        <i class="fas fa-cog"></i>
+                        Dashboard Admin
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section Oceânica -->
+        <section class="hero">
+            <div class="hero-content" data-aos="fade-up">
+                <h1 class="hero-title floating">BGAPP</h1>
+                <h2 class="hero-subtitle">Plataforma Científica de Classe Mundial</h2>
+                <p class="hero-description">
+                    Sistema avançado de análise de biodiversidade marinha para a Zona Econômica Exclusiva de Angola,
+                    integrando Machine Learning, visualizações 3D e dados oceanográficos em tempo real.
+                </p>
+                <div class="hero-stats">
+                    <strong>2.4M+ linhas de código Python | 36.5K arquivos JavaScript | Arquitetura Modular Avançada</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capacidades Principais -->
+        <section class="capabilities">
+            <h2 class="section-title" data-aos="fade-up">Capacidades Avançadas</h2>
+            <p class="section-subtitle" data-aos="fade-up">Tecnologia de ponta para análise científica marinha</p>
+            
+            <div class="capabilities-grid">
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="capability-icon"><i class="fas fa-brain"></i></div>
+                    <h3 class="capability-title">Sistema ML Avançado</h3>
+                    <p class="capability-description">
+                        5 modelos de Machine Learning com precisão superior a 95% para análise de biodiversidade e predições oceanográficas.
+                    </p>
+                    <ul class="capability-features">
+                        <li>Preditor de Biodiversidade (95.2% precisão)</li>
+                        <li>Classificador de Espécies Marinhas</li>
+                        <li>Forecasting de Temperatura Oceânica</li>
+                        <li>7 Filtros Preditivos com IA</li>
+                        <li>Pipeline Automático de Treino</li>
+                    </ul>
+                </div>
+
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="capability-icon"><i class="fas fa-globe"></i></div>
+                    <h3 class="capability-title">Visualizações 3D Avançadas</h3>
+                    <p class="capability-description">
+                        Integração deck.gl e Unreal Engine para visualizações oceanográficas cinematográficas e interativas.
+                    </p>
+                    <ul class="capability-features">
+                        <li>WebGL 2.0 com shaders customizados</li>
+                        <li>Simulação oceânica realística</li>
+                        <li>Sistema de partículas para plâncton</li>
+                        <li>Iluminação volumétrica subaquática</li>
+                        <li>Controles cinematográficos</li>
+                    </ul>
+                </div>
+
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="capability-icon"><i class="fas fa-fish"></i></div>
+                    <h3 class="capability-title">Análise de Biodiversidade</h3>
+                    <p class="capability-description">
+                        Sistema completo para análise da biodiversidade marinha angolana com 1,247 espécies catalogadas.
+                    </p>
+                    <ul class="capability-features">
+                        <li>1,247 espécies marinhas angolanas</li>
+                        <li>Índices de Shannon e Simpson</li>
+                        <li>Análise de distribuição espacial</li>
+                        <li>Padrões migratórios</li>
+                        <li>Adequação de habitat</li>
+                    </ul>
+                </div>
+
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="capability-icon"><i class="fas fa-satellite"></i></div>
+                    <h3 class="capability-title">Dados em Tempo Real</h3>
+                    <p class="capability-description">
+                        Integração com múltiplas fontes de dados oceanográficos para monitorização contínua.
+                    </p>
+                    <ul class="capability-features">
+                        <li>Copernicus Marine Service</li>
+                        <li>STAC Collections</li>
+                        <li>MODIS e GBIF/OBIS</li>
+                        <li>Sensores em tempo real</li>
+                        <li>APIs RESTful avançadas</li>
+                    </ul>
+                </div>
+
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="capability-icon"><i class="fas fa-map"></i></div>
+                    <h3 class="capability-title">Sistema QGIS Avançado</h3>
+                    <p class="capability-description">
+                        Ferramentas geoespaciais profissionais para análise espacial e ordenamento marinho.
+                    </p>
+                    <ul class="capability-features">
+                        <li>Análise de buffer zones</li>
+                        <li>Conectividade de habitats</li>
+                        <li>Identificação de hotspots</li>
+                        <li>Corredores ecológicos</li>
+                        <li>Análise multicritério (MCDA/AHP)</li>
+                    </ul>
+                </div>
+
+                <div class="capability-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="capability-icon"><i class="fas fa-cogs"></i></div>
+                    <h3 class="capability-title">Arquitetura Moderna</h3>
+                    <p class="capability-description">
+                        Infraestrutura de classe empresarial com performance otimizada e escalabilidade.
+                    </p>
+                    <ul class="capability-features">
+                        <li>Cloudflare Pages + Workers</li>
+                        <li>Cache Redis inteligente</li>
+                        <li>Processamento assíncrono</li>
+                        <li>PWA com funcionamento offline</li>
+                        <li>Monitorização em tempo real</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Métricas em Tempo Real -->
+        <section class="metrics-dashboard">
+            <h2 class="section-title" data-aos="fade-up">Métricas do Sistema em Tempo Real</h2>
+            <div class="metrics-grid">
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="metric-value" style="color: #4caf50;">13</div>
+                    <div class="metric-label">Serviços Conectados</div>
+                    <div class="metric-trend trend-up">92% Online</div>
+                </div>
+
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="metric-value" style="color: #2196f3;">2.4M+</div>
+                    <div class="metric-label">Linhas de Código Python</div>
+                    <div class="metric-trend trend-stable">Sistema Robusto</div>
+                </div>
+
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="metric-value" style="color: #ff9800;">89ms</div>
+                    <div class="metric-label">Latência API</div>
+                    <div class="metric-trend trend-up">83% Melhoria</div>
+                </div>
+
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="metric-value" style="color: #00bcd4;">518K</div>
+                    <div class="metric-label">km² ZEE Monitorizada</div>
+                    <div class="metric-trend trend-stable">Cobertura Total</div>
+                </div>
+
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="metric-value" style="color: #4caf50;">99.7%</div>
+                    <div class="metric-label">Disponibilidade</div>
+                    <div class="metric-trend trend-up">SLA Garantido</div>
+                </div>
+
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="metric-value" style="color: #4caf50;">1,247</div>
+                    <div class="metric-label">Espécies Catalogadas</div>
+                    <div class="metric-trend trend-up">Base Crescente</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ML Models Showcase -->
+        <section class="ml-showcase">
+            <h2 class="section-title" data-aos="fade-up">Modelos de Machine Learning</h2>
+            <p class="section-subtitle" data-aos="fade-up">Algoritmos avançados com precisão superior a 95%</p>
+            
+            <div class="ml-models-grid">
+                <div class="ml-model-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="accuracy-badge">95.2% Precisão</div>
+                    <h4>Preditor de Biodiversidade</h4>
+                    <p>Ensemble Random Forest + Gradient Boosting para análise de ecossistemas marinhos</p>
+                </div>
+
+                <div class="ml-model-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="accuracy-badge">97.1% Precisão</div>
+                    <h4>Classificador de Espécies</h4>
+                    <p>Random Forest otimizado para identificação automática de espécies marinhas</p>
+                </div>
+
+                <div class="ml-model-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="accuracy-badge">94.8% Precisão</div>
+                    <h4>Forecasting Oceânico</h4>
+                    <p>LSTM Neural Networks para predição de temperatura e condições oceanográficas</p>
+                </div>
+
+                <div class="ml-model-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="accuracy-badge">96.3% Precisão</div>
+                    <h4>Adequação de Habitat</h4>
+                    <p>MaxEnt para modelação de distribuição de espécies e análise de nicho ecológico</p>
+                </div>
+
+                <div class="ml-model-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="accuracy-badge">93.7% Precisão</div>
+                    <h4>Estimador de Abundância</h4>
+                    <p>Modelos ensemble para estimação de biomassa e abundância de espécies</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Profissional -->
+        <footer class="footer">
+            <div class="footer-content">
+                <h3 class="footer-title">BGAPP - Transformando a Ciência Marinha em Angola</h3>
+                <p class="footer-description">
+                    Plataforma científica avançada desenvolvida com tecnologias de ponta para apoiar a investigação, 
+                    conservação e gestão sustentável da biodiversidade marinha na Zona Econômica Exclusiva de Angola.
+                </p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-building"></i>
+                        <span>MareDatum Consultoria e Gestão de Projectos Unipessoal LDA</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-user"></i>
+                        <span>CEO: Paulo Fernandes</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-globe"></i>
+                        <span>bgapp-frontend.pages.dev</span>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 30px; color: #b0bec5; font-size: 0.9rem;">
+                    © 2025 BGAPP - Todos os direitos reservados | Tecnologia de Classe Mundial para Angola
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Controles do Oceano 3D -->
+    <div class="ocean-controls">
+        <div style="margin-bottom: 10px; font-size: 12px; color: var(--text-wave); text-align: center;">
+            🎮 Oceano 3D
+        </div>
+        <button class="ocean-control-btn" id="toggle-waves" title="Ativar/Desativar Ondas">
+            🌊 Ondas
+        </button>
+        <button class="ocean-control-btn" id="toggle-particles" title="Ativar/Desativar Partículas">
+            ✨ Partículas
+        </button>
+        <button class="ocean-control-btn" id="toggle-fish" title="Ativar/Desativar Peixes">
+            🐠 Vida Marinha
+        </button>
+        <button class="ocean-control-btn" id="toggle-lighting" title="Ativar/Desativar Iluminação Avançada">
+            💡 Lighting
+        </button>
+    </div>
+
+    <script>
+        // =====================================================
+        // SISTEMA OCEÂNICO 3D AVANÇADO 🌊
+        // =====================================================
+        
+        let ocean3DSystem = null;
+        let unrealOceanEngine = null;
+        
+        // Inicialização AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Classe para gerenciar o fundo oceânico 3D
+        class Advanced3DOceanBackground {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.oceanMesh = null;
+                this.particleSystem = null;
+                this.fishSchools = [];
+                this.isInitialized = false;
+                this.animationId = null;
+                
+                // Estados dos efeitos
+                this.effects = {
+                    waves: true,
+                    particles: true,
+                    fish: true,
+                    lighting: true
+                };
+            }
+            
+            async init() {
+                if (this.isInitialized) return;
+                
+                try {
+                    console.log('🌊 Inicializando Oceano 3D Avançado...');
+                    
+                    const container = document.getElementById('ocean-3d-background');
+                    if (!container) {
+                        console.error('❌ Container ocean-3d-background não encontrado');
+                        return;
+                    }
+                    
+                    // Configurar cena
+                    this.scene = new THREE.Scene();
+                    this.scene.background = new THREE.Color(0x001122);
+                    this.scene.fog = new THREE.Fog(0x001122, 50, 200);
+                    
+                    // Configurar câmera
+                    this.camera = new THREE.PerspectiveCamera(
+                        75,
+                        window.innerWidth / window.innerHeight,
+                        0.1,
+                        1000
+                    );
+                    this.camera.position.set(0, 20, 40);
+                    this.camera.lookAt(0, 0, 0);
+                    
+                    // Configurar renderer
+                    this.renderer = new THREE.WebGLRenderer({ 
+                        antialias: true,
+                        alpha: true,
+                        powerPreference: "high-performance"
+                    });
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    this.renderer.setClearColor(0x001122, 1);
+                    this.renderer.shadowMap.enabled = true;
+                    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                    
+                    container.appendChild(this.renderer.domElement);
+                    
+                    // Criar componentes do oceano
+                    this.createAdvancedOceanSurface();
+                    this.createOceanFloor();
+                    this.setupLighting();
+                    this.createParticleSystem();
+                    this.createMarineLife();
+                    
+                    // Iniciar animação
+                    this.animate();
+                    
+                    // Configurar responsividade
+                    window.addEventListener('resize', () => this.onWindowResize());
+                    
+                    this.isInitialized = true;
+                    console.log('✅ Oceano 3D inicializado com sucesso');
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao inicializar Oceano 3D:', error);
+                }
+            }
+            
+            createAdvancedOceanSurface() {
+                const oceanGeometry = new THREE.PlaneGeometry(200, 200, 128, 128);
+                
+                // Shader material inspirado no Unreal Engine
+                const oceanMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        time: { value: 0.0 },
+                        waveHeight: { value: 2.0 },
+                        waveFrequency: { value: 0.02 },
+                        waterColor: { value: new THREE.Color(0x006994) },
+                        foamColor: { value: new THREE.Color(0x87ceeb) },
+                        deepColor: { value: new THREE.Color(0x003d5c) }
+                    },
+                    vertexShader: `
+                        uniform float time;
+                        uniform float waveHeight;
+                        uniform float waveFrequency;
+                        
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        varying vec3 vNormal;
+                        
+                        // Gerstner wave function (Unreal Engine style)
+                        vec3 gerstnerWave(vec2 pos, float amplitude, float frequency, float phase, vec2 direction) {
+                            float wave = amplitude * sin(dot(direction, pos) * frequency + time * phase);
+                            return vec3(wave * direction.x, wave, wave * direction.y);
+                        }
+                        
+                        void main() {
+                            vUv = uv;
+                            
+                            vec3 pos = position;
+                            
+                            // Multiple Gerstner waves for realistic ocean
+                            pos += gerstnerWave(position.xz, waveHeight, waveFrequency, 2.0, vec2(1.0, 0.0));
+                            pos += gerstnerWave(position.xz, waveHeight * 0.5, waveFrequency * 2.0, 3.0, vec2(0.7, 0.7));
+                            pos += gerstnerWave(position.xz, waveHeight * 0.25, waveFrequency * 4.0, 4.0, vec2(-0.5, 0.8));
+                            
+                            vPosition = pos;
+                            
+                            // Calculate normal for lighting
+                            vec3 tangent = vec3(1.0, 0.0, 0.0);
+                            vec3 bitangent = vec3(0.0, 0.0, 1.0);
+                            vNormal = normalize(cross(tangent, bitangent));
+                            
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform float time;
+                        uniform vec3 waterColor;
+                        uniform vec3 foamColor;
+                        uniform vec3 deepColor;
+                        
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        varying vec3 vNormal;
+                        
+                        void main() {
+                            vec2 uv = vUv;
+                            
+                            // Caustics effect
+                            vec2 causticUv = uv * 8.0 + time * 0.1;
+                            float caustics1 = sin(causticUv.x * 2.0) * sin(causticUv.y * 2.0);
+                            float caustics2 = sin(causticUv.x * 3.0 + 1.0) * sin(causticUv.y * 3.0 + 1.0);
+                            float caustics = (caustics1 + caustics2) * 0.1;
+                            
+                            // Depth-based color mixing
+                            float depth = smoothstep(-2.0, 2.0, vPosition.y);
+                            vec3 color = mix(deepColor, waterColor, depth);
+                            
+                            // Foam based on wave height
+                            float foam = smoothstep(1.0, 2.0, vPosition.y);
+                            color = mix(color, foamColor, foam * 0.3);
+                            
+                            // Add caustics
+                            color += caustics;
+                            
+                            gl_FragColor = vec4(color, 0.85);
+                        }
+                    `,
+                    transparent: true,
+                    side: THREE.DoubleSide
+                });
+                
+                this.oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+                this.oceanMesh.rotation.x = -Math.PI / 2;
+                this.oceanMesh.position.y = 0;
+                this.oceanMesh.receiveShadow = true;
+                this.scene.add(this.oceanMesh);
+                
+                this.oceanMaterial = oceanMaterial;
+            }
+            
+            createOceanFloor() {
+                // Fundo do oceano com textura
+                const floorGeometry = new THREE.PlaneGeometry(250, 250, 64, 64);
+                
+                // Deslocar vértices para criar relevo
+                const positions = floorGeometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i + 1] = -25 + Math.random() * 8; // Y position (depth)
+                }
+                floorGeometry.attributes.position.needsUpdate = true;
+                floorGeometry.computeVertexNormals();
+                
+                const floorMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0x2d5016,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                
+                const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -25;
+                floor.receiveShadow = true;
+                this.scene.add(floor);
+                
+                // Adicionar elementos do fundo do mar
+                this.createSeaFloorElements();
+            }
+            
+            createSeaFloorElements() {
+                // Areia
+                const sandGeometry = new THREE.SphereGeometry(0.3, 8, 6);
+                const sandMaterial = new THREE.MeshLambertMaterial({ color: 0xf4e4bc });
+                
+                for(let i = 0; i < 300; i++) {
+                    const sand = new THREE.Mesh(sandGeometry, sandMaterial);
+                    sand.position.set(
+                        (Math.random() - 0.5) * 200,
+                        -24 + Math.random() * 3,
+                        (Math.random() - 0.5) * 200
+                    );
+                    sand.scale.setScalar(0.3 + Math.random() * 0.7);
+                    this.scene.add(sand);
+                }
+                
+                // Rochas
+                const rockGeometry = new THREE.DodecahedronGeometry(1, 0);
+                const rockMaterial = new THREE.MeshLambertMaterial({ color: 0x444444 });
+                
+                for(let i = 0; i < 50; i++) {
+                    const rock = new THREE.Mesh(rockGeometry, rockMaterial);
+                    rock.position.set(
+                        (Math.random() - 0.5) * 180,
+                        -23 + Math.random() * 2,
+                        (Math.random() - 0.5) * 180
+                    );
+                    rock.scale.setScalar(0.5 + Math.random() * 1.5);
+                    rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                    this.scene.add(rock);
+                }
+            }
+            
+            setupLighting() {
+                // Luz ambiente oceânica
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+                this.scene.add(ambientLight);
+                
+                // Luz direccional (sol através da água)
+                const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                sunLight.position.set(50, 100, 50);
+                sunLight.castShadow = true;
+                sunLight.shadow.mapSize.width = 2048;
+                sunLight.shadow.mapSize.height = 2048;
+                sunLight.shadow.camera.near = 0.5;
+                sunLight.shadow.camera.far = 500;
+                this.scene.add(sunLight);
+                
+                // Luz subaquática azul
+                const underwaterLight = new THREE.PointLight(0x0099cc, 0.5, 100);
+                underwaterLight.position.set(0, 10, 0);
+                this.scene.add(underwaterLight);
+            }
+            
+            createParticleSystem() {
+                // Sistema de partículas para plâncton e bolhas
+                const particleCount = 1000;
+                const particles = new THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+                const velocities = new Float32Array(particleCount * 3);
+                
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 200;     // x
+                    positions[i + 1] = Math.random() * 50 - 25;     // y
+                    positions[i + 2] = (Math.random() - 0.5) * 200; // z
+                    
+                    velocities[i] = (Math.random() - 0.5) * 0.02;
+                    velocities[i + 1] = Math.random() * 0.01 + 0.005;
+                    velocities[i + 2] = (Math.random() - 0.5) * 0.02;
+                }
+                
+                particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                particles.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+                
+                const particleMaterial = new THREE.PointsMaterial({
+                    color: 0x87ceeb,
+                    size: 0.5,
+                    transparent: true,
+                    opacity: 0.6,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                this.particleSystem = new THREE.Points(particles, particleMaterial);
+                this.scene.add(this.particleSystem);
+            }
+            
+            createMarineLife() {
+                // Criar cardumes de peixes
+                this.createFishSchool('tuna', 30, 0xff6b35);
+                this.createFishSchool('sardines', 50, 0xc0c0c0);
+                this.createFishSchool('dolphins', 8, 0x4682b4);
+            }
+            
+            createFishSchool(type, count, color) {
+                const fishSchool = new THREE.Group();
+                const fishGeometry = new THREE.ConeGeometry(0.3, 1.2, 6);
+                const fishMaterial = new THREE.MeshLambertMaterial({ color: color });
+                
+                for (let i = 0; i < count; i++) {
+                    const fish = new THREE.Mesh(fishGeometry, fishMaterial);
+                    
+                    // Posição inicial
+                    const radius = 15 + Math.random() * 20;
+                    const angle = (i / count) * Math.PI * 2;
+                    fish.position.set(
+                        Math.cos(angle) * radius,
+                        -5 + Math.random() * 15,
+                        Math.sin(angle) * radius
+                    );
+                    
+                    // Rotação inicial
+                    fish.rotation.y = angle + Math.PI / 2;
+                    
+                    fishSchool.add(fish);
+                }
+                
+                fishSchool.userData = { 
+                    type: type, 
+                    speed: 0.5 + Math.random() * 0.5,
+                    direction: Math.random() * Math.PI * 2
+                };
+                
+                this.fishSchools.push(fishSchool);
+                this.scene.add(fishSchool);
+            }
+            
+            animate() {
+                this.animationId = requestAnimationFrame(() => this.animate());
+                
+                const time = Date.now() * 0.001;
+                
+                // Animar ondas oceânicas
+                if (this.oceanMaterial && this.effects.waves) {
+                    this.oceanMaterial.uniforms.time.value = time;
+                }
+                
+                // Animar partículas
+                if (this.particleSystem && this.effects.particles) {
+                    const positions = this.particleSystem.geometry.attributes.position.array;
+                    const velocities = this.particleSystem.geometry.attributes.velocity.array;
+                    
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += velocities[i];
+                        positions[i + 1] += velocities[i + 1];
+                        positions[i + 2] += velocities[i + 2];
+                        
+                        // Reset partículas que saem dos limites
+                        if (positions[i + 1] > 25) {
+                            positions[i + 1] = -25;
+                            positions[i] = (Math.random() - 0.5) * 200;
+                            positions[i + 2] = (Math.random() - 0.5) * 200;
+                        }
+                    }
+                    
+                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                }
+                
+                // Animar cardumes de peixes
+                if (this.effects.fish) {
+                    this.fishSchools.forEach((school, index) => {
+                        const schoolData = school.userData;
+                        schoolData.direction += (Math.random() - 0.5) * 0.02;
+                        
+                        school.rotation.y = schoolData.direction;
+                        school.position.x += Math.cos(schoolData.direction) * schoolData.speed * 0.1;
+                        school.position.z += Math.sin(schoolData.direction) * schoolData.speed * 0.1;
+                        
+                        // Manter peixes na área
+                        if (Math.abs(school.position.x) > 80) school.position.x *= -0.8;
+                        if (Math.abs(school.position.z) > 80) school.position.z *= -0.8;
+                        
+                        // Animar peixes individuais
+                        school.children.forEach((fish, fishIndex) => {
+                            fish.position.y += Math.sin(time * 2 + fishIndex) * 0.02;
+                            fish.rotation.z = Math.sin(time + fishIndex) * 0.1;
+                        });
+                    });
+                }
+                
+                // Movimento suave da câmera (efeito cinematográfico)
+                this.camera.position.x = Math.sin(time * 0.1) * 5;
+                this.camera.position.z = 40 + Math.cos(time * 0.15) * 10;
+                this.camera.lookAt(0, 0, 0);
+                
+                // Renderizar
+                this.renderer.render(this.scene, this.camera);
+            }
+            
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+            
+            toggleEffect(effectName) {
+                this.effects[effectName] = !this.effects[effectName];
+                console.log(`🎮 ${effectName}: ${this.effects[effectName] ? 'ON' : 'OFF'}`);
+                
+                // Atualizar visual dos botões
+                const button = document.getElementById(`toggle-${effectName}`);
+                if (button) {
+                    button.classList.toggle('active', this.effects[effectName]);
+                }
+                
+                // Efeitos especiais para cada toggle
+                if (effectName === 'lighting' && this.effects.lighting) {
+                    // Adicionar efeito de flash quando lighting é ativado
+                    const flash = new THREE.PointLight(0xffffff, 2, 50);
+                    flash.position.set(0, 20, 0);
+                    this.scene.add(flash);
+                    
+                    setTimeout(() => {
+                        this.scene.remove(flash);
+                    }, 200);
+                }
+            }
+        }
+        
+        // =====================================================
+        // INICIALIZAÇÃO DO SISTEMA HÍBRIDO 🌊
+        // =====================================================
+        
+        // Inicializar sistema oceânico quando DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🌊 BGAPP - Sistema Oceânico Híbrido Inicializando...');
+            
+            // Aguardar Three.js carregar
+            if (typeof THREE === 'undefined') {
+                console.log('⏳ Aguardando Three.js...');
+                setTimeout(() => {
+                    document.dispatchEvent(new Event('DOMContentLoaded'));
+                }, 1000);
+                return;
+            }
+            
+            // Inicializar oceano 3D
+            ocean3DSystem = new Advanced3DOceanBackground();
+            await ocean3DSystem.init();
+            
+            // Configurar controles
+            setupOceanControls();
+            
+            // Efeitos adicionais
+            createOceanEffects();
+            
+            console.log('✅ Sistema Híbrido Oceânico Inicializado');
+        });
+        
+        function setupOceanControls() {
+            // Configurar botões de controle do oceano 3D
+            const controls = {
+                'toggle-waves': 'waves',
+                'toggle-particles': 'particles', 
+                'toggle-fish': 'fish',
+                'toggle-lighting': 'lighting'
+            };
+            
+            Object.entries(controls).forEach(([buttonId, effectName]) => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.classList.add('active'); // Todos ativos por padrão
+                    button.addEventListener('click', () => {
+                        if (ocean3DSystem) {
+                            ocean3DSystem.toggleEffect(effectName);
+                        }
+                    });
+                }
+            });
+        }
+        
+        function createOceanEffects() {
+            // Adicionar efeito de scroll parallax
+            window.addEventListener('scroll', () => {
+                if (ocean3DSystem && ocean3DSystem.camera) {
+                    const scrollY = window.scrollY;
+                    ocean3DSystem.camera.position.y = 20 + scrollY * 0.01;
+                }
+            });
+            
+            // Adicionar efeito de mouse
+            document.addEventListener('mousemove', (e) => {
+                if (ocean3DSystem && ocean3DSystem.camera) {
+                    const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                    const mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+                    
+                    ocean3DSystem.camera.position.x += (mouseX * 2 - ocean3DSystem.camera.position.x) * 0.02;
+                    ocean3DSystem.camera.position.z += (40 + mouseY * 5 - ocean3DSystem.camera.position.z) * 0.02;
+                }
+            });
+        }
+
+        // Sistema de métricas em tempo real (simulado)
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                const currentValue = metric.textContent;
+                if (currentValue.includes('%')) {
+                    if (Math.random() > 0.9) { // 10% chance de atualizar
+                        metric.style.transform = 'scale(1.1)';
+                        metric.style.color = '#4fc3f7';
+                        setTimeout(() => {
+                            metric.style.transform = 'scale(1)';
+                            metric.style.color = '';
+                        }, 300);
+                    }
+                }
+            });
+        }
+
+        // Atualizar métricas a cada 3 segundos
+        setInterval(updateMetrics, 3000);
+
+        // Log de sistema oceânico
+        console.log('🌊 BGAPP - Sistema Oceânico Híbrido');
+        console.log('🐠 Espécies catalogadas: 1,247');
+        console.log('🌊 ZEE Angola: 518K km²');
+        console.log('🧠 Modelos ML ativos: 5');
+        console.log('📊 Precisão média: 95.2%');
+        console.log('🔗 Admin Dashboard: https://bgapp-admin.pages.dev/');
+        console.log('🎮 Fundo 3D: Unreal Engine inspired ocean simulation');
+    </script>
+
+</body>
+</html>

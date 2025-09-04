@@ -1,0 +1,468 @@
+# 🌊 BGAPP Marine Angola - API Endpoints Collection
+# Interface visual para todos os endpoints da aplicação
+# Use Ctrl+Alt+R (ou Cmd+Alt+R no Mac) para executar requests
+
+### ========================================
+### 🔧 CONFIGURAÇÃO DE VARIÁVEIS
+### ========================================
+
+# Ambiente Production
+@baseUrl = https://bgapp-api.majearcasa.workers.dev
+@stacUrl = https://bgapp-stac.majearcasa.workers.dev
+@pygeoapiUrl = https://bgapp-pygeoapi.majearcasa.workers.dev
+@keycloakUrl = https://bgapp-auth.majearcasa.workers.dev
+@flowerUrl = https://bgapp-monitor.majearcasa.workers.dev
+@frontendUrl = https://bgapp-frontend.pages.dev
+
+# Tokens (gerados automaticamente - válidos para testes)
+@authToken = bgapp_admin_28D4Pf0OMN0nABk0xnpCMbEszH5Q4lF8Ovksw_RdGnk
+@keycloakToken = kc_sDDSViEDq5pjmbqYb1Kw7QpoyfAALj36jVfMaLUV3yfclsxtexLsxQ
+
+# Variáveis de exemplo
+@serviceName = example-service
+@collectionId = angola-marine-data
+@bucketName = bgapp-data
+@realmName = bgapp
+
+### ========================================
+### 📊 DASHBOARD & SYSTEM STATUS
+### ========================================
+
+### Get Dashboard Statistics
+GET {{baseUrl}}/dashboard/stats
+Authorization: Bearer {{authToken}}
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Get System Metrics
+GET {{baseUrl}}/metrics
+Authorization: Bearer {{authToken}}
+
+### Get System Configuration
+GET {{baseUrl}}/config
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🔧 SERVICES MANAGEMENT
+### ========================================
+
+### List All Services
+GET {{baseUrl}}/services
+Authorization: Bearer {{authToken}}
+
+### Start Service
+POST {{baseUrl}}/services/{{serviceName}}/start
+Authorization: Bearer {{authToken}}
+
+### Stop Service
+POST {{baseUrl}}/services/{{serviceName}}/stop
+Authorization: Bearer {{authToken}}
+
+### Restart Service
+POST {{baseUrl}}/services/{{serviceName}}/restart
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🧠 MACHINE LEARNING & AI
+### ========================================
+
+### Get ML Models
+GET {{baseUrl}}/ml/models
+Authorization: Bearer {{authToken}}
+
+### Get ML Statistics
+GET {{baseUrl}}/ml/stats
+Authorization: Bearer {{authToken}}
+
+### Make ML Prediction
+POST {{baseUrl}}/ml/predict
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "modelId": "marine-species-prediction",
+  "features": {
+    "temperature": 25.5,
+    "depth": 100,
+    "salinity": 35.2,
+    "latitude": -12.5,
+    "longitude": 18.5
+  }
+}
+
+### Train ML Model
+POST {{baseUrl}}/ml/train/marine-species
+Authorization: Bearer {{authToken}}
+
+### Get Biodiversity Studies
+GET {{baseUrl}}/biodiversity-studies?page=1&pageSize=50
+Authorization: Bearer {{authToken}}
+
+### Get Biodiversity Statistics
+GET {{baseUrl}}/biodiversity-studies/stats
+Authorization: Bearer {{authToken}}
+
+### Get MaxEnt Models
+GET {{baseUrl}}/maxent/models
+Authorization: Bearer {{authToken}}
+
+### Run MaxEnt Model
+POST {{baseUrl}}/maxent/run
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "speciesId": "marine-species-001"
+}
+
+### ========================================
+### 🛰️ STAC API (Satellite Data)
+### ========================================
+
+### Get STAC Collections
+GET {{stacUrl}}/collections
+
+### Get Specific STAC Collection
+GET {{stacUrl}}/collections/{{collectionId}}
+
+### Get STAC Collection Items
+GET {{stacUrl}}/collections/{{collectionId}}/items?limit=10
+
+### Search STAC Items
+POST {{stacUrl}}/search
+Content-Type: application/json
+
+{
+  "collections": ["{{collectionId}}"],
+  "bbox": [11, -18, 24, -4],
+  "datetime": "2024-01-01T00:00:00Z/2024-12-31T23:59:59Z",
+  "limit": 50
+}
+
+### ========================================
+### 🌍 PYGEOAPI (OGC Features)
+### ========================================
+
+### Get PyGeoAPI Collections
+GET {{pygeoapiUrl}}/collections
+
+### Get Specific Collection
+GET {{pygeoapiUrl}}/collections/{{collectionId}}
+
+### Get Collection Features
+GET {{pygeoapiUrl}}/collections/{{collectionId}}/items?limit=100
+
+### Get Available Processes
+GET {{pygeoapiUrl}}/processes
+
+### ========================================
+### 💾 MINIO STORAGE
+### ========================================
+
+### Get Storage Buckets
+GET {{baseUrl}}/storage/buckets
+Authorization: Bearer {{authToken}}
+
+### Get Bucket Info
+GET {{baseUrl}}/storage/buckets/{{bucketName}}/info
+Authorization: Bearer {{authToken}}
+
+### Get Bucket Objects
+GET {{baseUrl}}/storage/buckets/{{bucketName}}/objects
+Authorization: Bearer {{authToken}}
+
+### Get Storage Statistics
+GET {{baseUrl}}/storage/stats
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🔐 KEYCLOAK AUTHENTICATION
+### ========================================
+
+### Get Keycloak Realms
+GET {{keycloakUrl}}/admin/realms
+Authorization: Bearer {{keycloakToken}}
+
+### Get Realm Users
+GET {{keycloakUrl}}/admin/realms/{{realmName}}/users
+Authorization: Bearer {{keycloakToken}}
+
+### Get Realm Clients
+GET {{keycloakUrl}}/admin/realms/{{realmName}}/clients
+Authorization: Bearer {{keycloakToken}}
+
+### Get Active Sessions
+GET {{keycloakUrl}}/admin/realms/{{realmName}}/sessions
+Authorization: Bearer {{keycloakToken}}
+
+### ========================================
+### 🗺️ MAPS SYSTEM
+### ========================================
+
+### Get All Maps
+GET {{baseUrl}}/api/maps
+Authorization: Bearer {{authToken}}
+
+### Get Map by ID
+GET {{baseUrl}}/api/maps/map-id-example
+Authorization: Bearer {{authToken}}
+
+### Create New Map
+POST {{baseUrl}}/api/maps
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Marine Biodiversity Map",
+  "description": "Interactive map showing marine biodiversity data for Angola",
+  "category": "biodiversity",
+  "config": {
+    "center": [-12.5, 18.5],
+    "zoom": 6,
+    "layers": [
+      {
+        "type": "base",
+        "name": "OpenStreetMap",
+        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      }
+    ]
+  }
+}
+
+### Update Map
+PUT {{baseUrl}}/api/maps/map-id-example
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Updated Marine Map",
+  "description": "Updated description"
+}
+
+### Delete Map
+DELETE {{baseUrl}}/api/maps/map-id-example
+Authorization: Bearer {{authToken}}
+
+### Get Maps Statistics
+GET {{baseUrl}}/api/maps/stats
+Authorization: Bearer {{authToken}}
+
+### Get Map Templates
+GET {{baseUrl}}/api/maps/templates
+Authorization: Bearer {{authToken}}
+
+### Get Map Categories
+GET {{baseUrl}}/api/maps/tools/categories
+Authorization: Bearer {{authToken}}
+
+### Get Base Layers
+GET {{baseUrl}}/api/maps/tools/base-layers
+Authorization: Bearer {{authToken}}
+
+### Validate Map Configuration
+POST {{baseUrl}}/api/maps/tools/validate
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "config": {
+    "center": [-12.5, 18.5],
+    "zoom": 6,
+    "layers": []
+  }
+}
+
+### ========================================
+### 📈 MONITORING & ANALYTICS
+### ========================================
+
+### Get Async Tasks (Flower)
+GET {{flowerUrl}}/api/tasks
+
+### Get Flower Workers
+GET {{flowerUrl}}/api/workers
+
+### Get Task Types
+GET {{flowerUrl}}/api/task/types
+
+### Get Cache Statistics
+GET {{baseUrl}}/cache/stats
+Authorization: Bearer {{authToken}}
+
+### Clear Cache
+POST {{baseUrl}}/cache/clear
+Authorization: Bearer {{authToken}}
+
+### Warm Up Cache
+POST {{baseUrl}}/cache/warmup
+Authorization: Bearer {{authToken}}
+
+### Get Alerts
+GET {{baseUrl}}/alerts
+Authorization: Bearer {{authToken}}
+
+### Acknowledge Alert
+POST {{baseUrl}}/alerts/alert-id-example/acknowledge
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 💾 DATABASE & BACKUP
+### ========================================
+
+### Get Database Tables
+GET {{baseUrl}}/database/tables/public
+Authorization: Bearer {{authToken}}
+
+### Execute Database Query
+POST {{baseUrl}}/database/query
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "query": "SELECT COUNT(*) as total FROM marine_species;"
+}
+
+### Get Backups
+GET {{baseUrl}}/backup
+Authorization: Bearer {{authToken}}
+
+### Create Backup
+POST {{baseUrl}}/backup/create
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "type": "full"
+}
+
+### ========================================
+### 👥 USER MANAGEMENT
+### ========================================
+
+### Get Users
+GET {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+
+### Create User
+POST {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "username": "new-user",
+  "email": "user@example.com",
+  "role": "user"
+}
+
+### Update User
+PUT {{baseUrl}}/users/user-id-example
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "updated@example.com",
+  "role": "admin"
+}
+
+### Delete User
+DELETE {{baseUrl}}/users/user-id-example
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🔍 AUDIT & LOGGING
+### ========================================
+
+### Get Audit Events
+GET {{baseUrl}}/audit/events?page=1&pageSize=50
+Authorization: Bearer {{authToken}}
+
+### Export Audit Data
+GET {{baseUrl}}/audit/export?hours=24
+Authorization: Bearer {{authToken}}
+
+### Get System Logs
+GET {{baseUrl}}/logs?level=error&limit=100
+Authorization: Bearer {{authToken}}
+
+### Clear Logs
+DELETE {{baseUrl}}/logs
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🌊 COASTAL & MARITIME ANALYSIS
+### ========================================
+
+### Get Coastal Analysis
+GET {{baseUrl}}/coastal/analysis
+Authorization: Bearer {{authToken}}
+
+### Run Coastal Analysis
+POST {{baseUrl}}/coastal/analyze
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "region": "angola-coast"
+}
+
+### Get Maritime Boundaries
+GET {{baseUrl}}/boundaries
+Authorization: Bearer {{authToken}}
+
+### Process Boundaries
+POST {{baseUrl}}/boundaries/process
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 📊 REPORTS & ANALYTICS
+### ========================================
+
+### Get Reports
+GET {{baseUrl}}/reports
+Authorization: Bearer {{authToken}}
+
+### Generate Report
+POST {{baseUrl}}/reports/generate
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "type": "biodiversity-summary",
+  "config": {
+    "region": "angola",
+    "dateRange": "2024-01-01/2024-12-31"
+  }
+}
+
+### Get API Endpoints
+GET {{baseUrl}}/api/endpoints
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### 🧪 DEVELOPMENT & TESTING
+### ========================================
+
+### Test Connection (Development)
+# @baseUrl = http://localhost:8000
+# GET {{baseUrl}}/health
+
+### Get Connectors
+GET {{baseUrl}}/connectors
+Authorization: Bearer {{authToken}}
+
+### Run Connector
+POST {{baseUrl}}/connectors/copernicus/run
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "config": {
+    "region": "angola",
+    "product": "marine"
+  }
+}
+
+### Get Connector Jobs
+GET {{baseUrl}}/ingest/jobs?limit=50
+Authorization: Bearer {{authToken}}

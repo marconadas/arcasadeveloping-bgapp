@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Teste das Correções de Debug</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        
+        .test-section h3 {
+            color: #1e3c72;
+            margin-top: 0;
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status.success { background: #d4edda; color: #155724; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        
+        .log-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .test-button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .test-button:hover {
+            background: #2a5298;
+        }
+        
+        .test-results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 BGAPP - Teste das Correções de Debug</h1>
+        <p>Esta página testa todas as correções implementadas baseadas no TODO_DEBUG_FRONTEND_DETALHADO.md</p>
+        
+        <!-- Teste 1: Nezasa Polyfill -->
+        <div class="test-section">
+            <h3>🔧 Teste 1: Polyfill Nezasa</h3>
+            <p>Verifica se o polyfill nezasa está carregado antes do leaflet-timedimension</p>
+            <button class="test-button" onclick="testNezasaPolyfill()">Testar Nezasa</button>
+            <div class="test-results" id="nezasa-results"></div>
+        </div>
+        
+        <!-- Teste 2: EOX WMS -->
+        <div class="test-section">
+            <h3>🌐 Teste 2: EOX WMS com Fallback</h3>
+            <p>Testa se as requisições WMS estão funcionando com fallback automático</p>
+            <button class="test-button" onclick="testEOXWMS()">Testar EOX WMS</button>
+            <button class="test-button" onclick="testWMSFallback()">Simular Falha WMS</button>
+            <div class="test-results" id="eox-results"></div>
+        </div>
+        
+        <!-- Teste 3: Service Worker Cache -->
+        <div class="test-section">
+            <h3>🗂️ Teste 3: Service Worker e Cache</h3>
+            <p>Verifica se o Service Worker está controlando o cache corretamente</p>
+            <button class="test-button" onclick="testServiceWorker()">Testar Service Worker</button>
+            <button class="test-button" onclick="clearCache()">Limpar Cache</button>
+            <div class="test-results" id="sw-results"></div>
+        </div>
+        
+        <!-- Teste 4: Fontes Alternativas -->
+        <div class="test-section">
+            <h3>🌍 Teste 4: Fontes Alternativas de Tiles</h3>
+            <p>Testa se as fontes alternativas estão disponíveis</p>
+            <button class="test-button" onclick="testAlternativeTiles()">Testar Alternativas</button>
+            <div class="test-results" id="tiles-results"></div>
+        </div>
+        
+        <!-- Console Log -->
+        <div class="test-section">
+            <h3>📊 Console Output</h3>
+            <p>Monitoramento em tempo real dos logs</p>
+            <button class="test-button" onclick="clearConsole()">Limpar Console</button>
+            <div class="log-output" id="console-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Interceptar console.log para mostrar na página
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addToConsole(message, type = 'log') {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f56565' : type === 'warn' ? '#ed8936' : '#68d391';
+            output.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsole(args.join(' '), 'warn');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        // Teste 1: Nezasa Polyfill
+        function testNezasaPolyfill() {
+            const results = document.getElementById('nezasa-results');
+            
+            try {
+                console.log('🔧 Testando polyfill nezasa...');
+                
+                if (typeof window.nezasa === 'undefined') {
+                    results.innerHTML = `<div class="status error">❌ Nezasa não está definido</div>`;
+                    console.error('❌ window.nezasa não está definido');
+                    return;
+                }
+                
+                if (typeof window.nezasa.iso8601 === 'undefined') {
+                    results.innerHTML = `<div class="status error">❌ Nezasa.iso8601 não está definido</div>`;
+                    console.error('❌ window.nezasa.iso8601 não está definido');
+                    return;
+                }
+                
+                // Testar funcionalidades
+                const period = new window.nezasa.iso8601.Period('P1D');
+                const parsed = window.nezasa.iso8601.parse('P1D');
+                const formatted = window.nezasa.iso8601.format(new Date());
+                
+                results.innerHTML = `
+                    <div class="status success">✅ Nezasa polyfill funcionando</div>
+                    <div class="log-output">
+                        Period: ${period.toString()}<br>
+                        Parsed: ${parsed.toString()}<br>
+                        Formatted: ${formatted}
+                    </div>
+                `;
+                
+                console.log('✅ Polyfill nezasa funcionando corretamente');
+                
+            } catch (error) {
+                results.innerHTML = `<div class="status error">❌ Erro no teste: ${error.message}</div>`;
+                console.error('❌ Erro no teste nezasa:', error);
+            }
+        }
+        
+        // Teste 2: EOX WMS
+        function testEOXWMS() {
+            const results = document.getElementById('eox-results');
+            
+            console.log('🌐 Testando EOX WMS...');
+            
+            // Simular requisição WMS
+            const wmsUrl = 'https://tiles.maps.eox.at/wms?service=WMS&version=1.3.0&request=GetMap&layers=terrain-light&styles=&format=image/png&transparent=true&width=256&height=256&crs=EPSG:3857&bbox=0,0,256,256';
+            
+            fetch(wmsUrl, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        results.innerHTML = `<div class="status success">✅ EOX WMS respondendo (${response.status})</div>`;
+                        console.log('✅ EOX WMS funcionando');
+                    } else {
+                        results.innerHTML = `<div class="status warning">⚠️ EOX WMS erro ${response.status} - fallback será ativado</div>`;
+                        console.warn('⚠️ EOX WMS erro:', response.status);
+                    }
+                })
+                .catch(error => {
+                    results.innerHTML = `<div class="status warning">⚠️ EOX WMS inacessível - fallback será ativado</div>`;
+                    console.warn('⚠️ EOX WMS inacessível:', error.message);
+                });
+        }
+        
+        function testWMSFallback() {
+            console.log('🔄 Simulando falha WMS para testar fallback...');
+            
+            // Simular erro WMS
+            const event = new CustomEvent('tileerror', {
+                detail: { message: 'Simulação de erro WMS' }
+            });
+            
+            console.warn('🔄 Fallback ativado: OpenStreetMap será usado');
+            document.getElementById('eox-results').innerHTML += `<div class="status success">✅ Fallback testado com sucesso</div>`;
+        }
+        
+        // Teste 3: Service Worker
+        function testServiceWorker() {
+            const results = document.getElementById('sw-results');
+            
+            console.log('🗂️ Testando Service Worker...');
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    if (registrations.length > 0) {
+                        const sw = registrations[0];
+                        results.innerHTML = `
+                            <div class="status success">✅ Service Worker ativo</div>
+                            <div class="log-output">
+                                Scope: ${sw.scope}<br>
+                                State: ${sw.active ? sw.active.state : 'N/A'}
+                            </div>
+                        `;
+                        console.log('✅ Service Worker funcionando');
+                    } else {
+                        results.innerHTML = `<div class="status warning">⚠️ Service Worker não registrado</div>`;
+                        console.warn('⚠️ Service Worker não encontrado');
+                    }
+                });
+            } else {
+                results.innerHTML = `<div class="status error">❌ Service Worker não suportado</div>`;
+                console.error('❌ Service Worker não suportado');
+            }
+        }
+        
+        function clearCache() {
+            console.log('🗑️ Limpando cache...');
+            
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
+                console.log('✅ Comando de limpeza enviado');
+            } else {
+                // Fallback: limpar cache manual
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                    console.log('✅ Cache limpo manualmente');
+                });
+            }
+        }
+        
+        // Teste 4: Fontes Alternativas
+        function testAlternativeTiles() {
+            const results = document.getElementById('tiles-results');
+            
+            console.log('🌍 Testando fontes alternativas...');
+            
+            const alternatives = [
+                { name: 'OpenStreetMap', url: 'https://tile.openstreetmap.org/0/0/0.png' },
+                { name: 'CartoDB Light', url: 'https://a.basemaps.cartocdn.com/light_all/0/0/0.png' },
+                { name: 'CartoDB Dark', url: 'https://a.basemaps.cartocdn.com/dark_all/0/0/0.png' },
+                { name: 'ESRI Satellite', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/0/0/0' }
+            ];
+            
+            let resultsHtml = '';
+            let testPromises = [];
+            
+            alternatives.forEach(alt => {
+                const promise = fetch(alt.url, { method: 'HEAD' })
+                    .then(response => {
+                        const status = response.ok ? 'success' : 'warning';
+                        const icon = response.ok ? '✅' : '⚠️';
+                        resultsHtml += `<div class="status ${status}">${icon} ${alt.name}: ${response.status}</div>`;
+                        console.log(`${icon} ${alt.name}: ${response.status}`);
+                    })
+                    .catch(error => {
+                        resultsHtml += `<div class="status error">❌ ${alt.name}: Erro</div>`;
+                        console.error(`❌ ${alt.name}:`, error.message);
+                    });
+                
+                testPromises.push(promise);
+            });
+            
+            Promise.all(testPromises).then(() => {
+                results.innerHTML = resultsHtml;
+                console.log('✅ Teste de fontes alternativas concluído');
+            });
+        }
+        
+        function clearConsole() {
+            document.getElementById('console-output').innerHTML = '';
+        }
+        
+        // Auto-executar testes iniciais
+        window.addEventListener('load', () => {
+            console.log('🧪 Página de teste carregada');
+            console.log('🚀 Executando testes automáticos...');
+            
+            setTimeout(() => {
+                testNezasaPolyfill();
+            }, 500);
+            
+            setTimeout(() => {
+                testServiceWorker();
+            }, 1000);
+            
+            setTimeout(() => {
+                testEOXWMS();
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

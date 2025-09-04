@@ -1,0 +1,23 @@
+authentication:
+  max_failed_attempts: 5
+  required: true
+  token_expiry_hours: 8
+cors:
+  allow_credentials: true
+  allowed_headers:
+  - '*'
+  allowed_methods:
+  - GET
+  - POST
+  - PUT
+  - DELETE
+  allowed_origins:
+  - '*'
+endpoints:
+  admin_dashboard: /admin-dashboard
+  api_docs: /docs
+  health_check: /health
+rate_limiting:
+  burst_size: 200
+  enabled: true
+  requests_per_minute: 100

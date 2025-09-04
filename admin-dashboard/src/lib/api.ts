@@ -28,7 +28,7 @@ import { ENV, getApiUrl, getExternalServiceUrl } from '@/config/environment';
 // API Configuration - Silicon Valley Style com auto-detecção de ambiente
 const API_BASE_URL = ENV.apiUrl;
 const ML_API_URL = ENV.apiUrl; // Same as Admin API
-const STAC_API_URL = getExternalServiceUrl('stacBrowser');
+const STAC_API_URL = 'https://bgapp-stac.majearcasa.workers.dev';
 const PYGEOAPI_URL = ENV.isDevelopment ? 'http://localhost:5080' : 'https://bgapp-pygeoapi.majearcasa.workers.dev';
 const MINIO_API_URL = ENV.isDevelopment ? 'http://localhost:9001' : 'https://bgapp-storage.majearcasa.workers.dev';
 const FLOWER_API_URL = ENV.isDevelopment ? 'http://localhost:5555' : 'https://bgapp-monitor.majearcasa.workers.dev';
@@ -171,10 +171,31 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
   return handleApiResponse(response);
 };
 
-// Services
+// Services - ENDPOINT CORRETO PARA DADOS REAIS
 export const getServices = async (): Promise<ServiceStatus[]> => {
-  const response = await adminApi.get<ApiResponse<ServiceStatus[]>>('/services');
-  return handleApiResponse(response);
+  try {
+    // Usar endpoint correto que retorna dados reais + cache busting
+    const cacheBuster = `?v=2.0.0&t=${Date.now()}`;
+    const response = await adminApi.get<any>(`/api/services/status${cacheBuster}`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+    
+    console.log('🔗 Services API Response:', response.data);
+    
+    // O worker retorna formato: { success: true, data: [...], summary: {...} }
+    if (response.data && response.data.success && response.data.data) {
+      console.log('✅ Dados reais dos serviços obtidos:', response.data.summary);
+      return response.data.data; // Array de serviços
+    }
+    
+    throw new Error('Formato de resposta inválido');
+  } catch (error) {
+    console.error('❌ Erro obtendo serviços reais:', error);
+    throw error;
+  }
 };
 
 export const startService = async (serviceName: string): Promise<void> => {
@@ -219,10 +240,21 @@ export const getConnectorJobs = async (limit: number = 50): Promise<IngestJob[]>
   return handleApiResponse(response);
 };
 
-// Machine Learning
+// Machine Learning - DADOS REAIS DO WORKER
 export const getMLModels = async (): Promise<MLModel[]> => {
-  const response = await mlApi.get<ApiResponse<MLModel[]>>('/ml/models');
-  return handleApiResponse(response);
+  try {
+    const response = await adminApi.get<any>('/api/ml/models');
+    
+    if (response.data && response.data.success && response.data.models) {
+      console.log('🧠 ML Models obtidos:', response.data.total, 'modelos');
+      return response.data.models;
+    }
+    
+    throw new Error('Formato ML inválido');
+  } catch (error) {
+    console.error('❌ Erro obtendo modelos ML:', error);
+    throw error;
+  }
 };
 
 export const trainModel = async (modelType: string): Promise<void> => {
@@ -231,8 +263,19 @@ export const trainModel = async (modelType: string): Promise<void> => {
 };
 
 export const getMLStats = async (): Promise<any> => {
-  const response = await mlApi.get<ApiResponse>('/ml/stats');
-  return handleApiResponse(response);
+  try {
+    const response = await adminApi.get<any>('/api/ml/stats');
+    
+    if (response.data && response.data.success && response.data.data) {
+      console.log('🧠 ML Stats obtidas:', response.data.data);
+      return response.data.data;
+    }
+    
+    throw new Error('Formato ML Stats inválido');
+  } catch (error) {
+    console.error('❌ Erro obtendo ML stats:', error);
+    throw error;
+  }
 };
 
 export const makePrediction = async (modelId: string, features: Record<string, any>): Promise<any> => {
@@ -294,13 +337,26 @@ export const getSTACCollections = async (): Promise<STACCollection[]> => {
       }));
     }
     
-    // Fallback para Admin API se STAC falhar
-    const fallbackResponse = await adminApi.get<ApiResponse<STACCollection[]>>('/stac/collections');
-    return handleApiResponse(fallbackResponse);
+    return [];
   } catch (error) {
-    console.warn('STAC API failed, using Admin API fallback:', error);
-    const response = await adminApi.get<ApiResponse<STACCollection[]>>('/stac/collections');
-    return handleApiResponse(response);
+    console.error('STAC API error:', error);
+    // Retry direto no STAC Worker - SEM FALLBACK PARA ADMIN API
+    try {
+      const retryResponse = await stacApi.get<any>('/collections');
+      return retryResponse.data.collections?.map((collection: any) => ({
+        id: collection.id,
+        title: collection.title || collection.id,
+        description: collection.description || '',
+        extent: collection.extent,
+        providers: collection.providers || [],
+        license: collection.license || '',
+        itemCount: collection.summaries?.['eo:count'] || 0,
+        lastUpdated: new Date().toISOString()
+      })) || [];
+    } catch (retryError) {
+      console.error('STAC API retry failed:', retryError);
+      throw new Error('STAC API não disponível - verifique https://bgapp-stac.majearcasa.workers.dev/health');
+    }
   }
 };
 

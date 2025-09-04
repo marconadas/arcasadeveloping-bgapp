@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP - Dashboard Científico Angola</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #f5f7fa; }
+    header { 
+      padding: 16px 20px; 
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+      color: #fff; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+    header p { margin: 5px 0 0 0; opacity: 0.9; font-size: 14px; }
+    
+    .dashboard-grid { 
+      display: grid; 
+      grid-template-columns: 350px 1fr 300px; 
+      gap: 16px; 
+      padding: 20px; 
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .card { 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+      padding: 20px;
+      border: 1px solid #e1e8ed;
+    }
+    
+    .card h3 { 
+      margin: 0 0 16px 0; 
+      color: #1e3c72; 
+      font-size: 18px; 
+      font-weight: 600;
+      border-bottom: 2px solid #e1e8ed;
+      padding-bottom: 8px;
+    }
+    
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .kpi-item { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: white; 
+      padding: 16px; 
+      border-radius: 8px; 
+      text-align: center;
+    }
+    .kpi-value { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
+    .kpi-label { font-size: 12px; opacity: 0.9; }
+    
+    .biodiversity-metrics { margin-top: 16px; }
+    .metric-row { 
+      display: flex; 
+      justify-content: space-between; 
+      padding: 8px 0; 
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { font-weight: 500; color: #333; }
+    .metric-value { color: #1e3c72; font-weight: 600; }
+    
+    #map { height: 500px; border-radius: 8px; }
+    
+    .chart-container { 
+      height: 300px; 
+      margin-top: 16px; 
+      position: relative;
+    }
+    
+    .filters { margin-bottom: 20px; }
+    .filter-group { margin-bottom: 12px; }
+    .filter-group label { 
+      display: block; 
+      margin-bottom: 4px; 
+      font-weight: 500; 
+      color: #333;
+    }
+    .filter-group input, .filter-group select { 
+      width: 100%; 
+      padding: 8px 12px; 
+      border: 1px solid #ddd; 
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .btn { 
+      background: #1e3c72; 
+      color: white; 
+      border: none; 
+      padding: 10px 20px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #2a5298; }
+    
+    .export-section { margin-top: 20px; }
+    .export-btn { 
+      background: #28a745; 
+      margin-right: 8px; 
+      margin-bottom: 8px;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    .export-btn:hover { background: #218838; }
+    
+    .quality-indicator { 
+      display: inline-block; 
+      width: 12px; 
+      height: 12px; 
+      border-radius: 50%; 
+      margin-right: 8px;
+    }
+    .quality-high { background: #28a745; }
+    .quality-medium { background: #ffc107; }
+    .quality-low { background: #dc3545; }
+    
+    @media (max-width: 1200px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BGAPP - Dashboard Científico</h1>
+    <p>Zona Econômica Especial Marítima de Angola • Sistema de Monitorização da Biodiversidade</p>
+  </header>
+  
+  <div class="dashboard-grid">
+    <!-- Painel de Filtros e Controles -->
+    <div class="card">
+      <h3>🔍 Filtros Científicos</h3>
+      <div class="filters">
+        <div class="filter-group">
+          <label>Período de Análise:</label>
+          <input type="date" id="dateMin" value="2024-01-01">
+          <input type="date" id="dateMax" value="2024-12-31" style="margin-top: 8px;">
+        </div>
+        
+        <div class="filter-group">
+          <label>Grupo Taxonômico:</label>
+          <select id="taxonFilter">
+            <option value="">Todos os grupos</option>
+            <option value="marine">Fauna Marinha</option>
+            <option value="birds">Aves Marinhas</option>
+            <option value="reptiles">Tartarugas</option>
+            <option value="endemic">Espécies Endémicas</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Profundidade (m):</label>
+          <select id="depthFilter">
+            <option value="">Todas as profundidades</option>
+            <option value="0-50">0-50m (Zona Epipelágica)</option>
+            <option value="50-200">50-200m (Zona Mesopelágica)</option>
+            <option value="200-1000">200-1000m (Zona Batipelágica)</option>
+            <option value="1000+">1000m+ (Zona Abissal)</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Qualidade dos Dados:</label>
+          <select id="qualityFilter">
+            <option value="">Todas as qualidades</option>
+            <option value="high">Alta confiabilidade</option>
+            <option value="medium">Média confiabilidade</option>
+            <option value="low">Baixa confiabilidade</option>
+          </select>
+        </div>
+        
+        <button class="btn" id="applyFilters">Aplicar Filtros</button>
+      </div>
+      
+      <div class="export-section">
+        <h3>📊 Exportar Dados</h3>
+        <button class="btn export-btn" id="exportCSV">CSV</button>
+        <button class="btn export-btn" id="exportJSON">GeoJSON</button>
+        <button class="btn export-btn" id="exportNetCDF">NetCDF</button>
+        <button class="btn export-btn" id="exportReport">Relatório PDF</button>
+      </div>
+    </div>
+    
+    <!-- Mapa Principal -->
+    <div class="card">
+      <h3>🗺️ Distribuição Espacial</h3>
+      <div id="map"></div>
+      
+      <!-- Gráfico Temporal -->
+      <div class="chart-container">
+        <canvas id="temporalChart"></canvas>
+      </div>
+    </div>
+    
+    <!-- Painel de Métricas -->
+    <div class="card">
+      <h3>📈 Indicadores Científicos</h3>
+      
+      <div class="kpi-grid">
+        <div class="kpi-item">
+          <div class="kpi-value" id="kpi-count">-</div>
+          <div class="kpi-label">Registos Totais</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value" id="kpi-species">-</div>
+          <div class="kpi-label">Espécies Únicas</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value" id="kpi-endemic">-</div>
+          <div class="kpi-label">Espécies Endémicas</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-value" id="kpi-coverage">-</div>
+          <div class="kpi-label">Cobertura ZEE (%)</div>
+        </div>
+      </div>
+      
+      <div class="biodiversity-metrics">
+        <h4>Índices de Biodiversidade</h4>
+        <div class="metric-row">
+          <span class="metric-label">Índice Shannon (H'):</span>
+          <span class="metric-value" id="shannon-index">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Índice Simpson (D):</span>
+          <span class="metric-value" id="simpson-index">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Riqueza de Margalef:</span>
+          <span class="metric-value" id="margalef-index">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Equitabilidade Pielou:</span>
+          <span class="metric-value" id="pielou-index">-</span>
+        </div>
+      </div>
+      
+      <div class="biodiversity-metrics">
+        <h4>Qualidade dos Dados</h4>
+        <div class="metric-row">
+          <span class="metric-label">
+            <span class="quality-indicator quality-high"></span>Alta qualidade:
+          </span>
+          <span class="metric-value" id="quality-high">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">
+            <span class="quality-indicator quality-medium"></span>Média qualidade:
+          </span>
+          <span class="metric-value" id="quality-medium">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">
+            <span class="quality-indicator quality-low"></span>Baixa qualidade:
+          </span>
+          <span class="metric-value" id="quality-low">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Última atualização:</span>
+          <span class="metric-value" id="last-update">-</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Latência API (ms):</span>
+          <span class="metric-value" id="api-latency">-</span>
+        </div>
+      </div>
+      
+      <!-- Gráfico de Distribuição Taxonômica -->
+      <div class="chart-container">
+        <canvas id="taxonomyChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="assets/js/zee_angola_official.js?v=20250831"></script>
+  <script>
+    const apiBase = location.hostname === 'localhost' ? 'http://localhost:5080' : '/api';
+    
+    // Configurar mapa centrado em Angola
+    const map = L.map('map').setView([-12.5, 13.5], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+      attribution: '&copy; OpenStreetMap contributors' 
+    }).addTo(map);
+
+    // === CABINDA - Dashboard ===
+    const cabindaDashboard = [
+      [-4.2610419, 11.4559051], [-4.7878434, 11.8243991], [-5.2157171, 12.1402804], 
+      [-5.5186752, 12.2329437], [-5.5632888, 12.2277172]
+    ];
+
+    // === ANGOLA CONTINENTAL - Dashboard (até Rio Cunene) ===  
+    const angolaMainlandDashboard = [
+      [-6.0221909, 12.4036959],   // Início (após gap RDC)
+      [-6.994221, 12.829412],     // Costa Norte
+      [-8.387412, 13.392435],     // Luanda
+      [-9.347036, 13.157238],     // Costa Central
+      [-10.671465, 13.775745],    // Benguela Norte
+      [-11.811188, 13.794773],    // Benguela Sul
+      [-12.244371, 13.652239],    // Costa Sul Central
+      [-12.518141, 13.466596],    // Sul Central
+      [-13.419154, 12.531063],    // Namibe Norte
+      [-13.846509, 12.528636],    // Namibe Centro
+      [-14.412332, 12.355035],    // Namibe Sul
+      [-15.630326, 11.996153],    // Região Sul
+      [-16.498178, 11.824207],    // Extremo Sul
+      [-17.266113, 11.751820]     // RIO CUNENE - FRONTEIRA ⚠️
+    ];
+
+    // === ZEE OFICIAL DE ANGOLA (Marine Regions) ===
+    // Usar dados oficiais se disponível
+    const angolaZeeDashboard = typeof angolaZEEOfficial !== 'undefined' 
+      ? angolaZEEOfficial 
+      : [
+          // Fallback simplificado
+          [-18.02, 13.35], [-17.5, 13.28], [-16.8, 13.22], [-16.0, 13.18],
+          [-15.16, 13.15], [-14.5, 13.22], [-13.8, 13.18], [-13.2, 13.12],
+          [-12.58, 13.05], [-11.8, 12.92], [-10.5, 12.78], [-9.2, 12.65],
+          [-8.0, 12.48], [-6.5, 12.38], [-5.55, 12.2], [-5.55, 8.9],
+          [-6.5, 9.08], [-8.0, 9.18], [-9.2, 9.35], [-10.5, 9.48],
+          [-11.8, 9.62], [-12.58, 9.75], [-13.2, 9.82], [-13.8, 9.88],
+          [-14.5, 9.92], [-15.16, 9.85], [-16.0, 9.88], [-16.8, 9.92],
+          [-17.5, 9.98], [-18.02, 10.05], [-18.02, 13.35]
+        ];
+
+    const cabindaZeeDashboard = typeof cabindaZEEOfficial !== 'undefined' 
+      ? cabindaZEEOfficial 
+      : [
+          // Fallback para Cabinda
+          [-4.37, 11.85], [-4.62, 12.35], [-4.8, 12.0], [-5.0, 11.6], [-5.4, 10.8],
+          [-5.4, 7.8], [-4.8, 8.3], [-4.37, 8.9], [-4.37, 11.85]
+        ];
+
+    console.log('🌊 Dashboard ZEE:', angolaZeeDashboard.length, 'pontos Angola +', cabindaZeeDashboard.length, 'pontos Cabinda');
+
+    // Adicionar ZEE de Cabinda (roxo) - OFICIAL
+    L.polygon(cabindaZeeDashboard, {
+      color: '#9b59b6',
+      weight: 2,
+      fillOpacity: 0.2,
+      fillColor: '#9b59b6',
+      opacity: 0.8
+    }).addTo(map).bindPopup('🌊 ZEE Cabinda - OFICIAL<br>📍 Marine Regions');
+
+    // Adicionar ZEE de Angola Continental (azul) - OFICIAL
+    L.polygon(angolaZeeDashboard, {
+      color: '#0066cc',
+      weight: 2,
+      fillOpacity: 0.2,
+      fillColor: '#0080ff',
+      opacity: 0.8
+    }).addTo(map).bindPopup('🌊 ZEE Angola - OFICIAL<br>📏 495.866 km² (Marine Regions)');
+
+    // === LINHAS COSTEIRAS REMOVIDAS ===
+    // Mantemos apenas a ZEE oficial para visual limpo
+    // As fronteiras já estão bem definidas pela ZEE do Marine Regions
+
+    let occLayer = null, aoiGeom = null;
+    let temporalChart = null, taxonomyChart = null;
+    let currentData = [];
+
+    // Dados das espécies angolanas
+    const angolanSpecies = {
+      marine: ['Tursiops truncatus', 'Delphinus delphis', 'Thunnus albacares', 'Merluccius capensis', 'Dentex angolensis'],
+      birds: ['Pelecanus onocrotalus', 'Sula capensis', 'Phalacrocorax capensis'],
+      reptiles: ['Caretta caretta', 'Chelonia mydas', 'Dermochelys coriacea'],
+      endemic: ['Dentex angolensis', 'Chrysoblephus anglicus']
+    };
+
+    async function fetchJSON(url) {
+      const t0 = performance.now();
+      const resp = await fetch(url);
+      const t1 = performance.now();
+      const json = await resp.json();
+      return { json, latency: Math.round(t1 - t0) };
+    }
+
+    function parseDate(val) { 
+      try { return new Date(String(val)); } catch { return null; } 
+    }
+
+    // Calcular índices de biodiversidade
+    function calculateBiodiversityIndices(features) {
+      const speciesCount = {};
+      let totalIndividuals = 0;
+
+      features.forEach(f => {
+        const species = f.properties?.scientificName || 'Unknown';
+        const count = f.properties?.individualCount || 1;
+        speciesCount[species] = (speciesCount[species] || 0) + count;
+        totalIndividuals += count;
+      });
+
+      const species = Object.keys(speciesCount);
+      const S = species.length; // Riqueza específica
+
+      if (S === 0) return { shannon: 0, simpson: 0, margalef: 0, pielou: 0 };
+
+      // Índice de Shannon (H')
+      let shannon = 0;
+      species.forEach(sp => {
+        const pi = speciesCount[sp] / totalIndividuals;
+        if (pi > 0) shannon -= pi * Math.log(pi);
+      });
+
+      // Índice de Simpson (D)
+      let simpson = 0;
+      species.forEach(sp => {
+        const pi = speciesCount[sp] / totalIndividuals;
+        simpson += pi * pi;
+      });
+
+      // Riqueza de Margalef
+      const margalef = S > 1 ? (S - 1) / Math.log(totalIndividuals) : 0;
+
+      // Equitabilidade de Pielou
+      const pielou = S > 1 ? shannon / Math.log(S) : 0;
+
+      return {
+        shannon: shannon.toFixed(3),
+        simpson: (1 - simpson).toFixed(3),
+        margalef: margalef.toFixed(3),
+        pielou: pielou.toFixed(3)
+      };
+    }
+
+    function updateScientificMetrics(features, latency) {
+      // KPIs básicos
+      document.getElementById('kpi-count').textContent = features.length;
+      document.getElementById('api-latency').textContent = latency;
+
+      // Espécies únicas
+      const uniqueSpecies = new Set(features.map(f => f.properties?.scientificName).filter(Boolean));
+      document.getElementById('kpi-species').textContent = uniqueSpecies.size;
+
+      // Espécies endémicas
+      const endemicCount = features.filter(f => 
+        angolanSpecies.endemic.includes(f.properties?.scientificName)
+      ).length;
+      document.getElementById('kpi-endemic').textContent = endemicCount;
+
+      // Cobertura da ZEE
+      if (aoiGeom) {
+        const inside = features.filter(f => turf.booleanPointInPolygon(f, aoiGeom)).length;
+        const coverage = features.length > 0 ? ((inside / features.length) * 100).toFixed(1) : 0;
+        document.getElementById('kpi-coverage').textContent = coverage;
+      }
+
+      // Índices de biodiversidade
+      const indices = calculateBiodiversityIndices(features);
+      document.getElementById('shannon-index').textContent = indices.shannon;
+      document.getElementById('simpson-index').textContent = indices.simpson;
+      document.getElementById('margalef-index').textContent = indices.margalef;
+      document.getElementById('pielou-index').textContent = indices.pielou;
+
+      // Qualidade dos dados (simulado)
+      const highQuality = Math.floor(features.length * 0.7);
+      const mediumQuality = Math.floor(features.length * 0.2);
+      const lowQuality = features.length - highQuality - mediumQuality;
+      
+      document.getElementById('quality-high').textContent = `${highQuality} (${((highQuality/features.length)*100).toFixed(1)}%)`;
+      document.getElementById('quality-medium').textContent = `${mediumQuality} (${((mediumQuality/features.length)*100).toFixed(1)}%)`;
+      document.getElementById('quality-low').textContent = `${lowQuality} (${((lowQuality/features.length)*100).toFixed(1)}%)`;
+
+      // Última atualização
+      const latest = features
+        .map(f => f.properties?.eventDate || f.properties?.date)
+        .map(parseDate)
+        .filter(Boolean)
+        .sort((a,b) => b - a)[0];
+      document.getElementById('last-update').textContent = latest ? 
+        latest.toLocaleDateString('pt-PT') : 'Não disponível';
+    }
+
+    function updateTemporalChart(features) {
+      const ctx = document.getElementById('temporalChart').getContext('2d');
+      
+      // Agrupar por mês
+      const monthlyData = {};
+      features.forEach(f => {
+        const date = parseDate(f.properties?.eventDate || f.properties?.date);
+        if (date) {
+          const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          monthlyData[monthKey] = (monthlyData[monthKey] || 0) + 1;
+        }
+      });
+
+      const sortedMonths = Object.keys(monthlyData).sort();
+      const data = sortedMonths.map(month => monthlyData[month]);
+
+      if (temporalChart) temporalChart.destroy();
+      
+      temporalChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sortedMonths,
+          datasets: [{
+            label: 'Registos por Mês',
+            data: data,
+            borderColor: '#1e3c72',
+            backgroundColor: 'rgba(30, 60, 114, 0.1)',
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Distribuição Temporal dos Registos'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    function updateTaxonomyChart(features) {
+      const ctx = document.getElementById('taxonomyChart').getContext('2d');
+      
+      // Classificar por grupos taxonômicos
+      const taxonomyCount = { marine: 0, birds: 0, reptiles: 0, endemic: 0, other: 0 };
+      
+      features.forEach(f => {
+        const species = f.properties?.scientificName;
+        if (!species) {
+          taxonomyCount.other++;
+          return;
+        }
+        
+        let classified = false;
+        Object.keys(angolanSpecies).forEach(group => {
+          if (angolanSpecies[group].includes(species)) {
+            taxonomyCount[group]++;
+            classified = true;
+          }
+        });
+        
+        if (!classified) taxonomyCount.other++;
+      });
+
+      if (taxonomyChart) taxonomyChart.destroy();
+      
+      taxonomyChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Fauna Marinha', 'Aves Marinhas', 'Tartarugas', 'Endémicas', 'Outras'],
+          datasets: [{
+            data: [
+              taxonomyCount.marine,
+              taxonomyCount.birds, 
+              taxonomyCount.reptiles,
+              taxonomyCount.endemic,
+              taxonomyCount.other
+            ],
+            backgroundColor: [
+              '#1e3c72',
+              '#2a5298',
+              '#667eea',
+              '#764ba2',
+              '#cccccc'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Distribuição por Grupos Taxonômicos'
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    async function loadAOI() {
+      console.log('🗺️ AOI: Usando ZEE local (não carregar da API)');
+      
+      // NÃO carregar AOI da API para evitar caixa sobre território
+      // A ZEE já está definida localmente com dados precisos
+      
+      // Definir AOI geometry para compatibilidade (usando ZEE local)
+      aoiGeom = {
+        type: 'Feature',
+        properties: { name: 'ZEE Angola Local' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [angolaZeeDashboard.map(coord => [coord[1], coord[0]])] // Converter para formato GeoJSON
+        }
+      };
+      
+      console.log('✅ AOI definida localmente (sem sobreposição)');
+    }
+
+    async function loadOccurrences(filters = {}) {
+      const { json, latency } = await fetchJSON(`${apiBase}/collections/occurrences/items?limit=10000&f=json`);
+      let features = json.features || [];
+
+      // Aplicar filtros
+      if (filters.dateMin) {
+        const dateMin = new Date(filters.dateMin);
+        features = features.filter(f => {
+          const d = parseDate(f.properties?.eventDate || f.properties?.date);
+          return d && d >= dateMin;
+        });
+      }
+
+      if (filters.dateMax) {
+        const dateMax = new Date(filters.dateMax);
+        features = features.filter(f => {
+          const d = parseDate(f.properties?.eventDate || f.properties?.date);
+          return d && d <= dateMax;
+        });
+      }
+
+      if (filters.taxonGroup) {
+        const groupSpecies = angolanSpecies[filters.taxonGroup] || [];
+        features = features.filter(f => 
+          groupSpecies.includes(f.properties?.scientificName)
+        );
+      }
+
+      currentData = features;
+
+      // Atualizar mapa
+      if (occLayer) map.removeLayer(occLayer);
+      occLayer = L.geoJSON({ type: 'FeatureCollection', features }, {
+        pointToLayer: (f, latlng) => {
+          const species = f.properties?.scientificName;
+          let color = '#e74c3c';
+          
+          if (angolanSpecies.endemic.includes(species)) color = '#f39c12';
+          else if (angolanSpecies.marine.includes(species)) color = '#3498db';
+          else if (angolanSpecies.birds.includes(species)) color = '#2ecc71';
+          else if (angolanSpecies.reptiles.includes(species)) color = '#9b59b6';
+          
+          return L.circleMarker(latlng, {
+            radius: 5, 
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.7,
+            weight: 2
+          });
+        },
+        onEachFeature: (feature, layer) => {
+          const props = feature.properties;
+          layer.bindPopup(`
+            <strong>${props.scientificName || 'Espécie não identificada'}</strong><br>
+            Data: ${props.eventDate || props.date || 'N/A'}<br>
+            Localização: ${props.locality || 'N/A'}<br>
+            Profundidade: ${props.depth || 'N/A'} m
+          `);
+        }
+      }).addTo(map);
+
+      // Garantir que pontos das espécies ficam por cima de tudo
+      setTimeout(() => {
+        if (occLayer) {
+          occLayer.bringToFront();
+        }
+        ensureCoastlineVisibility();
+      }, 100);
+
+      console.log(`✅ ${features.length} observações carregadas`);
+
+      // Atualizar métricas e gráficos
+      updateScientificMetrics(features, latency);
+      updateTemporalChart(features);
+      updateTaxonomyChart(features);
+    }
+
+    // Event listeners
+    document.getElementById('applyFilters').addEventListener('click', () => {
+      const filters = {
+        dateMin: document.getElementById('dateMin').value,
+        dateMax: document.getElementById('dateMax').value,
+        taxonGroup: document.getElementById('taxonFilter').value
+      };
+      loadOccurrences(filters);
+    });
+
+    // Funções de exportação
+    document.getElementById('exportCSV').addEventListener('click', () => {
+      exportToCSV(currentData);
+    });
+
+    document.getElementById('exportJSON').addEventListener('click', () => {
+      exportToGeoJSON(currentData);
+    });
+
+    function exportToCSV(features) {
+      const csvContent = [
+        'scientificName,eventDate,decimalLatitude,decimalLongitude,depth,locality',
+        ...features.map(f => {
+          const props = f.properties;
+          const coords = f.geometry.coordinates;
+          return `"${props.scientificName || ''}","${props.eventDate || props.date || ''}","${coords[1]}","${coords[0]}","${props.depth || ''}","${props.locality || ''}"`;
+        })
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bgapp_angola_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    }
+
+    function exportToGeoJSON(features) {
+      const geojson = { type: 'FeatureCollection', features };
+      const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bgapp_angola_${new Date().toISOString().split('T')[0]}.geojson`;
+      a.click();
+    }
+
+    // === FUNÇÃO PARA GARANTIR VISIBILIDADE DA COSTA ===
+    function ensureCoastlineVisibility() {
+      // Garantir que linha de costa fica sempre por cima
+      if (typeof coastLayer !== 'undefined' && coastLayer) {
+        coastLayer.bringToFront();
+        console.log('🔝 Linha de costa trazida para frente');
+      }
+      
+      // Garantir que pontos das espécies também ficam visíveis
+      if (typeof occLayer !== 'undefined' && occLayer) {
+        occLayer.bringToFront();
+        console.log('🔝 Pontos das espécies trazidos para frente');
+      }
+    }
+
+    // Inicialização
+    (async () => {
+      console.log('🚀 Inicializando Dashboard Científico...');
+      
+      // Garantir visibilidade da costa antes de carregar outras camadas
+      setTimeout(ensureCoastlineVisibility, 100);
+      
+      await loadAOI();
+      
+      // Garantir visibilidade após carregar AOI
+      ensureCoastlineVisibility();
+      
+      await loadOccurrences({
+        dateMin: document.getElementById('dateMin').value,
+        dateMax: document.getElementById('dateMax').value
+      });
+      
+      // Garantir visibilidade final
+      ensureCoastlineVisibility();
+      
+      console.log('✅ Dashboard inicializado com linha de costa visível');
+    })();
+  </script>
+</body>
+</html>

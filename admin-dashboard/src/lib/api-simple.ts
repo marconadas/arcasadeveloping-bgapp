@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Base API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bgapp-scientific.pages.dev'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bgapp-admin.pages.dev'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -37,25 +37,9 @@ export const apiService = {
       const response = await api.get('/admin/services/status')
       return response.data
     } catch (error) {
-      // Return mock data for development
-      return [
-        {
-          name: 'PostGIS Database',
-          status: 'online',
-          port: 5432,
-          url: 'postgresql://localhost:5432',
-          response_time: 2.3,
-          last_check: new Date().toISOString()
-        },
-        {
-          name: 'STAC FastAPI',
-          status: 'online',
-          port: 8000,
-          url: 'https://bgapp-api-worker.majearcasa.workers.dev',
-          response_time: 1.1,
-          last_check: new Date().toISOString()
-        }
-      ]
+      // SEM MOCK DATA - Mostrar erro real!
+      console.error('❌ Erro obtendo status real dos serviços:', error);
+      throw new Error(`Serviços não acessíveis: ${error.message}`);
     }
   },
 
@@ -64,14 +48,9 @@ export const apiService = {
       const response = await api.get('/admin/metrics')
       return response.data
     } catch (error) {
-      return {
-        timestamp: new Date().toISOString(),
-        cpu_percent: 25.3 + Math.random() * 20,
-        memory_percent: 67.2 + Math.random() * 10,
-        disk_percent: 43.1 + Math.random() * 5,
-        connections_db: 24 + Math.floor(Math.random() * 10),
-        requests_per_minute: 1200 + Math.floor(Math.random() * 100)
-      }
+      // SEM MOCK DATA - Mostrar que métricas não estão disponíveis
+      console.error('❌ Métricas não acessíveis:', error);
+      throw new Error(`Métricas não disponíveis: ${error.message}`);
     }
   }
 }

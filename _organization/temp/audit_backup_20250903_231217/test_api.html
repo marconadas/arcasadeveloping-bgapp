@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <title>Teste API Frontend</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { margin: 10px; padding: 10px 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+        .error { background: #ffe6e6; border-color: #ff9999; }
+        .success { background: #e6ffe6; border-color: #99ff99; }
+    </style>
+</head>
+<body>
+    <h1>Teste de Conectividade API</h1>
+    <button onclick="testConnectors()">Testar /connectors</button>
+    <button onclick="testJobs()">Testar /ingest/jobs</button>
+    <button onclick="testPipelines()">Testar /processing/pipelines</button>
+    <button onclick="testModels()">Testar /models</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8085/admin-api';
+        
+        function addResult(title, data, isError = false) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'result ' + (isError ? 'error' : 'success');
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}</pre>
+            `;
+            results.appendChild(div);
+        }
+        
+        async function testAPI(endpoint, title) {
+            try {
+                console.log(`Testing ${endpoint}...`);
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'http://localhost:8085',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                addResult(`✅ ${title}`, data);
+                
+            } catch (error) {
+                addResult(`❌ ${title}`, error.message, true);
+            }
+        }
+        
+        function testConnectors() {
+            testAPI('/connectors', 'Conectores');
+        }
+        
+        function testJobs() {
+            testAPI('/ingest/jobs', 'Jobs de Ingestão');
+        }
+        
+        function testPipelines() {
+            testAPI('/processing/pipelines', 'Pipelines');
+        }
+        
+        function testModels() {
+            testAPI('/models', 'Modelos');
+        }
+        
+        // Teste automático ao carregar
+        window.onload = function() {
+            setTimeout(() => {
+                testConnectors();
+                setTimeout(() => testJobs(), 1000);
+                setTimeout(() => testPipelines(), 2000);
+                setTimeout(() => testModels(), 3000);
+            }, 500);
+        };
+    </script>
+</body>
+</html>
