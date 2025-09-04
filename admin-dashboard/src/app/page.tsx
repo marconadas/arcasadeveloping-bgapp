@@ -1,3 +1,17 @@
+/**
+ * BGAPP Admin Dashboard - Main Page Component
+ * 
+ * Copyright (c) 2025 MareDatum Consultoria e Gestão de Projectos Unipessoal LDA
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * Developed by:
+ * - Director: Paulo Fernandes
+ * - Technical Lead: Marcos Santos
+ * 
+ * Marine Angola Platform v2.0.0
+ * https://bgapp-admin.pages.dev
+ */
+
 'use client'
 
 import { useState } from 'react'
@@ -30,6 +44,8 @@ export default function AdminDashboard() {
             <SidebarStaticSiliconValley 
               activeSection={currentSection}
               onSectionChange={setCurrentSection}
+              open={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
             />
           </ErrorBoundarySiliconValley>
 
