@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BGAPP - API Bridge Deck.GL</title>
+    <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js"></script>
+    <link href="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; }
+        #deck-container { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="deck-container"></div>
+    <script>
+        const deckConfig = {
+  "initialViewState": {
+    "longitude": 12.0,
+    "latitude": -11.0,
+    "zoom": 5,
+    "pitch": 0.0,
+    "bearing": 0.0,
+    "transition_duration": 300
+  },
+  "controller": true,
+  "layers": [
+    {
+      "id": "ScatterplotLayer-0",
+      "type": "ScatterplotLayer",
+      "data": [
+        {
+          "position": [
+            12.5,
+            -8.5
+          ],
+          "value": 0.44999999999999996,
+          "color": [
+            255,
+            200,
+            0,
+            180
+          ],
+          "radius": 900.0,
+          "metadata": {
+            "processed_at": "2025-09-05T00:52:07.246155",
+            "algorithm": "oceanographic_v2"
+          }
+        },
+        {
+          "position": [
+            13.1,
+            -9.2
+          ],
+          "value": 1.0499999999999998,
+          "color": [
+            255,
+            50,
+            0,
+            180
+          ],
+          "radius": 2100.0,
+          "metadata": {
+            "processed_at": "2025-09-05T00:52:07.246157",
+            "algorithm": "oceanographic_v2"
+          }
+        },
+        {
+          "position": [
+            13.5,
+            -10.5
+          ],
+          "value": 0.75,
+          "color": [
+            255,
+            200,
+            0,
+            180
+          ],
+          "radius": 1500.0,
+          "metadata": {
+            "processed_at": "2025-09-05T00:52:07.246158",
+            "algorithm": "oceanographic_v2"
+          }
+        },
+        {
+          "position": [
+            12.8,
+            -12.0
+          ],
+          "value": 1.35,
+          "color": [
+            255,
+            50,
+            0,
+            180
+          ],
+          "radius": 2700.0,
+          "metadata": {
+            "processed_at": "2025-09-05T00:52:07.246159",
+            "algorithm": "oceanographic_v2"
+          }
+        },
+        {
+          "position": [
+            11.9,
+            -14.5
+          ],
+          "value": 0.6000000000000001,
+          "color": [
+            255,
+            200,
+            0,
+            180
+          ],
+          "radius": 1200.0,
+          "metadata": {
+            "processed_at": "2025-09-05T00:52:07.246160",
+            "algorithm": "oceanographic_v2"
+          }
+        }
+      ],
+      "getRadius": 2000,
+      "pickable": true
+    }
+  ],
+  "mapStyle": "mapbox://styles/mapbox/dark-v10",
+  "parameters": {
+    "depthTest": false,
+    "blend": true
+  }
+};
+        
+        // Criar Deck.GL com configuração do Python
+        const deckgl = new deck.DeckGL({
+            container: 'deck-container',
+            ...deckConfig
+        });
+        
+        console.log('✅ Deck.GL inicializado via API Bridge');
+    </script>
+</body>
+</html>

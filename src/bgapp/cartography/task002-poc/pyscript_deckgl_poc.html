@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - PyScript + Deck.GL POC</title>
+    
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    
+    <!-- Deck.GL e dependências -->
+    <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js"></script>
+    <link href="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #deck-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-panel h2 {
+            margin-top: 0;
+            color: #4CAF50;
+            font-size: 1.5em;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #4CAF50;
+            padding-left: 10px;
+        }
+        
+        .performance-metrics {
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .metric-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #4CAF50;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: #ff5252;
+            background: rgba(255, 82, 82, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid #ff5252;
+        }
+        
+        .success {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid #4CAF50;
+        }
+    </style>
+    
+    <!-- PyScript config -->
+    <py-config>
+        packages = ["numpy", "pandas"]
+    </py-config>
+</head>
+<body>
+    <div id="deck-container"></div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <h3>Carregando PyScript + Deck.GL...</h3>
+        <p id="loading-status">Inicializando ambiente Python...</p>
+    </div>
+    
+    <div class="control-panel" style="display: none;" id="control-panel">
+        <h2>🔬 POC 2: PyScript + Deck.GL</h2>
+        
+        <div class="status">
+            <div class="status-item">
+                <span>PyScript:</span>
+                <span id="pyscript-status">⏳</span>
+            </div>
+            <div class="status-item">
+                <span>Deck.GL:</span>
+                <span id="deckgl-status">⏳</span>
+            </div>
+            <div class="status-item">
+                <span>WebGL:</span>
+                <span id="webgl-status">⏳</span>
+            </div>
+            <div class="status-item">
+                <span>Layers:</span>
+                <span id="layers-count">0</span>
+            </div>
+        </div>
+        
+        <div class="performance-metrics">
+            <h4>⚡ Métricas de Performance</h4>
+            <div class="metric">
+                <span>Tempo de Inicialização:</span>
+                <span class="metric-value" id="init-time">-</span>
+            </div>
+            <div class="metric">
+                <span>Tempo de Renderização:</span>
+                <span class="metric-value" id="render-time">-</span>
+            </div>
+            <div class="metric">
+                <span>FPS Médio:</span>
+                <span class="metric-value" id="fps">-</span>
+            </div>
+            <div class="metric">
+                <span>Memória Usada:</span>
+                <span class="metric-value" id="memory">-</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button onclick="addFishingLayer()">🐟 Add Fishing Data</button>
+            <button onclick="addTemperatureLayer()">🌡️ Add Temperature</button>
+            <button onclick="runSanityCheck()">🔍 Sanity Check</button>
+        </div>
+        
+        <div id="messages"></div>
+    </div>
+    
+    <py-script>
+        import json
+        import random
+        from datetime import datetime
+        from js import window, document, console, deck, Object
+        from pyodide.ffi import to_js, create_proxy
+        import asyncio
+        
+        # Classe para gerenciar Deck.GL via PyScript
+        class PyScriptDeckGLManager:
+            def __init__(self):
+                self.start_time = datetime.now()
+                self.deck_instance = None
+                self.layers = []
+                self.view_state = {
+                    'longitude': 12.0,  # Centro da ZEE Angola
+                    'latitude': -11.0,
+                    'zoom': 5,
+                    'pitch': 0,
+                    'bearing': 0
+                }
+                self.performance_metrics = {
+                    'init_time': 0,
+                    'render_time': 0,
+                    'layer_count': 0,
+                    'fps': 0
+                }
+                console.log("✅ PyScriptDeckGLManager inicializado")
+            
+            def update_status(self, element_id, status):
+                """Atualizar status na interface"""
+                element = document.getElementById(element_id)
+                if element:
+                    element.textContent = status
+            
+            def initialize_deck_gl(self):
+                """Inicializar Deck.GL no contexto do navegador"""
+                try:
+                    console.log("🚀 Inicializando Deck.GL via PyScript...")
+                    
+                    # Verificar se Deck.GL está disponível
+                    if not hasattr(window, 'deck'):
+                        raise Exception("Deck.GL não está carregado")
+                    
+                    # Configuração inicial
+                    config = {
+                        'container': 'deck-container',
+                        'initialViewState': to_js(self.view_state),
+                        'controller': True,
+                        'layers': []
+                    }
+                    
+                    # Criar instância Deck.GL
+                    self.deck_instance = deck.DeckGL.new(to_js(config))
+                    
+                    # Calcular tempo de inicialização
+                    self.performance_metrics['init_time'] = (
+                        datetime.now() - self.start_time
+                    ).total_seconds()
+                    
+                    self.update_status('deckgl-status', '✅')
+                    console.log(f"✅ Deck.GL inicializado em {self.performance_metrics['init_time']:.3f}s")
+                    
+                    return True
+                    
+                except Exception as e:
+                    console.error(f"❌ Erro ao inicializar Deck.GL: {e}")
+                    self.update_status('deckgl-status', '❌')
+                    return False
+            
+            def create_angola_fishing_data(self):
+                """Gerar dados de pesca da ZEE Angola"""
+                fishing_zones = []
+                
+                # Zonas de pesca principais de Angola
+                zones = [
+                    {'name': 'Cabinda', 'lat': -5.5, 'lng': 12.2},
+                    {'name': 'Soyo', 'lat': -6.1, 'lng': 12.3},
+                    {'name': 'Luanda', 'lat': -8.8, 'lng': 13.2},
+                    {'name': 'Benguela', 'lat': -12.6, 'lng': 13.4},
+                    {'name': 'Namibe', 'lat': -15.2, 'lng': 12.1},
+                ]
+                
+                for zone in zones:
+                    # Gerar pontos aleatórios ao redor de cada zona
+                    for i in range(10):
+                        fishing_zones.append({
+                            'position': [
+                                zone['lng'] + random.uniform(-0.5, 0.5),
+                                zone['lat'] + random.uniform(-0.5, 0.5)
+                            ],
+                            'abundance': random.randint(50, 200),
+                            'zone': zone['name'],
+                            'species': random.choice(['Sardinha', 'Atum', 'Carapau', 'Corvina'])
+                        })
+                
+                return fishing_zones
+            
+            def create_temperature_data(self):
+                """Gerar dados de temperatura da superfície do mar"""
+                temp_data = []
+                
+                # Grade de temperatura ao longo da costa
+                for lat in range(-16, -4, 1):
+                    for lng in range(11, 14, 1):
+                        temp_data.append({
+                            'position': [lng + random.uniform(-0.3, 0.3), lat + random.uniform(-0.3, 0.3)],
+                            'weight': random.uniform(0.3, 1.0)
+                        })
+                
+                return temp_data
+            
+            def add_scatterplot_layer(self, data, layer_id="fishing-zones"):
+                """Adicionar ScatterplotLayer ao mapa"""
+                try:
+                    console.log(f"📍 Adicionando ScatterplotLayer: {layer_id}")
+                    
+                    # Criar configuração da layer
+                    layer_config = {
+                        'id': layer_id,
+                        'data': to_js(data),
+                        'getPosition': 'd => d.position',
+                        'getRadius': 'd => d.abundance * 100',
+                        'getFillColor': [0, 100, 200, 180],
+                        'radiusMinPixels': 2,
+                        'radiusMaxPixels': 50,
+                        'pickable': True
+                    }
+                    
+                    # Criar layer
+                    ScatterplotLayer = deck.ScatterplotLayer
+                    layer = ScatterplotLayer.new(to_js(layer_config))
+                    
+                    # Adicionar ao deck
+                    if self.deck_instance:
+                        current_layers = list(self.layers)
+                        current_layers.append(layer)
+                        self.layers = current_layers
+                        
+                        # Atualizar layers no deck
+                        self.deck_instance.setProps(to_js({'layers': current_layers}))
+                        
+                        self.performance_metrics['layer_count'] = len(self.layers)
+                        self.update_status('layers-count', str(len(self.layers)))
+                        
+                        console.log(f"✅ ScatterplotLayer adicionada: {len(data)} pontos")
+                        return True
+                    
+                except Exception as e:
+                    console.error(f"❌ Erro ao adicionar ScatterplotLayer: {e}")
+                    return False
+            
+            def add_heatmap_layer(self, data, layer_id="temperature-heatmap"):
+                """Adicionar HeatmapLayer ao mapa"""
+                try:
+                    console.log(f"🌡️ Adicionando HeatmapLayer: {layer_id}")
+                    
+                    # Criar configuração da layer
+                    layer_config = {
+                        'id': layer_id,
+                        'data': to_js(data),
+                        'getPosition': 'd => d.position',
+                        'getWeight': 'd => d.weight',
+                        'radiusPixels': 30
+                    }
+                    
+                    # Criar layer
+                    HeatmapLayer = deck.HeatmapLayer
+                    layer = HeatmapLayer.new(to_js(layer_config))
+                    
+                    # Adicionar ao deck
+                    if self.deck_instance:
+                        current_layers = list(self.layers)
+                        current_layers.append(layer)
+                        self.layers = current_layers
+                        
+                        # Atualizar layers no deck
+                        self.deck_instance.setProps(to_js({'layers': current_layers}))
+                        
+                        self.performance_metrics['layer_count'] = len(self.layers)
+                        self.update_status('layers-count', str(len(self.layers)))
+                        
+                        console.log(f"✅ HeatmapLayer adicionada: {len(data)} pontos")
+                        return True
+                    
+                except Exception as e:
+                    console.error(f"❌ Erro ao adicionar HeatmapLayer: {e}")
+                    return False
+            
+            def run_sanity_checks(self):
+                """Executar verificações de sanidade"""
+                console.log("🔍 Executando verificações de sanidade...")
+                
+                checks = {
+                    'pyscript_ok': True,
+                    'deckgl_ok': self.deck_instance is not None,
+                    'webgl_ok': False,
+                    'layers_ok': len(self.layers) > 0,
+                    'performance_ok': self.performance_metrics['init_time'] < 5.0
+                }
+                
+                # Verificar WebGL
+                try:
+                    canvas = document.createElement('canvas')
+                    gl = canvas.getContext('webgl2') or canvas.getContext('webgl')
+                    checks['webgl_ok'] = gl is not None
+                except:
+                    checks['webgl_ok'] = False
+                
+                # Atualizar interface
+                self.update_status('pyscript-status', '✅' if checks['pyscript_ok'] else '❌')
+                self.update_status('webgl-status', '✅' if checks['webgl_ok'] else '❌')
+                
+                # Mostrar resultado
+                messages = document.getElementById('messages')
+                if messages:
+                    if all(checks.values()):
+                        messages.innerHTML = '<div class="success">✅ Todas as verificações passaram!</div>'
+                    else:
+                        failed = [k for k, v in checks.items() if not v]
+                        messages.innerHTML = f'<div class="error">❌ Verificações falhadas: {", ".join(failed)}</div>'
+                
+                console.log(f"📋 Resultado das verificações: {checks}")
+                return checks
+        
+        # Instância global do manager
+        manager = PyScriptDeckGLManager()
+        
+        # Funções expostas para JavaScript
+        def add_fishing_layer_py():
+            """Adicionar layer de dados de pesca"""
+            data = manager.create_angola_fishing_data()
+            return manager.add_scatterplot_layer(data)
+        
+        def add_temperature_layer_py():
+            """Adicionar layer de temperatura"""
+            data = manager.create_temperature_data()
+            return manager.add_heatmap_layer(data)
+        
+        def run_sanity_check_py():
+            """Executar verificações de sanidade"""
+            return manager.run_sanity_checks()
+        
+        # Expor funções para JavaScript
+        window.addFishingLayerPy = create_proxy(add_fishing_layer_py)
+        window.addTemperatureLayerPy = create_proxy(add_temperature_layer_py)
+        window.runSanityCheckPy = create_proxy(run_sanity_check_py)
+        
+        # Inicialização principal
+        async def main():
+            console.log("🚀 Iniciando PyScript + Deck.GL POC...")
+            
+            # Atualizar status
+            document.getElementById('loading-status').textContent = "Configurando ambiente Python..."
+            manager.update_status('pyscript-status', '✅')
+            
+            # Aguardar um momento para garantir que tudo está carregado
+            await asyncio.sleep(1)
+            
+            document.getElementById('loading-status').textContent = "Inicializando Deck.GL..."
+            
+            # Inicializar Deck.GL
+            if manager.initialize_deck_gl():
+                # Adicionar dados iniciais
+                document.getElementById('loading-status').textContent = "Carregando dados da ZEE Angola..."
+                
+                fishing_data = manager.create_angola_fishing_data()
+                manager.add_scatterplot_layer(fishing_data)
+                
+                # Atualizar métricas
+                document.getElementById('init-time').textContent = f"{manager.performance_metrics['init_time']:.3f}s"
+                
+                # Esconder loading e mostrar painel
+                document.getElementById('loading').style.display = 'none'
+                document.getElementById('control-panel').style.display = 'block'
+                
+                # Executar sanity check inicial
+                manager.run_sanity_checks()
+                
+                console.log("✅ POC PyScript + Deck.GL iniciado com sucesso!")
+            else:
+                document.getElementById('loading-status').textContent = "❌ Erro ao inicializar Deck.GL"
+                console.error("❌ Falha na inicialização")
+        
+        # Executar quando PyScript estiver pronto
+        asyncio.create_task(main())
+    </py-script>
+    
+    <script>
+        // Funções JavaScript para interação com PyScript
+        function addFishingLayer() {
+            console.log("🐟 Adicionando layer de pesca...");
+            if (window.addFishingLayerPy) {
+                window.addFishingLayerPy();
+            }
+        }
+        
+        function addTemperatureLayer() {
+            console.log("🌡️ Adicionando layer de temperatura...");
+            if (window.addTemperatureLayerPy) {
+                window.addTemperatureLayerPy();
+            }
+        }
+        
+        function runSanityCheck() {
+            console.log("🔍 Executando sanity check...");
+            if (window.runSanityCheckPy) {
+                window.runSanityCheckPy();
+            }
+        }
+        
+        // Monitorar FPS
+        let fps = 0;
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function updateFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            const delta = currentTime - lastTime;
+            
+            if (delta >= 1000) {
+                fps = Math.round((frameCount * 1000) / delta);
+                document.getElementById('fps').textContent = fps + ' fps';
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+        
+        // Monitorar memória
+        function updateMemory() {
+            if (performance.memory) {
+                const used = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                document.getElementById('memory').textContent = used + ' MB';
+            }
+        }
+        
+        // Iniciar monitoramento quando página carregar
+        window.addEventListener('load', () => {
+            updateFPS();
+            setInterval(updateMemory, 1000);
+        });
+    </script>
+</body>
+</html>
