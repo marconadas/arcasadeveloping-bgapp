@@ -682,9 +682,9 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Fix para dropdown de exportação - SOLUÇÃO CORRETA */
+        /* SOLUÇÃO AGRESSIVA: Dropdown de exportação SEMPRE no topo */
         .dropdown-menu {
-            z-index: 10500 !important;
+            z-index: 99999 !important; /* Z-index máximo */
             background: rgba(255, 255, 255, 0.98) !important;
             backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -693,18 +693,30 @@
             padding: 12px !important;
             min-width: 240px !important;
             margin-top: 8px !important;
-            /* Bootstrap controla display - apenas melhoramos visual e posição */
+            position: fixed !important; /* Position fixed para escapar de containers */
         }
 
-        /* Quando dropdown está ativo - garantir visibilidade total */
+        /* Quando dropdown está ativo - posicionamento absoluto no topo */
         .dropdown.show .dropdown-menu {
-            z-index: 10500 !important;
+            z-index: 99999 !important;
             max-height: none !important;
             overflow: visible !important;
-            position: absolute !important;
-            top: 100% !important;
-            right: 0 !important;
+            position: fixed !important; /* Fixed para escapar de qualquer container */
+            top: auto !important;
+            right: auto !important;
             left: auto !important;
+            transform: none !important;
+        }
+
+        /* Garantir que botão também tenha z-index alto */
+        .btn-group {
+            position: relative !important;
+            z-index: 99998 !important;
+        }
+
+        .btn.dropdown-toggle {
+            z-index: 99998 !important;
+            position: relative !important;
         }
 
         /* Melhorar espaçamento dos itens */
@@ -7708,9 +7720,19 @@
                         dropdownMenu.classList.remove('show');
                         console.log('🔽 Dropdown fechado');
                     } else {
+                        // Calcular posição do botão para position fixed
+                        const buttonRect = exportButton.getBoundingClientRect();
+                        
+                        // Posicionar dropdown logo abaixo do botão
+                        dropdownMenu.style.top = (buttonRect.bottom + 5) + 'px';
+                        dropdownMenu.style.left = (buttonRect.right - 240) + 'px'; // Alinhado à direita
+                        
                         dropdown.classList.add('show');
                         dropdownMenu.classList.add('show');
-                        console.log('🔼 Dropdown aberto');
+                        console.log('🔼 Dropdown aberto em posição:', {
+                            top: dropdownMenu.style.top,
+                            left: dropdownMenu.style.left
+                        });
                     }
                 });
                 
