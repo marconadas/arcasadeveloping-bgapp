@@ -659,6 +659,35 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* Fix para dropdown de exportação ficar acima dos filtros */
+        .dropdown-menu {
+            z-index: 10500 !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+            border-radius: 12px !important;
+            padding: 8px !important;
+        }
+
+        .dropdown-item {
+            border-radius: 8px !important;
+            margin: 2px 0 !important;
+            padding: 12px 16px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 102, 204, 0.1) !important;
+            transform: translateX(4px) !important;
+        }
+
+        /* Garantir que botão de exportar também tenha z-index alto */
+        .btn.dropdown-toggle {
+            z-index: 10400 !important;
+            position: relative !important;
+        }
+
         /* Painel de Análise Preditiva com IA */
         .ai-prediction-panel {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
