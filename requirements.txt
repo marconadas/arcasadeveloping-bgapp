@@ -23,8 +23,8 @@ httpx==0.25.0
 aiohttp>=3.9.4
 
 # Processamento de dados
-numpy==1.24.3
-pandas>=1.5.0
+numpy>=1.24.3
+pandas>=2.0.3
 
 # Segurança
 PyJWT==2.8.0

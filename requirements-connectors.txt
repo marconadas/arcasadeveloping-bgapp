@@ -32,8 +32,8 @@ cartopy>=0.21.0  # Para projeções cartográficas
 pyproj>=3.4.0
 
 # Processamento científico
-numpy>=1.24.0
-pandas>=2.0.0
+numpy>=1.24.3
+pandas>=2.0.3
 scipy>=1.10.0
 matplotlib>=3.7.0
 
