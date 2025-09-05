@@ -33,10 +33,10 @@
     <link rel="stylesheet" href="assets/css/unreal-engine-dashboard-styles.css">
     <script src="assets/js/performance-optimizer.js" defer></script>
     <script src="assets/js/unreal-ui-components.js" defer></script>
-    <script src="assets/js/deck-gl-integration.js" defer></script>
+    <!-- <script src="assets/js/deck-gl-integration.js" defer></script> TEMPORARIAMENTE DESABILITADO: Problemas PNG -->
     <script src="assets/js/unreal-engine-integration.js" defer></script>
-    <script src="assets/js/unreal-engine-inspired-dashboard.js" defer></script>
-    <script src="assets/js/dashboard-integration.js" defer></script>
+    <!-- <script src="assets/js/unreal-engine-inspired-dashboard.js" defer></script> DESABILITADO: Conflito LODManager -->
+    <!-- <script src="assets/js/dashboard-integration.js" defer></script> TEMPORARIAMENTE DESABILITADO: Função enhanceExistingElements não existe -->
     
     <!-- Power BI Integration -->
     <script src="powerbi-integration.js" defer></script>
@@ -7531,11 +7531,16 @@
                 }
             };
             
-            // Expor dados para Power BI via window
-            window.postMessage({
-                type: 'BGAPP_DATA_READY',
-                api: window.BGAPP_PowerBI_API
-            }, '*');
+            // Expor dados para Power BI via window (sem funções para evitar DataCloneError)
+            try {
+                window.postMessage({
+                    type: 'BGAPP_DATA_READY',
+                    status: 'ready',
+                    timestamp: new Date().toISOString()
+                }, '*');
+            } catch (error) {
+                console.warn('⚠️ PostMessage falhou (ignorado):', error.message);
+            }
             
             console.log('📊 Power BI API exposta globalmente');
             console.log('🚀 Dashboard BGAPP inicializado com todas as funcionalidades avançadas');
