@@ -20,14 +20,7 @@
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     
-    <!-- Three.js para visualizações 3D -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
-    
-    <!-- Advanced 3D Marine Visualization V2 Fixed -->
-    <link rel="stylesheet" href="assets/css/advanced-3d-marine-styles.css">
-    <script src="assets/js/advanced-3d-marine-visualization-v2-fixed.js" defer></script>
-    <!-- <script src="assets/js/marine-3d-integration.js" defer></script> TEMPORARIAMENTE DESABILITADO: Container 3D não encontrado -->
+    <!-- 3D VISUALIZATION REMOVIDA - Será criada página dedicada para visualização 3D -->
     
     <!-- Unreal Engine Inspired Dashboard -->
     <link rel="stylesheet" href="assets/css/unreal-engine-dashboard-styles.css">
@@ -1879,41 +1872,15 @@
                 </div>
             </div>
 
-            <!-- Visualizações 3D Avançadas -->
+            <!-- VISUALIZAÇÃO 3D REMOVIDA - Será disponibilizada em página dedicada -->
             <div class="row">
                 <div class="col-12">
-                    <div class="chart-container">
-                        <div class="chart-title">
-                            <i class="fas fa-cube text-primary me-2"></i>
-                            Visualização 3D - Ecossistema Marinho
-                            <small class="text-muted">(Interativo - Arraste para explorar)</small>
-                        </div>
-                        <div class="visualization-3d-container">
-                            <div id="ocean-3d-visualization" style="height: 500px; position: relative;">
-                                <div class="loading-spinner">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Carregando visualização 3D avançada...</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="visualization-controls">
-                                <button class="btn btn-sm btn-outline-primary" onclick="toggle3DVisualization('ocean')">
-                                    <i class="fas fa-water me-1"></i> Oceano
-                                </button>
-                                <button class="btn btn-sm btn-outline-success" onclick="toggle3DVisualization('species')">
-                                    <i class="fas fa-fish me-1"></i> Espécies
-                                </button>
-                                <button class="btn btn-sm btn-outline-info" onclick="toggle3DVisualization('temperature')">
-                                    <i class="fas fa-thermometer-half me-1"></i> Temperatura
-                                </button>
-                                <button class="btn btn-sm btn-outline-warning" onclick="toggle3DVisualization('currents')">
-                                    <i class="fas fa-wind me-1"></i> Correntes
-                                </button>
-                                <button class="btn btn-sm btn-secondary" onclick="reset3DView()">
-                                    <i class="fas fa-home me-1"></i> Reset
-                                </button>
-                            </div>
-                        </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-cube me-2"></i>
+                        <strong>Visualização 3D do Ecossistema Marinho:</strong> 
+                        Esta funcionalidade será disponibilizada em uma página dedicada para melhor performance e experiência de usuário.
+                        <br>
+                        <small class="text-muted">Dashboard científico otimizado para análise de dados em tempo real.</small>
                     </div>
                 </div>
             </div>
@@ -7446,28 +7413,8 @@
                 showShortcutFeedback('Pressione H para ver atalhos de teclado');
             }, 3000);
             
-            // Inicializar integração 3D avançada
-            setTimeout(() => {
-                if (typeof Marine3DIntegration !== 'undefined') {
-                    try {
-                        window.marine3DIntegration = new Marine3DIntegration();
-                        console.log('🌊 Sistema 3D avançado inicializado');
-                    } catch (error) {
-                        console.error('❌ Erro ao inicializar Marine3DIntegration:', error);
-                    }
-                } else {
-                    console.warn('⚠️ Marine3DIntegration não disponível - tentando inicialização direta');
-                    // Fallback: inicializar diretamente o Advanced 3D V2
-                    if (typeof AdvancedMarineVisualizationV2 !== 'undefined') {
-                        try {
-                            window.marineVisualizationV2 = new AdvancedMarineVisualizationV2('ocean-3d-visualization');
-                            console.log('🌊 Advanced 3D V2 inicializado diretamente');
-                        } catch (error) {
-                            console.error('❌ Erro ao inicializar Advanced 3D V2:', error);
-                        }
-                    }
-                }
-            }, 1000);
+            // Sistema 3D removido - Dashboard focado em dados científicos 2D
+            console.log('ℹ️ Visualização 3D removida para melhor performance do dashboard científico');
             
             // Remover spinners de carregamento e inicializar gráficos
             setTimeout(() => {
