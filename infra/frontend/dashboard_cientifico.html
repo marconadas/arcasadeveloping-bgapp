@@ -617,7 +617,11 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         /* Painel de Análise Preditiva com IA */
@@ -3183,6 +3187,16 @@
                 }
             });
         }
+
+        function clearLoadingSpinner(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const spinner = element.querySelector('.loading-spinner');
+                if (spinner) {
+                    spinner.remove();
+                }
+            }
+        }
         
         function handleChartError(chartId, error) {
             console.error(`❌ Erro carregando ${chartId}:`, error);
@@ -3516,6 +3530,10 @@
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1500));
                 
                 console.log('📈 Carregando gráfico temporal com filtros:', currentFilters);
+                
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('timeseries-chart');
+                
                 const chartData = generateTimeSeriesData();
                 const dates = chartData.dates;
                 const temperatures = chartData.temperatures;
@@ -3568,6 +3586,9 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('species-chart');
+                
                 // Dados de espécies sempre carregam com sucesso
                 
                 const data = [{
@@ -3603,6 +3624,9 @@
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1200));
+                
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('heatmap-chart');
                 
                 // Heatmap sempre carrega com sucesso
                 
@@ -3657,6 +3681,9 @@
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 800));
+                
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('correlation-chart');
                 
                 // Matriz de correlação sempre carrega com sucesso
                 
