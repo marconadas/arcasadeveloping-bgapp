@@ -39,7 +39,7 @@ export const apiService = {
     } catch (error) {
       // SEM MOCK DATA - Mostrar erro real!
       console.error('❌ Erro obtendo status real dos serviços:', error);
-      throw new Error(`Serviços não acessíveis: ${error.message}`);
+      throw new Error(`Serviços não acessíveis: ${error instanceof Error ? error.message : String(error)}`);
     }
   },
 
@@ -50,7 +50,7 @@ export const apiService = {
     } catch (error) {
       // SEM MOCK DATA - Mostrar que métricas não estão disponíveis
       console.error('❌ Métricas não acessíveis:', error);
-      throw new Error(`Métricas não disponíveis: ${error.message}`);
+      throw new Error(`Métricas não disponíveis: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 }
