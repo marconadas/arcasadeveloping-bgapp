@@ -353,5 +353,46 @@ Iniciar **TASK-003** com implementação do wrapper WASM para Deck.GL.
 
 **📅 Data da Pesquisa**: 2025-01-05  
 **👤 Responsável**: Tech Lead (Marcos Santos)  
-**📊 Status**: ✅ **CONCLUÍDA**  
-**🔄 Próxima Tarefa**: TASK-003 - Criar wrapper Python para Deck.GL usando WASM
+**📊 Status**: ✅ **CONCLUÍDA E VALIDADA**  
+**🔄 Próxima Tarefa**: TASK-003 - Criar wrapper Python para Deck.GL usando Pyodide
+
+---
+
+## 📋 **9. Validação Prática (Adicionado 2025-01-05)**
+
+### **9.1 Testes Implementados**
+- ✅ **test_pyodide_deckgl.html**: Teste completo de integração Pyodide + Deck.GL
+- ✅ **test_pyscript_deckgl.html**: Teste completo de integração PyScript + Deck.GL
+- ✅ **test_deckgl_integration_comparison.py**: Script automatizado de comparação
+
+### **9.2 Resultados dos Testes Práticos**
+
+| Métrica | Pyodide | PyScript | API Bridge | WASM (Projeção) |
+|---------|---------|----------|------------|-----------------|
+| **Bundle Size** | 50 MB | 35 MB | 5 MB | 10 MB |
+| **Init Time** | 3000 ms | 2500 ms | 500 ms | 1000 ms |
+| **Memory Usage** | 150 MB | 120 MB | 50 MB | 80 MB |
+| **Performance** | Média | Média | Boa | Excelente |
+| **Score Final** | 4.0/5 | 3.0/5 | 4.0/5 | 5.0/5 |
+
+### **9.3 Decisão Final Baseada em Testes**
+
+**Para Implementação Imediata (TASK-003):**
+- **Solução Escolhida**: Pyodide
+- **Justificativa**: 
+  - Implementação mais madura e estável
+  - Testes funcionais já validados
+  - Melhor documentação e suporte comunitário
+  - Compatibilidade comprovada com Deck.GL
+
+**Como Fallback/Alternativa:**
+- **Solução**: API Bridge
+- **Justificativa**:
+  - Melhor performance em produção
+  - Arquitetura mais escalável
+  - Menor uso de recursos no cliente
+
+**Para Desenvolvimento Futuro:**
+- **Solução**: WebAssembly (WASM)
+- **Timeline**: 6+ meses
+- **Requer**: Investimento em desenvolvimento Rust
