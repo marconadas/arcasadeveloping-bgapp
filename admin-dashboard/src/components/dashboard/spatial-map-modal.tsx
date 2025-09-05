@@ -188,9 +188,18 @@ export default function SpatialMapModal({ isOpen, onClose, data }: SpatialMapMod
   );
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    
     if (isOpen) {
-      setTimeout(() => setMapLoaded(true), 1000);
+      timeoutId = setTimeout(() => setMapLoaded(true), 1000);
     }
+    
+    // Cleanup function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [isOpen]);
 
   const toggleLayerType = (type: string) => {
