@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useState, useEffect, useCallback } from 'react';
 
@@ -64,7 +65,7 @@ export function useBGAPPData<T>(
         
         return result;
       } catch (error) {
-        console.warn(`BGAPP API failed for ${queryKey}, attempting fallback:`, error);
+        logger.warn(`BGAPP API failed for ${queryKey}, attempting fallback:`, error);
         
         // Tentar cache local primeiro
         if (enableOffline) {
@@ -78,19 +79,19 @@ export function useBGAPPData<T>(
               
               // Usar cache se for menos de 1 hora
               if (age < 60 * 60 * 1000) {
-                console.log(`Using cached data for ${queryKey}`);
+                logger.info(`Using cached data for ${queryKey}`);
                 setIsUsingFallback(true);
                 return data;
               }
             } catch (parseError) {
-              console.warn('Failed to parse cached data:', parseError);
+              logger.warn('Failed to parse cached data:', parseError);
             }
           }
         }
         
         // Usar fallback data se disponível
         if (fallbackData) {
-          console.log(`Using fallback data for ${queryKey}`);
+          logger.info(`Using fallback data for ${queryKey}`);
           setIsUsingFallback(true);
           return fallbackData;
         }

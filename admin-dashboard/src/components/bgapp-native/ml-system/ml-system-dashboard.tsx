@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,11 +46,11 @@ export default function MLSystemDashboard() {
         const data = await response.json();
         if (data.success && data.data) {
           setMLMetrics(data.data);
-          console.log('🧠 ML Metrics atualizadas:', data.data);
+          logger.info('🧠 ML Metrics atualizadas:', data.data);
         }
       }
     } catch (error) {
-      console.warn('⚠️ ML Metrics não disponíveis:', error);
+      logger.warn('⚠️ ML Metrics não disponíveis:', error);
     }
   };
 
@@ -74,7 +75,7 @@ export default function MLSystemDashboard() {
       }, 2000);
       
     } catch (error) {
-      console.error('Erro ao treinar modelo:', error);
+      logger.error('Erro ao treinar modelo:', error);
       setIsTraining(prev => ({ ...prev, [modelType]: false }));
     }
   };

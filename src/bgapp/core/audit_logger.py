@@ -397,8 +397,8 @@ class AuditContext:
 
 if __name__ == "__main__":
     # Teste do sistema de auditoria
-    print("🔍 Teste do Sistema de Audit Logging")
-    print("=" * 50)
+    logger.info("🔍 Teste do Sistema de Audit Logging")
+    logger.info("=" * 50)
     
     # Criar audit logger
     audit_logger = AuditLogger(
@@ -414,7 +414,7 @@ if __name__ == "__main__":
         (AuditEventType.DATA_ACCESS, AuditSeverity.INFO, "user789", "Acesso a dados sensíveis"),
     ]
     
-    print("\n📝 Registrando eventos de teste...")
+    logger.info("\n📝 Registrando eventos de teste...")
     for event_type, severity, user_id, description in test_events:
         audit_logger.log(
             event_type=event_type,
@@ -430,25 +430,26 @@ if __name__ == "__main__":
     time.sleep(1)
     
     # Mostrar estatísticas
-    print("\n📊 Estatísticas:")
+    logger.info("\n📊 Estatísticas:")
     stats = audit_logger.get_stats()
-    print(f"  Eventos registrados: {stats['events_logged']}")
-    print(f"  Por severidade: {stats['events_by_severity']}")
+    logger.info(f"  Eventos registrados: {stats['events_logged']}")
+    logger.info(f"  Por severidade: {stats['events_by_severity']}")
     
     # Pesquisar eventos
-    print("\n🔍 Pesquisando eventos de login...")
+    logger.info("\n🔍 Pesquisando eventos de login...")
     login_events = audit_logger.search_events(
         event_type=AuditEventType.LOGIN_SUCCESS,
         limit=10
     )
-    print(f"  Encontrados: {len(login_events)} eventos")
+    logger.info(f"  Encontrados: {len(login_events)} eventos")
     
     # Shutdown
     audit_logger.shutdown()
     
     # Cleanup
     import os
+from bgapp.core.logger import logger
     if os.path.exists("test_audit.log"):
         os.remove("test_audit.log")
     
-    print("\n✅ Teste concluído!")
+    logger.info("\n✅ Teste concluído!")

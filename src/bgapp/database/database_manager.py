@@ -25,9 +25,10 @@ try:
     from psycopg2.extras import RealDictCursor
     import sqlalchemy as sa
     from sqlalchemy import create_engine, text, inspect
+from bgapp.core.logger import logger
     DATABASE_LIBS_AVAILABLE = True
 except ImportError:
-    print("Bibliotecas de base de dados não disponíveis - usando simulação")
+    logger.info("Bibliotecas de base de dados não disponíveis - usando simulação")
     DATABASE_LIBS_AVAILABLE = False
 
 # Configurar logging

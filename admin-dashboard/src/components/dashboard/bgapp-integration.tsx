@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,7 +54,7 @@ export default function BGAPPIntegration() {
       setFisheriesData(fisheriesResponse);
       setCopernicusData(copernicusResponse);
     } catch (err) {
-      // console.error('Error fetching BGAPP data:', err);
+      // logger.error('Error fetching BGAPP data:', err);
       setError('Erro ao carregar dados do BGAPP');
     } finally {
       setLoading(false);

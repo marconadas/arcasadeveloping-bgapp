@@ -1,4 +1,5 @@
 "use client";
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -105,7 +106,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         setStats(statsResponse.data);
       }
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados:', error);
       toast.error('Erro ao carregar dados dos mapas');
     } finally {
       setLoading(false);
@@ -139,7 +140,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      console.error('Erro ao criar mapa:', error);
+      logger.error('Erro ao criar mapa:', error);
       toast.error('Erro ao criar mapa');
     }
   };
@@ -159,7 +160,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      console.error('Erro ao atualizar mapa:', error);
+      logger.error('Erro ao atualizar mapa:', error);
       toast.error('Erro ao atualizar mapa');
     }
   };
@@ -174,7 +175,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      console.error('Erro ao deletar mapa:', error);
+      logger.error('Erro ao deletar mapa:', error);
       toast.error('Erro ao deletar mapa');
     }
   };

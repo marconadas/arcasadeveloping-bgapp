@@ -14,6 +14,7 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 import inspect
 import re
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -1411,36 +1412,36 @@ curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bgapp.com/qgis/endpoint
 def main():
     """Exemplo de uso do gerador de documentação"""
     
-    print("📚 Gerando documentação OpenAPI para APIs QGIS...")
+    logger.info("📚 Gerando documentação OpenAPI para APIs QGIS...")
     
     # Criar gerador
     generator = SwaggerGenerator()
     
     # Exportar especificação JSON
     json_path = generator.export_to_file("docs/openapi.json", "json")
-    print(f"✅ Especificação JSON: {json_path}")
+    logger.info(f"✅ Especificação JSON: {json_path}")
     
     # Exportar especificação YAML
     yaml_path = generator.export_to_file("docs/openapi.yaml", "yaml")
-    print(f"✅ Especificação YAML: {yaml_path}")
+    logger.info(f"✅ Especificação YAML: {yaml_path}")
     
     # Gerar documentação HTML
     html_path = generator.generate_html_docs("docs/api_documentation.html")
-    print(f"✅ Documentação HTML: {html_path}")
+    logger.info(f"✅ Documentação HTML: {html_path}")
     
     # Estatísticas
     spec = generator.generate_openapi_spec()
     total_endpoints = len(generator.endpoints)
     total_paths = len(spec["paths"])
     
-    print(f"\n📊 ESTATÍSTICAS DA DOCUMENTAÇÃO:")
-    print(f"Total de endpoints: {total_endpoints}")
-    print(f"Total de paths: {total_paths}")
-    print(f"Tags: {len(spec['tags'])}")
-    print(f"Schemas: {len(spec['components']['schemas'])}")
+    logger.info(f"\n📊 ESTATÍSTICAS DA DOCUMENTAÇÃO:")
+    logger.info(f"Total de endpoints: {total_endpoints}")
+    logger.info(f"Total de paths: {total_paths}")
+    logger.info(f"Tags: {len(spec['tags'])}")
+    logger.info(f"Schemas: {len(spec['components']['schemas'])}")
     
-    print(f"\n🎉 Documentação OpenAPI gerada com sucesso!")
-    print(f"Acesse: file://{Path(html_path).absolute()}")
+    logger.info(f"\n🎉 Documentação OpenAPI gerada com sucesso!")
+    logger.info(f"Acesse: file://{Path(html_path).absolute()}")
 
 if __name__ == "__main__":
     main()

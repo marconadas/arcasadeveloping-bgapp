@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -257,7 +258,7 @@ export default function QGISTemporalVisualization() {
       setStats(statsData);
 
     } catch (err) {
-      // console.error('Error fetching temporal data:', err);
+      // logger.error('Error fetching temporal data:', err);
       setError('Erro ao carregar dados temporais');
     } finally {
       setLoading(false);

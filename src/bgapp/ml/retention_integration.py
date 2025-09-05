@@ -436,6 +436,7 @@ class MLRetentionIntegrator:
                     else:
                         # Para módulos de endpoints
                         import importlib
+from bgapp.core.logger import logger
                         module = importlib.import_module(module_name)
                         setattr(module, function_name, original_func)
                 
@@ -591,7 +592,7 @@ if __name__ == "__main__":
         metrics = integrator.get_integration_metrics()
         health = await integrator.health_check()
         
-        print("📊 Integration Metrics:", metrics)
-        print("🩺 Health Check:", health)
+        logger.info("📊 Integration Metrics:", metrics)
+        logger.info("🩺 Health Check:", health)
     
     asyncio.run(test_integration())

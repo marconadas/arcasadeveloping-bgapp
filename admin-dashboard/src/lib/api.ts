@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import type { 
   ApiResponse, 
@@ -183,17 +184,17 @@ export const getServices = async (): Promise<ServiceStatus[]> => {
       }
     });
     
-    console.log('🔗 Services API Response:', response.data);
+    logger.info('🔗 Services API Response:', response.data);
     
     // O worker retorna formato: { success: true, data: [...], summary: {...} }
     if (response.data && response.data.success && response.data.data) {
-      console.log('✅ Dados reais dos serviços obtidos:', response.data.summary);
+      logger.info('✅ Dados reais dos serviços obtidos:', response.data.summary);
       return response.data.data; // Array de serviços
     }
     
     throw new Error('Formato de resposta inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo serviços reais:', error);
+    logger.error('❌ Erro obtendo serviços reais:', error);
     throw error;
   }
 };
@@ -246,13 +247,13 @@ export const getMLModels = async (): Promise<MLModel[]> => {
     const response = await adminApi.get<any>('/api/ml/models');
     
     if (response.data && response.data.success && response.data.models) {
-      console.log('🧠 ML Models obtidos:', response.data.total, 'modelos');
+      logger.info('🧠 ML Models obtidos:', response.data.total, 'modelos');
       return response.data.models;
     }
     
     throw new Error('Formato ML inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo modelos ML:', error);
+    logger.error('❌ Erro obtendo modelos ML:', error);
     throw error;
   }
 };
@@ -267,13 +268,13 @@ export const getMLStats = async (): Promise<any> => {
     const response = await adminApi.get<any>('/api/ml/stats');
     
     if (response.data && response.data.success && response.data.data) {
-      console.log('🧠 ML Stats obtidas:', response.data.data);
+      logger.info('🧠 ML Stats obtidas:', response.data.data);
       return response.data.data;
     }
     
     throw new Error('Formato ML Stats inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo ML stats:', error);
+    logger.error('❌ Erro obtendo ML stats:', error);
     throw error;
   }
 };
@@ -339,7 +340,7 @@ export const getSTACCollections = async (): Promise<STACCollection[]> => {
     
     return [];
   } catch (error) {
-    console.error('STAC API error:', error);
+    logger.error('STAC API error:', error);
     // Retry direto no STAC Worker - SEM FALLBACK PARA ADMIN API
     try {
       const retryResponse = await stacApi.get<any>('/collections');
@@ -354,7 +355,7 @@ export const getSTACCollections = async (): Promise<STACCollection[]> => {
         lastUpdated: new Date().toISOString()
       })) || [];
     } catch (retryError) {
-      console.error('STAC API retry failed:', retryError);
+      logger.error('STAC API retry failed:', retryError);
       throw new Error('STAC API não disponível - verifique https://bgapp-stac.majearcasa.workers.dev/health');
     }
   }
@@ -384,7 +385,7 @@ export const getPygeoapiCollections = async (): Promise<any[]> => {
     const response = await pygeoapiApi.get<any>('/collections');
     return response.data.collections || [];
   } catch (error) {
-    console.warn('pygeoapi failed:', error);
+    logger.warn('pygeoapi failed:', error);
     throw new Error(`Failed to fetch pygeoapi collections: ${error}`);
   }
 };
@@ -412,7 +413,7 @@ export const getPygeoapiProcesses = async (): Promise<any[]> => {
     const response = await pygeoapiApi.get<any>('/processes');
     return response.data.processes || [];
   } catch (error) {
-    console.warn('pygeoapi processes failed:', error);
+    logger.warn('pygeoapi processes failed:', error);
     return [];
   }
 };
@@ -424,7 +425,7 @@ export const getMinIOBuckets = async (): Promise<any[]> => {
     const response = await minioApi.get<any>('/minio/admin/v3/list-buckets');
     return response.data.buckets || [];
   } catch (error) {
-    console.warn('MinIO direct access failed, using Admin API:', error);
+    logger.warn('MinIO direct access failed, using Admin API:', error);
     // Fallback para Admin API
     const response = await adminApi.get<ApiResponse<any[]>>('/storage/buckets');
     return handleApiResponse(response);
@@ -493,7 +494,7 @@ export const getAsyncTasks = async (): Promise<AsyncTask[]> => {
     
     return tasks;
   } catch (error) {
-    console.warn('Flower API failed, using Admin API:', error);
+    logger.warn('Flower API failed, using Admin API:', error);
     // Fallback para Admin API
     const response = await adminApi.get<ApiResponse<AsyncTask[]>>('/async/tasks');
     return handleApiResponse(response);
@@ -512,7 +513,7 @@ export const getFlowerWorkers = async (): Promise<any[]> => {
       lastHeartbeat: worker.timestamp ? new Date(worker.timestamp * 1000).toISOString() : null
     }));
   } catch (error) {
-    console.warn('Failed to fetch Flower workers:', error);
+    logger.warn('Failed to fetch Flower workers:', error);
     return [];
   }
 };
@@ -528,7 +529,7 @@ export const getFlowerTaskTypes = async (): Promise<any[]> => {
       retry: stats.retry || 0
     }));
   } catch (error) {
-    console.warn('Failed to fetch task types:', error);
+    logger.warn('Failed to fetch task types:', error);
     return [];
   }
 };
@@ -666,7 +667,7 @@ export const getKeycloakRealms = async (): Promise<any[]> => {
     const response = await keycloakApi.get<any>('/admin/realms');
     return response.data || [];
   } catch (error) {
-    console.warn('Keycloak API failed:', error);
+    logger.warn('Keycloak API failed:', error);
     return [];
   }
 };
@@ -676,7 +677,7 @@ export const getKeycloakUsers = async (realm: string = 'bgapp'): Promise<any[]> 
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/users`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak users:', error);
+    logger.warn('Failed to fetch Keycloak users:', error);
     return [];
   }
 };
@@ -686,7 +687,7 @@ export const getKeycloakClients = async (realm: string = 'bgapp'): Promise<any[]
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/clients`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak clients:', error);
+    logger.warn('Failed to fetch Keycloak clients:', error);
     return [];
   }
 };
@@ -696,7 +697,7 @@ export const getKeycloakSessions = async (realm: string = 'bgapp'): Promise<any[
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/sessions`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak sessions:', error);
+    logger.warn('Failed to fetch Keycloak sessions:', error);
     return [];
   }
 };

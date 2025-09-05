@@ -15,6 +15,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import logging
 
 from ..core.logging_config import get_logger
+from bgapp.core.logger import logger
 
 logger = get_logger(__name__)
 
@@ -320,22 +321,22 @@ if __name__ == "__main__":
     # Teste do sistema CSRF
     generator = CSRFTokenGenerator("test-secret-key")
     
-    print("🛡️ Teste do Sistema CSRF")
-    print("=" * 40)
+    logger.info("🛡️ Teste do Sistema CSRF")
+    logger.info("=" * 40)
     
     # Gerar token
     token = generator.generate_token()
-    print(f"Token gerado: {token}")
+    logger.info(f"Token gerado: {token}")
     
     # Simular validação
     middleware = CSRFProtectionMiddleware(None, "test-secret-key")
     token_data = middleware._decode_token(token)
     
     if token_data:
-        print(f"✅ Token válido")
-        print(f"   Timestamp: {token_data['timestamp']}")
-        print(f"   Random: {token_data['random']}")
+        logger.info(f"✅ Token válido")
+        logger.info(f"   Timestamp: {token_data['timestamp']}")
+        logger.info(f"   Random: {token_data['random']}")
     else:
-        print("❌ Token inválido")
+        logger.info("❌ Token inválido")
     
-    print("\n✅ Teste concluído!")
+    logger.info("\n✅ Teste concluído!")

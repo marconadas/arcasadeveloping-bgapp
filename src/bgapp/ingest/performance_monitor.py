@@ -541,6 +541,7 @@ performance_monitor.add_alert_callback(log_alert_callback)
 if __name__ == "__main__":
     # Teste do sistema de monitorização
     import random
+from bgapp.core.logger import logger
     
     # Iniciar monitorização
     start_performance_monitoring()
@@ -567,8 +568,8 @@ if __name__ == "__main__":
     
     # Mostrar resumo
     summary = get_performance_summary()
-    print("📊 Resumo de Performance:")
-    print(json.dumps(summary, indent=2, default=str))
+    logger.info("📊 Resumo de Performance:")
+    logger.info(json.dumps(summary, indent=2, default=str))
     
     # Parar monitorização
     time.sleep(2)

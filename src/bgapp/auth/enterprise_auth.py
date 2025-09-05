@@ -23,6 +23,7 @@ from fastapi import HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, EmailStr
 import redis.asyncio as redis
+from bgapp.core.logger import logger
 
 class UserRole(str, Enum):
     """Roles de utilizador"""
@@ -187,13 +188,13 @@ class EnterpriseAuth:
             self.redis = redis.Redis(connection_pool=self.redis_pool)
             await self.redis.ping()
             
-            print("✅ Sistema de autenticação enterprise inicializado")
+            logger.info("✅ Sistema de autenticação enterprise inicializado")
             
             # Create default admin user if not exists
             await self._create_default_admin()
             
         except Exception as e:
-            print(f"⚠️ Sistema de autenticação sem Redis: {e}")
+            logger.info(f"⚠️ Sistema de autenticação sem Redis: {e}")
             self.redis = None
     
     async def _create_default_admin(self):
@@ -224,7 +225,7 @@ class EnterpriseAuth:
             # Set default password (deve ser alterada no primeiro login)
             await self._set_user_password(admin_user.id, "admin123!@#")
             
-            print("✅ Utilizador admin padrão criado: admin@bgapp.com / admin123!@#")
+            logger.info("✅ Utilizador admin padrão criado: admin@bgapp.com / admin123!@#")
     
     async def register_user(self, request: RegisterRequest) -> Dict[str, Any]:
         """Registar novo utilizador"""
@@ -795,7 +796,7 @@ async def require_role(role: UserRole):
     return check_role
 
 if __name__ == "__main__":
-    print("🔐 Sistema de Autenticação Enterprise BGAPP")
-    print("✅ OAuth2, MFA, SSO")
-    print("✅ Conformidade GDPR/LOPD")
-    print("✅ RBAC (Role-Based Access Control)")
+    logger.info("🔐 Sistema de Autenticação Enterprise BGAPP")
+    logger.info("✅ OAuth2, MFA, SSO")
+    logger.info("✅ Conformidade GDPR/LOPD")
+    logger.info("✅ RBAC (Role-Based Access Control)")

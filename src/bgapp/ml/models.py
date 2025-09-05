@@ -27,7 +27,7 @@ try:
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    print("⚠️ XGBoost não disponível - usando modelos alternativos")
+    logger.info("⚠️ XGBoost não disponível - usando modelos alternativos")
 
 try:
     from tensorflow import keras
@@ -35,7 +35,7 @@ try:
     TENSORFLOW_AVAILABLE = True
 except ImportError:
     TENSORFLOW_AVAILABLE = False
-    print("⚠️ TensorFlow não disponível - usando modelos tradicionais")
+    logger.info("⚠️ TensorFlow não disponível - usando modelos tradicionais")
 
 class ModelType(str, Enum):
     """Tipos de modelos disponíveis"""
@@ -93,7 +93,7 @@ class MLModelManager:
         Features: temperatura, salinidade, profundidade, pH, oxigênio, coordenadas
         Target: índice de biodiversidade (Shannon, Simpson)
         """
-        print("🧠 Treinando modelo de previsão de biodiversidade...")
+        logger.info("🧠 Treinando modelo de previsão de biodiversidade...")
         
         try:
             # Preparar dados
@@ -197,11 +197,11 @@ class MLModelManager:
             
             self._save_model(model_id)
             
-            print(f"✅ Modelo biodiversidade treinado - Precisão: {accuracy:.1f}%")
+            logger.info(f"✅ Modelo biodiversidade treinado - Precisão: {accuracy:.1f}%")
             return model_id
             
         except Exception as e:
-            print(f"❌ Erro treinando modelo biodiversidade: {e}")
+            logger.info(f"❌ Erro treinando modelo biodiversidade: {e}")
             raise
 
     def create_temperature_forecaster(self, training_data: pd.DataFrame) -> str:
@@ -211,7 +211,7 @@ class MLModelManager:
         Features: histórico temperatura, sazonalidade, coordenadas, profundidade
         Target: temperatura futura (1-14 dias)
         """
-        print("🌡️ Treinando modelo de previsão de temperatura...")
+        logger.info("🌡️ Treinando modelo de previsão de temperatura...")
         
         try:
             # Preparar séries temporais
@@ -290,11 +290,11 @@ class MLModelManager:
             
             self._save_model(model_id)
             
-            print(f"✅ Modelo temperatura treinado - Precisão: {accuracy:.1f}%")
+            logger.info(f"✅ Modelo temperatura treinado - Precisão: {accuracy:.1f}%")
             return model_id
             
         except Exception as e:
-            print(f"❌ Erro treinando modelo temperatura: {e}")
+            logger.info(f"❌ Erro treinando modelo temperatura: {e}")
             raise
 
     def create_species_classifier(self, training_data: pd.DataFrame) -> str:
@@ -304,7 +304,7 @@ class MLModelManager:
         Features: tamanho, cor, habitat, comportamento, localização
         Target: espécie identificada
         """
-        print("🐟 Treinando classificador de espécies...")
+        logger.info("🐟 Treinando classificador de espécies...")
         
         try:
             features = ['size_cm', 'depth_observed', 'water_temp', 'behavior_encoded', 
@@ -393,11 +393,11 @@ class MLModelManager:
             
             self._save_model(model_id)
             
-            print(f"✅ Classificador espécies treinado - Precisão: {accuracy:.1f}%")
+            logger.info(f"✅ Classificador espécies treinado - Precisão: {accuracy:.1f}%")
             return model_id
             
         except Exception as e:
-            print(f"❌ Erro treinando classificador espécies: {e}")
+            logger.info(f"❌ Erro treinando classificador espécies: {e}")
             raise
 
     def predict(self, model_type: str, input_data: Dict[str, Any]) -> PredictionResult:
@@ -465,7 +465,7 @@ class MLModelManager:
             return result
             
         except Exception as e:
-            print(f"❌ Erro fazendo previsão: {e}")
+            logger.info(f"❌ Erro fazendo previsão: {e}")
             raise
 
     def get_model_metrics(self, model_type: str) -> ModelMetrics:
@@ -476,7 +476,7 @@ class MLModelManager:
 
     def retrain_model(self, model_type: str, new_data: pd.DataFrame) -> bool:
         """Retreinar modelo com novos dados"""
-        print(f"🔄 Retreinando modelo {model_type}...")
+        logger.info(f"🔄 Retreinando modelo {model_type}...")
         
         try:
             if model_type == ModelType.BIODIVERSITY_PREDICTOR:
@@ -488,11 +488,11 @@ class MLModelManager:
             else:
                 raise ValueError(f"Tipo de modelo não suportado: {model_type}")
                 
-            print(f"✅ Modelo {model_type} retreinado com sucesso")
+            logger.info(f"✅ Modelo {model_type} retreinado com sucesso")
             return True
             
         except Exception as e:
-            print(f"❌ Erro retreinando modelo {model_type}: {e}")
+            logger.info(f"❌ Erro retreinando modelo {model_type}: {e}")
             return False
 
     # Métodos auxiliares
@@ -569,10 +569,10 @@ class MLModelManager:
                 with open(metrics_path, 'w') as f:
                     json.dump(metrics_dict, f, indent=2)
                     
-            print(f"💾 Modelo {model_id} salvo com sucesso")
+            logger.info(f"💾 Modelo {model_id} salvo com sucesso")
             
         except Exception as e:
-            print(f"❌ Erro salvando modelo {model_id}: {e}")
+            logger.info(f"❌ Erro salvando modelo {model_id}: {e}")
 
     def load_all_models(self):
         """Carregar todos os modelos salvos"""
@@ -583,7 +583,7 @@ class MLModelManager:
                     self._load_model(model_id)
                     
         except Exception as e:
-            print(f"⚠️ Erro carregando modelos: {e}")
+            logger.info(f"⚠️ Erro carregando modelos: {e}")
 
     def _load_model(self, model_id: str):
         """Carregar modelo específico"""
@@ -608,10 +608,10 @@ class MLModelManager:
                     metrics_dict = json.load(f)
                     self.model_metrics[model_id] = ModelMetrics(**metrics_dict)
                     
-            print(f"✅ Modelo {model_id} carregado")
+            logger.info(f"✅ Modelo {model_id} carregado")
             
         except Exception as e:
-            print(f"❌ Erro carregando modelo {model_id}: {e}")
+            logger.info(f"❌ Erro carregando modelo {model_id}: {e}")
 
     def get_dashboard_data(self) -> Dict:
         """Obter dados para dashboard de ML"""
@@ -650,6 +650,7 @@ def create_real_training_data() -> Dict[str, pd.DataFrame]:
     try:
         import json
         import os
+from bgapp.core.logger import logger
         
         # Carregar dados reais autenticados do Copernicus
         copernicus_file = os.path.join(os.path.dirname(__file__), '../../..', 'copernicus_authenticated_angola.json')
@@ -678,10 +679,10 @@ def create_real_training_data() -> Dict[str, pd.DataFrame]:
             'longitude': np.random.choice([coord[1] for coord in real_coords], n_samples) + np.random.normal(0, 0.1, n_samples)
         })
         
-        print("✅ Training data criado com base em dados REAIS do Copernicus")
+        logger.info("✅ Training data criado com base em dados REAIS do Copernicus")
         
     except Exception as e:
-        print(f"⚠️ Fallback para dados simulados: {e}")
+        logger.info(f"⚠️ Fallback para dados simulados: {e}")
         # Fallback seguro para dados simulados (mantém funcionalidade)
         np.random.seed(42)
         n_samples = 1000
@@ -736,7 +737,7 @@ def create_real_training_data() -> Dict[str, pd.DataFrame]:
     }
 
 if __name__ == "__main__":
-    print("🧠 Inicializando sistema de Machine Learning BGAPP...")
+    logger.info("🧠 Inicializando sistema de Machine Learning BGAPP...")
     
     # Criar dados baseados em dados reais Copernicus
     training_data = create_real_training_data()
@@ -746,5 +747,5 @@ if __name__ == "__main__":
     ml_manager.create_temperature_forecaster(training_data['temperature'])
     ml_manager.create_species_classifier(training_data['species'])
     
-    print("✅ Sistema de ML inicializado com sucesso!")
-    print(f"📊 Dashboard: {ml_manager.get_dashboard_data()}")
+    logger.info("✅ Sistema de ML inicializado com sucesso!")
+    logger.info(f"📊 Dashboard: {ml_manager.get_dashboard_data()}")

@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,8 +36,8 @@ export class ErrorBoundarySiliconValley extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('🚨 Silicon Valley Error Boundary caught error:', error);
-    console.error('📊 Error Info:', errorInfo);
+    logger.error('🚨 Silicon Valley Error Boundary caught error:', error);
+    logger.error('📊 Error Info:', errorInfo);
     
     this.setState({
       hasError: true,

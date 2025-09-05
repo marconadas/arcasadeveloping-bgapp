@@ -16,6 +16,7 @@ from cryptography.fernet import Fernet
 import logging
 
 from ..core.logging_config import get_logger
+from bgapp.core.logger import logger
 
 logger = get_logger(__name__)
 
@@ -279,10 +280,10 @@ if __name__ == "__main__":
     manager = SecureCredentialsManager()
     temp_passwords = manager.initialize_secure_system()
     
-    print("🔐 Sistema de credenciais seguras inicializado!")
-    print("\n📋 Passwords temporárias (alterar no primeiro login):")
+    logger.info("🔐 Sistema de credenciais seguras inicializado!")
+    logger.info("\n📋 Passwords temporárias (alterar no primeiro login):")
     for username, password in temp_passwords.items():
-        print(f"  {username}: {password}")
+        logger.info(f"  {username}: {password}")
     
-    print(f"\n✅ Credenciais guardadas em: {manager.credentials_file}")
-    print("⚠️  IMPORTANTE: Guarde estas passwords em local seguro e altere no primeiro login!")
+    logger.info(f"\n✅ Credenciais guardadas em: {manager.credentials_file}")
+    logger.info("⚠️  IMPORTANTE: Guarde estas passwords em local seguro e altere no primeiro login!")

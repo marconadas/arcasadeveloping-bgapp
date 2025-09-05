@@ -1,4 +1,5 @@
 "use client";
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -124,7 +125,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
         setTemplates(templatesResponse.data || []);
       }
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados:', error);
       toast.error('Erro ao carregar dados das ferramentas');
     }
   };
@@ -145,7 +146,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
         }
       }
     } catch (error) {
-      console.error('Erro na validação:', error);
+      logger.error('Erro na validação:', error);
       toast.error('Erro ao validar configuração');
     } finally {
       setLoading(false);
@@ -168,7 +169,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
         }
       }
     } catch (error) {
-      console.error('Erro na otimização:', error);
+      logger.error('Erro na otimização:', error);
       toast.error('Erro ao otimizar configuração');
     } finally {
       setLoading(false);
@@ -184,7 +185,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
         setSuggestedLayers(response.data || []);
       }
     } catch (error) {
-      console.error('Erro ao sugerir camadas:', error);
+      logger.error('Erro ao sugerir camadas:', error);
       toast.error('Erro ao sugerir camadas');
     }
   };
@@ -265,7 +266,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
         }
       }
     } catch (error) {
-      console.error('Erro ao criar mapa:', error);
+      logger.error('Erro ao criar mapa:', error);
       toast.error('Erro ao criar mapa');
     } finally {
       setLoading(false);

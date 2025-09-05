@@ -310,6 +310,7 @@ class GBIFOptimizedConnector:
         # Usar ujson se disponível para melhor performance
         try:
             import ujson
+from bgapp.core.logger import logger
             with open(output_path, 'w', encoding='utf-8') as f:
                 ujson.dump(geojson, f, indent=2, ensure_ascii=False)
         except ImportError:
@@ -380,12 +381,12 @@ async def demo_async_gbif():
     # Buscar ocorrências de forma assíncrona
     occurrences = await connector.search_occurrences_async(taxon_keys)
     
-    print(f"🐠 Encontradas {len(fish_species)} espécies de peixes")
-    print(f"📍 Encontradas {len(occurrences)} ocorrências")
+    logger.info(f"🐠 Encontradas {len(fish_species)} espécies de peixes")
+    logger.info(f"📍 Encontradas {len(occurrences)} ocorrências")
     
     # Relatório de performance
     report = connector.get_connector_performance_report()
-    print(f"📊 Performance: {report['performance_metrics']['cache_hit_rate']}% cache hit rate")
+    logger.info(f"📊 Performance: {report['performance_metrics']['cache_hit_rate']}% cache hit rate")
     
     return occurrences
 
@@ -395,16 +396,16 @@ if __name__ == "__main__":
     connector = create_optimized_gbif_connector()
     
     # Teste síncrono
-    print("🚀 Testando conector GBIF otimizado...")
+    logger.info("🚀 Testando conector GBIF otimizado...")
     data = connector.get_comprehensive_marine_data(['fish'], max_species_per_type=5)
-    print(f"📊 Resultado: {data['total_species']} espécies, {data['total_occurrences']} ocorrências")
+    logger.info(f"📊 Resultado: {data['total_species']} espécies, {data['total_occurrences']} ocorrências")
     
     # Relatório de performance
     report = connector.get_connector_performance_report()
-    print("\n📈 Relatório de Performance:")
+    logger.info("\n📈 Relatório de Performance:")
     for key, value in report['performance_metrics'].items():
-        print(f"   {key}: {value}")
+        logger.info(f"   {key}: {value}")
     
     # Teste assíncrono
-    print("\n🔄 Testando processamento assíncrono...")
+    logger.info("\n🔄 Testando processamento assíncrono...")
     asyncio.run(demo_async_gbif())

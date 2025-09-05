@@ -30,6 +30,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
+from bgapp.core.logger import logger
     sys.path.append('../../')
 
 logger = logging.getLogger(__name__)
@@ -752,6 +753,6 @@ if __name__ == "__main__":
     async def test_retention_manager():
         manager = create_retention_manager(readonly_mode=True)
         stats = manager.get_lightweight_stats()
-        print("📊 Retention Manager Stats:", stats)
+        logger.info("📊 Retention Manager Stats:", stats)
     
     asyncio.run(test_retention_manager())

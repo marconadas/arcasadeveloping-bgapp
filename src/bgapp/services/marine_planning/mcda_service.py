@@ -38,6 +38,7 @@ from scipy import stats
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.cluster import KMeans
 import warnings
+from bgapp.core.logger import logger
 warnings.filterwarnings('ignore')
 
 # Configuração do logging
@@ -961,7 +962,7 @@ if __name__ == "__main__":
         # Inicializar serviço
         mcda_service = MCDAService()
         
-        print("🎯 Iniciando análise MCDA para aquacultura")
+        logger.info("🎯 Iniciando análise MCDA para aquacultura")
         
         try:
             # Definir objetivo
@@ -969,14 +970,14 @@ if __name__ == "__main__":
             
             # Criar grelha espacial
             alternatives = mcda_service.create_spatial_grid()
-            print(f"✅ Criadas {len(alternatives)} alternativas")
+            logger.info(f"✅ Criadas {len(alternatives)} alternativas")
             
             # Preencher valores dos critérios
             alternatives = mcda_service.populate_criteria_values(alternatives, objective)
             
             # Configurar critérios AHP
             criteria = mcda_service.setup_ahp_criteria(objective)
-            print(f"✅ Configurados {len(criteria)} critérios")
+            logger.info(f"✅ Configurados {len(criteria)} critérios")
             
             # Calcular scores AHP
             alternatives = mcda_service.calculate_ahp_scores(alternatives, criteria)
@@ -991,9 +992,9 @@ if __name__ == "__main__":
             )
             
             # Mostrar top 10 resultados
-            print("\n🏆 Top 10 Localizações para Aquacultura:")
+            logger.info("\n🏆 Top 10 Localizações para Aquacultura:")
             for alt in alternatives[:10]:
-                print(f"{alt.rank:2d}. {alt.name} - Score: {alt.final_score:.3f} "
+                logger.info(f"{alt.rank:2d}. {alt.name} - Score: {alt.final_score:.3f} "
                       f"({alt.latitude:.2f}, {alt.longitude:.2f})")
             
             # Visualizar resultados
@@ -1001,9 +1002,9 @@ if __name__ == "__main__":
             
             # Exportar resultados
             export_path = mcda_service.export_results(result, 'geojson')
-            print(f"💾 Resultados exportados: {export_path}")
+            logger.info(f"💾 Resultados exportados: {export_path}")
             
         except Exception as e:
-            print(f"❌ Erro: {str(e)}")
+            logger.info(f"❌ Erro: {str(e)}")
     
     main()

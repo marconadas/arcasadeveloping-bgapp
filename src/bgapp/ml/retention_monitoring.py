@@ -29,6 +29,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
+from bgapp.core.logger import logger
     sys.path.append('../../')
 
 logger = logging.getLogger(__name__)
@@ -676,14 +677,14 @@ if __name__ == "__main__":
         
         # Coletar métricas
         metrics = await monitor.collect_current_metrics()
-        print("📊 Métricas coletadas:", len(metrics))
+        logger.info("📊 Métricas coletadas:", len(metrics))
         
         # Gerar relatório
         report = await monitor.generate_performance_report(period_hours=1)
-        print("📈 Relatório gerado:", report.report_id)
+        logger.info("📈 Relatório gerado:", report.report_id)
         
         # Dashboard data
         dashboard = monitor.get_dashboard_data()
-        print("📊 Dashboard data:", json.dumps(dashboard, default=str, indent=2))
+        logger.info("📊 Dashboard data:", json.dumps(dashboard, default=str, indent=2))
     
     asyncio.run(test_monitoring())

@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,7 +49,7 @@ export default function DataConnectorsManager() {
       }, 3000);
       
     } catch (error) {
-      console.error('Erro ao executar conector:', error);
+      logger.error('Erro ao executar conector:', error);
       setRunningConnector(null);
     }
   };

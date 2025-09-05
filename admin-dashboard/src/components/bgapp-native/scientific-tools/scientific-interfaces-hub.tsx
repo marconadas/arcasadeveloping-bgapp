@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -88,7 +89,7 @@ export default function ScientificInterfacesHub() {
     
     // Verificar se URL existe e não é undefined
     if (!url || typeof url !== 'string') {
-      console.warn('⚠️ URL inválida para interface:', interface_);
+      logger.warn('⚠️ URL inválida para interface:', interface_);
       return;
     }
     

@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional, Any
 import json
 import math
+from bgapp.core.logger import logger
 
 
 class AngolaOceanographicModel:
@@ -394,16 +395,16 @@ def main():
     """Função principal para demonstração"""
     model = AngolaOceanographicModel()
     
-    print("🌊 Modelo Oceanográfico de Angola")
-    print("=" * 50)
+    logger.info("🌊 Modelo Oceanográfico de Angola")
+    logger.info("=" * 50)
     
     # Exemplo: ponto na costa de Luanda
     lat, lon = -8.8, 13.2
     month = 8  # Agosto (pico do upwelling)
     
-    print(f"📍 Localização: {lat}°S, {lon}°E")
-    print(f"📅 Mês: {month} (Agosto)")
-    print()
+    logger.info(f"📍 Localização: {lat}°S, {lon}°E")
+    logger.info(f"📅 Mês: {month} (Agosto)")
+    logger.info()
     
     # Calcular parâmetros
     sst = model.calculate_sea_surface_temperature(lat, lon, month)
@@ -411,20 +412,20 @@ def main():
     chl_a = model.calculate_chlorophyll_concentration(lat, lon, month, sst)
     upwelling = model.get_upwelling_index(lat, lon, month)
     
-    print("🌡️  Parâmetros Oceanográficos:")
-    print(f"   Temperatura: {sst:.1f}°C")
-    print(f"   Clorofila-a: {chl_a:.2f} mg/m³")
-    print(f"   Corrente: {currents['magnitude']:.2f} m/s ({currents['direction']:.0f}°)")
-    print(f"   Upwelling: {upwelling:.2f} (0-1)")
-    print()
+    logger.info("🌡️  Parâmetros Oceanográficos:")
+    logger.info(f"   Temperatura: {sst:.1f}°C")
+    logger.info(f"   Clorofila-a: {chl_a:.2f} mg/m³")
+    logger.info(f"   Corrente: {currents['magnitude']:.2f} m/s ({currents['direction']:.0f}°)")
+    logger.info(f"   Upwelling: {upwelling:.2f} (0-1)")
+    logger.info()
     
     # Resumo sazonal
     seasonal = model.get_seasonal_summary()
-    print("📊 Resumo Sazonal:")
+    logger.info("📊 Resumo Sazonal:")
     for season, info in seasonal.items():
-        print(f"\n{season.replace('_', ' ').title()}:")
+        logger.info(f"\n{season.replace('_', ' ').title()}:")
         for char in info['characteristics'][:3]:
-            print(f"   • {char}")
+            logger.info(f"   • {char}")
 
 
 if __name__ == "__main__":

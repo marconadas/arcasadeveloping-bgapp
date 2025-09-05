@@ -71,6 +71,7 @@ def fetch_obis_occurrences(
     if geometry is not None:
         try:
             from shapely.geometry import shape, Point  # type: ignore
+from bgapp.core.logger import logger
         except Exception:
             return results
         geom = shape(geometry)
@@ -122,7 +123,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False)
 
-    print(f"Saved {len(records)} records to {args.out}")
+    logger.info(f"Saved {len(records)} records to {args.out}")
 
 
 if __name__ == "__main__":
