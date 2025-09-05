@@ -3341,6 +3341,11 @@
 
         function applyFiltersToData() {
             console.log('📊 FUNÇÃO applyFiltersToData() CHAMADA com filtros:', currentFilters);
+            console.log('🔍 DETALHES DOS FILTROS:');
+            console.log('  - Período:', currentFilters.period);
+            console.log('  - Região:', currentFilters.region);
+            console.log('  - Parâmetro:', currentFilters.parameter);
+            console.log('  - Profundidade:', currentFilters.depth);
             
             // Dados base
             const baseData = {
@@ -3457,6 +3462,11 @@
                 predictionAccuracy: Math.min(99.9, Math.max(80, baseData.predictionAccuracy + accuracyAdjustment))
             };
 
+            console.log('🔄 CÁLCULOS REALIZADOS:');
+            console.log('  - Multiplicador final:', multiplier);
+            console.log('  - Observações base:', baseData.totalObservations);
+            console.log('  - Observações calculadas:', result.totalObservations);
+            console.log('  - Qualidade ajustada:', result.dataQuality);
             console.log('🔄 Dados filtrados calculados:', result);
             return result;
         }
@@ -3470,12 +3480,20 @@
                 const filteredData = applyFiltersToData();
                 
                 // Atualizar métricas com dados filtrados
+                console.log('📊 ATUALIZANDO MÉTRICAS NO DOM:');
+                console.log('  - Total observações:', filteredData.totalObservations.toLocaleString('pt-PT'));
+                console.log('  - Mudança:', filteredData.observationsChange);
+                console.log('  - Espécies:', filteredData.speciesCount);
+                console.log('  - Qualidade:', filteredData.dataQuality + '%');
+                
                 document.getElementById('total-observations').textContent = filteredData.totalObservations.toLocaleString('pt-PT');
                 document.getElementById('observations-change').textContent = filteredData.observationsChange;
                 document.getElementById('species-count').textContent = filteredData.speciesCount.toString();
                 document.getElementById('new-species').textContent = filteredData.newSpecies.toString();
                 document.getElementById('data-quality').textContent = filteredData.dataQuality + '%';
                 document.getElementById('prediction-accuracy').textContent = filteredData.predictionAccuracy + '%';
+                
+                console.log('✅ MÉTRICAS ATUALIZADAS NO DOM!');
                 
             } catch (error) {
                 console.error('Erro carregando métricas:', error);
