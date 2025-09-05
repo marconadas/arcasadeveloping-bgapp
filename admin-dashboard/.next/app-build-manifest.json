@@ -37,16 +37,6 @@
       "static/chunks/739-4846e59ea94c2e4a.js",
       "static/chunks/app/ml-models-manager/page-369be46c105be9b2.js"
     ],
-    "/ml-predictive-filters/page": [
-      "static/chunks/webpack-34fb9379af8289e2.js",
-      "static/chunks/fd9d1056-8c525cfbc785249a.js",
-      "static/chunks/117-05cca93bcbc74a00.js",
-      "static/chunks/main-app-e6d98b4eb1a3943e.js",
-      "static/chunks/853-daed1f9b3fabfbce.js",
-      "static/chunks/858-b885ca41c4d53f3c.js",
-      "static/chunks/739-4846e59ea94c2e4a.js",
-      "static/chunks/app/ml-predictive-filters/page-b77569ae132b95e8.js"
-    ],
     "/page": [
       "static/chunks/webpack-34fb9379af8289e2.js",
       "static/chunks/fd9d1056-8c525cfbc785249a.js",
@@ -56,6 +46,16 @@
       "static/chunks/858-b885ca41c4d53f3c.js",
       "static/chunks/739-4846e59ea94c2e4a.js",
       "static/chunks/app/page-2ad396c365df94bc.js"
+    ],
+    "/ml-predictive-filters/page": [
+      "static/chunks/webpack-34fb9379af8289e2.js",
+      "static/chunks/fd9d1056-8c525cfbc785249a.js",
+      "static/chunks/117-05cca93bcbc74a00.js",
+      "static/chunks/main-app-e6d98b4eb1a3943e.js",
+      "static/chunks/853-daed1f9b3fabfbce.js",
+      "static/chunks/858-b885ca41c4d53f3c.js",
+      "static/chunks/739-4846e59ea94c2e4a.js",
+      "static/chunks/app/ml-predictive-filters/page-b77569ae132b95e8.js"
     ]
   }
 }
