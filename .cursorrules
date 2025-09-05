@@ -1,0 +1,49 @@
+# BGAPP - Cursor Rules for Background Agent
+
+## Project Context
+This is the BGAPP (Biodiversity and Geographic Analysis Platform) - a scientific platform for marine biodiversity research and environmental monitoring of Angola's Exclusive Economic Zone (ZEE).
+
+## Branch: fix/critical-security
+Current focus: Critical security fixes and improvements
+
+## Key Areas for Background Agent
+1. **Security Vulnerabilities**: Fix CORS issues, authentication, data validation
+2. **Code Quality**: TypeScript errors, memory leaks, dependency updates
+3. **Performance**: Optimize API responses, reduce bundle size
+4. **Testing**: Add comprehensive test coverage
+
+## Critical Security Tasks
+- [ ] Fix CORS whitelist implementation in all workers
+- [ ] Remove ignoreBuildErrors from Next.js config
+- [ ] Implement proper authentication middleware
+- [ ] Add input validation and sanitization
+- [ ] Fix XSS vulnerabilities in frontend
+- [ ] Secure API endpoints with rate limiting
+- [ ] Add security headers to all responses
+
+## Code Standards
+- Use TypeScript for all new code
+- Follow existing patterns in the codebase
+- Add proper error handling
+- Include JSDoc comments for functions
+- Write unit tests for new features
+
+## File Structure
+- `admin-dashboard/` - Next.js admin interface
+- `workers/` - Cloudflare Workers
+- `infra/frontend/` - Main frontend application
+- `src/` - Python backend services
+- `docs/` - Documentation
+
+## Priority Order
+1. Security fixes (critical)
+2. TypeScript errors (high)
+3. Memory leaks (high)
+4. Performance optimizations (medium)
+5. New features (low)
+
+## Notes
+- Always test changes locally before committing
+- Use conventional commit messages
+- Update documentation when adding new features
+- Maintain backward compatibility
