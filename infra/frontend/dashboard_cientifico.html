@@ -3257,20 +3257,132 @@
             }
         }
 
+        function applyFiltersToData() {
+            // Dados base simulados
+            const baseData = {
+                totalObservations: 12847,
+                speciesCount: 156,
+                dataQuality: 97.2,
+                predictionAccuracy: 96.8,
+                newSpecies: 8,
+                observationsChange: '+15.3'
+            };
+
+            let multiplier = 1;
+            let qualityAdjustment = 0;
+            let accuracyAdjustment = 0;
+
+            // Aplicar modificadores baseados no período
+            switch (currentFilters.period) {
+                case '24h':
+                    multiplier = 0.05; // Apenas dados das últimas 24h
+                    qualityAdjustment = 2; // Dados mais recentes têm maior qualidade
+                    accuracyAdjustment = 1;
+                    break;
+                case '7d':
+                    multiplier = 0.25; // Dados da última semana
+                    qualityAdjustment = 1;
+                    accuracyAdjustment = 0.5;
+                    break;
+                case '30d':
+                    multiplier = 1; // Base
+                    break;
+                case '90d':
+                    multiplier = 3.2; // Mais dados históricos
+                    qualityAdjustment = -1; // Alguns dados mais antigos
+                    accuracyAdjustment = -0.8;
+                    break;
+            }
+
+            // Aplicar modificadores baseados na região
+            switch (currentFilters.region) {
+                case 'cabinda':
+                    multiplier *= 0.4; // Região menor
+                    qualityAdjustment += 1.5;
+                    break;
+                case 'zee':
+                    multiplier *= 1.2; // Região principal
+                    break;
+                case 'internal':
+                    multiplier *= 0.3; // Águas internas
+                    qualityAdjustment += 2;
+                    break;
+                case 'all':
+                    // Usar multiplicador base
+                    break;
+            }
+
+            // Aplicar modificadores baseados no parâmetro
+            switch (currentFilters.parameter) {
+                case 'temperature':
+                    // Base
+                    break;
+                case 'salinity':
+                    multiplier *= 0.9;
+                    qualityAdjustment += 0.5;
+                    break;
+                case 'oxygen':
+                    multiplier *= 0.7;
+                    qualityAdjustment += 1;
+                    break;
+                case 'ph':
+                    multiplier *= 0.6;
+                    qualityAdjustment += 1.2;
+                    break;
+                case 'chlorophyll':
+                    multiplier *= 0.8;
+                    accuracyAdjustment += 1;
+                    break;
+            }
+
+            // Aplicar modificadores baseados na profundidade
+            switch (currentFilters.depth) {
+                case 'surface':
+                    multiplier *= 1.5; // Mais dados na superfície
+                    break;
+                case '10m':
+                    multiplier *= 1.2;
+                    break;
+                case '50m':
+                    multiplier *= 0.8;
+                    break;
+                case '100m':
+                    multiplier *= 0.5; // Menos dados em profundidade
+                    qualityAdjustment -= 1;
+                    break;
+            }
+
+            // Calcular valores finais
+            const result = {
+                totalObservations: Math.floor(baseData.totalObservations * multiplier),
+                speciesCount: Math.floor(baseData.speciesCount * multiplier * 0.8), // Espécies crescem mais devagar
+                dataQuality: Math.min(99.9, Math.max(80, baseData.dataQuality + qualityAdjustment)),
+                predictionAccuracy: Math.min(99.5, Math.max(85, baseData.predictionAccuracy + accuracyAdjustment)),
+                newSpecies: Math.floor(baseData.newSpecies * multiplier * 0.5),
+                observationsChange: multiplier > 1 ? '+' + (15.3 * multiplier).toFixed(1) : '+' + (15.3 * multiplier).toFixed(1)
+            };
+
+            console.log('🔄 Dados filtrados calculados:', result);
+            return result;
+        }
+
         async function loadMetrics() {
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
-                // Métricas sempre carregam com sucesso
+                console.log('📊 Carregando métricas com filtros:', currentFilters);
                 
-                // Simular métricas (substituir por chamadas à API)
-                document.getElementById('total-observations').textContent = '12,847';
-                document.getElementById('observations-change').textContent = '+15.3';
-                document.getElementById('species-count').textContent = '156';
-                document.getElementById('new-species').textContent = '8';
-                document.getElementById('data-quality').textContent = '97.2%';
-                document.getElementById('prediction-accuracy').textContent = '96.8%';
+                // Aplicar filtros aos dados simulados
+                const filteredData = applyFiltersToData();
+                
+                // Atualizar métricas baseadas nos filtros
+                document.getElementById('total-observations').textContent = filteredData.totalObservations.toLocaleString('pt-PT');
+                document.getElementById('observations-change').textContent = filteredData.observationsChange;
+                document.getElementById('species-count').textContent = filteredData.speciesCount.toString();
+                document.getElementById('new-species').textContent = filteredData.newSpecies.toString();
+                document.getElementById('data-quality').textContent = filteredData.dataQuality + '%';
+                document.getElementById('prediction-accuracy').textContent = filteredData.predictionAccuracy + '%';
                 
             } catch (error) {
                 console.error('Erro carregando métricas:', error);
@@ -3285,25 +3397,105 @@
             }
         }
 
+        function generateTimeSeriesData() {
+            // Determinar número de dias baseado no período
+            let numDays;
+            switch (currentFilters.period) {
+                case '24h':
+                    numDays = 1;
+                    break;
+                case '7d':
+                    numDays = 7;
+                    break;
+                case '30d':
+                    numDays = 30;
+                    break;
+                case '90d':
+                    numDays = 90;
+                    break;
+                default:
+                    numDays = 30;
+            }
+
+            const dates = [];
+            const temperatures = [];
+            const salinity = [];
+
+            // Valores base baseados no parâmetro selecionado
+            let tempBase = 24;
+            let salinityBase = 35;
+            let tempVariation = 3;
+            let salinityVariation = 1.5;
+
+            // Ajustar valores baseados na região
+            switch (currentFilters.region) {
+                case 'cabinda':
+                    tempBase += 1; // Região mais quente
+                    salinityBase -= 0.5;
+                    break;
+                case 'internal':
+                    tempBase += 0.5;
+                    salinityBase -= 2; // Águas menos salinas
+                    break;
+                case 'zee':
+                    // Usar valores base
+                    break;
+            }
+
+            // Ajustar valores baseados na profundidade
+            switch (currentFilters.depth) {
+                case 'surface':
+                    // Usar valores base
+                    break;
+                case '10m':
+                    tempBase -= 0.5;
+                    break;
+                case '50m':
+                    tempBase -= 2;
+                    tempVariation *= 0.7;
+                    break;
+                case '100m':
+                    tempBase -= 4;
+                    tempVariation *= 0.5;
+                    salinityBase += 0.5;
+                    break;
+            }
+
+            for (let i = numDays - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                
+                if (numDays === 1) {
+                    // Para 24h, mostrar horas
+                    for (let h = 0; h < 24; h += 3) {
+                        const hourDate = new Date(date);
+                        hourDate.setHours(h);
+                        dates.push(hourDate.toISOString().slice(11, 16)); // HH:MM
+                        temperatures.push(tempBase + Math.random() * tempVariation - tempVariation/2);
+                        salinity.push(salinityBase + Math.random() * salinityVariation - salinityVariation/2);
+                    }
+                } else {
+                    dates.push(date.toISOString().split('T')[0]);
+                    temperatures.push(tempBase + Math.random() * tempVariation - tempVariation/2);
+                    salinity.push(salinityBase + Math.random() * salinityVariation - salinityVariation/2);
+                }
+            }
+
+            return { dates, temperatures, salinity };
+        }
+
         async function loadTimeSeriesChart() {
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1500));
                 
-                // Séries temporais sempre carregam com sucesso
+                console.log('📈 Carregando gráfico temporal com filtros:', currentFilters);
                 
-                // Dados simulados para série temporal
-                const dates = [];
-                const temperatures = [];
-                const salinity = [];
-                
-                for (let i = 30; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    dates.push(date.toISOString().split('T')[0]);
-                    temperatures.push(22 + Math.random() * 6);
-                    salinity.push(35 + Math.random() * 2);
-                }
+                // Aplicar filtros aos dados temporais
+                const chartData = generateTimeSeriesData();
+                const dates = chartData.dates;
+                const temperatures = chartData.temperatures;
+                const salinity = chartData.salinity;
 
                 const data = [
                     {
