@@ -327,7 +327,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
                       <Input
                         id="name"
                         value={formData.name || ''}
-                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                         placeholder="Ex: Mapa Oceanográfico Angola"
                       />
                     </div>
@@ -336,7 +336,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
                       <Label htmlFor="category">Categoria</Label>
                       <Select 
                         value={formData.category || ''} 
-                        onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                        onValueChange={(value: string) => setFormData(prev => ({ ...prev, category: value }))}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Selecionar categoria" />
@@ -357,7 +357,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
                     <Textarea
                       id="description"
                       value={formData.description || ''}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="Descrição detalhada do mapa..."
                       rows={3}
                     />
@@ -383,7 +383,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
               <Input
                 placeholder="Pesquisar mapas..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>

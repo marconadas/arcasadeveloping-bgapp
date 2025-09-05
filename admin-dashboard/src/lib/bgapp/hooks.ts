@@ -99,7 +99,7 @@ export function useBGAPPData<T>(
       }
     },
     staleTime,
-    cacheTime,
+    gcTime: cacheTime,
     retry: retryAttempts,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchInterval: refreshInterval,

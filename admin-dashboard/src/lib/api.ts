@@ -1,4 +1,17 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
+
+// Simple logger for development
+const logger = {
+  error: (message: string, error?: any) => {
+    console.error(`[ERROR] ${message}`, error);
+  },
+  warn: (message: string, data?: any) => {
+    console.warn(`[WARN] ${message}`, data);
+  },
+  info: (message: string, data?: any) => {
+    console.info(`[INFO] ${message}`, data);
+  }
+};
 import type { 
   ApiResponse, 
   PaginatedResponse,
@@ -18,6 +31,7 @@ import type {
   AuditEvent,
   BiodiversityStudy,
   MaxEntModel,
+  BGAPPMap,
   CoastalAnalysis,
   MaritimeBoundary,
   DashboardStats
@@ -478,17 +492,18 @@ export const getAsyncTasks = async (): Promise<AsyncTask[]> => {
     const response = await flowerApi.get<any>('/api/tasks');
     
     // Converter formato Flower para formato esperado
-    const tasks = Object.entries(response.data || {}).map(([taskId, task]: [string, any]) => ({
+    const tasks: AsyncTask[] = Object.entries(response.data || {}).map(([taskId, task]: [string, any]) => ({
       id: taskId,
       name: task.name || 'Unknown Task',
       status: task.state?.toLowerCase() || 'pending',
+      queueName: task.routing_key || 'default',
+      priority: task.priority || 0,
       startTime: task.timestamp ? new Date(task.timestamp * 1000).toISOString() : new Date().toISOString(),
       endTime: task.received ? new Date(task.received * 1000).toISOString() : undefined,
       result: task.result,
       error: task.traceback,
-      worker: task.worker,
-      queue: task.routing_key || 'default',
-      progress: task.progress || 0
+      retries: task.retry_count || 0,
+      maxRetries: task.max_retries || 3
     }));
     
     return tasks;
