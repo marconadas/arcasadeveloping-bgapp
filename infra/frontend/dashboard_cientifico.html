@@ -2281,14 +2281,8 @@
             
             initializeDashboard();
             
-            // Carregar mapa após um breve delay para melhor performance
-            setTimeout(() => {
-                initializeMap();
-                // Otimizar performance após inicialização
-                setTimeout(optimizeMapPerformance, 2000);
-            }, 100);
-            
-            loadDashboardData();
+            // SEQUÊNCIA OTIMIZADA: Coordenar inicialização
+            initializeComponentsSequentially();
             
             // Auto-refresh otimizado - apenas APIs, não gráficos
             setInterval(() => {
@@ -2328,6 +2322,46 @@
         async function initializeDashboard() {
             console.log('🚀 Inicializando Dashboard Científico BGAPP...');
             updateLastUpdateTime();
+        }
+
+        async function initializeComponentsSequentially() {
+            console.log('🔄 Iniciando sequência coordenada de componentes...');
+            
+            try {
+                // Etapa 1: Carregar dados do dashboard
+                console.log('📊 Etapa 1: Carregando dados do dashboard...');
+                await loadDashboardData();
+                console.log('✅ Dados do dashboard carregados');
+                
+                // Aguardar um pouco para garantir que Plotly finalizou
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Etapa 2: Inicializar mapa
+                console.log('🗺️ Etapa 2: Inicializando mapa...');
+                await new Promise((resolve) => {
+                    initializeMap();
+                    
+                    // Aguardar mapa estar pronto
+                    setTimeout(() => {
+                        optimizeMapPerformance();
+                        resolve();
+                    }, 2000);
+                });
+                console.log('✅ Mapa inicializado');
+                
+                console.log('🎉 Sequência de inicialização concluída com sucesso!');
+                
+            } catch (error) {
+                console.error('❌ Erro na sequência de inicialização:', error);
+                
+                // Fallback: tentar inicializar componentes individualmente
+                console.log('🔄 Tentando fallback de inicialização...');
+                try {
+                    setTimeout(() => initializeMap(), 2000);
+                } catch (fallbackError) {
+                    console.error('❌ Erro no fallback:', fallbackError);
+                }
+            }
         }
 
         function initializeMap() {
@@ -3161,17 +3195,24 @@
             if (chartsInitialized) {
                 console.log('📊 Gráficos já inicializados - atualizando com filtros');
                 
-                // Atualizar métricas com filtros
-                loadMetrics().catch(err => console.error('Erro atualizando métricas:', err));
+                try {
+                    // Aguardar todas as atualizações completarem
+                    await Promise.allSettled([
+                        loadMetrics().catch(err => console.error('Erro atualizando métricas:', err)),
+                        loadTimeSeriesChart().catch(err => console.error('Erro atualizando série temporal:', err)),
+                        loadSpeciesChart().catch(err => console.error('Erro atualizando gráfico de espécies:', err)),
+                        loadHeatmap().catch(err => console.error('Erro atualizando heatmap:', err)),
+                        loadCorrelationMatrix().catch(err => console.error('Erro atualizando matriz de correlação:', err))
+                    ]);
+                    
+                    // Atualizar APIs após gráficos
+                    apiIntegrationSystem.refreshAllAPIs();
+                    
+                    console.log('✅ Atualização com filtros concluída');
+                } catch (error) {
+                    console.error('❌ Erro na atualização com filtros:', error);
+                }
                 
-                // Atualizar gráficos com filtros
-                loadTimeSeriesChart().catch(err => console.error('Erro atualizando série temporal:', err));
-                loadSpeciesChart().catch(err => console.error('Erro atualizando gráfico de espécies:', err));
-                loadHeatmap().catch(err => console.error('Erro atualizando heatmap:', err));
-                loadCorrelationMatrix().catch(err => console.error('Erro atualizando matriz de correlação:', err));
-                
-                // Atualizar APIs
-                apiIntegrationSystem.refreshAllAPIs();
                 return;
             }
             
