@@ -46,6 +46,7 @@ from matplotlib.colors import ListedColormap
 import seaborn as sns
 from dataclasses import dataclass
 import warnings
+from bgapp.core.logger import logger
 warnings.filterwarnings('ignore')
 
 # Configuração do logging
@@ -671,12 +672,12 @@ if __name__ == "__main__":
         # Inicializar processador
         processor = BoundaryProcessor()
         
-        print("🌍 Iniciando processamento de fronteiras marítimas")
+        logger.info("🌍 Iniciando processamento de fronteiras marítimas")
         
         try:
             # Carregar fronteiras de Angola
             angola_gdf = processor.load_angola_boundaries()
-            print(f"✅ Carregadas {len(angola_gdf)} fronteiras de Angola")
+            logger.info(f"✅ Carregadas {len(angola_gdf)} fronteiras de Angola")
             
             # Criar objetos MaritimeBoundary
             boundaries = []
@@ -700,10 +701,10 @@ if __name__ == "__main__":
             
             # Exportar resultados
             export_path = processor.export_boundaries(boundaries)
-            print(f"💾 Fronteiras exportadas: {export_path}")
+            logger.info(f"💾 Fronteiras exportadas: {export_path}")
             
         except Exception as e:
-            print(f"❌ Erro: {str(e)}")
+            logger.info(f"❌ Erro: {str(e)}")
     
     # Executar exemplo
     asyncio.run(main())

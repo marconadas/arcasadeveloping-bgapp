@@ -20,6 +20,7 @@ import asyncio
 import hashlib
 import secrets
 from pathlib import Path
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -631,7 +632,7 @@ async def main():
     """Exemplo de uso do sistema de autenticação"""
     
     # Criar usuários de exemplo
-    print("👤 Criando usuários de exemplo...")
+    logger.info("👤 Criando usuários de exemplo...")
     
     try:
         analyst_user = auth_service.user_manager.create_user(
@@ -640,7 +641,7 @@ async def main():
             password="analyst123",
             role=UserRole.ANALYST
         )
-        print(f"✅ Usuário analista criado: {analyst_user.username}")
+        logger.info(f"✅ Usuário analista criado: {analyst_user.username}")
         
         viewer_user = auth_service.user_manager.create_user(
             username="viewer1",
@@ -648,30 +649,30 @@ async def main():
             password="viewer123", 
             role=UserRole.VIEWER
         )
-        print(f"✅ Usuário visualizador criado: {viewer_user.username}")
+        logger.info(f"✅ Usuário visualizador criado: {viewer_user.username}")
         
     except ValueError as e:
-        print(f"⚠️ {e}")
+        logger.info(f"⚠️ {e}")
     
     # Testar login
-    print("\n🔐 Testando autenticação...")
+    logger.info("\n🔐 Testando autenticação...")
     
     try:
         login_result = auth_service.login("admin", "admin123")
-        print(f"✅ Login admin realizado")
-        print(f"Token: {login_result['access_token'][:50]}...")
-        print(f"Permissões: {login_result['user']['permissions']}")
+        logger.info(f"✅ Login admin realizado")
+        logger.info(f"Token: {login_result['access_token'][:50]}...")
+        logger.info(f"Permissões: {login_result['user']['permissions']}")
         
         # Testar token inválido
         try:
             auth_service.login("admin", "senha_errada")
         except HTTPException as e:
-            print(f"❌ Login com senha incorreta rejeitado: {e.detail}")
+            logger.info(f"❌ Login com senha incorreta rejeitado: {e.detail}")
         
     except Exception as e:
-        print(f"❌ Erro no teste de autenticação: {e}")
+        logger.info(f"❌ Erro no teste de autenticação: {e}")
     
-    print("\n🎯 Sistema de autenticação configurado!")
+    logger.info("\n🎯 Sistema de autenticação configurado!")
 
 if __name__ == "__main__":
     asyncio.run(main())

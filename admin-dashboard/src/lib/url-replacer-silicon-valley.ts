@@ -3,6 +3,7 @@
  * Sistema inteligente para substituir TODAS as URLs localhost automaticamente
  */
 
+import { logger } from '@/lib/logger';
 import { ENV } from '@/config/environment';
 
 export class URLReplacerSiliconValley {
@@ -72,7 +73,7 @@ export class URLReplacerSiliconValley {
     const correctedUrl = this.replaceUrl(url);
     
     if (typeof window !== 'undefined') {
-      console.log(`🌐 Opening URL: ${url} → ${correctedUrl}`);
+      logger.info(`🌐 Opening URL: ${url} → ${correctedUrl}`);
       window.open(correctedUrl, target);
     }
   }
@@ -87,7 +88,7 @@ export class URLReplacerSiliconValley {
     window.open = function(url?: string | URL, target?: string, features?: string) {
       if (url && typeof url === 'string') {
         const correctedUrl = URLReplacerSiliconValley.replaceUrl(url);
-        console.log(`🔄 Intercepted window.open: ${url} → ${correctedUrl}`);
+        logger.info(`🔄 Intercepted window.open: ${url} → ${correctedUrl}`);
         return originalOpen.call(window, correctedUrl, target, features);
       }
       return originalOpen.call(window, url, target, features);
@@ -118,6 +119,6 @@ if (typeof window !== 'undefined') {
   // Interceptar window.open automaticamente
   URLReplacerSiliconValley.interceptWindowOpen();
   
-  console.log('🚀 URL Replacer Silicon Valley ativo!');
-  console.log('🌐 Ambiente:', ENV.isProduction ? 'Produção (Cloudflare)' : 'Desenvolvimento (Local)');
+  logger.info('🚀 URL Replacer Silicon Valley ativo!');
+  logger.info(`🌐 Ambiente: ${ENV.isProduction ? 'Produção (Cloudflare)' : 'Desenvolvimento (Local)'}`);
 }

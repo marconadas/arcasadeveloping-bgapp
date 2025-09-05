@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 import base64
 import time
+from bgapp.core.logger import logger
 
 
 class CopernicusRealConnector:
@@ -68,7 +69,7 @@ class CopernicusRealConnector:
                 'client_id': 'copernicus-marine'
             }
             
-            print(f"🔐 Tentando autenticação para: {self.username}")
+            logger.info(f"🔐 Tentando autenticação para: {self.username}")
             
             response = self.session.post(auth_url, data=auth_data, timeout=30)
             
@@ -81,15 +82,15 @@ class CopernicusRealConnector:
                 # Configurar header de autorização
                 self.session.headers['Authorization'] = f'Bearer {self.access_token}'
                 
-                print("✅ Autenticação bem-sucedida!")
+                logger.info("✅ Autenticação bem-sucedida!")
                 return True
             else:
-                print(f"❌ Falha na autenticação: {response.status_code}")
-                print(f"Resposta: {response.text[:200]}")
+                logger.info(f"❌ Falha na autenticação: {response.status_code}")
+                logger.info(f"Resposta: {response.text[:200]}")
                 return False
                 
         except Exception as e:
-            print(f"❌ Erro na autenticação: {e}")
+            logger.info(f"❌ Erro na autenticação: {e}")
             return False
     
     def get_available_datasets(self) -> List[Dict[str, Any]]:
@@ -117,11 +118,11 @@ class CopernicusRealConnector:
                 
                 return angola_datasets
             else:
-                print(f"❌ Erro ao obter datasets: {response.status_code}")
+                logger.info(f"❌ Erro ao obter datasets: {response.status_code}")
                 return []
                 
         except Exception as e:
-            print(f"❌ Erro ao conectar ao catálogo: {e}")
+            logger.info(f"❌ Erro ao conectar ao catálogo: {e}")
             return []
     
     def get_realtime_data_angola(self, 
@@ -139,10 +140,10 @@ class CopernicusRealConnector:
         if not date:
             date = datetime.now().strftime('%Y-%m-%d')
         
-        print(f"📊 Obtendo dados do dataset: {dataset_id}")
-        print(f"🌊 Variáveis: {', '.join(variables)}")
-        print(f"📅 Data: {date}")
-        print(f"🗺️ Área: Angola ZEE")
+        logger.info(f"📊 Obtendo dados do dataset: {dataset_id}")
+        logger.info(f"🌊 Variáveis: {', '.join(variables)}")
+        logger.info(f"📅 Data: {date}")
+        logger.info(f"🗺️ Área: Angola ZEE")
         
         # Tentar diferentes abordagens para obter dados
         data_methods = [
@@ -157,11 +158,11 @@ class CopernicusRealConnector:
                 if result:
                     return result
             except Exception as e:
-                print(f"⚠️ Método falhou: {e}")
+                logger.info(f"⚠️ Método falhou: {e}")
                 continue
         
         # Se todos os métodos falharam, usar dados simulados mas com credenciais reais
-        print("⚠️ APIs não disponíveis, usando dados simulados com base nas credenciais reais")
+        logger.info("⚠️ APIs não disponíveis, usando dados simulados com base nas credenciais reais")
         return self._generate_realistic_data(dataset_id, variables, date)
     
     def _try_stac_api(self, dataset_id: str, variables: List[str], date: str) -> Optional[Dict]:
@@ -215,7 +216,7 @@ class CopernicusRealConnector:
     def _try_opendap(self, dataset_id: str, variables: List[str], date: str) -> Optional[Dict]:
         """Tentar OpenDAP"""
         # URLs OpenDAP são complexas, simplificado aqui
-        print("🔗 Tentando OpenDAP (requer configuração adicional)")
+        logger.info("🔗 Tentando OpenDAP (requer configuração adicional)")
         return None
     
     def _generate_realistic_data(self, dataset_id: str, variables: List[str], date: str) -> Dict[str, Any]:
@@ -305,21 +306,21 @@ class CopernicusRealConnector:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         
-        print(f"💾 Dados salvos em: {output_path}")
+        logger.info(f"💾 Dados salvos em: {output_path}")
         return output_path
 
 
 def main():
     """Teste do conector real"""
-    print("🌊 Copernicus Marine Real - Angola")
-    print("=" * 50)
+    logger.info("🌊 Copernicus Marine Real - Angola")
+    logger.info("=" * 50)
     
     # Inicializar conector com credenciais
     connector = CopernicusRealConnector()
     
     # Tentar autenticação
     if connector.authenticate():
-        print("🔐 Autenticado com sucesso!")
+        logger.info("🔐 Autenticado com sucesso!")
         
         # Obter dados em tempo real
         real_data = connector.get_realtime_data_angola()
@@ -328,18 +329,18 @@ def main():
         connector.save_data_to_frontend(real_data)
         
         # Mostrar resumo
-        print(f"\n📊 Dados obtidos:")
-        print(f"   Fonte: {real_data['source']}")
-        print(f"   Pontos: {real_data['total_points']}")
-        print(f"   Usuário: {real_data['metadata']['user']}")
+        logger.info(f"\n📊 Dados obtidos:")
+        logger.info(f"   Fonte: {real_data['source']}")
+        logger.info(f"   Pontos: {real_data['total_points']}")
+        logger.info(f"   Usuário: {real_data['metadata']['user']}")
         
         # Mostrar alguns dados
         for point in real_data['data'][:3]:
-            print(f"   {point['location']}: SST={point['sea_surface_temperature']:.1f}°C, Chl={point['chlorophyll_a']:.1f}mg/m³")
+            logger.info(f"   {point['location']}: SST={point['sea_surface_temperature']:.1f}°C, Chl={point['chlorophyll_a']:.1f}mg/m³")
     
     else:
-        print("❌ Falha na autenticação")
-        print("⚠️ Verificar credenciais em CREDENTIALS.md")
+        logger.info("❌ Falha na autenticação")
+        logger.info("⚠️ Verificar credenciais em CREDENTIALS.md")
 
 
 if __name__ == "__main__":

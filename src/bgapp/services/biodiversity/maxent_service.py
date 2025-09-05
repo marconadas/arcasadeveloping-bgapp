@@ -38,6 +38,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from dataclasses import dataclass
 import warnings
+from bgapp.core.logger import logger
 warnings.filterwarnings('ignore')
 
 # Configuração do logging
@@ -649,7 +650,7 @@ if __name__ == "__main__":
         # Exemplo com espécie marinha comum em Angola
         species_name = "Sardinella aurita"  # Sardinha
         
-        print(f"🐟 Iniciando modelação MaxEnt para {species_name}")
+        logger.info(f"🐟 Iniciando modelação MaxEnt para {species_name}")
         
         try:
             # Treinar modelo
@@ -662,14 +663,14 @@ if __name__ == "__main__":
             luanda_prediction = maxent_service.get_species_prediction(
                 species_name, -8.8383, 13.2344
             )
-            print(f"🎯 Predição para Luanda: {luanda_prediction}")
+            logger.info(f"🎯 Predição para Luanda: {luanda_prediction}")
             
             # Exportar resultados
             export_path = maxent_service.export_results(result)
-            print(f"💾 Resultados exportados: {export_path}")
+            logger.info(f"💾 Resultados exportados: {export_path}")
             
         except Exception as e:
-            print(f"❌ Erro: {str(e)}")
+            logger.info(f"❌ Erro: {str(e)}")
     
     # Executar exemplo
     asyncio.run(main())

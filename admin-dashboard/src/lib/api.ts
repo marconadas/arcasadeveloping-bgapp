@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import type { 
   ApiResponse, 
@@ -20,7 +21,8 @@ import type {
   MaxEntModel,
   CoastalAnalysis,
   MaritimeBoundary,
-  DashboardStats
+  DashboardStats,
+  BGAPPMap
 } from '@/types';
 
 import { ENV, getApiUrl, getExternalServiceUrl } from '@/config/environment';
@@ -183,17 +185,17 @@ export const getServices = async (): Promise<ServiceStatus[]> => {
       }
     });
     
-    console.log('🔗 Services API Response:', response.data);
+    logger.info('🔗 Services API Response:', response.data);
     
     // O worker retorna formato: { success: true, data: [...], summary: {...} }
     if (response.data && response.data.success && response.data.data) {
-      console.log('✅ Dados reais dos serviços obtidos:', response.data.summary);
+      logger.info('✅ Dados reais dos serviços obtidos:', response.data.summary);
       return response.data.data; // Array de serviços
     }
     
     throw new Error('Formato de resposta inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo serviços reais:', error);
+    logger.error('❌ Erro obtendo serviços reais:', { error: String(error) });
     throw error;
   }
 };
@@ -246,13 +248,13 @@ export const getMLModels = async (): Promise<MLModel[]> => {
     const response = await adminApi.get<any>('/api/ml/models');
     
     if (response.data && response.data.success && response.data.models) {
-      console.log('🧠 ML Models obtidos:', response.data.total, 'modelos');
+      logger.info(`🧠 ML Models obtidos: ${response.data.total} modelos`);
       return response.data.models;
     }
     
     throw new Error('Formato ML inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo modelos ML:', error);
+    logger.error('❌ Erro obtendo modelos ML:', { error: String(error) });
     throw error;
   }
 };
@@ -267,13 +269,13 @@ export const getMLStats = async (): Promise<any> => {
     const response = await adminApi.get<any>('/api/ml/stats');
     
     if (response.data && response.data.success && response.data.data) {
-      console.log('🧠 ML Stats obtidas:', response.data.data);
+      logger.info('🧠 ML Stats obtidas:', response.data.data);
       return response.data.data;
     }
     
     throw new Error('Formato ML Stats inválido');
   } catch (error) {
-    console.error('❌ Erro obtendo ML stats:', error);
+    logger.error('❌ Erro obtendo ML stats:', { error: String(error) });
     throw error;
   }
 };
@@ -339,7 +341,7 @@ export const getSTACCollections = async (): Promise<STACCollection[]> => {
     
     return [];
   } catch (error) {
-    console.error('STAC API error:', error);
+    logger.error('STAC API error:', { error: String(error) });
     // Retry direto no STAC Worker - SEM FALLBACK PARA ADMIN API
     try {
       const retryResponse = await stacApi.get<any>('/collections');
@@ -354,7 +356,7 @@ export const getSTACCollections = async (): Promise<STACCollection[]> => {
         lastUpdated: new Date().toISOString()
       })) || [];
     } catch (retryError) {
-      console.error('STAC API retry failed:', retryError);
+      logger.error('STAC API retry failed:', retryError);
       throw new Error('STAC API não disponível - verifique https://bgapp-stac.majearcasa.workers.dev/health');
     }
   }
@@ -384,7 +386,7 @@ export const getPygeoapiCollections = async (): Promise<any[]> => {
     const response = await pygeoapiApi.get<any>('/collections');
     return response.data.collections || [];
   } catch (error) {
-    console.warn('pygeoapi failed:', error);
+    logger.warn('pygeoapi failed:', { error: String(error) });
     throw new Error(`Failed to fetch pygeoapi collections: ${error}`);
   }
 };
@@ -412,7 +414,7 @@ export const getPygeoapiProcesses = async (): Promise<any[]> => {
     const response = await pygeoapiApi.get<any>('/processes');
     return response.data.processes || [];
   } catch (error) {
-    console.warn('pygeoapi processes failed:', error);
+    logger.warn('pygeoapi processes failed:', { error: String(error) });
     return [];
   }
 };
@@ -424,7 +426,7 @@ export const getMinIOBuckets = async (): Promise<any[]> => {
     const response = await minioApi.get<any>('/minio/admin/v3/list-buckets');
     return response.data.buckets || [];
   } catch (error) {
-    console.warn('MinIO direct access failed, using Admin API:', error);
+    logger.warn('MinIO direct access failed, using Admin API:', { error: String(error) });
     // Fallback para Admin API
     const response = await adminApi.get<ApiResponse<any[]>>('/storage/buckets');
     return handleApiResponse(response);
@@ -478,7 +480,7 @@ export const getAsyncTasks = async (): Promise<AsyncTask[]> => {
     const response = await flowerApi.get<any>('/api/tasks');
     
     // Converter formato Flower para formato esperado
-    const tasks = Object.entries(response.data || {}).map(([taskId, task]: [string, any]) => ({
+    const tasks: AsyncTask[] = Object.entries(response.data || {}).map(([taskId, task]: [string, any]) => ({
       id: taskId,
       name: task.name || 'Unknown Task',
       status: task.state?.toLowerCase() || 'pending',
@@ -488,12 +490,16 @@ export const getAsyncTasks = async (): Promise<AsyncTask[]> => {
       error: task.traceback,
       worker: task.worker,
       queue: task.routing_key || 'default',
-      progress: task.progress || 0
+      progress: task.progress || 0,
+      queueName: task.routing_key || 'default',
+      priority: task.priority || 0,
+      retries: task.retries || 0,
+      maxRetries: task.max_retries || 3
     }));
     
     return tasks;
   } catch (error) {
-    console.warn('Flower API failed, using Admin API:', error);
+    logger.warn('Flower API failed, using Admin API:', { error: String(error) });
     // Fallback para Admin API
     const response = await adminApi.get<ApiResponse<AsyncTask[]>>('/async/tasks');
     return handleApiResponse(response);
@@ -512,7 +518,7 @@ export const getFlowerWorkers = async (): Promise<any[]> => {
       lastHeartbeat: worker.timestamp ? new Date(worker.timestamp * 1000).toISOString() : null
     }));
   } catch (error) {
-    console.warn('Failed to fetch Flower workers:', error);
+    logger.warn('Failed to fetch Flower workers:', { error: String(error) });
     return [];
   }
 };
@@ -528,7 +534,7 @@ export const getFlowerTaskTypes = async (): Promise<any[]> => {
       retry: stats.retry || 0
     }));
   } catch (error) {
-    console.warn('Failed to fetch task types:', error);
+    logger.warn('Failed to fetch task types:', { error: String(error) });
     return [];
   }
 };
@@ -666,7 +672,7 @@ export const getKeycloakRealms = async (): Promise<any[]> => {
     const response = await keycloakApi.get<any>('/admin/realms');
     return response.data || [];
   } catch (error) {
-    console.warn('Keycloak API failed:', error);
+    logger.warn('Keycloak API failed:', { error: String(error) });
     return [];
   }
 };
@@ -676,7 +682,7 @@ export const getKeycloakUsers = async (realm: string = 'bgapp'): Promise<any[]> 
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/users`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak users:', error);
+    logger.warn('Failed to fetch Keycloak users:', { error: String(error) });
     return [];
   }
 };
@@ -686,7 +692,7 @@ export const getKeycloakClients = async (realm: string = 'bgapp'): Promise<any[]
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/clients`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak clients:', error);
+    logger.warn('Failed to fetch Keycloak clients:', { error: String(error) });
     return [];
   }
 };
@@ -696,7 +702,7 @@ export const getKeycloakSessions = async (realm: string = 'bgapp'): Promise<any[
     const response = await keycloakApi.get<any>(`/admin/realms/${realm}/sessions`);
     return response.data || [];
   } catch (error) {
-    console.warn('Failed to fetch Keycloak sessions:', error);
+    logger.warn('Failed to fetch Keycloak sessions:', { error: String(error) });
     return [];
   }
 };
@@ -710,7 +716,7 @@ export const getMaps = async (): Promise<ApiResponse<BGAPPMap[]>> => {
     const response: AxiosResponse<ApiResponse<BGAPPMap[]>> = await adminApi.get('/api/maps');
     return response.data;
   } catch (error) {
-    logger.error('Erro ao obter mapas:', error);
+    logger.error('Erro ao obter mapas:', { error: String(error) });
     throw error;
   }
 };
@@ -720,7 +726,7 @@ export const getMapById = async (mapId: string): Promise<ApiResponse<BGAPPMap>> 
     const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.get(`/api/maps/${mapId}`);
     return response.data;
   } catch (error) {
-    logger.error(`Erro ao obter mapa ${mapId}:`, error);
+    logger.error(`Erro ao obter mapa ${mapId}:`, { error: String(error) });
     throw error;
   }
 };
@@ -730,7 +736,7 @@ export const createMap = async (mapData: any): Promise<ApiResponse<BGAPPMap>> =>
     const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.post('/api/maps', mapData);
     return response.data;
   } catch (error) {
-    logger.error('Erro ao criar mapa:', error);
+    logger.error('Erro ao criar mapa:', { error: String(error) });
     throw error;
   }
 };
@@ -740,7 +746,7 @@ export const updateMap = async (mapId: string, updates: any): Promise<ApiRespons
     const response: AxiosResponse<ApiResponse<BGAPPMap>> = await adminApi.put(`/api/maps/${mapId}`, updates);
     return response.data;
   } catch (error) {
-    logger.error(`Erro ao atualizar mapa ${mapId}:`, error);
+    logger.error(`Erro ao atualizar mapa ${mapId}:`, { error: String(error) });
     throw error;
   }
 };
@@ -750,7 +756,7 @@ export const deleteMap = async (mapId: string): Promise<ApiResponse<any>> => {
     const response: AxiosResponse<ApiResponse<any>> = await adminApi.delete(`/api/maps/${mapId}`);
     return response.data;
   } catch (error) {
-    logger.error(`Erro ao deletar mapa ${mapId}:`, error);
+    logger.error(`Erro ao deletar mapa ${mapId}:`, { error: String(error) });
     throw error;
   }
 };
@@ -760,7 +766,7 @@ export const getMapStats = async (): Promise<ApiResponse<any>> => {
     const response: AxiosResponse<ApiResponse<any>> = await adminApi.get('/api/maps/stats');
     return response.data;
   } catch (error) {
-    logger.error('Erro ao obter estatísticas de mapas:', error);
+    logger.error('Erro ao obter estatísticas de mapas:', { error: String(error) });
     throw error;
   }
 };
@@ -770,7 +776,7 @@ export const getMapTemplates = async (): Promise<ApiResponse<any[]>> => {
     const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/templates');
     return response.data;
   } catch (error) {
-    logger.error('Erro ao obter templates de mapas:', error);
+    logger.error('Erro ao obter templates de mapas:', { error: String(error) });
     throw error;
   }
 };
@@ -780,7 +786,7 @@ export const getMapCategories = async (): Promise<ApiResponse<any[]>> => {
     const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/tools/categories');
     return response.data;
   } catch (error) {
-    logger.error('Erro ao obter categorias de mapas:', error);
+    logger.error('Erro ao obter categorias de mapas:', { error: String(error) });
     throw error;
   }
 };
@@ -790,7 +796,7 @@ export const getBaseLayers = async (): Promise<ApiResponse<any[]>> => {
     const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get('/api/maps/tools/base-layers');
     return response.data;
   } catch (error) {
-    logger.error('Erro ao obter camadas base:', error);
+    logger.error('Erro ao obter camadas base:', { error: String(error) });
     throw error;
   }
 };
@@ -800,7 +806,7 @@ export const validateMapConfig = async (config: any): Promise<ApiResponse<any>> 
     const response: AxiosResponse<ApiResponse<any>> = await adminApi.post('/api/maps/tools/validate', config);
     return response.data;
   } catch (error) {
-    logger.error('Erro ao validar configuração de mapa:', error);
+    logger.error('Erro ao validar configuração de mapa:', { error: String(error) });
     throw error;
   }
 };
@@ -810,7 +816,7 @@ export const suggestLayers = async (category: string): Promise<ApiResponse<any[]
     const response: AxiosResponse<ApiResponse<any[]>> = await adminApi.get(`/api/maps/tools/suggest-layers/${category}`);
     return response.data;
   } catch (error) {
-    logger.error(`Erro ao sugerir camadas para categoria ${category}:`, error);
+    logger.error(`Erro ao sugerir camadas para categoria ${category}:`, { error: String(error) });
     throw error;
   }
 };
@@ -820,7 +826,7 @@ export const optimizeMapConfig = async (config: any): Promise<ApiResponse<any>> 
     const response: AxiosResponse<ApiResponse<any>> = await adminApi.post('/api/maps/tools/optimize', config);
     return response.data;
   } catch (error) {
-    logger.error('Erro ao otimizar configuração de mapa:', error);
+    logger.error('Erro ao otimizar configuração de mapa:', { error: String(error) });
     throw error;
   }
 };

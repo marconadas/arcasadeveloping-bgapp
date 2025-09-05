@@ -3,6 +3,7 @@
  * API que funciona tanto com Workers quanto com fallback local
  */
 
+import { logger } from '@/lib/logger';
 import axios, { AxiosResponse } from 'axios';
 import { ENV, getMockApiResponse } from '@/config/environment';
 
@@ -22,7 +23,7 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    console.warn('🔄 API Error, using fallback:', error.message);
+    logger.warn('🔄 API Error, using fallback:', error.message);
     return Promise.resolve({ data: null, status: 503 });
   }
 );
@@ -37,7 +38,7 @@ export const bgappApiCloudflare = {
         return response.data;
       }
     } catch (error) {
-      console.log('🔄 Using mock data for dashboard overview');
+      logger.info('🔄 Using mock data for dashboard overview');
     }
     
     return getMockApiResponse('/api/dashboard/overview');
@@ -51,7 +52,7 @@ export const bgappApiCloudflare = {
         return response.data;
       }
     } catch (error) {
-      console.log('🔄 Using mock data for system health');
+      logger.info('🔄 Using mock data for system health');
     }
     
     return getMockApiResponse('/admin-dashboard/system-health');
@@ -65,7 +66,7 @@ export const bgappApiCloudflare = {
         return response.data;
       }
     } catch (error) {
-      console.log('🔄 Using mock data for oceanographic data');
+      logger.info('🔄 Using mock data for oceanographic data');
     }
     
     return getMockApiResponse('/admin-dashboard/oceanographic-data');
@@ -79,7 +80,7 @@ export const bgappApiCloudflare = {
         return response.data;
       }
     } catch (error) {
-      console.log('🔄 Using mock data for fisheries stats');
+      logger.info('🔄 Using mock data for fisheries stats');
     }
     
     return getMockApiResponse('/admin-dashboard/fisheries-stats');
@@ -93,7 +94,7 @@ export const bgappApiCloudflare = {
         return response.data;
       }
     } catch (error) {
-      console.log('🔄 Using mock data for copernicus data');
+      logger.info('🔄 Using mock data for copernicus data');
     }
     
     return getMockApiResponse('/admin-dashboard/copernicus-advanced/real-time-data');
@@ -417,5 +418,5 @@ export const bgappApiCloudflare = {
 
 // 🔧 Debug info
 if (ENV.isDevelopment && typeof window !== 'undefined') {
-  console.log('🌐 BGAPP API Cloudflare initialized with:', ENV.apiUrl);
+  logger.info('🌐 BGAPP API Cloudflare initialized with:', { apiUrl: ENV.apiUrl });
 }

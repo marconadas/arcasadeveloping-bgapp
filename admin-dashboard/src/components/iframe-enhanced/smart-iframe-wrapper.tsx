@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ENV, getScientificInterfaceUrl } from '@/config/environment';
@@ -57,7 +58,7 @@ export default function SmartIFrameWrapper({
 
   useEffect(() => {
     if (isCircularNavigation) {
-      console.warn(`🔄 Navegação circular detectada para: ${fullUrl}`);
+      logger.warn(`🔄 Navegação circular detectada para: ${fullUrl}`);
       setHasError(true);
     }
   }, [fullUrl, isCircularNavigation]);

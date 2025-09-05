@@ -1,4 +1,5 @@
 'use client'
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,6 +20,8 @@ interface WorkflowStatus {
   success: boolean
   message: string
   environment: string
+  company?: string
+  status?: string
   services: Array<{
     name: string
     url: string
@@ -68,7 +71,7 @@ export function ServicesStatus() {
       const data = await response.json()
       setWorkflowInfo(data)
     } catch (error) {
-      console.error('Failed to fetch workflow info:', error)
+      logger.error('Failed to fetch workflow info:', { error: String(error) })
     }
   }
 

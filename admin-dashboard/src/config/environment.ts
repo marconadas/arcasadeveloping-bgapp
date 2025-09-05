@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * 🌐 BGAPP Environment Configuration - Silicon Valley Style Enhanced
  * Configuração centralizada de URLs e ambientes com compatibilidade
@@ -148,7 +149,7 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
     
     for (let retry = 0; retry <= ENV.retryConfig.maxRetries; retry++) {
       try {
-        console.log(`🔄 Tentativa ${retry + 1}/${ENV.retryConfig.maxRetries + 1} para ${url}`);
+        logger.info(`🔄 Tentativa ${retry + 1}/${ENV.retryConfig.maxRetries + 1} para ${url}`);
         
         const response = await fetch(url, {
           ...options,
@@ -162,7 +163,7 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
         });
         
         if (response.ok) {
-          console.log(`✅ Sucesso com ${url}`);
+          logger.info(`✅ Sucesso com ${url}`);
           return response;
         }
         
@@ -175,7 +176,7 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
         
       } catch (error) {
         lastError = error as Error;
-        console.warn(`⚠️ Erro em ${url} (tentativa ${retry + 1}):`, error);
+        logger.warn(`⚠️ Erro em ${url} (tentativa ${retry + 1}):`, { error: String(error) });
         
         // Esperar antes do próximo retry (exceto na última tentativa)
         if (retry < ENV.retryConfig.maxRetries) {
@@ -192,7 +193,7 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
 // 🚫 MOCK DATA REMOVIDO - APENAS DADOS REAIS!
 export const getMockApiResponse = (endpoint: string): any => {
   // MOCK DATA FOI ELIMINADO DESTA FASE
-  console.warn('⚠️ Mock data foi eliminado - usando apenas dados reais');
+  logger.warn('⚠️ Mock data foi eliminado - usando apenas dados reais');
   return { 
     success: false, 
     error: 'Mock data eliminado - apenas dados reais disponíveis',
@@ -203,5 +204,5 @@ export const getMockApiResponse = (endpoint: string): any => {
 
 // 🔧 Debug info (apenas em desenvolvimento)
 if (ENV.isDevelopment && typeof window !== 'undefined') {
-  console.log('🌐 BGAPP Environment Config:', ENV);
+  logger.info('🌐 BGAPP Environment Config:', ENV);
 }

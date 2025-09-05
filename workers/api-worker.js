@@ -3,6 +3,8 @@
  * Fornece endpoints para o dashboard administrativo
  */
 
+import { getCORSHeaders, handleCORSPreflight } from './cors-config.js';
+
 // Dados simulados para demonstração
 const MOCK_DATA = {
   services: {
@@ -63,20 +65,17 @@ const MOCK_DATA = {
 };
 
 // Funções utilitárias
-function corsHeaders() {
+function corsHeaders(request, env) {
   return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-retry-attempt, x-request-id',
-    'Access-Control-Max-Age': '86400',
+    ...getCORSHeaders(request, env),
     'Content-Type': 'application/json'
   };
 }
 
-function jsonResponse(data, status = 200) {
+function jsonResponse(data, status = 200, request, env) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: corsHeaders()
+    headers: corsHeaders(request, env)
   });
 }
 
@@ -88,7 +87,7 @@ export default {
     
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: corsHeaders() });
+      return handleCORSPreflight(request, env);
     }
     
     try {
@@ -99,7 +98,7 @@ export default {
           timestamp: new Date().toISOString(),
           version: '1.0.0',
           environment: 'cloudflare-worker'
-        });
+        }, 200, request, env);
       }
       
       // Services endpoint (without /status) - for admin compatibility
@@ -112,7 +111,7 @@ export default {
           }
         });
         
-        return jsonResponse(MOCK_DATA.services);
+        return jsonResponse(MOCK_DATA.services, 200, request, env);
       }
       
       // Services status (mantido para compatibilidade)
@@ -125,12 +124,12 @@ export default {
           }
         });
         
-        return jsonResponse(MOCK_DATA.services);
+        return jsonResponse(MOCK_DATA.services, 200, request, env);
       }
       
       // Collections
       if (path === '/collections') {
-        return jsonResponse({ collections: MOCK_DATA.collections });
+        return jsonResponse({ collections: MOCK_DATA.collections }, 200, request, env);
       }
       
       // Metrics
@@ -140,17 +139,17 @@ export default {
         MOCK_DATA.metrics.active_users = Math.floor(Math.random() * 50) + 10;
         MOCK_DATA.metrics.avg_response_time = Math.floor(Math.random() * 100) + 50;
         
-        return jsonResponse(MOCK_DATA.metrics);
+        return jsonResponse(MOCK_DATA.metrics, 200, request, env);
       }
       
       // Alerts
       if (path === '/alerts') {
-        return jsonResponse({ alerts: MOCK_DATA.alerts });
+        return jsonResponse({ alerts: MOCK_DATA.alerts }, 200, request, env);
       }
       
       // Storage
       if (path === '/storage/buckets') {
-        return jsonResponse(MOCK_DATA.storage);
+        return jsonResponse(MOCK_DATA.storage, 200, request, env);
       }
       
       // Database simulation
@@ -163,7 +162,7 @@ export default {
             { name: 'measurements', rows: 15672, size_mb: 234.8 }
           ],
           total_size_mb: 416.0
-        });
+        }, 200, request, env);
       }
       
       // Real-time data simulation
@@ -175,7 +174,7 @@ export default {
           current_speed: Math.random() * 3,
           current_direction: Math.random() * 360,
           timestamp: new Date().toISOString()
-        });
+        }, 200, request, env);
       }
       
       // API endpoints list
@@ -192,7 +191,7 @@ export default {
             { path: '/database/tables', method: 'GET', description: 'Tabelas da base de dados' },
             { path: '/realtime/data', method: 'GET', description: 'Dados em tempo real' }
           ]
-        });
+        }, 200, request, env);
       }
       
       // 404 for unknown paths
@@ -200,13 +199,13 @@ export default {
         error: 'Endpoint não encontrado',
         path,
         available_endpoints: '/api/endpoints'
-      }, 404);
+      }, 404, request, env);
       
     } catch (error) {
       return jsonResponse({
         error: 'Erro interno do servidor',
         message: error.message
-      }, 500);
+      }, 500, request, env);
     }
   }
 };

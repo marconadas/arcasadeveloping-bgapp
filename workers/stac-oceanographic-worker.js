@@ -47,17 +47,20 @@ const PRIORITY_COLLECTIONS = [
   }
 ];
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
-};
+import { getCORSHeaders, handleCORSPreflight } from './cors-config.js';
+
+// Base headers com CORS dinâmico
+function getResponseHeaders(request, env) {
+  return {
+    ...getCORSHeaders(request, env),
+    'Content-Type': 'application/json'
+  };
+}
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: CORS_HEADERS
+    headers: getResponseHeaders(request, env)
   });
 }
 
@@ -131,7 +134,7 @@ export default {
     
     // Handle CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { headers: getResponseHeaders(request, env) });
     }
     
     try {

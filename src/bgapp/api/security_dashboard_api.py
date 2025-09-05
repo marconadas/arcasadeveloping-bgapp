@@ -12,6 +12,7 @@ from pydantic import BaseModel
 try:
     from ..monitoring.security_dashboard import get_security_dashboard, SecurityStatus, AlertLevel
     from ..auth.security import require_admin, User
+from bgapp.core.logger import logger
     DASHBOARD_AVAILABLE = True
 except ImportError:
     DASHBOARD_AVAILABLE = False
@@ -285,23 +286,23 @@ def include_security_dashboard_router(app):
     app.include_router(router)
     
     if DASHBOARD_AVAILABLE:
-        print("✅ Endpoints do dashboard de segurança adicionados")
+        logger.info("✅ Endpoints do dashboard de segurança adicionados")
     else:
-        print("⚠️ Endpoints do dashboard desabilitados (sistema não disponível)")
+        logger.info("⚠️ Endpoints do dashboard desabilitados (sistema não disponível)")
 
 if __name__ == "__main__":
-    print("📊 API do Dashboard de Segurança - BGAPP")
-    print("Endpoints para monitorização de segurança em tempo real")
+    logger.info("📊 API do Dashboard de Segurança - BGAPP")
+    logger.info("Endpoints para monitorização de segurança em tempo real")
     
     if DASHBOARD_AVAILABLE:
-        print("✅ Dashboard disponível")
-        print("\nEndpoints disponíveis:")
-        print("  GET /security/health - Status de saúde")
-        print("  GET /security/summary - Resumo de segurança")  
-        print("  GET /security/metrics - Métricas detalhadas")
-        print("  GET /security/alerts - Alertas de segurança")
-        print("  GET /security/dashboard - Dados completos")
-        print("  GET /security/export - Exportar histórico")
-        print("  POST /security/events - Registrar evento")
+        logger.info("✅ Dashboard disponível")
+        logger.info("\nEndpoints disponíveis:")
+        logger.info("  GET /security/health - Status de saúde")
+        logger.info("  GET /security/summary - Resumo de segurança")  
+        logger.info("  GET /security/metrics - Métricas detalhadas")
+        logger.info("  GET /security/alerts - Alertas de segurança")
+        logger.info("  GET /security/dashboard - Dados completos")
+        logger.info("  GET /security/export - Exportar histórico")
+        logger.info("  POST /security/events - Registrar evento")
     else:
-        print("❌ Dashboard não disponível")
+        logger.info("❌ Dashboard não disponível")

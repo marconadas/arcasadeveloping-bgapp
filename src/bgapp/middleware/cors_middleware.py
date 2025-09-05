@@ -170,6 +170,7 @@ def add_fallback_cors_middleware(app: FastAPI) -> None:
 if __name__ == "__main__":
     # Teste do middleware
     from fastapi import FastAPI
+from bgapp.core.logger import logger
     
     app = FastAPI()
     add_cors_middleware(app)
@@ -178,5 +179,5 @@ if __name__ == "__main__":
     async def test_endpoint():
         return {"message": "CORS teste"}
     
-    print("✅ Middleware CORS configurado para teste")
-    print("🌐 Execute: uvicorn __main__:app --reload para testar")
+    logger.info("✅ Middleware CORS configurado para teste")
+    logger.info("🌐 Execute: uvicorn __main__:app --reload para testar")

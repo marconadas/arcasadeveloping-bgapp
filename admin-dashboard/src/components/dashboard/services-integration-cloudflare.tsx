@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { ENV } from '@/config/environment';
@@ -93,11 +94,11 @@ export default function ServicesIntegrationCloudflare() {
     setError(null);
     const newServices: any = {};
 
-    console.log('🚀 TESTANDO SERVIÇOS CLOUDFLARE...');
+    logger.info('🚀 TESTANDO SERVIÇOS CLOUDFLARE...');
 
     for (const config of serviceConfigs) {
       try {
-        console.log(`📡 Testing ${config.name}...`);
+        logger.info(`📡 Testing ${config.name}...`);
         
         if (config.testEndpoint && !config.url.startsWith('cloudflare-')) {
           // Testar apenas APIs que retornam JSON
@@ -107,7 +108,7 @@ export default function ServicesIntegrationCloudflare() {
               headers: {
                 'Accept': 'application/json',
               },
-              timeout: 5000
+              signal: AbortSignal.timeout(5000)
             });
 
             if (response.ok) {
@@ -121,7 +122,7 @@ export default function ServicesIntegrationCloudflare() {
                   url: config.url,
                   last_check: new Date().toISOString()
                 };
-                console.log(`✅ ${config.name} online`);
+                logger.info(`✅ ${config.name} online`);
               } else {
                 throw new Error('Response is not JSON');
               }
@@ -136,7 +137,7 @@ export default function ServicesIntegrationCloudflare() {
           try {
             const response = await fetch(config.url, { 
               method: 'HEAD',  // Apenas verificar se existe
-              timeout: 3000 
+              signal: AbortSignal.timeout(3000)
             });
             
             if (response.ok) {
@@ -147,7 +148,7 @@ export default function ServicesIntegrationCloudflare() {
                 url: config.url,
                 last_check: new Date().toISOString()
               };
-              console.log(`✅ ${config.name} online (Pages)`);
+              logger.info(`✅ ${config.name} online (Pages)`);
             } else {
               throw new Error(`HTTP ${response.status}`);
             }
@@ -163,10 +164,10 @@ export default function ServicesIntegrationCloudflare() {
             url: config.url,
             last_check: new Date().toISOString()
           };
-          console.log(`✅ ${config.name} (Cloudflare native)`);
+          logger.info(`✅ ${config.name} (Cloudflare native)`);
         }
       } catch (err) {
-        console.warn(`⚠️ ${config.name} error:`, err);
+        logger.warn(`⚠️ ${config.name} error:`, { error: String(err) });
         newServices[config.key] = {
           status: 'offline',
           error: err instanceof Error ? err.message : 'Unknown error',
@@ -179,7 +180,7 @@ export default function ServicesIntegrationCloudflare() {
     setServices(newServices);
     setLoading(false);
     
-    console.log('📊 Services status:', newServices);
+    logger.info('📊 Services status:', newServices);
   };
 
   useEffect(() => {

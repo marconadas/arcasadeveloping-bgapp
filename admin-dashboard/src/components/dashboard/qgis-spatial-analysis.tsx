@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -262,7 +263,7 @@ export default function QGISSpatialAnalysis() {
       setStats(statsData);
 
     } catch (err) {
-      // console.error('Error fetching spatial data:', err);
+      // logger.error('Error fetching spatial data:', { error: String(err) });
       setError('Erro ao carregar dados de análise espacial');
     } finally {
       setLoading(false);
@@ -280,7 +281,7 @@ export default function QGISSpatialAnalysis() {
       await fetchSpatialData();
       
     } catch (err) {
-      // console.error('Error running analysis:', err);
+      // logger.error('Error running analysis:', { error: String(err) });
     } finally {
       setProcessing(false);
     }

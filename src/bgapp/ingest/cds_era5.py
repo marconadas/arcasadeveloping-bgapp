@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 import cdsapi
+from bgapp.core.logger import logger
 
 
 def main(argv: Optional[list[str]] = None) -> None:
@@ -36,12 +37,12 @@ def main(argv: Optional[list[str]] = None) -> None:
             },
             str(args.out)
         )
-        print(f"Downloaded {args.out}")
+        logger.info(f"Downloaded {args.out}")
     except Exception as e:
-        print(f"CDS download failed (expected without API key): {e}")
+        logger.info(f"CDS download failed (expected without API key): {e}")
         # Create placeholder
         args.out.write_bytes(b"")
-        print(f"Created placeholder {args.out}")
+        logger.info(f"Created placeholder {args.out}")
 
 
 if __name__ == "__main__":

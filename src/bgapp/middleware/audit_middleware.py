@@ -12,6 +12,7 @@ from starlette.responses import JSONResponse
 
 try:
     from ..core.audit_logger import get_audit_logger, AuditEventType, AuditSeverity
+from bgapp.core.logger import logger
     AUDIT_AVAILABLE = True
 except ImportError:
     AUDIT_AVAILABLE = False
@@ -192,7 +193,7 @@ class AuditMiddleware(BaseHTTPMiddleware):
             )
         except Exception as e:
             # Não falhar request por erro de auditoria
-            print(f"Erro no audit logging: {e}")
+            logger.info(f"Erro no audit logging: {e}")
     
     def _audit_error(self, 
                     request: Request, 
@@ -273,9 +274,9 @@ def add_audit_middleware(app):
     """Adicionar middleware de auditoria à aplicação"""
     if AUDIT_AVAILABLE:
         app.add_middleware(AuditMiddleware)
-        print("✅ Middleware de auditoria adicionado")
+        logger.info("✅ Middleware de auditoria adicionado")
     else:
-        print("⚠️ Audit logging não disponível - middleware não adicionado")
+        logger.info("⚠️ Audit logging não disponível - middleware não adicionado")
 
 # Funções convenientes para audit logging manual
 def audit_login_success(user_id: str, ip_address: str, details: Dict[str, Any] = None):
@@ -334,11 +335,11 @@ def audit_data_access(user_id: str, resource: str, ip_address: str, details: Dic
         )
 
 if __name__ == "__main__":
-    print("🔍 Middleware de Auditoria - BGAPP")
-    print("Middleware para audit logging automático de requests")
-    print("Integra com o sistema de audit logging centralizado")
+    logger.info("🔍 Middleware de Auditoria - BGAPP")
+    logger.info("Middleware para audit logging automático de requests")
+    logger.info("Integra com o sistema de audit logging centralizado")
     
     if AUDIT_AVAILABLE:
-        print("✅ Audit logging disponível")
+        logger.info("✅ Audit logging disponível")
     else:
-        print("❌ Audit logging não disponível")
+        logger.info("❌ Audit logging não disponível")

@@ -1,13 +1,16 @@
+import { getCORSHeaders, handleCORSPreflight } from './cors-config.js';
+
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
         
-        // CORS headers
-        const corsHeaders = {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        };
+        // Handle CORS preflight
+        if (request.method === 'OPTIONS') {
+            return handleCORSPreflight(request, env);
+        }
+        
+        // Get secure CORS headers
+        const corsHeaders = getCORSHeaders(request, env);
 
         if (request.method === 'OPTIONS') {
             return new Response(null, { status: 204, headers: corsHeaders });

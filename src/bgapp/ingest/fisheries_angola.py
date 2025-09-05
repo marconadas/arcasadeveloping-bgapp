@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Union
 import argparse
 import sys
+from bgapp.core.logger import logger
 
 
 class AngolaFisheriesConnector:
@@ -502,11 +503,11 @@ def main(argv: Optional[List[str]] = None) -> None:
         with open(args.out, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
     
-    print(f"✅ Dados pesqueiros salvos: {args.out}")
+    logger.info(f"✅ Dados pesqueiros salvos: {args.out}")
     if isinstance(data, list):
-        print(f"📊 Total de registos: {len(data)}")
-    print(f"🎣 Tipo: {args.type}")
-    print(f"🗺️  Zona: {args.zone}")
+        logger.info(f"📊 Total de registos: {len(data)}")
+    logger.info(f"🎣 Tipo: {args.type}")
+    logger.info(f"🗺️  Zona: {args.zone}")
 
 
 if __name__ == "__main__":

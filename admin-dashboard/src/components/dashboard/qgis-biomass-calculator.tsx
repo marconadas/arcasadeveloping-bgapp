@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -235,11 +236,11 @@ export default function QGISBiomassCalculator() {
               }
             ];
             
-            console.log('✅ Biomassa calculada com dados REAIS Copernicus');
+            logger.info('✅ Biomassa calculada com dados REAIS Copernicus');
             return realTimeSeries;
           })
           .catch(error => {
-            console.warn('⚠️ Erro ao carregar dados Copernicus, usando estimativas científicas reais');
+            logger.warn('⚠️ Erro ao carregar dados Copernicus, usando estimativas científicas reais');
             // Fallback baseado em literatura científica Angola
             return [
               {
@@ -335,7 +336,7 @@ export default function QGISBiomassCalculator() {
       setStats(statsData);
 
     } catch (err) {
-      // console.error('Error fetching biomass data:', err);
+      // logger.error('Error fetching biomass data:', { error: String(err) });
       setError('Erro ao carregar dados de biomassa');
     } finally {
       setLoading(false);
@@ -353,7 +354,7 @@ export default function QGISBiomassCalculator() {
       await fetchBiomassData();
       
     } catch (err) {
-      // console.error('Error calculating biomass:', err);
+      // logger.error('Error calculating biomass:', { error: String(err) });
     } finally {
       setCalculating(false);
     }

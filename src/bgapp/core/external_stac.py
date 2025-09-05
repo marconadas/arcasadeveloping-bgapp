@@ -16,6 +16,7 @@ import requests
 from pydantic import BaseModel, Field
 
 from .config import AppConfig
+from bgapp.core.logger import logger
 
 
 class STACCollection(BaseModel):
@@ -182,7 +183,7 @@ class ExternalSTACClient:
                         return collection
                         
         except Exception as e:
-            print(f"Erro ao buscar coleção {collection_id}: {e}")
+            logger.info(f"Erro ao buscar coleção {collection_id}: {e}")
             return None
     
     async def search_items(
@@ -242,13 +243,13 @@ class ExternalSTACClient:
                                     )
                                     items.append(item)
                                 except Exception as e:
-                                    print(f"Erro ao processar item {feature.get('id', 'unknown')}: {e}")
+                                    logger.info(f"Erro ao processar item {feature.get('id', 'unknown')}: {e}")
                                     continue
                         
                         return items
                         
         except Exception as e:
-            print(f"Erro ao buscar itens da coleção {collection_id}: {e}")
+            logger.info(f"Erro ao buscar itens da coleção {collection_id}: {e}")
             return []
     
     async def get_priority_collections(self) -> List[STACCollection]:

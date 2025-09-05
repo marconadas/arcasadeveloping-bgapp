@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -213,7 +214,7 @@ export default function MLPredictiveFilters() {
       setStats(statsData);
 
     } catch (err) {
-      // console.error('Error fetching ML data:', err);
+      // logger.error('Error fetching ML data:', { error: String(err) });
       setError('Erro ao carregar dados de Machine Learning');
     } finally {
       setLoading(false);
@@ -235,7 +236,7 @@ export default function MLPredictiveFilters() {
       ));
       
     } catch (err) {
-      // console.error('Error refreshing filter:', err);
+      // logger.error('Error refreshing filter:', { error: String(err) });
     } finally {
       setRefreshing(false);
     }
@@ -250,7 +251,7 @@ export default function MLPredictiveFilters() {
           : filter
       ));
     } catch (err) {
-      // console.error('Error toggling filter:', err);
+      // logger.error('Error toggling filter:', { error: String(err) });
     }
   };
 

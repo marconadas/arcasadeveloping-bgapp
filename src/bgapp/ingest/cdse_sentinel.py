@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 import openeo
+from bgapp.core.logger import logger
 
 
 def main(argv: Optional[list[str]] = None) -> None:
@@ -40,14 +41,14 @@ def main(argv: Optional[list[str]] = None) -> None:
         
         # Download (requires authentication)
         # cube.download(str(args.out))
-        print(f"CDSE openEO cube prepared. Would download to {args.out}")
-        print("Note: Requires CDSE authentication for actual download")
+        logger.info(f"CDSE openEO cube prepared. Would download to {args.out}")
+        logger.info("Note: Requires CDSE authentication for actual download")
         
     except Exception as e:
-        print(f"CDSE connection failed (expected without credentials): {e}")
+        logger.info(f"CDSE connection failed (expected without credentials): {e}")
         # Create placeholder
         args.out.write_bytes(b"")
-        print(f"Created placeholder {args.out}")
+        logger.info(f"Created placeholder {args.out}")
 
 
 if __name__ == "__main__":

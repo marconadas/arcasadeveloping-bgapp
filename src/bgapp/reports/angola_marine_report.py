@@ -426,9 +426,9 @@ Este relatório apresenta uma análise abrangente da biodiversidade marinha na Z
         pdf_file = self.output_dir / f"{output_name}_graficos.pdf"
         self.create_visualizations(data, str(pdf_file))
         
-        print(f"✅ Relatório gerado:")
-        print(f"   📄 Texto: {text_file}")
-        print(f"   📊 Gráficos: {pdf_file}")
+        logger.info(f"✅ Relatório gerado:")
+        logger.info(f"   📄 Texto: {text_file}")
+        logger.info(f"   📊 Gráficos: {pdf_file}")
         
         return str(text_file)
 
@@ -436,6 +436,7 @@ Este relatório apresenta uma análise abrangente da biodiversidade marinha na Z
 def main():
     """Função principal para execução via linha de comando"""
     import argparse
+from bgapp.core.logger import logger
     
     parser = argparse.ArgumentParser(
         description="Gerador de Relatórios Científicos - Biodiversidade Marinha Angola"

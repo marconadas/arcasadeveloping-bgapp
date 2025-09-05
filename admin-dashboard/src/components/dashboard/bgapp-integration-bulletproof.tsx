@@ -1,10 +1,12 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { bgappApi } from '@/lib/api-complete';
+import { bgappApiCloudflare } from '@/lib/api-cloudflare';
 import type { 
   DashboardOverview, 
   SystemHealth, 
@@ -47,14 +49,14 @@ export default function BGAPPIntegrationBulletproof() {
   const fetchData = useCallback(async () => {
     if (!mounted) return;
     
-    console.log('🚀 INICIANDO FETCH DE DADOS BGAPP...');
+    logger.info('🚀 INICIANDO FETCH DE DADOS BGAPP...');
     
     try {
       setLoading(true);
       setError(null);
 
       // MODO DEMO: Sempre usar dados garantidos para apresentação
-      console.log('📊 CARREGANDO DADOS PARA DEMO 17 SETEMBRO...');
+      logger.info('📊 CARREGANDO DADOS PARA DEMO 17 SETEMBRO...');
       
       // Tentar API primeiro, mas com fallback garantido
       let overviewResponse, healthResponse, oceanResponse, fisheriesResponse, copernicusResponse;
@@ -68,7 +70,7 @@ export default function BGAPPIntegrationBulletproof() {
           bgappApiCloudflare.getCopernicusRealTimeData().catch(() => null)
         ]);
         
-        console.log('🔍 API Responses:', {
+        logger.info('🔍 API Responses:', {
           overview: overviewResponse ? 'OK' : 'NULL',
           health: healthResponse ? 'OK' : 'NULL', 
           ocean: oceanResponse ? 'OK' : 'NULL',
@@ -77,7 +79,7 @@ export default function BGAPPIntegrationBulletproof() {
         });
         
       } catch (apiError) {
-        console.warn('⚠️ API Error, usando fallback:', apiError);
+        logger.warn('⚠️ API Error, usando fallback:', { error: String(apiError) });
       }
 
       // SEMPRE garantir dados para demo (usar API se disponível, senão fallback)
@@ -148,10 +150,10 @@ export default function BGAPPIntegrationBulletproof() {
         economic_impact: { gdp_contribution_percent: 3.8, employment_total: 125000, export_value_usd: 890000000 }
       });
       
-      console.log('✅ TODOS OS DADOS CARREGADOS - DEMO PRONTA!');
+      logger.info('✅ TODOS OS DADOS CARREGADOS - DEMO PRONTA!');
       
     } catch (err) {
-      console.error('🚨 ERRO CRÍTICO BGAPP:', err);
+      logger.error('🚨 ERRO CRÍTICO BGAPP:', err as Error);
       setError(`Erro ao carregar dados do BGAPP: ${err}`);
       
       // FALLBACK URGENTE: Dados estáticos para demo
@@ -223,7 +225,7 @@ export default function BGAPPIntegrationBulletproof() {
         economic_impact: { gdp_contribution_percent: 3.8, employment_total: 125000, export_value_usd: 890000000 }
       });
       
-      console.log('🔧 FALLBACK COMPLETO ATIVADO: Todos os dados carregados para demo');
+      logger.info('🔧 FALLBACK COMPLETO ATIVADO: Todos os dados carregados para demo');
     } finally {
       setLoading(false);
     }

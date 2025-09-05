@@ -24,6 +24,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
+from bgapp.core.logger import logger
     sys.path.append('../../')
 
 logger = logging.getLogger(__name__)
@@ -641,14 +642,14 @@ if __name__ == "__main__":
         # Testar predições instantâneas
         location = {'lat': -12.5, 'lon': 18.3}
         predictions = await enhancer.get_instant_predictions(location)
-        print("🔮 Predições:", json.dumps(predictions, indent=2, default=str))
+        logger.info("🔮 Predições:", json.dumps(predictions, indent=2, default=str))
         
         # Testar insights
         insights = await enhancer.generate_real_time_insights()
-        print("🧠 Insights:", json.dumps(insights, indent=2, default=str))
+        logger.info("🧠 Insights:", json.dumps(insights, indent=2, default=str))
         
         # Métricas
         metrics = enhancer.get_demo_enhancement_metrics()
-        print("📊 Métricas:", json.dumps(metrics, indent=2, default=str))
+        logger.info("📊 Métricas:", json.dumps(metrics, indent=2, default=str))
     
     asyncio.run(test_enhancer())

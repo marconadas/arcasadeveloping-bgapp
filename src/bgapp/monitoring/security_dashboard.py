@@ -15,6 +15,7 @@ import threading
 from collections import defaultdict, deque
 import psutil
 import os
+from bgapp.core.logger import logger
 
 class SecurityStatus(Enum):
     """Status de segurança"""
@@ -571,28 +572,28 @@ def get_security_summary() -> Dict[str, Any]:
 
 if __name__ == "__main__":
     # Teste do dashboard
-    print("📊 Teste do Dashboard de Segurança")
-    print("=" * 50)
+    logger.info("📊 Teste do Dashboard de Segurança")
+    logger.info("=" * 50)
     
     dashboard = SecurityDashboard()
     
     # Simular alguns eventos
-    print("\n📝 Simulando eventos de segurança...")
+    logger.info("\n📝 Simulando eventos de segurança...")
     dashboard.record_security_event("login_failed", "warning", {"ip": "192.168.1.100"})
     dashboard.record_security_event("csrf_blocked", "error", {"endpoint": "/api/admin"})
     dashboard.record_security_event("data_access", "info", {"resource": "/api/users"})
     
     # Obter dados do dashboard
-    print("\n📊 Coletando métricas...")
+    logger.info("\n📊 Coletando métricas...")
     dashboard_data = dashboard.get_dashboard_data()
     
-    print(f"✅ Score geral: {dashboard_data['overall_score']:.1f}/10")
-    print(f"📈 Métricas coletadas: {len(dashboard_data['metrics'])}")
-    print(f"🚨 Alertas ativos: {len(dashboard_data['alerts']['active'])}")
-    print(f"⏱️ Uptime: {dashboard_data['uptime_seconds']:.1f}s")
+    logger.info(f"✅ Score geral: {dashboard_data['overall_score']:.1f}/10")
+    logger.info(f"📈 Métricas coletadas: {len(dashboard_data['metrics'])}")
+    logger.info(f"🚨 Alertas ativos: {len(dashboard_data['alerts']['active'])}")
+    logger.info(f"⏱️ Uptime: {dashboard_data['uptime_seconds']:.1f}s")
     
     # Mostrar algumas métricas
-    print("\n📋 Métricas principais:")
+    logger.info("\n📋 Métricas principais:")
     for metric in dashboard_data['metrics'][:5]:
         status_emoji = {
             'secure': '✅',
@@ -601,13 +602,13 @@ if __name__ == "__main__":
             'unknown': '❓'
         }
         emoji = status_emoji.get(metric['status'], '❓')
-        print(f"   {emoji} {metric['name']}: {metric['value']} {metric.get('unit', '')}")
+        logger.info(f"   {emoji} {metric['name']}: {metric['value']} {metric.get('unit', '')}")
     
     # Health status
-    print("\n🏥 Status de saúde:")
+    logger.info("\n🏥 Status de saúde:")
     health = dashboard.get_health_status()
-    print(f"   Saúde geral: {health['overall_health']:.1f}%")
-    print(f"   Score: {health['security_score']:.1f}/10")
-    print(f"   Status: {health['status']}")
+    logger.info(f"   Saúde geral: {health['overall_health']:.1f}%")
+    logger.info(f"   Score: {health['security_score']:.1f}/10")
+    logger.info(f"   Status: {health['status']}")
     
-    print("\n✅ Teste do dashboard concluído!")
+    logger.info("\n✅ Teste do dashboard concluído!")

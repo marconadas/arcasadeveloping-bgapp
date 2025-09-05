@@ -16,6 +16,7 @@ import json
 import logging
 from dataclasses import dataclass
 from enum import Enum
+from bgapp.core.logger import logger
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -966,7 +967,7 @@ class FishermanInterface:
             </div>
             
             <div style="text-align: center; margin: 20px 0;">
-                <button class="print-btn" onclick="window.print()">🖨️ Imprimir Diário</button>
+                <button class="print-btn" onclick="window.logger.info()">🖨️ Imprimir Diário</button>
                 <button class="print-btn" onclick="saveData()">💾 Guardar Dados</button>
             </div>
             

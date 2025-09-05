@@ -4,6 +4,7 @@
  * 🚀 Mister Silicon Valley Edition
  */
 
+import { logger } from '@/lib/logger';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
 // API Configuration - Apontar para nosso admin_api_complete.py
@@ -36,7 +37,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    // console.error('API Error:', error.response?.data || error.message);
+    // logger.error('API Error:', error.response?.data || error.message);
     
     if (error.response?.status === 401) {
       // Handle unauthorized
