@@ -149,7 +149,7 @@ export default function BGAPPIntegrationBulletproof() {
         economic_impact: { gdp_contribution_percent: 3.8, employment_total: 125000, export_value_usd: 890000000 }
       });
       
-      console.log('✅ TODOS OS DADOS CARREGADOS - DEMO PRONTA!');
+      console.log('✅ Dados do BGAPP carregados com sucesso');
       
     } catch (err) {
       console.error('🚨 ERRO CRÍTICO BGAPP:', err);
