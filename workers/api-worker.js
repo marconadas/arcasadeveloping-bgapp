@@ -1,3 +1,31 @@
+// CORS Security Configuration
+const ALLOWED_ORIGINS = [
+    'https://bgapp-admin.pages.dev',
+    'https://bgapp-frontend.pages.dev',
+    'https://arcasadeveloping.org',
+    'http://localhost:3000',
+    'http://localhost:3002',
+    'http://localhost:8080'
+];
+
+function isOriginAllowed(origin) {
+    return ALLOWED_ORIGINS.includes(origin);
+}
+
+function getCORSHeaders(origin) {
+    if (isOriginAllowed(origin)) {
+        return {
+            'Access-Control-Allow-Origin': origin,
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Max-Age': '86400'
+        };
+    }
+    return {
+        'Access-Control-Allow-Origin': 'null'
+    };
+}
+
 /**
  * BGAPP API Worker - Cloudflare Worker para APIs serverless
  * Fornece endpoints para o dashboard administrativo
