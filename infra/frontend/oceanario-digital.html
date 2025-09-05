@@ -428,6 +428,16 @@
                     </button>
                 </div>
             </div>
+            
+            <!-- Reset Geral -->
+            <div class="control-group">
+                <label>🔄 Reset Geral</label>
+                <div class="control-buttons">
+                    <button class="control-btn" onclick="resetAllEffects()" style="background: rgba(255, 100, 100, 0.2); border-color: #ff6464;">
+                        <i class="fas fa-undo me-1"></i> Reset Completo
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Painel de Informações -->
@@ -670,25 +680,51 @@
             }
 
             createMarineLife() {
-                // Criar cardumes de peixes
-                for (let i = 0; i < 50; i++) {
-                    const fishGeometry = new THREE.ConeGeometry(1, 3, 8);
-                    const fishMaterial = new THREE.MeshPhongMaterial({ 
-                        color: new THREE.Color().setHSL(Math.random(), 0.7, 0.6)
-                    });
-                    
-                    const fish = new THREE.Mesh(fishGeometry, fishMaterial);
-                    fish.position.set(
-                        (Math.random() - 0.5) * 400,
-                        Math.random() * 100 + 10,
-                        (Math.random() - 0.5) * 400
-                    );
-                    fish.rotation.y = Math.random() * Math.PI * 2;
-                    
-                    this.scene.add(fish);
-                }
+                this.marineLife = {
+                    fish: [],
+                    corals: [],
+                    plankton: []
+                };
                 
-                console.log('🐠 Vida marinha criada');
+                // Criar diferentes tipos de peixes
+                const fishTypes = [
+                    { color: 0xff6b6b, size: 1.5, count: 20, name: 'Peixe Vermelho' },
+                    { color: 0x4ecdc4, size: 2.0, count: 15, name: 'Peixe Azul' },
+                    { color: 0xfeca57, size: 1.0, count: 25, name: 'Peixe Amarelo' },
+                    { color: 0x45b7d1, size: 3.0, count: 10, name: 'Peixe Grande' }
+                ];
+
+                fishTypes.forEach(fishType => {
+                    for (let i = 0; i < fishType.count; i++) {
+                        const fishGeometry = new THREE.ConeGeometry(fishType.size, fishType.size * 2, 8);
+                        const fishMaterial = new THREE.MeshPhongMaterial({ 
+                            color: fishType.color,
+                            shininess: 100
+                        });
+                        
+                        const fish = new THREE.Mesh(fishGeometry, fishMaterial);
+                        fish.position.set(
+                            (Math.random() - 0.5) * 600,
+                            Math.random() * 80 + 20,
+                            (Math.random() - 0.5) * 600
+                        );
+                        fish.rotation.y = Math.random() * Math.PI * 2;
+                        
+                        // Adicionar propriedades de animação
+                        fish.userData = {
+                            type: fishType.name,
+                            speed: Math.random() * 0.5 + 0.5,
+                            direction: Math.random() * Math.PI * 2,
+                            swimRadius: Math.random() * 50 + 25,
+                            originalPosition: fish.position.clone()
+                        };
+                        
+                        this.scene.add(fish);
+                        this.marineLife.fish.push(fish);
+                    }
+                });
+                
+                console.log('🐠 Vida marinha diversificada criada:', this.marineLife.fish.length, 'espécies');
             }
 
             createParticles() {
@@ -772,7 +808,20 @@
                     // Animar partículas
                     if (this.particleSystem) {
                         this.particleSystem.rotation.y += 0.001;
+                        
+                        // Movimento vertical das partículas
+                        const positions = this.particleSystem.geometry.attributes.position.array;
+                        for (let i = 1; i < positions.length; i += 3) {
+                            positions[i] += Math.sin(Date.now() * 0.001 + i) * 0.1;
+                        }
+                        this.particleSystem.geometry.attributes.position.needsUpdate = true;
                     }
+                    
+                    // Animar peixes
+                    this.animateMarineLife();
+                    
+                    // Aplicar efeitos baseados no modo atual
+                    this.applyModeEffects();
                     
                     // Atualizar controles
                     if (this.controls) {
@@ -789,7 +838,444 @@
                 };
                 
                 animate();
-                console.log('🎬 Loop de renderização iniciado');
+                console.log('🎬 Loop de renderização avançado iniciado');
+            }
+
+            animateMarineLife() {
+                if (!this.marineLife || !this.marineLife.fish) return;
+                
+                const time = Date.now() * 0.001;
+                
+                this.marineLife.fish.forEach((fish, index) => {
+                    const userData = fish.userData;
+                    
+                    // Movimento circular natural
+                    const angle = time * userData.speed + index;
+                    const radius = userData.swimRadius;
+                    
+                    fish.position.x = userData.originalPosition.x + Math.cos(angle) * radius;
+                    fish.position.z = userData.originalPosition.z + Math.sin(angle) * radius;
+                    fish.position.y = userData.originalPosition.y + Math.sin(time + index) * 5;
+                    
+                    // Rotacionar peixe na direção do movimento
+                    fish.rotation.y = angle + Math.PI / 2;
+                    fish.rotation.z = Math.sin(time * 2 + index) * 0.2;
+                });
+            }
+
+            applyModeEffects() {
+                if (!this.isInitialized) return;
+                
+                const time = Date.now() * 0.001;
+                
+                switch(this.currentMode) {
+                    case 'ocean':
+                        // Modo oceano: Foco nas ondas e movimento da água
+                        if (this.oceanMaterial) {
+                            this.oceanMaterial.uniforms.waveHeight.value = 8 + Math.sin(time) * 3;
+                        }
+                        break;
+                        
+                    case 'species':
+                        // Modo espécies: Destacar vida marinha
+                        this.marineLife.fish.forEach((fish, index) => {
+                            const intensity = Math.sin(time * 2 + index) * 0.5 + 0.5;
+                            fish.material.emissive.setHSL(0.6, 0.5, intensity * 0.2);
+                        });
+                        break;
+                        
+                    case 'ecosystem':
+                        // Modo ecossistema: Mostrar interações
+                        this.marineLife.fish.forEach((fish, index) => {
+                            // Criar padrões de cardume
+                            if (index > 0) {
+                                const leader = this.marineLife.fish[Math.floor(index / 5) * 5];
+                                const distance = fish.position.distanceTo(leader.position);
+                                if (distance > 30) {
+                                    fish.position.lerp(leader.position, 0.01);
+                                }
+                            }
+                        });
+                        break;
+                }
+            }
+
+            applyVisualizationMode(mode) {
+                console.log(`🎨 Aplicando modo de visualização: ${mode}`);
+                
+                switch(mode) {
+                    case 'ocean':
+                        this.activateOceanMode();
+                        break;
+                    case 'species':
+                        this.activateSpeciesMode();
+                        break;
+                    case 'ecosystem':
+                        this.activateEcosystemMode();
+                        break;
+                }
+            }
+
+            activateOceanMode() {
+                console.log('🌊 Modo Oceano ativado');
+                
+                // Ajustar iluminação para destacar água
+                this.scene.children.forEach(child => {
+                    if (child.type === 'DirectionalLight') {
+                        gsap.to(child, { intensity: 1.2, duration: 1 });
+                    }
+                });
+                
+                // Aumentar ondas do oceano
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.waveHeight, { value: 12, duration: 2 });
+                }
+                
+                // Reduzir visibilidade dos peixes
+                this.marineLife.fish.forEach(fish => {
+                    gsap.to(fish.material, { opacity: 0.3, duration: 1 });
+                    fish.material.transparent = true;
+                });
+            }
+
+            activateSpeciesMode() {
+                console.log('🐠 Modo Espécies ativado');
+                
+                // Destacar vida marinha
+                this.marineLife.fish.forEach((fish, index) => {
+                    gsap.to(fish.material, { opacity: 1, duration: 1 });
+                    fish.material.transparent = false;
+                    
+                    // Adicionar brilho às espécies
+                    gsap.to(fish.scale, { 
+                        x: 1.2, y: 1.2, z: 1.2, 
+                        duration: 1,
+                        delay: index * 0.05
+                    });
+                });
+                
+                // Reduzir ondas para melhor visibilidade
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.waveHeight, { value: 3, duration: 2 });
+                }
+                
+                // Câmera mais próxima
+                gsap.to(this.camera.position, { y: 30, z: 100, duration: 2 });
+            }
+
+            activateEcosystemMode() {
+                console.log('🌿 Modo Ecossistema ativado');
+                
+                // Mostrar tudo com intensidade equilibrada
+                this.marineLife.fish.forEach(fish => {
+                    gsap.to(fish.material, { opacity: 0.8, duration: 1 });
+                    fish.material.transparent = true;
+                    gsap.to(fish.scale, { x: 1, y: 1, z: 1, duration: 1 });
+                });
+                
+                // Ondas médias
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.waveHeight, { value: 6, duration: 2 });
+                }
+                
+                // Aumentar partículas para mostrar plâncton
+                if (this.particleSystem) {
+                    gsap.to(this.particleSystem.material, { size: 3, opacity: 0.8, duration: 1 });
+                }
+                
+                // Vista panorâmica
+                gsap.to(this.camera.position, { y: 60, z: 150, duration: 2 });
+            }
+
+            applyEnvironmentParameter(parameter) {
+                console.log(`🌡️ Aplicando parâmetro ambiental: ${parameter}`);
+                
+                switch(parameter) {
+                    case 'temperature':
+                        this.showTemperatureVisualization();
+                        break;
+                    case 'salinity':
+                        this.showSalinityVisualization();
+                        break;
+                    case 'currents':
+                        this.showCurrentsVisualization();
+                        break;
+                }
+            }
+
+            showTemperatureVisualization() {
+                console.log('🌡️ Visualização de temperatura ativada');
+                
+                // Mudar cor do oceano para refletir temperatura
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0.8, g: 0.2, b: 0.2, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 1, g: 0.4, b: 0.4, duration: 2 
+                    });
+                }
+                
+                // Adicionar efeito de calor nos peixes
+                this.marineLife.fish.forEach(fish => {
+                    fish.material.emissive.setHex(0x440000);
+                });
+            }
+
+            showSalinityVisualization() {
+                console.log('💧 Visualização de salinidade ativada');
+                
+                // Mudar cor do oceano para azul intenso (alta salinidade)
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0, g: 0.3, b: 0.8, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 0, g: 0.5, b: 1, duration: 2 
+                    });
+                }
+                
+                // Efeito cristalino nas partículas
+                if (this.particleSystem) {
+                    gsap.to(this.particleSystem.material, { 
+                        color: new THREE.Color(0x00aaff), 
+                        size: 4, 
+                        duration: 2 
+                    });
+                }
+            }
+
+            showCurrentsVisualization() {
+                console.log('🌊 Visualização de correntes ativada');
+                
+                // Criar efeito de correntes com movimento direcional
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0, g: 0.6, b: 0.6, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 0.2, g: 0.8, b: 0.8, duration: 2 
+                    });
+                }
+                
+                // Movimento direcional das partículas para simular correntes
+                if (this.particleSystem) {
+                    const positions = this.particleSystem.geometry.attributes.position.array;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += Math.sin(Date.now() * 0.002) * 0.5; // Corrente X
+                        positions[i + 2] += Math.cos(Date.now() * 0.002) * 0.3; // Corrente Z
+                    }
+                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                }
+                
+                // Peixes seguem as correntes
+                this.marineLife.fish.forEach((fish, index) => {
+                    const currentForce = Math.sin(Date.now() * 0.001 + index) * 2;
+                    fish.position.x += currentForce * 0.1;
+                    fish.rotation.y += currentForce * 0.02;
+                });
+            }
+
+            applyEnvironmentParameter(parameter) {
+                console.log(`🌡️ Aplicando parâmetro ambiental: ${parameter}`);
+                
+                switch(parameter) {
+                    case 'temperature':
+                        this.showTemperatureVisualization();
+                        break;
+                    case 'salinity':
+                        this.showSalinityVisualization();
+                        break;
+                    case 'currents':
+                        this.showCurrentsVisualization();
+                        break;
+                }
+            }
+
+            showTemperatureVisualization() {
+                console.log('🌡️ Visualização de temperatura ativada');
+                
+                // Mudar cor do oceano para tons quentes
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0.6, g: 0.1, b: 0.1, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 0.8, g: 0.3, b: 0.2, duration: 2 
+                    });
+                }
+                
+                // Adicionar efeito de calor nos peixes
+                this.marineLife.fish.forEach(fish => {
+                    fish.material.emissive.setHex(0x331100);
+                });
+                
+                // Partículas com efeito térmico
+                if (this.particleSystem) {
+                    gsap.to(this.particleSystem.material, { 
+                        color: new THREE.Color(0xff4400), 
+                        size: 2.5, 
+                        duration: 2 
+                    });
+                }
+            }
+
+            showSalinityVisualization() {
+                console.log('💧 Visualização de salinidade ativada');
+                
+                // Mudar cor do oceano para azul cristalino
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0, g: 0.2, b: 0.6, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 0, g: 0.4, b: 0.8, duration: 2 
+                    });
+                }
+                
+                // Efeito cristalino nas partículas
+                if (this.particleSystem) {
+                    gsap.to(this.particleSystem.material, { 
+                        color: new THREE.Color(0x00aaff), 
+                        size: 3.5, 
+                        opacity: 0.9,
+                        duration: 2 
+                    });
+                }
+                
+                // Peixes com brilho azulado
+                this.marineLife.fish.forEach(fish => {
+                    fish.material.emissive.setHex(0x001133);
+                });
+            }
+
+            showCurrentsVisualization() {
+                console.log('🌊 Visualização de correntes ativada');
+                
+                // Oceano com tons de corrente
+                if (this.oceanMaterial) {
+                    gsap.to(this.oceanMaterial.uniforms.color1.value, { 
+                        r: 0, g: 0.4, b: 0.4, duration: 2 
+                    });
+                    gsap.to(this.oceanMaterial.uniforms.color2.value, { 
+                        r: 0.1, g: 0.6, b: 0.6, duration: 2 
+                    });
+                    
+                    // Aumentar movimento das ondas
+                    gsap.to(this.oceanMaterial.uniforms.waveHeight, { value: 15, duration: 2 });
+                }
+                
+                // Partículas seguem correntes direcionais
+                if (this.particleSystem) {
+                    gsap.to(this.particleSystem.material, { 
+                        color: new THREE.Color(0x00ffaa), 
+                        size: 2, 
+                        duration: 2 
+                    });
+                }
+                
+                // Peixes nadam contra a corrente
+                this.marineLife.fish.forEach((fish, index) => {
+                    fish.userData.currentEffect = true;
+                    fish.material.emissive.setHex(0x003322);
+                });
+            }
+
+            applyDepthLevel(depth) {
+                console.log(`🏊‍♀️ Aplicando nível de profundidade: ${depth}`);
+                
+                let targetY, fogNear, fogFar, lightIntensity, backgroundColor;
+                
+                switch(depth) {
+                    case 'surface':
+                        targetY = 50;
+                        fogNear = 100;
+                        fogFar = 2000;
+                        lightIntensity = 1.0;
+                        backgroundColor = 0x001122;
+                        break;
+                    case 'shallow':
+                        targetY = 10;
+                        fogNear = 50;
+                        fogFar = 800;
+                        lightIntensity = 0.7;
+                        backgroundColor = 0x000811;
+                        break;
+                    case 'deep':
+                        targetY = -40;
+                        fogNear = 20;
+                        fogFar = 300;
+                        lightIntensity = 0.3;
+                        backgroundColor = 0x000405;
+                        break;
+                }
+                
+                // Animar câmera
+                gsap.to(this.camera.position, {
+                    y: targetY,
+                    duration: 3,
+                    ease: "power2.inOut"
+                });
+                
+                // Ajustar fog para simular profundidade
+                gsap.to(this.scene.fog, {
+                    near: fogNear,
+                    far: fogFar,
+                    duration: 3
+                });
+                
+                // Mudar cor de fundo
+                gsap.to(this.scene.background, {
+                    r: ((backgroundColor >> 16) & 255) / 255,
+                    g: ((backgroundColor >> 8) & 255) / 255,
+                    b: (backgroundColor & 255) / 255,
+                    duration: 3
+                });
+                
+                // Ajustar intensidade da luz
+                this.scene.children.forEach(child => {
+                    if (child.type === 'DirectionalLight') {
+                        gsap.to(child, { intensity: lightIntensity, duration: 3 });
+                    }
+                });
+                
+                // Efeitos específicos por profundidade
+                this.applyDepthEffects(depth);
+            }
+
+            applyDepthEffects(depth) {
+                switch(depth) {
+                    case 'surface':
+                        // Superfície: Mais movimento, cores vivas
+                        this.marineLife.fish.forEach(fish => {
+                            gsap.to(fish.userData, { speed: 1.5, duration: 2 });
+                        });
+                        break;
+                        
+                    case 'shallow':
+                        // Águas rasas: Movimento moderado
+                        this.marineLife.fish.forEach(fish => {
+                            gsap.to(fish.userData, { speed: 1.0, duration: 2 });
+                        });
+                        break;
+                        
+                    case 'deep':
+                        // Profundidade: Movimento lento, cores escuras
+                        this.marineLife.fish.forEach(fish => {
+                            gsap.to(fish.userData, { speed: 0.3, duration: 2 });
+                            fish.material.emissive.setHex(0x000022);
+                        });
+                        
+                        // Partículas mais esparsas
+                        if (this.particleSystem) {
+                            gsap.to(this.particleSystem.material, { 
+                                opacity: 0.3, 
+                                size: 1.5,
+                                duration: 2 
+                            });
+                        }
+                        break;
+                }
             }
 
             updateFPS() {
@@ -881,7 +1367,7 @@
             
             if (window.oceanario && window.oceanario.isInitialized) {
                 window.oceanario.currentMode = mode;
-                // Implementar mudanças visuais baseadas no modo
+                window.oceanario.applyVisualizationMode(mode);
             }
         }
 
@@ -894,7 +1380,7 @@
             
             if (window.oceanario && window.oceanario.isInitialized) {
                 window.oceanario.currentParameter = parameter;
-                // Implementar visualização do parâmetro
+                window.oceanario.applyEnvironmentParameter(parameter);
             }
         }
 
@@ -907,20 +1393,7 @@
             
             if (window.oceanario && window.oceanario.isInitialized) {
                 window.oceanario.currentDepth = depth;
-                
-                // Ajustar câmera baseada na profundidade
-                let targetY;
-                switch(depth) {
-                    case 'surface': targetY = 50; break;
-                    case 'shallow': targetY = 20; break;
-                    case 'deep': targetY = -30; break;
-                }
-                
-                gsap.to(window.oceanario.camera.position, {
-                    y: targetY,
-                    duration: 2,
-                    ease: "power2.inOut"
-                });
+                window.oceanario.applyDepthLevel(depth);
             }
         }
 
@@ -975,6 +1448,65 @@
                         ease: "power2.inOut"
                     });
                 }
+            }
+        }
+
+        function resetAllEffects() {
+            console.log('🔄 Reset completo do Oceanário Digital');
+            
+            if (window.oceanario && window.oceanario.isInitialized) {
+                // Reset do oceano
+                if (window.oceanario.oceanMaterial) {
+                    gsap.to(window.oceanario.oceanMaterial.uniforms.color1.value, { 
+                        r: 0, g: 0.067, b: 0.133, duration: 2 
+                    });
+                    gsap.to(window.oceanario.oceanMaterial.uniforms.color2.value, { 
+                        r: 0, g: 0.2, b: 0.4, duration: 2 
+                    });
+                    gsap.to(window.oceanario.oceanMaterial.uniforms.waveHeight, { value: 5, duration: 2 });
+                }
+                
+                // Reset dos peixes
+                window.oceanario.marineLife.fish.forEach(fish => {
+                    gsap.to(fish.material, { opacity: 1, duration: 1 });
+                    gsap.to(fish.scale, { x: 1, y: 1, z: 1, duration: 1 });
+                    fish.material.emissive.setHex(0x000000);
+                    fish.material.transparent = false;
+                    fish.userData.speed = Math.random() * 0.5 + 0.5;
+                });
+                
+                // Reset das partículas
+                if (window.oceanario.particleSystem) {
+                    gsap.to(window.oceanario.particleSystem.material, { 
+                        color: new THREE.Color(0x00ffff), 
+                        size: 2, 
+                        opacity: 0.6,
+                        duration: 2 
+                    });
+                }
+                
+                // Reset da cena
+                gsap.to(window.oceanario.scene.background, {
+                    r: 0, g: 0.067, b: 0.133, duration: 2
+                });
+                
+                gsap.to(window.oceanario.scene.fog, {
+                    near: 50, far: 2000, duration: 2
+                });
+                
+                // Reset da câmera
+                resetCamera();
+                
+                // Reset dos botões
+                document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-mode="ocean"]').classList.add('active');
+                document.querySelector('[data-depth="surface"]').classList.add('active');
+                
+                window.oceanario.currentMode = 'ocean';
+                window.oceanario.currentParameter = null;
+                window.oceanario.currentDepth = 'surface';
+                
+                console.log('✅ Reset completo realizado');
             }
         }
 
