@@ -27,8 +27,11 @@ export default function BGAPPIntegration() {
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (signal?: AbortSignal) => {
     try {
+      // Check if aborted before starting
+      if (signal?.aborted) return;
+      
       setLoading(true);
       setError(null);
 
@@ -47,16 +50,24 @@ export default function BGAPPIntegration() {
         bgappApi.getCopernicusRealTimeData()
       ]);
 
-      setOverview(overviewResponse);
-      setSystemHealth(healthResponse);
-      setOceanData(oceanResponse);
-      setFisheriesData(fisheriesResponse);
-      setCopernicusData(copernicusResponse);
+      // Check if aborted before setting state
+      if (!signal?.aborted) {
+        setOverview(overviewResponse);
+        setSystemHealth(healthResponse);
+        setOceanData(oceanResponse);
+        setFisheriesData(fisheriesResponse);
+        setCopernicusData(copernicusResponse);
+      }
     } catch (err) {
-      // console.error('Error fetching BGAPP data:', err);
-      setError('Erro ao carregar dados do BGAPP');
+      // Only set error if not aborted
+      if (!signal?.aborted) {
+        // console.error('Error fetching BGAPP data:', err);
+        setError('Erro ao carregar dados do BGAPP');
+      }
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -66,11 +77,23 @@ export default function BGAPPIntegration() {
 
   useEffect(() => {
     if (mounted) {
-      fetchData();
+      const controller = new AbortController();
+      
+      // Initial fetch
+      fetchData(controller.signal);
       
       // Auto-refresh every 30 seconds
-      const interval = setInterval(fetchData, 30000);
-      return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        if (!controller.signal.aborted) {
+          fetchData(controller.signal);
+        }
+      }, 30000);
+      
+      // Cleanup function
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
     }
   }, [mounted, fetchData]);
 
