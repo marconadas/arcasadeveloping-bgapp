@@ -307,4 +307,4 @@ git branch -d feature/qgis-[branch-finalizada]
 
 **🎨 Desenvolvido para BGAPP - Coordenação do Time de Desenvolvimento 2025**
 
-*Este documento será atualizado conforme o progresso do desenvolvimento. Última atualização: Janeiro 2025*
+*Este documento será atualizado conforme o progresso do desenvolvimento. Última atualização: 5 de Setembro de 2025*
