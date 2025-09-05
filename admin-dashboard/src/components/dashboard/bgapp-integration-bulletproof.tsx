@@ -44,8 +44,8 @@ export default function BGAPPIntegrationBulletproof() {
     }
   };
 
-  const fetchData = useCallback(async () => {
-    if (!mounted) return;
+  const fetchData = useCallback(async (signal?: AbortSignal) => {
+    if (!mounted || signal?.aborted) return;
     
     console.log('🚀 INICIANDO FETCH DE DADOS BGAPP...');
     
@@ -81,6 +81,9 @@ export default function BGAPPIntegrationBulletproof() {
       }
 
       // SEMPRE garantir dados para demo (usar API se disponível, senão fallback)
+      // Check if aborted before setting state
+      if (signal?.aborted) return;
+      
       setOverview(overviewResponse || {
         system_status: { overall: 'healthy', uptime: '99.7%', last_update: new Date().toISOString() },
         zee_angola: { area_km2: 518000, monitoring_stations: 47, species_recorded: 1247, fishing_zones: 12 },
@@ -151,6 +154,9 @@ export default function BGAPPIntegrationBulletproof() {
       console.log('✅ TODOS OS DADOS CARREGADOS - DEMO PRONTA!');
       
     } catch (err) {
+      // Only handle error if not aborted
+      if (signal?.aborted) return;
+      
       console.error('🚨 ERRO CRÍTICO BGAPP:', err);
       setError(`Erro ao carregar dados do BGAPP: ${err}`);
       
@@ -225,7 +231,9 @@ export default function BGAPPIntegrationBulletproof() {
       
       console.log('🔧 FALLBACK COMPLETO ATIVADO: Todos os dados carregados para demo');
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, [mounted]);
 
@@ -237,11 +245,23 @@ export default function BGAPPIntegrationBulletproof() {
   // Data fetching effect
   useEffect(() => {
     if (mounted) {
-      fetchData();
+      const controller = new AbortController();
+      
+      // Initial fetch
+      fetchData(controller.signal);
       
       // Auto-refresh every 30 seconds
-      const interval = setInterval(fetchData, 30000);
-      return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        if (!controller.signal.aborted) {
+          fetchData(controller.signal);
+        }
+      }, 30000);
+      
+      // Cleanup function
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
     }
   }, [mounted, fetchData]);
 
