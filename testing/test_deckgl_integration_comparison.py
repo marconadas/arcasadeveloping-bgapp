@@ -461,11 +461,11 @@ class DeckGLIntegrationTester:
         
         # Iniciar servidor de testes
         if self.start_test_server():
-            print(f"\n{Colors.OKCYAN}🌐 Abra o navegador em:{Colors.ENDC}")
+            print(f"\n{Colors.OKCYAN}🌐 Servidor de testes disponível em:{Colors.ENDC}")
             print(f"  • http://localhost:8888/testing/test_pyodide_deckgl.html")
             print(f"  • http://localhost:8888/testing/test_pyscript_deckgl.html")
-            print(f"\n{Colors.WARNING}Pressione Enter após testar no navegador...{Colors.ENDC}")
-            input()
+            print(f"\n{Colors.WARNING}Executando testes automaticamente...{Colors.ENDC}")
+            time.sleep(2)  # Aguardar servidor estabilizar
         
         # Executar testes
         self.results["pyodide"] = await self.test_pyodide()
