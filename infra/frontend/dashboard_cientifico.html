@@ -682,18 +682,54 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* SOLUÇÃO AGRESSIVA: Dropdown de exportação SEMPRE no topo */
-        .dropdown-menu {
-            z-index: 99999 !important; /* Z-index máximo */
+        /* MENU DE EXPORTAÇÃO CUSTOMIZADO - SOLUÇÃO DEFINITIVA */
+        .custom-export-menu {
+            position: fixed !important;
+            z-index: 999999 !important; /* Z-index máximo absoluto */
             background: rgba(255, 255, 255, 0.98) !important;
             backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
             border-radius: 12px !important;
             padding: 12px !important;
-            min-width: 240px !important;
+            min-width: 220px !important;
             margin-top: 8px !important;
-            position: fixed !important; /* Position fixed para escapar de containers */
+            animation: slideDown 0.2s ease !important;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .export-option {
+            padding: 12px 16px !important;
+            margin: 4px 0 !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            color: #333 !important;
+            text-decoration: none !important;
+        }
+
+        .export-option:hover {
+            background: rgba(0, 102, 204, 0.1) !important;
+            transform: translateX(4px) !important;
+            color: #0066cc !important;
+        }
+
+        .export-divider {
+            height: 1px !important;
+            background: rgba(0, 0, 0, 0.1) !important;
+            margin: 8px 0 !important;
+        }
+
+        /* Botão de exportar customizado */
+        #custom-export-btn {
+            position: relative !important;
+            z-index: 999998 !important;
         }
 
         /* Quando dropdown está ativo - posicionamento absoluto no topo */
@@ -1724,28 +1760,29 @@
                     <button class="btn btn-primary me-2" onclick="refreshData()" aria-describedby="refresh-help">
                         <i class="fas fa-sync-alt me-1" aria-hidden="true"></i> Atualizar
                     </button>
-                    <div class="btn-group me-2">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="export-menu-container me-2" style="position: relative;">
+                        <button class="btn btn-outline-primary" id="custom-export-btn" onclick="toggleCustomExportMenu()">
                             <i class="fas fa-download me-1" aria-hidden="true"></i> Exportar
+                            <i class="fas fa-chevron-down ms-1"></i>
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="exportData('csv')">
+                        <div id="custom-export-menu" class="custom-export-menu" style="display: none;">
+                            <div class="export-option" onclick="exportData('csv'); hideCustomExportMenu();">
                                 <i class="fas fa-file-csv text-success me-2"></i>CSV
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData('excel')">
+                            </div>
+                            <div class="export-option" onclick="exportData('excel'); hideCustomExportMenu();">
                                 <i class="fas fa-file-excel text-success me-2"></i>Excel
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData('pdf')">
+                            </div>
+                            <div class="export-option" onclick="exportData('pdf'); hideCustomExportMenu();">
                                 <i class="fas fa-file-pdf text-danger me-2"></i>PDF
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData('geojson')">
+                            </div>
+                            <div class="export-option" onclick="exportData('geojson'); hideCustomExportMenu();">
                                 <i class="fas fa-map text-info me-2"></i>GeoJSON
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="exportData('all')">
+                            </div>
+                            <div class="export-divider"></div>
+                            <div class="export-option" onclick="exportData('all'); hideCustomExportMenu();">
                                 <i class="fas fa-download text-primary me-2"></i>Todos os Formatos
-                            </a></li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                     <button class="btn btn-outline-success me-2" id="notification-btn" onclick="toggleNotifications()" aria-describedby="notification-help">
                         <i class="fas fa-bell me-1" aria-hidden="true"></i> 
@@ -7698,56 +7735,84 @@
             console.log('📊 Power BI API exposta globalmente');
             console.log('🚀 Dashboard BGAPP inicializado com todas as funcionalidades avançadas');
         
-        // 🔧 FIX: Garantir funcionamento correto do dropdown de exportação
-        setTimeout(() => {
-            const exportButton = document.querySelector('[data-bs-toggle="dropdown"]');
-            const dropdownMenu = document.querySelector('.dropdown-menu');
+        // 🎯 FUNÇÕES DO MENU DE EXPORTAÇÃO CUSTOMIZADO
+        function toggleCustomExportMenu() {
+            console.log('🎯 Toggle menu de exportação customizado');
             
-            if (exportButton && dropdownMenu) {
-                console.log('🔧 Configurando dropdown de exportação...');
-                
-                // Forçar comportamento correto do dropdown
-                exportButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const dropdown = exportButton.closest('.btn-group');
-                    const isOpen = dropdown.classList.contains('show');
-                    
-                    // Toggle manual do dropdown
-                    if (isOpen) {
-                        dropdown.classList.remove('show');
-                        dropdownMenu.classList.remove('show');
-                        console.log('🔽 Dropdown fechado');
-                    } else {
-                        // Calcular posição do botão para position fixed
-                        const buttonRect = exportButton.getBoundingClientRect();
-                        
-                        // Posicionar dropdown logo abaixo do botão
-                        dropdownMenu.style.top = (buttonRect.bottom + 5) + 'px';
-                        dropdownMenu.style.left = (buttonRect.right - 240) + 'px'; // Alinhado à direita
-                        
-                        dropdown.classList.add('show');
-                        dropdownMenu.classList.add('show');
-                        console.log('🔼 Dropdown aberto em posição:', {
-                            top: dropdownMenu.style.top,
-                            left: dropdownMenu.style.left
-                        });
-                    }
-                });
-                
-                // Fechar quando clicar fora
-                document.addEventListener('click', (e) => {
-                    if (!exportButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                        const dropdown = exportButton.closest('.btn-group');
-                        dropdown.classList.remove('show');
-                        dropdownMenu.classList.remove('show');
-                    }
-                });
-                
-                console.log('✅ Dropdown de exportação configurado manualmente');
+            const menu = document.getElementById('custom-export-menu');
+            const button = document.getElementById('custom-export-btn');
+            
+            if (!menu || !button) {
+                console.error('❌ Elementos do menu não encontrados');
+                return;
             }
-        }, 2000);
+            
+            const isVisible = menu.style.display === 'block';
+            
+            if (isVisible) {
+                hideCustomExportMenu();
+            } else {
+                showCustomExportMenu();
+            }
+        }
+        
+        function showCustomExportMenu() {
+            const menu = document.getElementById('custom-export-menu');
+            const button = document.getElementById('custom-export-btn');
+            
+            if (!menu || !button) return;
+            
+            // Calcular posição
+            const buttonRect = button.getBoundingClientRect();
+            
+            menu.style.display = 'block';
+            menu.style.position = 'fixed';
+            menu.style.top = (buttonRect.bottom + 8) + 'px';
+            menu.style.left = (buttonRect.right - 220) + 'px'; // Alinhado à direita
+            menu.style.zIndex = '999999';
+            
+            console.log('🔼 Menu customizado aberto em:', {
+                top: menu.style.top,
+                left: menu.style.left
+            });
+            
+            // Rotacionar seta
+            const chevron = button.querySelector('.fa-chevron-down');
+            if (chevron) {
+                chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        function hideCustomExportMenu() {
+            const menu = document.getElementById('custom-export-menu');
+            const button = document.getElementById('custom-export-btn');
+            
+            if (!menu) return;
+            
+            menu.style.display = 'none';
+            
+            // Resetar seta
+            if (button) {
+                const chevron = button.querySelector('.fa-chevron-down');
+                if (chevron) {
+                    chevron.style.transform = 'rotate(0deg)';
+                }
+            }
+            
+            console.log('🔽 Menu customizado fechado');
+        }
+        
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('custom-export-menu');
+            const button = document.getElementById('custom-export-btn');
+            
+            if (menu && button && 
+                !menu.contains(e.target) && 
+                !button.contains(e.target)) {
+                hideCustomExportMenu();
+            }
+        });
         });
     </script>
 </body>
