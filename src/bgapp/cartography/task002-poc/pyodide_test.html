@@ -1,0 +1,370 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>BGAPP - Pyodide + Deck.GL POC</title>
+            <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+            <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+            <script src="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js"></script>
+            <link href="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css" rel="stylesheet">
+            <style>
+                body { margin: 0; padding: 0; }
+                #deck-container { width: 100vw; height: 100vh; }
+                .info-panel {
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 5px;
+                    font-family: monospace;
+                }
+            </style>
+        </head>
+        <body>
+            <div id="deck-container"></div>
+            <div class="info-panel">
+                <h3>🔬 Pyodide + Deck.GL POC</h3>
+                <p>Status: <span id="status">Carregando...</span></p>
+                <p>Layers: 4</p>
+                <p>Init Time: 0.000s</p>
+                <p>WebGL: WebGL2</p>
+            </div>
+            
+            <script>
+                const deckConfig = {
+  "version": "9.1.14",
+  "viewState": {
+    "longitude": 12.0,
+    "latitude": -11.0,
+    "zoom": 5,
+    "pitch": 0,
+    "bearing": 0
+  },
+  "layers": [
+    {
+      "id": "angola-fishing-zones",
+      "type": "ScatterplotLayer",
+      "data": [
+        {
+          "lat": -8.5,
+          "lng": 12.5,
+          "abundance": 150,
+          "species": "Sardinha"
+        },
+        {
+          "lat": -9.2,
+          "lng": 13.1,
+          "abundance": 200,
+          "species": "Atum"
+        },
+        {
+          "lat": -10.5,
+          "lng": 13.5,
+          "abundance": 120,
+          "species": "Carapau"
+        },
+        {
+          "lat": -12.0,
+          "lng": 12.8,
+          "abundance": 180,
+          "species": "Corvina"
+        },
+        {
+          "lat": -14.5,
+          "lng": 11.9,
+          "abundance": 90,
+          "species": "Garoupa"
+        }
+      ],
+      "props": {
+        "getPosition": "d => [d.lng, d.lat]",
+        "getRadius": "d => d.abundance * 50",
+        "getFillColor": "[0, 100, 200, 180]",
+        "getLineColor": "[0, 0, 0]",
+        "lineWidthMinPixels": 1,
+        "radiusMinPixels": 2,
+        "radiusMaxPixels": 100,
+        "pickable": true,
+        "autoHighlight": true
+      }
+    },
+    {
+      "id": "angola-sst-heatmap",
+      "type": "HeatmapLayer",
+      "data": [
+        {
+          "lat": -8.0,
+          "lng": 12.0,
+          "weight": 0.8
+        },
+        {
+          "lat": -9.5,
+          "lng": 13.0,
+          "weight": 0.9
+        },
+        {
+          "lat": -11.0,
+          "lng": 13.2,
+          "weight": 0.7
+        },
+        {
+          "lat": -13.0,
+          "lng": 12.5,
+          "weight": 0.6
+        },
+        {
+          "lat": -15.0,
+          "lng": 11.5,
+          "weight": 0.5
+        }
+      ],
+      "props": {
+        "getPosition": "d => [d.lng, d.lat]",
+        "getWeight": "d => d.weight || 1",
+        "radiusPixels": 50,
+        "intensity": 1.5,
+        "threshold": 0.05,
+        "colorRange": [
+          [
+            255,
+            255,
+            204
+          ],
+          [
+            255,
+            237,
+            160
+          ],
+          [
+            254,
+            217,
+            118
+          ],
+          [
+            254,
+            178,
+            76
+          ],
+          [
+            253,
+            141,
+            60
+          ],
+          [
+            252,
+            78,
+            42
+          ],
+          [
+            227,
+            26,
+            28
+          ],
+          [
+            189,
+            0,
+            38
+          ],
+          [
+            128,
+            0,
+            38
+          ]
+        ]
+      }
+    },
+    {
+      "id": "angola-fishing-zones",
+      "type": "ScatterplotLayer",
+      "data": [
+        {
+          "lat": -8.5,
+          "lng": 12.5,
+          "abundance": 150,
+          "species": "Sardinha"
+        },
+        {
+          "lat": -9.2,
+          "lng": 13.1,
+          "abundance": 200,
+          "species": "Atum"
+        },
+        {
+          "lat": -10.5,
+          "lng": 13.5,
+          "abundance": 120,
+          "species": "Carapau"
+        },
+        {
+          "lat": -12.0,
+          "lng": 12.8,
+          "abundance": 180,
+          "species": "Corvina"
+        },
+        {
+          "lat": -14.5,
+          "lng": 11.9,
+          "abundance": 90,
+          "species": "Garoupa"
+        }
+      ],
+      "props": {
+        "getPosition": "d => [d.lng, d.lat]",
+        "getRadius": "d => d.abundance * 50",
+        "getFillColor": "[0, 100, 200, 180]",
+        "getLineColor": "[0, 0, 0]",
+        "lineWidthMinPixels": 1,
+        "radiusMinPixels": 2,
+        "radiusMaxPixels": 100,
+        "pickable": true,
+        "autoHighlight": true
+      }
+    },
+    {
+      "id": "angola-sst-heatmap",
+      "type": "HeatmapLayer",
+      "data": [
+        {
+          "lat": -8.0,
+          "lng": 12.0,
+          "weight": 0.8
+        },
+        {
+          "lat": -9.5,
+          "lng": 13.0,
+          "weight": 0.9
+        },
+        {
+          "lat": -11.0,
+          "lng": 13.2,
+          "weight": 0.7
+        },
+        {
+          "lat": -13.0,
+          "lng": 12.5,
+          "weight": 0.6
+        },
+        {
+          "lat": -15.0,
+          "lng": 11.5,
+          "weight": 0.5
+        }
+      ],
+      "props": {
+        "getPosition": "d => [d.lng, d.lat]",
+        "getWeight": "d => d.weight || 1",
+        "radiusPixels": 50,
+        "intensity": 1.5,
+        "threshold": 0.05,
+        "colorRange": [
+          [
+            255,
+            255,
+            204
+          ],
+          [
+            255,
+            237,
+            160
+          ],
+          [
+            254,
+            217,
+            118
+          ],
+          [
+            254,
+            178,
+            76
+          ],
+          [
+            253,
+            141,
+            60
+          ],
+          [
+            252,
+            78,
+            42
+          ],
+          [
+            227,
+            26,
+            28
+          ],
+          [
+            189,
+            0,
+            38
+          ],
+          [
+            128,
+            0,
+            38
+          ]
+        ]
+      }
+    }
+  ],
+  "mapStyle": "mapbox://styles/mapbox/dark-v10",
+  "performance": {
+    "initialization_time": 1.4e-05,
+    "render_time": 0,
+    "layer_creation_time": 1.4e-05,
+    "total_memory_used": 0
+  },
+  "timestamp": "2025-09-05T00:44:02.416476"
+};
+                
+                async function initPyodide() {
+                    console.log('🚀 Iniciando Pyodide...');
+                    const statusEl = document.getElementById('status');
+                    
+                    try {
+                        statusEl.textContent = 'Carregando Pyodide...';
+                        const pyodide = await loadPyodide();
+                        
+                        statusEl.textContent = 'Executando Python...';
+                        await pyodide.runPython(`
+                            import json
+                            from js import deck, document
+                            
+                            # Configurar Deck.GL
+                            config = json.loads('{"version": "9.1.14", "viewState": {"longitude": 12.0, "latitude": -11.0, "zoom": 5, "pitch": 0, "bearing": 0}, "layers": [{"id": "angola-fishing-zones", "type": "ScatterplotLayer", "data": [{"lat": -8.5, "lng": 12.5, "abundance": 150, "species": "Sardinha"}, {"lat": -9.2, "lng": 13.1, "abundance": 200, "species": "Atum"}, {"lat": -10.5, "lng": 13.5, "abundance": 120, "species": "Carapau"}, {"lat": -12.0, "lng": 12.8, "abundance": 180, "species": "Corvina"}, {"lat": -14.5, "lng": 11.9, "abundance": 90, "species": "Garoupa"}], "props": {"getPosition": "d => [d.lng, d.lat]", "getRadius": "d => d.abundance * 50", "getFillColor": "[0, 100, 200, 180]", "getLineColor": "[0, 0, 0]", "lineWidthMinPixels": 1, "radiusMinPixels": 2, "radiusMaxPixels": 100, "pickable": true, "autoHighlight": true}}, {"id": "angola-sst-heatmap", "type": "HeatmapLayer", "data": [{"lat": -8.0, "lng": 12.0, "weight": 0.8}, {"lat": -9.5, "lng": 13.0, "weight": 0.9}, {"lat": -11.0, "lng": 13.2, "weight": 0.7}, {"lat": -13.0, "lng": 12.5, "weight": 0.6}, {"lat": -15.0, "lng": 11.5, "weight": 0.5}], "props": {"getPosition": "d => [d.lng, d.lat]", "getWeight": "d => d.weight || 1", "radiusPixels": 50, "intensity": 1.5, "threshold": 0.05, "colorRange": [[255, 255, 204], [255, 237, 160], [254, 217, 118], [254, 178, 76], [253, 141, 60], [252, 78, 42], [227, 26, 28], [189, 0, 38], [128, 0, 38]]}}, {"id": "angola-fishing-zones", "type": "ScatterplotLayer", "data": [{"lat": -8.5, "lng": 12.5, "abundance": 150, "species": "Sardinha"}, {"lat": -9.2, "lng": 13.1, "abundance": 200, "species": "Atum"}, {"lat": -10.5, "lng": 13.5, "abundance": 120, "species": "Carapau"}, {"lat": -12.0, "lng": 12.8, "abundance": 180, "species": "Corvina"}, {"lat": -14.5, "lng": 11.9, "abundance": 90, "species": "Garoupa"}], "props": {"getPosition": "d => [d.lng, d.lat]", "getRadius": "d => d.abundance * 50", "getFillColor": "[0, 100, 200, 180]", "getLineColor": "[0, 0, 0]", "lineWidthMinPixels": 1, "radiusMinPixels": 2, "radiusMaxPixels": 100, "pickable": true, "autoHighlight": true}}, {"id": "angola-sst-heatmap", "type": "HeatmapLayer", "data": [{"lat": -8.0, "lng": 12.0, "weight": 0.8}, {"lat": -9.5, "lng": 13.0, "weight": 0.9}, {"lat": -11.0, "lng": 13.2, "weight": 0.7}, {"lat": -13.0, "lng": 12.5, "weight": 0.6}, {"lat": -15.0, "lng": 11.5, "weight": 0.5}], "props": {"getPosition": "d => [d.lng, d.lat]", "getWeight": "d => d.weight || 1", "radiusPixels": 50, "intensity": 1.5, "threshold": 0.05, "colorRange": [[255, 255, 204], [255, 237, 160], [254, 217, 118], [254, 178, 76], [253, 141, 60], [252, 78, 42], [227, 26, 28], [189, 0, 38], [128, 0, 38]]}}], "mapStyle": "mapbox://styles/mapbox/dark-v10", "performance": {"initialization_time": 1.4e-05, "render_time": 0, "layer_creation_time": 1.4e-05, "total_memory_used": 0}, "timestamp": "2025-09-05T00:44:02.416476"}')
+                            
+                            # Criar instância Deck.GL
+                            print("Criando visualização Deck.GL via Pyodide...")
+                        `);
+                        
+                        // Criar Deck.GL diretamente em JavaScript por enquanto
+                        const deckgl = new deck.DeckGL({
+                            container: 'deck-container',
+                            initialViewState: deckConfig.viewState,
+                            controller: true,
+                            layers: deckConfig.layers.map(layer => {
+                                const LayerClass = deck[layer.type];
+                                return new LayerClass({
+                                    id: layer.id,
+                                    data: layer.data,
+                                    ...layer.props
+                                });
+                            })
+                        });
+                        
+                        statusEl.textContent = '✅ Ativo';
+                        console.log('✅ Deck.GL inicializado com sucesso');
+                        
+                    } catch (error) {
+                        console.error('❌ Erro:', error);
+                        statusEl.textContent = '❌ Erro';
+                    }
+                }
+                
+                // Inicializar quando DOM estiver pronto
+                document.addEventListener('DOMContentLoaded', initPyodide);
+            </script>
+        </body>
+        </html>
+        
