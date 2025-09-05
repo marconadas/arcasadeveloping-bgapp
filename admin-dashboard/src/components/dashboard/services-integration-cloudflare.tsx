@@ -167,7 +167,7 @@ export default function ServicesIntegrationCloudflare() {
           logger.info(`✅ ${config.name} (Cloudflare native)`);
         }
       } catch (err) {
-        logger.warn(`⚠️ ${config.name} error:`, err);
+        logger.warn(`⚠️ ${config.name} error:`, { error: String(err) });
         newServices[config.key] = {
           status: 'offline',
           error: err instanceof Error ? err.message : 'Unknown error',

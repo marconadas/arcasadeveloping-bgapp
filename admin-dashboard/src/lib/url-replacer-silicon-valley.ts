@@ -120,5 +120,5 @@ if (typeof window !== 'undefined') {
   URLReplacerSiliconValley.interceptWindowOpen();
   
   logger.info('🚀 URL Replacer Silicon Valley ativo!');
-  logger.info('🌐 Ambiente:', ENV.isProduction ? 'Produção (Cloudflare)' : 'Desenvolvimento (Local)');
+  logger.info(`🌐 Ambiente: ${ENV.isProduction ? 'Produção (Cloudflare)' : 'Desenvolvimento (Local)'}`);
 }

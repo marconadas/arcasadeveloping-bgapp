@@ -49,7 +49,7 @@ export default function DataConnectorsManager() {
       }, 3000);
       
     } catch (error) {
-      logger.error('Erro ao executar conector:', error);
+      logger.error('Erro ao executar conector:', { error: String(error) });
       setRunningConnector(null);
     }
   };

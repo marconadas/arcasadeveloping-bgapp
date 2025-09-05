@@ -258,7 +258,7 @@ export default function QGISTemporalVisualization() {
       setStats(statsData);
 
     } catch (err) {
-      // logger.error('Error fetching temporal data:', err);
+      // logger.error('Error fetching temporal data:', { error: String(err) });
       setError('Erro ao carregar dados temporais');
     } finally {
       setLoading(false);

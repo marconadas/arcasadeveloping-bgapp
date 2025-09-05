@@ -176,7 +176,7 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
         
       } catch (error) {
         lastError = error as Error;
-        logger.warn(`⚠️ Erro em ${url} (tentativa ${retry + 1}):`, error);
+        logger.warn(`⚠️ Erro em ${url} (tentativa ${retry + 1}):`, { error: String(error) });
         
         // Esperar antes do próximo retry (exceto na última tentativa)
         if (retry < ENV.retryConfig.maxRetries) {

@@ -263,7 +263,7 @@ export default function QGISSpatialAnalysis() {
       setStats(statsData);
 
     } catch (err) {
-      // logger.error('Error fetching spatial data:', err);
+      // logger.error('Error fetching spatial data:', { error: String(err) });
       setError('Erro ao carregar dados de análise espacial');
     } finally {
       setLoading(false);
@@ -281,7 +281,7 @@ export default function QGISSpatialAnalysis() {
       await fetchSpatialData();
       
     } catch (err) {
-      // logger.error('Error running analysis:', err);
+      // logger.error('Error running analysis:', { error: String(err) });
     } finally {
       setProcessing(false);
     }

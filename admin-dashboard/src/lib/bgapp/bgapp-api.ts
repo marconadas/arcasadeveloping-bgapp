@@ -550,7 +550,7 @@ class BGAPPAPIClient {
       {
         id: 'test_dashboard',
         name: 'Teste Dashboard',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_dashboard.html',
         description: 'Interface de teste para o dashboard principal',
         isActive: true,
@@ -559,7 +559,7 @@ class BGAPPAPIClient {
       {
         id: 'test_api',
         name: 'Teste API',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_api.html',
         description: 'Interface para testar APIs do sistema',
         isActive: true,
@@ -568,7 +568,7 @@ class BGAPPAPIClient {
       {
         id: 'test_dependencies',
         name: 'Teste Dependências',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_dependencies.html',
         description: 'Interface para testar dependências do sistema',
         isActive: true,
@@ -577,7 +577,7 @@ class BGAPPAPIClient {
       {
         id: 'test_final_validation',
         name: 'Validação Final',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_final_validation.html',
         description: 'Interface de validação final do sistema',
         isActive: true,
@@ -586,7 +586,7 @@ class BGAPPAPIClient {
       {
         id: 'test_realtime_corrected',
         name: 'Teste Tempo Real Corrigido',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_realtime_corrected.html',
         description: 'Teste da interface de tempo real corrigida',
         isActive: true,
@@ -595,7 +595,7 @@ class BGAPPAPIClient {
       {
         id: 'test_admin_simple',
         name: 'Teste Admin Simples',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-admin-simple.html',
         description: 'Teste simplificado da interface administrativa',
         isActive: true,
@@ -604,7 +604,7 @@ class BGAPPAPIClient {
       {
         id: 'test_mobile_menu',
         name: 'Teste Menu Mobile',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-mobile-menu.html',
         description: 'Teste do menu mobile e responsividade',
         isActive: true,
@@ -613,7 +613,7 @@ class BGAPPAPIClient {
       {
         id: 'test_debug_fixes',
         name: 'Teste Correções Debug',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-debug-fixes.html',
         description: 'Teste das correções de debug implementadas',
         isActive: true,
@@ -622,7 +622,7 @@ class BGAPPAPIClient {
       {
         id: 'test_real_functionality',
         name: 'Teste Funcionalidade Real',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-real-functionality.html',
         description: 'Teste das funcionalidades reais do sistema',
         isActive: true,
@@ -631,7 +631,7 @@ class BGAPPAPIClient {
       {
         id: 'test_simple_map',
         name: 'Teste Mapa Simples',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-simple-map.html',
         description: 'Teste da interface de mapa simplificada',
         isActive: true,
@@ -640,7 +640,7 @@ class BGAPPAPIClient {
       {
         id: 'test_cabinda_coordinates',
         name: 'Teste Coordenadas Cabinda',
-        category: 'testing',
+        category: 'analysis',
         url: '/test_cabinda_coordinates.html',
         description: 'Teste específico das coordenadas de Cabinda',
         isActive: true,
@@ -649,7 +649,7 @@ class BGAPPAPIClient {
       {
         id: 'test_admin_optimization',
         name: 'Teste Otimização Admin',
-        category: 'testing',
+        category: 'analysis',
         url: '/test-admin-optimization.html',
         description: 'Teste das otimizações da interface administrativa',
         isActive: true,
@@ -660,7 +660,7 @@ class BGAPPAPIClient {
       {
         id: 'force_cache_clear',
         name: 'Limpeza de Cache',
-        category: 'utilities',
+        category: 'analysis',
         url: '/force-cache-clear.html',
         description: 'Utilitário para limpeza forçada de cache',
         isActive: true,
@@ -669,7 +669,7 @@ class BGAPPAPIClient {
       {
         id: 'admin_services_integration',
         name: 'Integração Serviços Admin',
-        category: 'utilities',
+        category: 'analysis',
         url: '/admin_new_services_integration.html',
         description: 'Interface de integração de novos serviços administrativos',
         isActive: true,
@@ -688,7 +688,7 @@ class BGAPPAPIClient {
       if (response.ok) {
         const realData = await response.json();
         logger.info('✅ ML Models: Dados REAIS carregados da API');
-        return realData.models || this.getFallbackMLModels();
+        return realData.models || [];
       }
     } catch (error) {
       logger.warn('⚠️ ML API indisponível, usando fallback baseado em dados reais');

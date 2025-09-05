@@ -51,7 +51,7 @@ export default function PredictiveFiltersManager() {
       }, 1500);
       
     } catch (error) {
-      logger.error('Erro ao alterar filtro:', error);
+      logger.error('Erro ao alterar filtro:', { error: String(error) });
       setActivatingFilter(null);
     }
   };

@@ -204,7 +204,7 @@ export function ReportsManagement() {
           return
         }
       } catch (apiError) {
-        logger.warn('API não disponível, usando dados de demonstração:', apiError)
+        logger.warn('API não disponível, usando dados de demonstração:', { error: String(apiError) })
       }
       
       // Usar dados de demonstração quando API não estiver disponível
@@ -213,7 +213,7 @@ export function ReportsManagement() {
       setStats(mockStats)
       
     } catch (err) {
-      logger.error('Erro ao carregar relatórios:', err)
+      logger.error('Erro ao carregar relatórios:', err as Error)
       // Mesmo em caso de erro, mostrar dados de demonstração
       setReports(mockReports)
       setStats(mockStats)
@@ -310,7 +310,7 @@ Mare Datum Consultoria - BGAPP Marine Angola v2.0.0`,
       }
       
     } catch (err) {
-      logger.error('Erro ao abrir relatório:', err)
+      logger.error('Erro ao abrir relatório:', err as Error)
       alert('Erro ao carregar o conteúdo do relatório')
     }
   }
@@ -330,7 +330,7 @@ Mare Datum Consultoria - BGAPP Marine Angola v2.0.0`,
         link.click()
       }
     } catch (err) {
-      logger.error('Erro ao fazer download:', err)
+      logger.error('Erro ao fazer download:', err as Error)
       alert('Erro ao fazer download do relatório')
     }
   }

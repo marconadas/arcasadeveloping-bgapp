@@ -50,7 +50,7 @@ export default function MLSystemDashboard() {
         }
       }
     } catch (error) {
-      logger.warn('⚠️ ML Metrics não disponíveis:', error);
+      logger.warn('⚠️ ML Metrics não disponíveis:', { error: String(error) });
     }
   };
 
@@ -75,7 +75,7 @@ export default function MLSystemDashboard() {
       }, 2000);
       
     } catch (error) {
-      logger.error('Erro ao treinar modelo:', error);
+      logger.error('Erro ao treinar modelo:', { error: String(error) });
       setIsTraining(prev => ({ ...prev, [modelType]: false }));
     }
   };
