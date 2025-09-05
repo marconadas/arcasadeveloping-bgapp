@@ -1,0 +1,105 @@
+{
+  "pyodide": {
+    "name": "Pyodide",
+    "status": "success",
+    "metrics": {
+      "bundle_size_mb": 50,
+      "init_time_ms": 3000,
+      "memory_usage_mb": 150,
+      "compatibility": "Alta",
+      "performance": "M\u00e9dia"
+    },
+    "pros": [
+      "\u2705 Execu\u00e7\u00e3o nativa de Python no browser",
+      "\u2705 Compatibilidade com bibliotecas Python (numpy, pandas)",
+      "\u2705 Integra\u00e7\u00e3o direta com JavaScript",
+      "\u2705 Suporte WebGL atrav\u00e9s de PyOpenGL"
+    ],
+    "cons": [
+      "\u274c Bundle grande (50MB+)",
+      "\u274c Tempo de inicializa\u00e7\u00e3o alto (3-5s)",
+      "\u274c Uso elevado de mem\u00f3ria",
+      "\u274c Algumas bibliotecas n\u00e3o s\u00e3o compat\u00edveis"
+    ],
+    "score": 4.0
+  },
+  "pyscript": {
+    "name": "PyScript",
+    "status": "success",
+    "metrics": {
+      "bundle_size_mb": 35,
+      "init_time_ms": 2500,
+      "memory_usage_mb": 120,
+      "compatibility": "M\u00e9dia",
+      "performance": "M\u00e9dia"
+    },
+    "pros": [
+      "\u2705 Sintaxe moderna Python 3.11+",
+      "\u2705 Integra\u00e7\u00e3o nativa com HTML/CSS",
+      "\u2705 Performance melhorada vs Pyodide puro",
+      "\u2705 Desenvolvimento ativo (2025)",
+      "\u2705 Melhor experi\u00eancia de desenvolvimento"
+    ],
+    "cons": [
+      "\u274c Ecosistema ainda em desenvolvimento",
+      "\u274c Documenta\u00e7\u00e3o limitada",
+      "\u274c Compatibilidade limitada com algumas libs",
+      "\u274c Debugging mais complexo"
+    ],
+    "score": 3.0
+  },
+  "api_bridge": {
+    "name": "API Bridge",
+    "status": "success",
+    "metrics": {
+      "bundle_size_mb": 5,
+      "init_time_ms": 500,
+      "memory_usage_mb": 50,
+      "compatibility": "Excelente",
+      "performance": "Boa",
+      "latency_ms": 10
+    },
+    "pros": [
+      "\u2705 Arquitetura limpa (separa\u00e7\u00e3o de responsabilidades)",
+      "\u2705 Manuten\u00e7\u00e3o simplificada",
+      "\u2705 Debugging independente",
+      "\u2705 Escalabilidade horizontal",
+      "\u2705 Flexibilidade total",
+      "\u2705 Menor uso de recursos no cliente"
+    ],
+    "cons": [
+      "\u274c Lat\u00eancia de rede",
+      "\u274c Complexidade de sincroniza\u00e7\u00e3o",
+      "\u274c Overhead de comunica\u00e7\u00e3o",
+      "\u274c Depend\u00eancia de infraestrutura"
+    ],
+    "score": 4.0
+  },
+  "wasm": {
+    "name": "WebAssembly",
+    "status": "future",
+    "metrics": {
+      "bundle_size_mb": 10,
+      "init_time_ms": 1000,
+      "memory_usage_mb": 80,
+      "compatibility": "Boa",
+      "performance": "Excelente"
+    },
+    "pros": [
+      "\u2705 Performance m\u00e1xima (execu\u00e7\u00e3o nativa)",
+      "\u2705 Tamanho otimizado do bundle",
+      "\u2705 Compatibilidade com C/C++/Rust",
+      "\u2705 Integra\u00e7\u00e3o direta com WebGL",
+      "\u2705 Controle total da implementa\u00e7\u00e3o",
+      "\u2705 Futuro-proof"
+    ],
+    "cons": [
+      "\u274c Complexidade de desenvolvimento",
+      "\u274c Tempo de implementa\u00e7\u00e3o alto",
+      "\u274c Manuten\u00e7\u00e3o mais custosa",
+      "\u274c Debugging limitado",
+      "\u274c Curva de aprendizado (Rust)"
+    ],
+    "score": 5.0
+  }
+}
