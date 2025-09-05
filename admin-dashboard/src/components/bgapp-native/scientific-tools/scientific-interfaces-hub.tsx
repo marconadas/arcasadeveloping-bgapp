@@ -374,7 +374,7 @@ export default function ScientificInterfacesHub() {
                 <div className="bg-gray-50 p-8 text-center text-gray-500">
                   <BeakerIcon className="h-12 w-12 mx-auto mb-2 text-gray-400" />
                   <p>Preview da interface científica</p>
-                  <p className="text-xs">Clique em "Abrir em IFrame" para visualizar</p>
+                  <p className="text-xs">Clique em &quot;Abrir em IFrame&quot; para visualizar</p>
                 </div>
               </div>
             </div>
