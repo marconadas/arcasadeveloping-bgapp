@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useEffect, useState } from 'react';
 
@@ -23,7 +24,7 @@ export function HydrationDebugger({ name, children }: HydrationDebuggerProps) {
 
   // Log detalhado para debug
   if (typeof window !== 'undefined') {
-    console.log(`🔍 HYDRATION DEBUG [${name}]:`, {
+    logger.info(`🔍 HYDRATION DEBUG [${name}]:`, {
       isClient,
       renderTime,
       timestamp: new Date().toISOString(),

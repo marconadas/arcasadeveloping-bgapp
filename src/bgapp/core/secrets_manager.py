@@ -16,6 +16,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import hashlib
 
 from ..core.logging_config import get_logger
+from bgapp.core.logger import logger
 
 logger = get_logger(__name__)
 
@@ -330,31 +331,31 @@ if __name__ == "__main__":
     # Teste do gestor de secrets
     manager = SecretsManager()
     
-    print("🔐 Teste do Gestor de Secrets")
-    print("=" * 50)
+    logger.info("🔐 Teste do Gestor de Secrets")
+    logger.info("=" * 50)
     
     # Inicializar secrets padrão
-    print("\n🔄 Inicializando secrets padrão...")
+    logger.info("\n🔄 Inicializando secrets padrão...")
     generated = manager.initialize_default_secrets()
     
-    print(f"✅ {len(generated)} secrets gerados")
+    logger.info(f"✅ {len(generated)} secrets gerados")
     
     # Verificar saúde
-    print("\n🏥 Verificando saúde dos secrets...")
+    logger.info("\n🏥 Verificando saúde dos secrets...")
     health = manager.check_secrets_health()
-    print(f"Score de saúde: {health['health_score']}/100")
+    logger.info(f"Score de saúde: {health['health_score']}/100")
     
     # Testar rotação
-    print("\n🔄 Testando rotação de secret...")
+    logger.info("\n🔄 Testando rotação de secret...")
     old_jwt = manager.get_secret('JWT_SECRET_KEY')
     new_jwt = manager.rotate_secret('JWT_SECRET_KEY')
-    print(f"JWT rotado: {old_jwt[:10]}... -> {new_jwt[:10]}...")
+    logger.info(f"JWT rotado: {old_jwt[:10]}... -> {new_jwt[:10]}...")
     
     # Exportar template
-    print("\n📋 Exportando template .env...")
+    logger.info("\n📋 Exportando template .env...")
     template = manager.export_env_template()
     with open('.env.template', 'w') as f:
         f.write(template)
-    print("Template guardado em .env.template")
+    logger.info("Template guardado em .env.template")
     
-    print("\n✅ Teste concluído!")
+    logger.info("\n✅ Teste concluído!")

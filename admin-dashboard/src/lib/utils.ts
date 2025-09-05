@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -237,7 +238,7 @@ export function copyToClipboard(text: string): Promise<void> {
     try {
       document.execCommand('copy')
     } catch (error) {
-      // console.error('Copy to clipboard failed:', error)
+      // logger.error('Copy to clipboard failed:', error)
       throw error
     } finally {
       textArea.remove()

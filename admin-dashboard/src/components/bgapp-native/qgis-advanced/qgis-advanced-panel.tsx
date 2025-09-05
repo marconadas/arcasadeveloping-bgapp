@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -66,7 +67,7 @@ export default function QGISAdvancedPanel() {
       }, 2000);
       
     } catch (error) {
-      console.error('Erro ao criar análise QGIS:', error);
+      logger.error('Erro ao criar análise QGIS:', error);
       setIsCreatingAnalysis(false);
     }
   };

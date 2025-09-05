@@ -43,7 +43,7 @@ try:
     from .backup.backup_manager import backup_manager
     BGAPP_MODULES_AVAILABLE = True
 except ImportError as e:
-    print(f"Alguns módulos BGAPP não disponíveis: {e}")
+    logger.info(f"Alguns módulos BGAPP não disponíveis: {e}")
     BGAPP_MODULES_AVAILABLE = False
 
 # Configuração de logging
@@ -434,6 +434,7 @@ class BGAPPAdminDashboardController:
     async def _get_system_metrics(self) -> Dict[str, Any]:
         """Obter métricas do sistema"""
         import psutil
+from bgapp.core.logger import logger
         
         return {
             'cpu_usage': psutil.cpu_percent(),

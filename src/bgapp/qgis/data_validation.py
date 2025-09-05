@@ -26,6 +26,7 @@ import seaborn as sns
 from dataclasses import dataclass, asdict
 from enum import Enum
 import hashlib
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -1012,7 +1013,7 @@ async def main():
     validator = DataQualityValidator()
     
     # Executar validação
-    print("🔍 Executando validação de qualidade dos dados...")
+    logger.info("🔍 Executando validação de qualidade dos dados...")
     
     report = await validator.validate_data(
         sample_data, 
@@ -1021,16 +1022,16 @@ async def main():
     )
     
     # Exibir resultados
-    print(f"\n📊 RELATÓRIO DE QUALIDADE DOS DADOS")
-    print(f"{'='*50}")
-    print(f"Score Geral: {report.overall_score:.1f}%")
-    print(f"Total de Regras: {report.total_rules}")
-    print(f"✅ Aprovadas: {report.passed}")
-    print(f"⚠️ Avisos: {report.warnings}")
-    print(f"❌ Falharam: {report.failed}")
-    print(f"🔥 Erros: {report.errors}")
+    logger.info(f"\n📊 RELATÓRIO DE QUALIDADE DOS DADOS")
+    logger.info(f"{'='*50}")
+    logger.info(f"Score Geral: {report.overall_score:.1f}%")
+    logger.info(f"Total de Regras: {report.total_rules}")
+    logger.info(f"✅ Aprovadas: {report.passed}")
+    logger.warning(f"⚠️ Avisos: {report.warnings}")
+    logger.info(f"❌ Falharam: {report.failed}")
+    logger.error(f"🔥 Erros: {report.errors}")
     
-    print(f"\n📋 DETALHES DAS VALIDAÇÕES:")
+    logger.info(f"\n📋 DETALHES DAS VALIDAÇÕES:")
     for result in report.results:
         status_icon = {
             ValidationStatus.PASSED: "✅",
@@ -1039,11 +1040,11 @@ async def main():
             ValidationStatus.ERROR: "🔥"
         }[result.status]
         
-        print(f"{status_icon} {result.rule_name}: {result.message}")
+        logger.info(f"{status_icon} {result.rule_name}: {result.message}")
     
     # Exportar relatório
     report_path = validator.export_report(report)
-    print(f"\n💾 Relatório exportado: {report_path}")
+    logger.info(f"\n💾 Relatório exportado: {report_path}")
 
 if __name__ == "__main__":
     asyncio.run(main())

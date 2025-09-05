@@ -47,6 +47,7 @@ from sklearn.preprocessing import StandardScaler
 from dataclasses import dataclass, field
 from enum import Enum
 import warnings
+from bgapp.core.logger import logger
 warnings.filterwarnings('ignore')
 
 # Configuração do logging
@@ -876,12 +877,12 @@ if __name__ == "__main__":
         # Inicializar serviço
         coastal_service = CoastalAnalysisService()
         
-        print("🌊 Iniciando análise costeira de Angola")
+        logger.info("🌊 Iniciando análise costeira de Angola")
         
         try:
             # Criar segmentos costeiros
             segments = coastal_service.create_angola_coastline_segments()
-            print(f"✅ Criados {len(segments)} segmentos costeiros")
+            logger.info(f"✅ Criados {len(segments)} segmentos costeiros")
             
             # Analisar alguns segmentos
             for i, segment in enumerate(segments[:5]):  # Primeiros 5 segmentos
@@ -896,11 +897,11 @@ if __name__ == "__main__":
                 # Avaliar vulnerabilidade
                 vulnerability = coastal_service.assess_climate_vulnerability(segment)
                 
-                print(f"Segmento {segment.id}:")
-                print(f"  Tipo: {segment.coastal_type}")
-                print(f"  Mudança: {change.change_type.value} ({change.change_distance_m:.1f}m)")
-                print(f"  Vulnerabilidade: {vulnerability.vulnerability_level.value}")
-                print()
+                logger.info(f"Segmento {segment.id}:")
+                logger.info(f"  Tipo: {segment.coastal_type}")
+                logger.info(f"  Mudança: {change.change_type.value} ({change.change_distance_m:.1f}m)")
+                logger.info(f"  Vulnerabilidade: {vulnerability.vulnerability_level.value}")
+                logger.info()
             
             # Criar rede de monitorização
             monitoring_network = coastal_service.create_monitoring_network(segments)
@@ -909,6 +910,6 @@ if __name__ == "__main__":
             coastal_service.visualize_coastal_analysis(segments)
             
         except Exception as e:
-            print(f"❌ Erro: {str(e)}")
+            logger.info(f"❌ Erro: {str(e)}")
     
     main()

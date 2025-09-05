@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -50,7 +51,7 @@ export default function PredictiveFiltersManager() {
       }, 1500);
       
     } catch (error) {
-      console.error('Erro ao alterar filtro:', error);
+      logger.error('Erro ao alterar filtro:', error);
       setActivatingFilter(null);
     }
   };

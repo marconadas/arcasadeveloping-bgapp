@@ -21,6 +21,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 import httpx
 from pydantic import BaseModel
+from bgapp.core.logger import logger
 
 class RateLimitType(str, Enum):
     """Tipos de rate limiting"""
@@ -124,13 +125,13 @@ class APIGateway:
             self.redis = redis.Redis(connection_pool=self.redis_pool)
             await self.redis.ping()
             
-            print("✅ API Gateway inicializado com Redis")
+            logger.info("✅ API Gateway inicializado com Redis")
             
             # Start health checks
             asyncio.create_task(self._health_check_loop())
             
         except Exception as e:
-            print(f"⚠️ API Gateway sem Redis: {e}")
+            logger.info(f"⚠️ API Gateway sem Redis: {e}")
             self.redis = None
     
     def _load_default_rules(self):
@@ -313,7 +314,7 @@ class APIGateway:
             )
             
         except Exception as e:
-            print(f"❌ Erro verificando rate limit Redis: {e}")
+            logger.info(f"❌ Erro verificando rate limit Redis: {e}")
             # Fallback to allow request
             return RateLimitStatus(0, rule.limit, rule.limit, current_time, False)
     
@@ -466,7 +467,7 @@ class APIGateway:
                 await self._check_backend_health()
                 await asyncio.sleep(30)  # Check every 30 seconds
             except Exception as e:
-                print(f"❌ Erro no health check: {e}")
+                logger.info(f"❌ Erro no health check: {e}")
                 await asyncio.sleep(60)
     
     async def _check_backend_health(self):
@@ -597,7 +598,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return response
             
         except Exception as e:
-            print(f"❌ Erro no rate limiting: {e}")
+            logger.info(f"❌ Erro no rate limiting: {e}")
             # Allow request on error
             return await call_next(request)
 
@@ -609,6 +610,6 @@ async def initialize_gateway():
     await gateway.initialize()
 
 if __name__ == "__main__":
-    print("🚪 API Gateway BGAPP inicializado")
-    print("📊 Suporte para 10x mais utilizadores")
-    print("🛡️ Rate limiting e circuit breakers ativos")
+    logger.info("🚪 API Gateway BGAPP inicializado")
+    logger.info("📊 Suporte para 10x mais utilizadores")
+    logger.info("🛡️ Rate limiting e circuit breakers ativos")

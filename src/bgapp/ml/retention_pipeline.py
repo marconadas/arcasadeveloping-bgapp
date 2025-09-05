@@ -532,6 +532,7 @@ class MLRetentionPipeline:
             
             # Calcular Shannon
             import math
+from bgapp.core.logger import logger
             shannon = 0
             for count in species_count.values():
                 p = count / total
@@ -655,6 +656,6 @@ if __name__ == "__main__":
         await pipeline.process_new_study(study_data)
         metrics = pipeline.get_pipeline_metrics()
         
-        print("📊 Pipeline Metrics:", metrics)
+        logger.info("📊 Pipeline Metrics:", metrics)
     
     asyncio.run(test_pipeline())

@@ -26,6 +26,7 @@ except ImportError:
 
 try:
     from pyhdf.SD import SD, SDC
+from bgapp.core.logger import logger
     MODIS_HDF_AVAILABLE = True
 except ImportError:
     MODIS_HDF_AVAILABLE = False
@@ -587,27 +588,27 @@ async def main():
     """Exemplo de uso dos conectores"""
     
     # Testar Copernicus Marine
-    print("🌊 Testando Copernicus Marine...")
+    logger.info("🌊 Testando Copernicus Marine...")
     chl_data = await get_real_data(
         'copernicus', 
         'chlorophyll_a',
         start_date='2024-01-01',
         end_date='2024-01-31'
     )
-    print(f"Dados de clorofila: {chl_data.dims}")
+    logger.info(f"Dados de clorofila: {chl_data.dims}")
     
     # Testar MODIS
-    print("🛰️ Testando MODIS...")
+    logger.info("🛰️ Testando MODIS...")
     ndvi_data = await get_real_data(
         'modis',
         'ndvi', 
         start_date='2024-01-01',
         end_date='2024-12-31'
     )
-    print(f"Dados NDVI: {ndvi_data.dims}")
+    logger.info(f"Dados NDVI: {ndvi_data.dims}")
     
     # Testar Movebank
-    print("🐟 Testando Movebank...")
+    logger.info("🐟 Testando Movebank...")
     tracks = await get_real_data(
         'movebank',
         'animal_tracks',
@@ -615,7 +616,7 @@ async def main():
         start_date='2024-01-01',
         end_date='2024-03-31'
     )
-    print(f"Trajetórias: {len(tracks)} registros")
+    logger.info(f"Trajetórias: {len(tracks)} registros")
 
 if __name__ == "__main__":
     asyncio.run(main())

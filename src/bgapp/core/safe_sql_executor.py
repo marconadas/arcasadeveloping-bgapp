@@ -12,6 +12,7 @@ from psycopg2 import sql
 import logging
 
 from .logging_config import get_logger
+from bgapp.core.logger import logger
 
 logger = get_logger(__name__)
 
@@ -324,27 +325,27 @@ def get_safe_sql_executor() -> SafeSQLExecutor:
 
 if __name__ == "__main__":
     # Teste do executor seguro
-    print("🛡️ Teste do Executor Seguro de SQL")
-    print("=" * 50)
+    logger.info("🛡️ Teste do Executor Seguro de SQL")
+    logger.info("=" * 50)
     
     executor = SafeSQLExecutor()
     
     # Teste 1: Validação de nomes
-    print("\n1. 🔍 Testando validação de nomes...")
+    logger.info("\n1. 🔍 Testando validação de nomes...")
     
     valid_tables = ["users", "logs", "config"]
     invalid_tables = ["users; DROP TABLE", "../etc/passwd", "users--"]
     
     for table in valid_tables:
         valid = executor.validate_table_name(table)
-        print(f"   {table}: {'✅ Válido' if valid else '❌ Inválido'}")
+        logger.info(f"   {table}: {'✅ Válido' if valid else '❌ Inválido'}")
     
     for table in invalid_tables:
         valid = executor.validate_table_name(table)
-        print(f"   {table}: {'❌ Aceito (erro!)' if valid else '✅ Rejeitado (correto)'}")
+        logger.info(f"   {table}: {'❌ Aceito (erro!)' if valid else '✅ Rejeitado (correto)'}")
     
     # Teste 2: Construção de query segura
-    print("\n2. 🔧 Testando construção de query...")
+    logger.info("\n2. 🔧 Testando construção de query...")
     try:
         query, params = executor.build_safe_select_query(
             table="users",
@@ -353,14 +354,14 @@ if __name__ == "__main__":
             order_by="created_at",
             limit=10
         )
-        print(f"   Query construída: {query.as_string(None)}")
-        print(f"   Parâmetros: {params}")
-        print("   ✅ Query segura construída")
+        logger.info(f"   Query construída: {query.as_string(None)}")
+        logger.info(f"   Parâmetros: {params}")
+        logger.info("   ✅ Query segura construída")
     except Exception as e:
-        print(f"   ❌ Erro: {e}")
+        logger.info(f"   ❌ Erro: {e}")
     
     # Teste 3: Tentativa de injection
-    print("\n3. 🚨 Testando proteção contra injection...")
+    logger.info("\n3. 🚨 Testando proteção contra injection...")
     malicious_inputs = [
         "users; DROP TABLE users",
         "users' OR '1'='1",
@@ -371,8 +372,8 @@ if __name__ == "__main__":
     for malicious_input in malicious_inputs:
         try:
             valid = executor.validate_table_name(malicious_input)
-            print(f"   {malicious_input[:20]}...: {'❌ Aceito (VULNERÁVEL!)' if valid else '✅ Rejeitado (seguro)'}")
+            logger.info(f"   {malicious_input[:20]}...: {'❌ Aceito (VULNERÁVEL!)' if valid else '✅ Rejeitado (seguro)'}")
         except Exception as e:
-            print(f"   {malicious_input[:20]}...: ✅ Exceção (seguro) - {e}")
+            logger.info(f"   {malicious_input[:20]}...: ✅ Exceção (seguro) - {e}")
     
-    print("\n✅ Teste do executor seguro concluído!")
+    logger.info("\n✅ Teste do executor seguro concluído!")

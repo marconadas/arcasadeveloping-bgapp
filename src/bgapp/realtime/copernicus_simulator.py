@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Tuple
 import random
 import time
+from bgapp.core.logger import logger
 
 
 class CopernicusAngolaSimulator:
@@ -281,31 +282,31 @@ class CopernicusAngolaSimulator:
 
 def main():
     """Demonstração do simulador"""
-    print("🌊 Simulador Copernicus Marine - Angola")
-    print("=" * 50)
+    logger.info("🌊 Simulador Copernicus Marine - Angola")
+    logger.info("=" * 50)
     
     simulator = CopernicusAngolaSimulator()
     
     # Obter dados em tempo real
     summary = simulator.get_realtime_summary()
     
-    print(f"📅 Timestamp: {summary['timestamp']}")
-    print(f"🌡️ SST Média: {summary['summary']['avg_sst']}°C")
-    print(f"🌱 Clorofila Média: {summary['summary']['avg_chlorophyll']} mg/m³")
-    print(f"🌊 Upwelling Ativo: {'Sim' if summary['summary']['upwelling_active'] else 'Não'}")
+    logger.info(f"📅 Timestamp: {summary['timestamp']}")
+    logger.info(f"🌡️ SST Média: {summary['summary']['avg_sst']}°C")
+    logger.info(f"🌱 Clorofila Média: {summary['summary']['avg_chlorophyll']} mg/m³")
+    logger.info(f"🌊 Upwelling Ativo: {'Sim' if summary['summary']['upwelling_active'] else 'Não'}")
     
-    print("\n📍 Dados por Localização:")
+    logger.info("\n📍 Dados por Localização:")
     for loc in summary['locations']:
-        print(f"  {loc['location']}: SST={loc['sst']:.1f}°C, Chl={loc['chlorophyll']:.1f}mg/m³")
+        logger.info(f"  {loc['location']}: SST={loc['sst']:.1f}°C, Chl={loc['chlorophyll']:.1f}mg/m³")
     
     if summary['alerts']:
-        print("\n⚠️ Alertas:")
+        logger.info("\n⚠️ Alertas:")
         for alert in summary['alerts']:
-            print(f"  {alert['type'].upper()}: {alert['message']} ({alert['location']})")
+            logger.info(f"  {alert['type'].upper()}: {alert['message']} ({alert['location']})")
     
     # Salvar dados
     output_file = simulator.save_realtime_data()
-    print(f"\n💾 Dados salvos em: {output_file}")
+    logger.info(f"\n💾 Dados salvos em: {output_file}")
 
 
 if __name__ == "__main__":

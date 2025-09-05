@@ -155,6 +155,7 @@ if AUDIT_AVAILABLE:
         try:
             # Verificar se é ambiente de desenvolvimento
             import os
+from bgapp.core.logger import logger
             if os.getenv("ENVIRONMENT", "development") == "production":
                 raise HTTPException(
                     status_code=403,
@@ -227,6 +228,6 @@ def include_audit_router(app):
     app.include_router(router)
     
     if AUDIT_AVAILABLE:
-        print("✅ Endpoints de auditoria adicionados")
+        logger.info("✅ Endpoints de auditoria adicionados")
     else:
-        print("⚠️ Endpoints de auditoria desabilitados (sistema não disponível)")
+        logger.info("⚠️ Endpoints de auditoria desabilitados (sistema não disponível)")

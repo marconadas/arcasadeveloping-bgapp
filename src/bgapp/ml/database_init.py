@@ -282,6 +282,7 @@ class MLDatabaseInitializer:
                 for i in range(num_studies):
                     # Escolher coordenadas aleatórias
                     import random
+from bgapp.core.logger import logger
                     lat, lon = random.choice(angola_coords)
                     lat += random.uniform(-0.5, 0.5)  # Adicionar variação
                     lon += random.uniform(-0.5, 0.5)
@@ -469,13 +470,13 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.INFO)
         db_settings = DatabaseSettings()
         
-        print("🚀 Inicializando base de dados de Machine Learning...")
+        logger.info("🚀 Inicializando base de dados de Machine Learning...")
         results = await initialize_ml_database(db_settings)
         
-        print("\n📊 Resultados da inicialização:")
+        logger.info("\n📊 Resultados da inicialização:")
         for key, value in results.items():
-            print(f"  {key}: {value}")
+            logger.info(f"  {key}: {value}")
         
-        print("\n✅ Inicialização concluída com sucesso!")
+        logger.info("\n✅ Inicialização concluída com sucesso!")
     
     asyncio.run(main())

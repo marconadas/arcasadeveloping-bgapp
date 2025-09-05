@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 import requests
 
 from .external_stac import ExternalSTACClient, external_stac_client
+from bgapp.core.logger import logger
 
 
 class STACManager:
@@ -40,7 +41,7 @@ class STACManager:
             resp.raise_for_status()
             return resp.json()
         except requests.RequestException as e:
-            print(f"Failed to create collection {collection_id}: {e}")
+            logger.info(f"Failed to create collection {collection_id}: {e}")
             return {}
 
     def create_item(self, collection_id: str, item_id: str, geometry: Dict[str, Any], 
@@ -66,7 +67,7 @@ class STACManager:
             resp.raise_for_status()
             return resp.json()
         except requests.RequestException as e:
-            print(f"Failed to create item {item_id}: {e}")
+            logger.info(f"Failed to create item {item_id}: {e}")
             return {}
 
     def _geometry_to_bbox(self, geometry: Dict[str, Any]) -> List[float]:
@@ -97,7 +98,7 @@ class STACManager:
                 for col in collections
             ]
         except Exception as e:
-            print(f"Erro ao buscar coleções externas: {e}")
+            logger.info(f"Erro ao buscar coleções externas: {e}")
             return []
     
     async def search_external_items(
@@ -129,7 +130,7 @@ class STACManager:
                 for item in items
             ]
         except Exception as e:
-            print(f"Erro ao buscar itens externos: {e}")
+            logger.info(f"Erro ao buscar itens externos: {e}")
             return []
     
     async def get_recent_oceanographic_data(self, days_back: int = 7) -> Dict[str, Any]:
@@ -155,7 +156,7 @@ class STACManager:
                 }
             }
         except Exception as e:
-            print(f"Erro ao buscar dados oceanográficos: {e}")
+            logger.info(f"Erro ao buscar dados oceanográficos: {e}")
             return {"error": str(e)}
     
     async def health_check_external_apis(self) -> Dict[str, Any]:

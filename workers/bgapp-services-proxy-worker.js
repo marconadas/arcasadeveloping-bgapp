@@ -4,12 +4,15 @@
  * Simula respostas para manter o dashboard funcionando
  */
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
-};
+import { getCORSHeaders, handleCORSPreflight } from './cors-config.js';
+
+// Base headers com CORS dinâmico
+function getResponseHeaders(request, env) {
+  return {
+    ...getCORSHeaders(request, env),
+    'Content-Type': 'application/json'
+  };
+}
 
 // 🎭 Mock data para serviços externos
 const MOCK_RESPONSES = {
@@ -86,7 +89,7 @@ export default {
     
     // Handle CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { headers: getResponseHeaders(request, env) });
     }
     
     try {
@@ -119,7 +122,7 @@ export default {
       // Buscar resposta mock
       if (targetService && MOCK_RESPONSES[targetService] && MOCK_RESPONSES[targetService][pathname]) {
         return new Response(JSON.stringify(MOCK_RESPONSES[targetService][pathname]), {
-          headers: CORS_HEADERS
+          headers: getResponseHeaders(request, env)
         });
       }
       
@@ -139,7 +142,7 @@ export default {
           version: '1.0.0',
           timestamp: new Date().toISOString(),
           proxy: true
-        }), { headers: CORS_HEADERS });
+        }), { headers: getResponseHeaders(request, env) });
       }
       
       // Default response para endpoints não mapeados
@@ -150,14 +153,14 @@ export default {
         path: pathname,
         timestamp: new Date().toISOString(),
         proxy: true
-      }), { headers: CORS_HEADERS });
+      }), { headers: getResponseHeaders(request, env) });
       
     } catch (error) {
       return new Response(JSON.stringify({
         error: error.message,
         service: 'bgapp-services-proxy',
         timestamp: new Date().toISOString()
-      }), { status: 500, headers: CORS_HEADERS });
+      }), { status: 500, headers: getResponseHeaders(request, env) });
     }
   }
 };

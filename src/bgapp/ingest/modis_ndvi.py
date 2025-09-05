@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 import requests
+from bgapp.core.logger import logger
 
 # Placeholder simples para ilustração (download real requer autenticação/LP DAAC APIs)
 
@@ -19,7 +20,7 @@ def main(argv: Optional[list[str]] = None) -> None:
 
     # Apenas cria um ficheiro de placeholder para pipeline
     args.out.write_bytes(b"")
-    print(f"Created placeholder {args.out}. Implementar download via LP DAAC/earthdata.")
+    logger.info(f"Created placeholder {args.out}. Implementar download via LP DAAC/earthdata.")
 
 
 if __name__ == "__main__":

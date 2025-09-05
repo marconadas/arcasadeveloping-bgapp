@@ -141,6 +141,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
                 <IframeWrapper
                   src="/bgapp-enhanced-ocean-system.html"
                   title="Enhanced Ocean System"
+                  description="Sistema avançado de renderização oceânica"
                   height="600px"
                 />
               </CardContent>
@@ -322,6 +323,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               <IframeWrapper
                 src="https://bgapp-frontend.pages.dev/realtime_angola.html"
                 title="Realtime Angola"
+                description="Dados oceanográficos em tempo real de Angola"
                 height="600px"
               />
             </CardContent>

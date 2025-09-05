@@ -26,6 +26,7 @@ import dask.array as da
 from dask.distributed import Client, as_completed
 from memory_profiler import profile
 import warnings
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -635,16 +636,16 @@ async def main():
     ]
     
     # Executar análise otimizada
-    print("🚀 Executando análise de hotspots otimizada...")
+    logger.info("🚀 Executando análise de hotspots otimizada...")
     result = await analyzer.optimized_hotspot_analysis(sample_data, "biomass")
     
-    print(f"✅ Análise concluída em {result['processing_time']:.2f}s")
-    print(f"📊 Hotspots encontrados: {len(result['hotspots'])}")
+    logger.info(f"✅ Análise concluída em {result['processing_time']:.2f}s")
+    logger.info(f"📊 Hotspots encontrados: {len(result['hotspots'])}")
     
     # Relatório de performance
     report = analyzer.get_performance_report()
-    print(f"📈 Eficiência do cache: {report['cache_efficiency']:.1f}%")
-    print(f"💾 Uso de memória: {report['memory_usage']['process_memory_mb']:.1f}MB")
+    logger.info(f"📈 Eficiência do cache: {report['cache_efficiency']:.1f}%")
+    logger.info(f"💾 Uso de memória: {report['memory_usage']['process_memory_mb']:.1f}MB")
 
 if __name__ == "__main__":
     asyncio.run(main())

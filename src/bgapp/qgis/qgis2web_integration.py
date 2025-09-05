@@ -17,6 +17,7 @@ from datetime import datetime
 import branca.colormap as cm
 from jinja2 import Template, Environment, FileSystemLoader
 import logging
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -610,18 +611,18 @@ if __name__ == "__main__":
     exporter = QGIS2WebExporter()
     
     # Exportar diferentes tipos de mapas
-    print("🗺️ Exportando mapas interativos...")
+    logger.info("🗺️ Exportando mapas interativos...")
     
     # Mapa abrangente
     comprehensive_map = exporter.export_interactive_map("comprehensive")
-    print(f"✅ Mapa abrangente: {comprehensive_map}")
+    logger.info(f"✅ Mapa abrangente: {comprehensive_map}")
     
     # Mapa focado em pesca
     fishing_map = exporter.export_interactive_map("fishing", "bgapp_fishing_infrastructure.html")
-    print(f"✅ Mapa de pesca: {fishing_map}")
+    logger.info(f"✅ Mapa de pesca: {fishing_map}")
     
     # Mapa de migração
     migration_map = exporter.export_interactive_map("migration", "bgapp_animal_migration.html")
-    print(f"✅ Mapa de migração: {migration_map}")
+    logger.info(f"✅ Mapa de migração: {migration_map}")
     
-    print("🎉 Exportação concluída!")
+    logger.info("🎉 Exportação concluída!")

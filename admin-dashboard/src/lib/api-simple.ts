@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import axios from 'axios'
 
 // Base API configuration
@@ -38,7 +39,7 @@ export const apiService = {
       return response.data
     } catch (error) {
       // SEM MOCK DATA - Mostrar erro real!
-      console.error('❌ Erro obtendo status real dos serviços:', error);
+      logger.error('❌ Erro obtendo status real dos serviços:', error);
       throw new Error(`Serviços não acessíveis: ${error.message}`);
     }
   },
@@ -49,7 +50,7 @@ export const apiService = {
       return response.data
     } catch (error) {
       // SEM MOCK DATA - Mostrar que métricas não estão disponíveis
-      console.error('❌ Métricas não acessíveis:', error);
+      logger.error('❌ Métricas não acessíveis:', error);
       throw new Error(`Métricas não disponíveis: ${error.message}`);
     }
   }

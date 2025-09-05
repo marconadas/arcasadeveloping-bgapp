@@ -35,6 +35,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import os
+from bgapp.core.logger import logger
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -977,26 +978,26 @@ async def main():
     generator = AutomatedReportGenerator(email_config=email_config)
     
     # Gerar relatório mensal
-    print("📊 Gerando relatório mensal...")
+    logger.info("📊 Gerando relatório mensal...")
     monthly_report = await generator.generate_monthly_report(2024, 12)
-    print(f"✅ Relatório mensal: {monthly_report}")
+    logger.info(f"✅ Relatório mensal: {monthly_report}")
     
     # Gerar relatório semanal
-    print("📈 Gerando relatório semanal...")
+    logger.info("📈 Gerando relatório semanal...")
     weekly_report = await generator.generate_weekly_report(2024, 50)
-    print(f"✅ Relatório semanal: {weekly_report}")
+    logger.info(f"✅ Relatório semanal: {weekly_report}")
     
     # Relatório personalizado
-    print("🎯 Gerando relatório personalizado...")
+    logger.info("🎯 Gerando relatório personalizado...")
     custom_report = await generator.generate_custom_report(
         'biomass_assessment',
         {'region': 'angola', 'analysis_type': 'comprehensive'}
     )
-    print(f"✅ Relatório personalizado: {custom_report}")
+    logger.info(f"✅ Relatório personalizado: {custom_report}")
     
     # Métricas
     metrics = generator.get_metrics()
-    print(f"📊 Métricas: {metrics}")
+    logger.info(f"📊 Métricas: {metrics}")
 
 if __name__ == "__main__":
     asyncio.run(main())

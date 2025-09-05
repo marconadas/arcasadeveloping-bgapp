@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
 /**
@@ -176,7 +177,7 @@ class BGAPPAPIClient {
       const response = await this.adminApi.get<BGAPPResponse<MLModel[]>>('/ml/models');
       return response.data.data || [];
     } catch (error) {
-      console.warn('ML Models API failed, using real data based fallback');
+      logger.warn('ML Models API failed, using real data based fallback');
       return await this.getRealMLModels();
     }
   }
@@ -186,7 +187,7 @@ class BGAPPAPIClient {
       const response = await this.adminApi.get<BGAPPResponse<PredictiveFilter[]>>('/ml/predictive-filters');
       return response.data.data || [];
     } catch (error) {
-      console.warn('Predictive Filters API failed, using fallback data');
+      logger.warn('Predictive Filters API failed, using fallback data');
       return this.getFallbackPredictiveFilters();
     }
   }
@@ -210,7 +211,7 @@ class BGAPPAPIClient {
       const response = await this.adminApi.get<BGAPPResponse<QGISAnalysis[]>>('/qgis/analyses');
       return response.data.data || [];
     } catch (error) {
-      console.warn('QGIS Analyses API failed, using fallback data');
+      logger.warn('QGIS Analyses API failed, using fallback data');
       return this.getFallbackQGISAnalyses();
     }
   }
@@ -256,7 +257,7 @@ class BGAPPAPIClient {
       const response = await this.adminApi.get<BGAPPResponse<DataConnector[]>>('/data/connectors');
       return response.data.data || [];
     } catch (error) {
-      console.warn('Data Connectors API failed, using fallback data');
+      logger.warn('Data Connectors API failed, using fallback data');
       return this.getFallbackDataConnectors();
     }
   }
@@ -686,11 +687,11 @@ class BGAPPAPIClient {
       const response = await fetch('https://bgapp-admin-api-worker.majearcasa.workers.dev/api/ml/models');
       if (response.ok) {
         const realData = await response.json();
-        console.log('✅ ML Models: Dados REAIS carregados da API');
+        logger.info('✅ ML Models: Dados REAIS carregados da API');
         return realData.models || this.getFallbackMLModels();
       }
     } catch (error) {
-      console.warn('⚠️ ML API indisponível, usando fallback baseado em dados reais');
+      logger.warn('⚠️ ML API indisponível, usando fallback baseado em dados reais');
     }
     
     // Fallback baseado em dados reais do Copernicus (não mais mock puro)

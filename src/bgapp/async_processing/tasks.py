@@ -23,7 +23,7 @@ try:
     from ..monitoring.alerts import alert_manager
     from ..backup.backup_manager import backup_manager
 except ImportError as e:
-    print(f"Módulos BGAPP não disponíveis: {e}")
+    logger.info(f"Módulos BGAPP não disponíveis: {e}")
     cache = cache_manager = alert_manager = backup_manager = None
 
 @celery_app.task(bind=True, max_retries=3)
@@ -36,7 +36,7 @@ def process_oceanographic_data(self, data_source: str, parameters: Dict[str, Any
         parameters: Parâmetros de processamento
     """
     try:
-        print(f"🌊 Processando dados oceanográficos de {data_source}...")
+        logger.info(f"🌊 Processando dados oceanográficos de {data_source}...")
         
         # Simular processamento intensivo
         import time
@@ -84,7 +84,7 @@ def process_oceanographic_data(self, data_source: str, parameters: Dict[str, Any
         
         processing_time = time.time() - start_time
         
-        print(f"✅ Dados oceanográficos processados em {processing_time:.2f}s")
+        logger.info(f"✅ Dados oceanográficos processados em {processing_time:.2f}s")
         
         return {
             'status': 'completed',
@@ -96,7 +96,7 @@ def process_oceanographic_data(self, data_source: str, parameters: Dict[str, Any
         }
         
     except Exception as e:
-        print(f"❌ Erro processando dados oceanográficos: {e}")
+        logger.info(f"❌ Erro processando dados oceanográficos: {e}")
         
         # Retry com backoff exponencial
         if self.request.retries < self.max_retries:
@@ -119,7 +119,7 @@ def process_species_data(self, species_data: List[Dict], analysis_type: str = 'b
         analysis_type: Tipo de análise (biodiversity, distribution, etc.)
     """
     try:
-        print(f"🐟 Processando {len(species_data)} observações de espécies...")
+        logger.info(f"🐟 Processando {len(species_data)} observações de espécies...")
         
         self.update_state(state='PROGRESS', meta={'progress': 20, 'status': 'Validando taxonomia...'})
         
@@ -141,7 +141,7 @@ def process_species_data(self, species_data: List[Dict], analysis_type: str = 'b
         # 3. Gerar relatório
         report = _generate_species_report(results, analysis_type)
         
-        print(f"✅ Análise de espécies concluída: {len(validated_data)} espécies processadas")
+        logger.info(f"✅ Análise de espécies concluída: {len(validated_data)} espécies processadas")
         
         return {
             'status': 'completed',
@@ -152,7 +152,7 @@ def process_species_data(self, species_data: List[Dict], analysis_type: str = 'b
         }
         
     except Exception as e:
-        print(f"❌ Erro processando espécies: {e}")
+        logger.info(f"❌ Erro processando espécies: {e}")
         raise self.retry(countdown=60, exc=e)
 
 @celery_app.task(bind=True, max_retries=3)
@@ -166,7 +166,7 @@ def generate_ml_predictions(self, model_type: str, input_data: Dict, prediction_
         prediction_horizon: Horizonte de previsão em dias
     """
     try:
-        print(f"🧠 Gerando previsões ML para {model_type}...")
+        logger.info(f"🧠 Gerando previsões ML para {model_type}...")
         
         self.update_state(state='PROGRESS', meta={'progress': 15, 'status': 'Carregando modelo...'})
         
@@ -191,7 +191,7 @@ def generate_ml_predictions(self, model_type: str, input_data: Dict, prediction_
         # 5. Validar qualidade das previsões
         quality_metrics = _validate_prediction_quality(predictions)
         
-        print(f"✅ Previsões ML geradas: {len(predictions)} pontos, qualidade: {quality_metrics.get('accuracy', 0):.1f}%")
+        logger.info(f"✅ Previsões ML geradas: {len(predictions)} pontos, qualidade: {quality_metrics.get('accuracy', 0):.1f}%")
         
         return {
             'status': 'completed',
@@ -203,7 +203,7 @@ def generate_ml_predictions(self, model_type: str, input_data: Dict, prediction_
         }
         
     except Exception as e:
-        print(f"❌ Erro gerando previsões ML: {e}")
+        logger.info(f"❌ Erro gerando previsões ML: {e}")
         raise self.retry(countdown=120, exc=e)
 
 @celery_app.task
@@ -216,7 +216,7 @@ def generate_reports(report_type: str, parameters: Dict[str, Any]):
         parameters: Parâmetros do relatório
     """
     try:
-        print(f"📊 Gerando relatório: {report_type}")
+        logger.info(f"📊 Gerando relatório: {report_type}")
         
         if report_type == 'biodiversity':
             report = _generate_biodiversity_report(parameters)
@@ -230,7 +230,7 @@ def generate_reports(report_type: str, parameters: Dict[str, Any]):
         # Salvar relatório
         report_path = _save_report(report, report_type)
         
-        print(f"✅ Relatório {report_type} gerado: {report_path}")
+        logger.info(f"✅ Relatório {report_type} gerado: {report_path}")
         
         return {
             'status': 'completed',
@@ -240,14 +240,14 @@ def generate_reports(report_type: str, parameters: Dict[str, Any]):
         }
         
     except Exception as e:
-        print(f"❌ Erro gerando relatório: {e}")
+        logger.info(f"❌ Erro gerando relatório: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 @celery_app.task
 def backup_critical_data():
     """Tarefa de backup de dados críticos"""
     try:
-        print("💾 Iniciando backup de dados críticos...")
+        logger.info("💾 Iniciando backup de dados críticos...")
         
         if backup_manager:
             # Backup incremental da base de dados
@@ -255,24 +255,24 @@ def backup_critical_data():
             job = asyncio.run(backup_manager.create_database_backup(BackupType.INCREMENTAL))
             
             if job.status.value == 'completed':
-                print(f"✅ Backup crítico concluído: {job.size_mb:.1f}MB")
+                logger.info(f"✅ Backup crítico concluído: {job.size_mb:.1f}MB")
                 return {'status': 'completed', 'size_mb': job.size_mb}
             else:
-                print(f"❌ Backup crítico falhou: {job.error_message}")
+                logger.error(f"❌ Backup crítico falhou: {job.error_message}")
                 return {'status': 'failed', 'error': job.error_message}
         else:
-            print("⚠️ Backup manager não disponível")
+            logger.info("⚠️ Backup manager não disponível")
             return {'status': 'skipped', 'reason': 'backup_manager_unavailable'}
             
     except Exception as e:
-        print(f"❌ Erro no backup crítico: {e}")
+        logger.info(f"❌ Erro no backup crítico: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 @celery_app.task
 def cleanup_old_files():
     """Limpeza de arquivos antigos"""
     try:
-        print("🧹 Limpando arquivos antigos...")
+        logger.info("🧹 Limpando arquivos antigos...")
         
         # Diretórios para limpeza
         cleanup_dirs = [
@@ -290,7 +290,7 @@ def cleanup_old_files():
                 total_cleaned += cleaned
                 total_size += size
         
-        print(f"✅ Limpeza concluída: {total_cleaned} arquivos removidos ({total_size/1024/1024:.1f}MB)")
+        logger.info(f"✅ Limpeza concluída: {total_cleaned} arquivos removidos ({total_size/1024/1024:.1f}MB)")
         
         return {
             'status': 'completed',
@@ -299,7 +299,7 @@ def cleanup_old_files():
         }
         
     except Exception as e:
-        print(f"❌ Erro na limpeza: {e}")
+        logger.info(f"❌ Erro na limpeza: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 # Tarefas em lote (batch)
@@ -307,7 +307,7 @@ def cleanup_old_files():
 def process_oceanographic_data_batch():
     """Processar dados oceanográficos em lote"""
     try:
-        print("🌊 Processamento em lote de dados oceanográficos...")
+        logger.info("🌊 Processamento em lote de dados oceanográficos...")
         
         # Fontes de dados para processar
         data_sources = [
@@ -332,7 +332,7 @@ def process_oceanographic_data_batch():
         
         successful = len([r for r in results if r.get('status') == 'completed'])
         
-        print(f"✅ Processamento em lote concluído: {successful}/{len(results)} jobs bem-sucedidos")
+        logger.info(f"✅ Processamento em lote concluído: {successful}/{len(results)} jobs bem-sucedidos")
         
         return {
             'status': 'completed',
@@ -342,14 +342,14 @@ def process_oceanographic_data_batch():
         }
         
     except Exception as e:
-        print(f"❌ Erro no processamento em lote: {e}")
+        logger.info(f"❌ Erro no processamento em lote: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 @celery_app.task
 def generate_ml_predictions_batch():
     """Gerar previsões ML em lote"""
     try:
-        print("🧠 Geração em lote de previsões ML...")
+        logger.info("🧠 Geração em lote de previsões ML...")
         
         # Modelos para executar
         models = [
@@ -381,7 +381,7 @@ def generate_ml_predictions_batch():
         
         successful = len([r for r in results if r.get('status') == 'completed'])
         
-        print(f"✅ Previsões ML em lote concluídas: {successful}/{len(results)} modelos")
+        logger.info(f"✅ Previsões ML em lote concluídas: {successful}/{len(results)} modelos")
         
         return {
             'status': 'completed',
@@ -391,14 +391,14 @@ def generate_ml_predictions_batch():
         }
         
     except Exception as e:
-        print(f"❌ Erro nas previsões ML em lote: {e}")
+        logger.info(f"❌ Erro nas previsões ML em lote: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 @celery_app.task
 def generate_daily_reports():
     """Gerar relatórios diários"""
     try:
-        print("📊 Gerando relatórios diários...")
+        logger.info("📊 Gerando relatórios diários...")
         
         reports = ['biodiversity', 'oceanographic', 'fisheries']
         
@@ -417,7 +417,7 @@ def generate_daily_reports():
         
         successful = len([r for r in results if r.get('status') == 'completed'])
         
-        print(f"✅ Relatórios diários gerados: {successful}/{len(results)}")
+        logger.info(f"✅ Relatórios diários gerados: {successful}/{len(results)}")
         
         return {
             'status': 'completed',
@@ -426,7 +426,7 @@ def generate_daily_reports():
         }
         
     except Exception as e:
-        print(f"❌ Erro gerando relatórios diários: {e}")
+        logger.info(f"❌ Erro gerando relatórios diários: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 # Funções auxiliares (simuladas para demonstração)
@@ -451,6 +451,7 @@ def _validate_data_quality(data):
 def _process_parameters(data, parameters):
     """Processar parâmetros"""
     import time
+from bgapp.core.logger import logger
     time.sleep(0.5)
     return data * 1.1 if data is not None else None  # Processamento simulado
 

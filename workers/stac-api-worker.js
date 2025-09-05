@@ -107,12 +107,15 @@ const STAC_COLLECTIONS = [
   }
 ];
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
-};
+import { getCORSHeaders, handleCORSPreflight } from './cors-config.js';
+
+// Base headers com CORS dinâmico
+function getResponseHeaders(request, env) {
+  return {
+    ...getCORSHeaders(request, env),
+    'Content-Type': 'application/json'
+  };
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -121,13 +124,13 @@ export default {
 
     // Handle CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { headers: getResponseHeaders(request, env) });
     }
 
     try {
       // Root catalog
       if (path === '/' || path === '/catalog') {
-        return new Response(JSON.stringify(STAC_CATALOG), { headers: CORS_HEADERS });
+        return new Response(JSON.stringify(STAC_CATALOG), { headers: getResponseHeaders(request, env) });
       }
 
       // Collections endpoint
@@ -141,7 +144,7 @@ export default {
               type: "application/json"
             }
           ]
-        }), { headers: CORS_HEADERS });
+        }), { headers: getResponseHeaders(request, env) });
       }
 
       // Individual collection
@@ -151,12 +154,12 @@ export default {
         const collection = STAC_COLLECTIONS.find(c => c.id === collectionId);
         
         if (collection) {
-          return new Response(JSON.stringify(collection), { headers: CORS_HEADERS });
+          return new Response(JSON.stringify(collection), { headers: getResponseHeaders(request, env) });
         } else {
           return new Response(JSON.stringify({
             error: 'Collection not found',
             available_collections: STAC_COLLECTIONS.map(c => c.id)
-          }), { status: 404, headers: CORS_HEADERS });
+          }), { status: 404, headers: getResponseHeaders(request, env) });
         }
       }
 
@@ -168,20 +171,20 @@ export default {
           version: '1.0.0',
           collections_count: STAC_COLLECTIONS.length,
           timestamp: new Date().toISOString()
-        }), { headers: CORS_HEADERS });
+        }), { headers: getResponseHeaders(request, env) });
       }
 
       // 404 for other paths
       return new Response(JSON.stringify({
         error: 'Endpoint not found',
         available_endpoints: ['/', '/collections', '/collections/{id}', '/health']
-      }), { status: 404, headers: CORS_HEADERS });
+      }), { status: 404, headers: getResponseHeaders(request, env) });
 
     } catch (error) {
       return new Response(JSON.stringify({
         error: error.message,
         timestamp: new Date().toISOString()
-      }), { status: 500, headers: CORS_HEADERS });
+      }), { status: 500, headers: getResponseHeaders(request, env) });
     }
   }
 };

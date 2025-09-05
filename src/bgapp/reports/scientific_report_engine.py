@@ -31,9 +31,10 @@ try:
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import inch
     from reportlab.lib import colors
+from bgapp.core.logger import logger
     PDF_GENERATION_AVAILABLE = True
 except ImportError:
-    print("ReportLab não disponível - geração de PDF desabilitada")
+    logger.info("ReportLab não disponível - geração de PDF desabilitada")
     PDF_GENERATION_AVAILABLE = False
 
 # Configurar logging

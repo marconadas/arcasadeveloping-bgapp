@@ -26,14 +26,14 @@ try:
     )
     SECURITY_ENABLED = True
 except ImportError as e:
-    print(f"Security modules not available: {e}")
+    logger.info(f"Security modules not available: {e}")
     SECURITY_ENABLED = False
     
 try:
     from .core.secure_config import get_settings
     settings = get_settings()
 except ImportError:
-    print("Using fallback settings")
+    logger.info("Using fallback settings")
     class FallbackSettings:
         environment = "development"
         debug = True
@@ -52,7 +52,7 @@ try:
     ERROR_HANDLING_ENABLED = True
     MONITORING_ENABLED = True
 except ImportError as e:
-    print(f"Error handling/monitoring modules not available: {e}")
+    logger.error(f"Error handling/monitoring modules not available: {e}")
     ERROR_HANDLING_ENABLED = False
     MONITORING_ENABLED = False
 
@@ -74,7 +74,7 @@ try:
     from .scheduler import scheduler
     SCHEDULER_AVAILABLE = True
 except ImportError as e:
-    print(f"Scheduler not available: {e}")
+    logger.info(f"Scheduler not available: {e}")
     SCHEDULER_AVAILABLE = False
     scheduler = None
 
@@ -95,7 +95,7 @@ try:
     GATEWAY_ENABLED = True
     ENTERPRISE_AUTH_ENABLED = True
 except ImportError as e:
-    print(f"Cache/Alerts/Backup/ML/Gateway/Auth modules not available: {e}")
+    logger.info(f"Cache/Alerts/Backup/ML/Gateway/Auth modules not available: {e}")
     CACHE_ENABLED = False
     ALERTS_ENABLED = False
     BACKUP_ENABLED = False
@@ -235,58 +235,58 @@ stac_manager = STACManager()
 @app.on_event("startup")
 async def startup_event():
     """Inicializar serviços no startup"""
-    print("🚀 Iniciando BGAPP Admin API v1.2.0...")
+    logger.info("🚀 Iniciando BGAPP Admin API v1.2.0...")
     
     # Inicializar cache Redis
     if CACHE_ENABLED and cache:
         try:
             await cache.connect()
             await cache_manager.warm_up_cache()
-            print("✅ Sistema de cache inicializado")
+            logger.info("✅ Sistema de cache inicializado")
         except Exception as e:
-            print(f"⚠️ Erro inicializando cache: {e}")
+            logger.info(f"⚠️ Erro inicializando cache: {e}")
     
     # Inicializar sistema de alertas em background
     if ALERTS_ENABLED and alert_manager:
         try:
             import asyncio
             asyncio.create_task(alert_manager.run_monitoring_loop())
-            print("✅ Sistema de alertas inicializado")
+            logger.info("✅ Sistema de alertas inicializado")
         except Exception as e:
-            print(f"⚠️ Erro inicializando alertas: {e}")
+            logger.info(f"⚠️ Erro inicializando alertas: {e}")
     
     # Inicializar API Gateway
     if GATEWAY_ENABLED and gateway:
         try:
             await initialize_gateway()
-            print("✅ API Gateway inicializado - Suporte 10x mais utilizadores")
+            logger.info("✅ API Gateway inicializado - Suporte 10x mais utilizadores")
         except Exception as e:
-            print(f"⚠️ Erro inicializando gateway: {e}")
+            logger.info(f"⚠️ Erro inicializando gateway: {e}")
     
     # Inicializar sistema de autenticação enterprise
     if ENTERPRISE_AUTH_ENABLED and enterprise_auth:
         try:
             await enterprise_auth.initialize()
-            print("✅ Autenticação enterprise inicializada - OAuth2, MFA, SSO")
+            logger.info("✅ Autenticação enterprise inicializada - OAuth2, MFA, SSO")
         except Exception as e:
-            print(f"⚠️ Erro inicializando autenticação: {e}")
+            logger.info(f"⚠️ Erro inicializando autenticação: {e}")
     
-    print("🎯 BGAPP Admin API pronta!")
+    logger.info("🎯 BGAPP Admin API pronta!")
 
 @app.on_event("shutdown") 
 async def shutdown_event():
     """Cleanup no shutdown"""
-    print("🛑 Encerrando BGAPP Admin API...")
+    logger.info("🛑 Encerrando BGAPP Admin API...")
     
     # Fechar conexões Redis
     if CACHE_ENABLED and cache:
         try:
             await cache.disconnect()
-            print("✅ Cache Redis desconectado")
+            logger.info("✅ Cache Redis desconectado")
         except Exception as e:
-            print(f"⚠️ Erro desconectando cache: {e}")
+            logger.info(f"⚠️ Erro desconectando cache: {e}")
     
-    print("👋 BGAPP Admin API encerrada!")
+    logger.info("👋 BGAPP Admin API encerrada!")
 
 # Configurações dos serviços
 SERVICES = {
@@ -1265,9 +1265,9 @@ async def create_full_backup(background_tasks: BackgroundTasks):
     async def run_full_backup():
         try:
             jobs = await backup_manager.create_full_system_backup()
-            print(f"✅ Backup completo finalizado: {len(jobs)} jobs")
+            logger.info(f"✅ Backup completo finalizado: {len(jobs)} jobs")
         except Exception as e:
-            print(f"❌ Erro no backup completo: {e}")
+            logger.info(f"❌ Erro no backup completo: {e}")
     
     background_tasks.add_task(run_full_backup)
     return {"message": "Backup completo iniciado em background"}
@@ -1421,10 +1421,10 @@ async def retrain_model(model_type: str, background_tasks: BackgroundTasks):
             else:
                 success = False
                 
-            print(f"{'✅' if success else '❌'} Retreino do modelo {model_type}: {'sucesso' if success else 'falha'}")
+            logger.info(f"{'✅' if success else '❌'} Retreino do modelo {model_type}: {'sucesso' if success else 'falha'}")
             
         except Exception as e:
-            print(f"❌ Erro no retreino do modelo {model_type}: {e}")
+            logger.info(f"❌ Erro no retreino do modelo {model_type}: {e}")
     
     background_tasks.add_task(retrain_task)
     
@@ -1442,7 +1442,7 @@ async def train_all_models(background_tasks: BackgroundTasks):
     
     async def train_all_task():
         try:
-            print("🧠 Iniciando treino de todos os modelos ML...")
+            logger.info("🧠 Iniciando treino de todos os modelos ML...")
             
             # Criar dados de treino
             training_data = create_sample_training_data()
@@ -1452,10 +1452,10 @@ async def train_all_models(background_tasks: BackgroundTasks):
             ml_manager.create_temperature_forecaster(training_data['temperature']) 
             ml_manager.create_species_classifier(training_data['species'])
             
-            print("✅ Todos os modelos ML treinados com sucesso!")
+            logger.info("✅ Todos os modelos ML treinados com sucesso!")
             
         except Exception as e:
-            print(f"❌ Erro treinando modelos: {e}")
+            logger.info(f"❌ Erro treinando modelos: {e}")
     
     background_tasks.add_task(train_all_task)
     
@@ -3302,10 +3302,10 @@ async def generate_report(background_tasks: BackgroundTasks, report_type: str = 
     def generate():
         try:
             # Aqui executaria o gerador de relatórios real
-            print(f"Gerando relatório: {report_type}")
+            logger.info(f"Gerando relatório: {report_type}")
             # subprocess.run(["python", "-m", "src.bgapp.reports.angola_marine_report"], check=True)
         except Exception as e:
-            print(f"Erro ao gerar relatório: {e}")
+            logger.info(f"Erro ao gerar relatório: {e}")
     
     background_tasks.add_task(generate)
     return {"message": f"Geração do relatório {report_type} iniciada"}
@@ -3421,7 +3421,7 @@ async def create_backup(background_tasks: BackgroundTasks):
             # Aqui executaria o script de backup real
             subprocess.run(["bash", "scripts/backup_minio.sh"], check=True)
         except Exception as e:
-            print(f"Erro ao criar backup: {e}")
+            logger.info(f"Erro ao criar backup: {e}")
     
     background_tasks.add_task(create)
     return {"message": "Criação de backup iniciada"}
@@ -7100,7 +7100,7 @@ try:
     from .admin_dashboard_controller import dashboard_controller
     DASHBOARD_CONTROLLER_AVAILABLE = True
 except ImportError as e:
-    print(f"Dashboard controller not available: {e}")
+    logger.info(f"Dashboard controller not available: {e}")
     DASHBOARD_CONTROLLER_AVAILABLE = False
     dashboard_controller = None
 
@@ -7109,7 +7109,7 @@ try:
     from .cartography.python_maps_engine import cartography_engine
     CARTOGRAPHY_ENGINE_AVAILABLE = True
 except ImportError as e:
-    print(f"Cartography engine not available: {e}")
+    logger.info(f"Cartography engine not available: {e}")
     CARTOGRAPHY_ENGINE_AVAILABLE = False
     cartography_engine = None
 
@@ -7119,7 +7119,7 @@ try:
     from .interfaces.fisherman_interface import fisherman_interface
     SPECIALIZED_INTERFACES_AVAILABLE = True
 except ImportError as e:
-    print(f"Specialized interfaces not available: {e}")
+    logger.info(f"Specialized interfaces not available: {e}")
     SPECIALIZED_INTERFACES_AVAILABLE = False
     biologist_interface = None
     fisherman_interface = None
@@ -7129,7 +7129,7 @@ try:
     from .unified_access.bgapp_layers_manager import bgapp_layers_manager
     UNIFIED_ACCESS_AVAILABLE = True
 except ImportError as e:
-    print(f"Unified access manager not available: {e}")
+    logger.info(f"Unified access manager not available: {e}")
     UNIFIED_ACCESS_AVAILABLE = False
     bgapp_layers_manager = None
 
@@ -7138,7 +7138,7 @@ try:
     from .data_processing.control_panel import data_processing_control_panel
     DATA_PROCESSING_PANEL_AVAILABLE = True
 except ImportError as e:
-    print(f"Data processing control panel not available: {e}")
+    logger.info(f"Data processing control panel not available: {e}")
     DATA_PROCESSING_PANEL_AVAILABLE = False
     data_processing_control_panel = None
 
@@ -7147,7 +7147,7 @@ try:
     from .workflows.scientific_workflow_manager import scientific_workflow_manager
     SCIENTIFIC_WORKFLOW_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"Scientific workflow manager not available: {e}")
+    logger.info(f"Scientific workflow manager not available: {e}")
     SCIENTIFIC_WORKFLOW_MANAGER_AVAILABLE = False
     scientific_workflow_manager = None
 
@@ -7156,7 +7156,7 @@ try:
     from .auth.user_role_manager import user_role_manager
     USER_ROLE_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"User role manager not available: {e}")
+    logger.info(f"User role manager not available: {e}")
     USER_ROLE_MANAGER_AVAILABLE = False
     user_role_manager = None
 
@@ -7165,7 +7165,7 @@ try:
     from .reports.scientific_report_engine import scientific_report_engine
     SCIENTIFIC_REPORT_ENGINE_AVAILABLE = True
 except ImportError as e:
-    print(f"Scientific report engine not available: {e}")
+    logger.info(f"Scientific report engine not available: {e}")
     SCIENTIFIC_REPORT_ENGINE_AVAILABLE = False
     scientific_report_engine = None
 
@@ -7174,7 +7174,7 @@ try:
     from .database.database_manager import database_manager
     DATABASE_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"Database manager not available: {e}")
+    logger.info(f"Database manager not available: {e}")
     DATABASE_MANAGER_AVAILABLE = False
     database_manager = None
 
@@ -7183,7 +7183,7 @@ try:
     from .api_management.endpoints_manager import api_endpoints_manager
     API_ENDPOINTS_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"API endpoints manager not available: {e}")
+    logger.info(f"API endpoints manager not available: {e}")
     API_ENDPOINTS_MANAGER_AVAILABLE = False
     api_endpoints_manager = None
 
@@ -7192,7 +7192,7 @@ try:
     from .copernicus_integration.advanced_copernicus_manager import advanced_copernicus_manager
     ADVANCED_COPERNICUS_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"Advanced Copernicus manager not available: {e}")
+    logger.info(f"Advanced Copernicus manager not available: {e}")
     ADVANCED_COPERNICUS_MANAGER_AVAILABLE = False
     advanced_copernicus_manager = None
 
@@ -7201,7 +7201,7 @@ try:
     from .backup_restore.backup_system import backup_restore_system
     BACKUP_RESTORE_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    print(f"Backup/restore system not available: {e}")
+    logger.info(f"Backup/restore system not available: {e}")
     BACKUP_RESTORE_SYSTEM_AVAILABLE = False
     backup_restore_system = None
 
@@ -7210,7 +7210,7 @@ try:
     from .config_management.configuration_manager import configuration_manager
     CONFIGURATION_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"Configuration manager not available: {e}")
+    logger.info(f"Configuration manager not available: {e}")
     CONFIGURATION_MANAGER_AVAILABLE = False
     configuration_manager = None
 
@@ -7219,7 +7219,7 @@ try:
     from .analytics.performance_analytics import performance_analytics
     PERFORMANCE_ANALYTICS_AVAILABLE = True
 except ImportError as e:
-    print(f"Performance analytics not available: {e}")
+    logger.info(f"Performance analytics not available: {e}")
     PERFORMANCE_ANALYTICS_AVAILABLE = False
     performance_analytics = None
 
@@ -7228,7 +7228,7 @@ try:
     from .monitoring.system_health_monitor import system_health_monitor
     SYSTEM_HEALTH_MONITOR_AVAILABLE = True
 except ImportError as e:
-    print(f"System health monitor not available: {e}")
+    logger.info(f"System health monitor not available: {e}")
     SYSTEM_HEALTH_MONITOR_AVAILABLE = False
     system_health_monitor = None
 from .ml.database_init import initialize_ml_database, MLDatabaseInitializer
@@ -8068,7 +8068,7 @@ try:
     start_health_monitoring()
     
 except ImportError as e:
-    print(f"QGIS modules not available: {e}")
+    logger.info(f"QGIS modules not available: {e}")
     QGIS_ENABLED = False
 
 @app.get("/qgis/status")
@@ -8932,4 +8932,5 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     import uvicorn
+from bgapp.core.logger import logger
     uvicorn.run(app, host="0.0.0.0", port=8000)

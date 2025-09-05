@@ -24,6 +24,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
+from bgapp.core.logger import logger
     sys.path.append('../../')
 
 logger = logging.getLogger(__name__)
@@ -666,10 +667,10 @@ if __name__ == "__main__":
         await manager.load_default_policies()
         
         status = manager.get_policy_status()
-        print("📋 Policy Status:", json.dumps(status, indent=2, default=str))
+        logger.info("📋 Policy Status:", json.dumps(status, indent=2, default=str))
         
         # Teste dry run
         results = await manager.execute_all_policies(dry_run=True)
-        print(f"🧪 Dry run executou {len(results)} políticas")
+        logger.info(f"🧪 Dry run executou {len(results)} políticas")
     
     asyncio.run(test_policies())

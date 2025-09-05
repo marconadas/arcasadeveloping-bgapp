@@ -15,6 +15,7 @@ import asyncio
 import aiohttp
 from dataclasses import dataclass, asdict
 from enum import Enum
+from bgapp.core.logger import logger
 
 
 class SyncStatus(Enum):
@@ -496,11 +497,11 @@ async def main():
     
     # Sincronizar
     results = await sync_manager.sync_batch()
-    print(f"Resultados da sincronização: {results}")
+    logger.info(f"Resultados da sincronização: {results}")
     
     # Estatísticas
     stats = sync_manager.get_sync_statistics()
-    print(f"Estatísticas: {json.dumps(stats, indent=2)}")
+    logger.info(f"Estatísticas: {json.dumps(stats, indent=2)}")
 
 
 if __name__ == "__main__":

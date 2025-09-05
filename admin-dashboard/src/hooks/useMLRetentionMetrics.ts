@@ -3,6 +3,7 @@
  * Hook personalizado para métricas em tempo real do sistema de retenção ML
  */
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 
 interface RetentionMetrics {
@@ -63,7 +64,7 @@ export function useMLRetentionMetrics(
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
     } catch (err) {
-      console.warn('Metrics endpoint não disponível, usando dados mock');
+      logger.warn('Metrics endpoint não disponível, usando dados mock');
       // Fallback para dados mock quando API não está disponível
       setMetrics({
         cache_hit_ratio: 0.75 + Math.random() * 0.2,

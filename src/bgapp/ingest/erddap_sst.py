@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from erddapy import ERDDAP
+from bgapp.core.logger import logger
 
 
 def main(argv: Optional[list[str]] = None) -> None:
@@ -32,12 +33,12 @@ def main(argv: Optional[list[str]] = None) -> None:
         }
         df = e.to_pandas()
         df.to_csv(args.out, index=False)
-        print(f"Downloaded {len(df)} records to {args.out}")
+        logger.info(f"Downloaded {len(df)} records to {args.out}")
     except Exception as e:
-        print(f"ERDDAP download failed: {e}")
+        logger.info(f"ERDDAP download failed: {e}")
         # Create placeholder
         args.out.write_text("time,latitude,longitude,sea_surface_temperature\n")
-        print(f"Created placeholder {args.out}")
+        logger.info(f"Created placeholder {args.out}")
 
 
 if __name__ == "__main__":

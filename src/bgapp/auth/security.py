@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 # Configuração de segurança
 from .secure_credentials import get_secure_credentials_manager
+from bgapp.core.logger import logger
 
 # Obter credenciais seguras
 _credentials_manager = get_secure_credentials_manager()
@@ -62,10 +63,10 @@ def get_users_db() -> dict:
     
     # Se não existem credenciais, inicializar sistema seguro
     temp_passwords = _credentials_manager.initialize_secure_system()
-    print("⚠️  AVISO: Sistema inicializado com credenciais temporárias!")
-    print("📋 Passwords temporárias (alterar no primeiro login):")
+    logger.info("⚠️  AVISO: Sistema inicializado com credenciais temporárias!")
+    logger.info("📋 Passwords temporárias (alterar no primeiro login):")
     for username, password in temp_passwords.items():
-        print(f"  {username}: {password}")
+        logger.info(f"  {username}: {password}")
     
     # Recarregar credenciais
     credentials = _credentials_manager.load_credentials()

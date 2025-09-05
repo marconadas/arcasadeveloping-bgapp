@@ -116,10 +116,10 @@ class AngolaDataConnector:
             return self._normalize_data(data, source)
             
         except requests.RequestException as e:
-            print(f"Erro ao conectar com {self.sources[source]['name']}: {e}")
+            logger.info(f"Erro ao conectar com {self.sources[source]['name']}: {e}")
             return []
         except Exception as e:
-            print(f"Erro no processamento de dados de {source}: {e}")
+            logger.info(f"Erro no processamento de dados de {source}: {e}")
             return []
     
     def _normalize_data(self, data: Dict[str, Any], source: str) -> List[Dict[str, Any]]:
@@ -213,6 +213,7 @@ class AngolaDataConnector:
         # Gerar dados de exemplo para a costa angolana
         import random
         from datetime import datetime, timedelta
+from bgapp.core.logger import logger
         
         if not start_date:
             start_date = '2024-01-01'
@@ -400,8 +401,8 @@ def main(argv: Optional[List[str]] = None) -> None:
     with open(args.out, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-    print(f"✅ Salvos {len(data)} registos em {args.out}")
-    print(f"📊 Fonte: {connector.sources.get(args.source, {}).get('name', args.source)}")
+    logger.info(f"✅ Salvos {len(data)} registos em {args.out}")
+    logger.info(f"📊 Fonte: {connector.sources.get(args.source, {}).get('name', args.source)}")
 
 
 if __name__ == "__main__":

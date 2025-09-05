@@ -212,7 +212,7 @@ class AlertManager:
             })
             
         except Exception as e:
-            print(f"Erro coletando métricas do sistema: {e}")
+            logger.info(f"Erro coletando métricas do sistema: {e}")
             
     async def collect_api_metrics(self):
         """Coletar métricas das APIs"""
@@ -256,7 +256,7 @@ class AlertManager:
             })
             
         except Exception as e:
-            print(f"Erro coletando métricas da API: {e}")
+            logger.info(f"Erro coletando métricas da API: {e}")
             
     async def check_database_connection(self):
         """Verificar conexão com base de dados"""
@@ -264,6 +264,7 @@ class AlertManager:
             # Tentar conectar à base de dados
             import os
             from sqlalchemy import create_engine, text
+from bgapp.core.logger import logger
             
             db_url = f"postgresql://postgres:postgres@localhost:5432/geo"
             engine = create_engine(db_url)
@@ -274,7 +275,7 @@ class AlertManager:
             self.system_metrics["db_connection_failed"] = False
             
         except Exception as e:
-            print(f"Erro conexão database: {e}")
+            logger.info(f"Erro conexão database: {e}")
             self.system_metrics["db_connection_failed"] = True
             
     def _should_send_alert(self, rule_id: str) -> bool:
@@ -337,11 +338,11 @@ class AlertManager:
                     self.alert_history.append(alert)
                     
             except Exception as e:
-                print(f"Erro avaliando regra {rule_id}: {e}")
+                logger.info(f"Erro avaliando regra {rule_id}: {e}")
                 
     async def _send_alert(self, alert: Alert):
         """Enviar alerta através dos canais configurados"""
-        print(f"🚨 ALERTA {alert.level.upper()}: {alert.title}")
+        logger.info(f"🚨 ALERTA {alert.level.upper()}: {alert.title}")
         
         for channel_id, channel in self.channels.items():
             if not channel.enabled:
@@ -354,7 +355,7 @@ class AlertManager:
                     await self._send_webhook_alert(alert, channel)
                     
             except Exception as e:
-                print(f"Erro enviando alerta via {channel_id}: {e}")
+                logger.info(f"Erro enviando alerta via {channel_id}: {e}")
                 
     async def _send_email_alert(self, alert: Alert, channel: NotificationChannel):
         """Enviar alerta por email"""
@@ -393,10 +394,10 @@ class AlertManager:
             # server.send_message(msg)
             # server.quit()
             
-            print(f"📧 Email alert enviado: {alert.title}")
+            logger.info(f"📧 Email alert enviado: {alert.title}")
             
         except Exception as e:
-            print(f"Erro enviando email: {e}")
+            logger.info(f"Erro enviando email: {e}")
             
     async def _send_webhook_alert(self, alert: Alert, channel: NotificationChannel):
         """Enviar alerta via webhook"""
@@ -425,10 +426,10 @@ class AlertManager:
             #     headers=config.get('headers', {})
             # )
             
-            print(f"🔗 Webhook alert enviado: {alert.title}")
+            logger.info(f"🔗 Webhook alert enviado: {alert.title}")
             
         except Exception as e:
-            print(f"Erro enviando webhook: {e}")
+            logger.info(f"Erro enviando webhook: {e}")
             
     async def resolve_alert(self, alert_id: str):
         """Resolver um alerta"""
@@ -438,7 +439,7 @@ class AlertManager:
             alert.resolved_at = datetime.now()
             
             del self.active_alerts[alert_id]
-            print(f"✅ Alerta resolvido: {alert.title}")
+            logger.info(f"✅ Alerta resolvido: {alert.title}")
             
     async def get_alert_dashboard(self) -> Dict:
         """Obter dados para dashboard de alertas"""
@@ -468,7 +469,7 @@ class AlertManager:
         
     async def run_monitoring_loop(self):
         """Loop principal de monitorização"""
-        print("🔍 Iniciando monitorização automática...")
+        logger.info("🔍 Iniciando monitorização automática...")
         
         while True:
             try:
@@ -484,7 +485,7 @@ class AlertManager:
                 await asyncio.sleep(30)
                 
             except Exception as e:
-                print(f"Erro no loop de monitorização: {e}")
+                logger.info(f"Erro no loop de monitorização: {e}")
                 await asyncio.sleep(60)  # Aguardar mais tempo em caso de erro
 
 # Instância global do gerenciador de alertas

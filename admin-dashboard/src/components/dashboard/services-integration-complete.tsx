@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,7 +40,7 @@ export default function ServicesIntegrationComplete() {
       setLoading(true);
       setError(null);
 
-      console.log('🚀 CARREGANDO INTEGRAÇÃO COMPLETA DOS SERVIÇOS...');
+      logger.info('🚀 CARREGANDO INTEGRAÇÃO COMPLETA DOS SERVIÇOS...');
 
       // Buscar dados de todos os serviços em paralelo
       const results = await Promise.allSettled([
@@ -65,7 +66,7 @@ export default function ServicesIntegrationComplete() {
           const totalServices = data.length;
           const healthPercent = Math.round((onlineServices / totalServices) * 100);
           
-          console.log(`🔗 Dados reais: ${onlineServices}/${totalServices} online (${healthPercent}%)`);
+          logger.info(`🔗 Dados reais: ${onlineServices}/${totalServices} online (${healthPercent}%)`);
           
           return { 
             admin: { 
@@ -91,7 +92,7 @@ export default function ServicesIntegrationComplete() {
         if (result.status === 'fulfilled') {
           Object.assign(servicesData, result.value);
         } else {
-          console.warn(`Service ${index} failed:`, result.reason);
+          logger.warn(`Service ${index} failed:`, result.reason);
           // Adicionar serviço como offline
           const serviceNames = ['stac', 'pygeoapi', 'minio', 'flower', 'keycloak', 'admin', 'metrics', 'tasks'];
           servicesData[serviceNames[index]] = { status: 'offline', error: result.reason };
@@ -99,10 +100,10 @@ export default function ServicesIntegrationComplete() {
       });
 
       setServices(servicesData);
-      console.log('✅ Serviços carregados:', Object.keys(servicesData));
+      logger.info('✅ Serviços carregados:', Object.keys(servicesData));
 
     } catch (err: any) {
-      console.error('❌ Erro ao carregar serviços:', err);
+      logger.error('❌ Erro ao carregar serviços:', err);
       setError(err.message || 'Erro desconhecido');
     } finally {
       setLoading(false);

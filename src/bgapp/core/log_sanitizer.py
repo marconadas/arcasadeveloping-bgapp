@@ -9,6 +9,7 @@ import hashlib
 from typing import Dict, Any, List, Optional, Union
 from datetime import datetime
 import logging
+from bgapp.core.logger import logger
 
 class LogSanitizer:
     """Sanitizador de logs para remover dados sensíveis"""
@@ -272,17 +273,17 @@ if __name__ == "__main__":
         }
     }
     
-    print("🧪 Teste do Sanitizador de Logs")
-    print("=" * 50)
+    logger.info("🧪 Teste do Sanitizador de Logs")
+    logger.info("=" * 50)
     
-    print("\n📋 Dados originais:")
-    print(json.dumps(test_data, indent=2))
+    logger.info("\n📋 Dados originais:")
+    logger.info(json.dumps(test_data, indent=2))
     
-    print("\n🔒 Dados sanitizados:")
+    logger.info("\n🔒 Dados sanitizados:")
     sanitized = sanitizer.sanitize_dict(test_data)
-    print(json.dumps(sanitized, indent=2))
+    logger.info(json.dumps(sanitized, indent=2))
     
-    print("\n🔑 Hash de utilizador:")
-    print(f"admin@bgapp.ao -> {sanitizer.create_user_hash('admin@bgapp.ao')}")
+    logger.info("\n🔑 Hash de utilizador:")
+    logger.info(f"admin@bgapp.ao -> {sanitizer.create_user_hash('admin@bgapp.ao')}")
     
-    print("\n✅ Teste concluído!")
+    logger.info("\n✅ Teste concluído!")

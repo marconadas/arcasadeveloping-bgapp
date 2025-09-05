@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from copernicusmarine import subset  # type: ignore
+from bgapp.core.logger import logger
 
 
 def main(argv: Optional[list[str]] = None) -> None:
@@ -32,7 +33,7 @@ def main(argv: Optional[list[str]] = None) -> None:
         end_datetime=args.end,
         output_filename=str(args.out),
     )
-    print(f"Saved {args.out}")
+    logger.info(f"Saved {args.out}")
 
 
 if __name__ == "__main__":

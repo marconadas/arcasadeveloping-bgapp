@@ -58,10 +58,10 @@ class RedisCache:
             
             # Testar conexão
             await self.redis.ping()
-            print(f"✅ Cache Redis conectado: {self.config.redis_host}:{self.config.redis_port}")
+            logger.info(f"✅ Cache Redis conectado: {self.config.redis_host}:{self.config.redis_port}")
             
         except Exception as e:
-            print(f"❌ Erro conectando Redis: {e}")
+            logger.info(f"❌ Erro conectando Redis: {e}")
             # Fallback para cache em memória
             self.redis = None
             
@@ -96,7 +96,7 @@ class RedisCache:
                 return None
                 
         except Exception as e:
-            print(f"Erro lendo cache {key}: {e}")
+            logger.info(f"Erro lendo cache {key}: {e}")
             self.stats.misses += 1
             return None
             
@@ -118,7 +118,7 @@ class RedisCache:
             return True
             
         except Exception as e:
-            print(f"Erro gravando cache {key}: {e}")
+            logger.info(f"Erro gravando cache {key}: {e}")
             return False
             
     async def delete(self, key: str) -> bool:
@@ -130,7 +130,7 @@ class RedisCache:
             result = await self.redis.delete(key)
             return result > 0
         except Exception as e:
-            print(f"Erro removendo cache {key}: {e}")
+            logger.info(f"Erro removendo cache {key}: {e}")
             return False
             
     async def clear_pattern(self, pattern: str) -> int:
@@ -144,7 +144,7 @@ class RedisCache:
                 return await self.redis.delete(*keys)
             return 0
         except Exception as e:
-            print(f"Erro limpando padrão {pattern}: {e}")
+            logger.info(f"Erro limpando padrão {pattern}: {e}")
             return 0
             
     async def get_stats(self) -> CacheStats:
@@ -171,7 +171,7 @@ class RedisCache:
             self.stats.last_updated = datetime.now()
             
         except Exception as e:
-            print(f"Erro obtendo estatísticas: {e}")
+            logger.info(f"Erro obtendo estatísticas: {e}")
             
         return self.stats
 
@@ -206,6 +206,7 @@ def cached(ttl: int = 300, key_prefix: str = "default"):
         def sync_wrapper(*args, **kwargs):
             # Versão síncrona (para compatibilidade)
             import asyncio
+from bgapp.core.logger import logger
             loop = asyncio.get_event_loop()
             if loop.is_running():
                 # Se já estiver em um loop, usar task
@@ -253,11 +254,11 @@ class CacheManager:
         pattern = patterns.get(data_type)
         if pattern:
             cleared = await self.cache.clear_pattern(pattern)
-            print(f"🗑️ Invalidados {cleared} caches de {data_type}")
+            logger.info(f"🗑️ Invalidados {cleared} caches de {data_type}")
             
     async def warm_up_cache(self):
         """Pré-carregar cache com dados frequentemente acessados"""
-        print("🔥 Iniciando warm-up do cache...")
+        logger.info("🔥 Iniciando warm-up do cache...")
         
         # Dados mais acessados (exemplo)
         common_queries = [
@@ -269,9 +270,9 @@ class CacheManager:
         for query in common_queries:
             key = await self.cache_oceanographic_data(query)
             # Aqui seria executada a consulta real para pré-carregar
-            print(f"  ✓ Cache aquecido para: {query}")
+            logger.info(f"  ✓ Cache aquecido para: {query}")
             
-        print("🔥 Warm-up do cache concluído!")
+        logger.info("🔥 Warm-up do cache concluído!")
 
 # Instância global do gerenciador
 cache_manager = CacheManager(cache)

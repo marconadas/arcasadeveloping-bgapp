@@ -412,9 +412,10 @@ def cleanup_performance_optimizer():
 if __name__ == "__main__":
     # Teste do sistema de otimização
     import asyncio
+from bgapp.core.logger import logger
     
     async def test_performance_optimizer():
-        print("🚀 Testando Performance Optimizer...")
+        logger.info("🚀 Testando Performance Optimizer...")
         
         # Teste de cache
         @cached(ttl=60)
@@ -426,13 +427,13 @@ if __name__ == "__main__":
         start = time.time()
         result1 = test_function("test1")
         time1 = time.time() - start
-        print(f"Primeira chamada: {time1:.3f}s - {result1}")
+        logger.info(f"Primeira chamada: {time1:.3f}s - {result1}")
         
         # Segunda call - cache hit
         start = time.time()
         result2 = test_function("test1")
         time2 = time.time() - start
-        print(f"Segunda chamada: {time2:.3f}s - {result2}")
+        logger.info(f"Segunda chamada: {time2:.3f}s - {result2}")
         
         # Teste de requisições assíncronas
         requests_data = [
@@ -444,13 +445,13 @@ if __name__ == "__main__":
         start = time.time()
         results = await batch_async_requests(requests_data, max_concurrent=3)
         batch_time = time.time() - start
-        print(f"Requisições em lote: {batch_time:.3f}s - {len(results)} resultados")
+        logger.info(f"Requisições em lote: {batch_time:.3f}s - {len(results)} resultados")
         
         # Mostrar métricas
         metrics = get_performance_metrics()
-        print("📊 Métricas de Performance:")
+        logger.info("📊 Métricas de Performance:")
         for key, value in metrics.items():
-            print(f"   {key}: {value}")
+            logger.info(f"   {key}: {value}")
     
     # Executar teste
     asyncio.run(test_performance_optimizer())
