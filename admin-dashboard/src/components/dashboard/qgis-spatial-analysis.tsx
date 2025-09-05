@@ -129,10 +129,13 @@ export default function QGISSpatialAnalysis() {
   }>({ isOpen: false });
 
   // Fetch spatial analysis data
-  const fetchSpatialData = useCallback(async () => {
+  const fetchSpatialData = useCallback(async (signal?: AbortSignal) => {
     try {
       setLoading(true);
       setError(null);
+
+      // Check if aborted before starting
+      if (signal?.aborted) return;
 
       // Mock data - replace with actual bgappApi calls
       const [bufferData, connectivityData, hotspotsData, statsData] = await Promise.all([
@@ -256,34 +259,59 @@ export default function QGISSpatialAnalysis() {
         } as SpatialStats)
       ]);
 
-      setBufferZones(bufferData);
-      setConnectivity(connectivityData);
-      setHotspots(hotspotsData);
-      setStats(statsData);
+      // Check if aborted before setting state
+      if (!signal?.aborted) {
+        setBufferZones(bufferData);
+        setConnectivity(connectivityData);
+        setHotspots(hotspotsData);
+        setStats(statsData);
+      }
 
     } catch (err) {
-      // console.error('Error fetching spatial data:', err);
-      setError('Erro ao carregar dados de análise espacial');
+      // Only set error if not aborted
+      if (!signal?.aborted) {
+        // console.error('Error fetching spatial data:', err);
+        setError('Erro ao carregar dados de análise espacial');
+      }
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
   // Run new spatial analysis
   const runAnalysis = async (analysisType: string) => {
+    const controller = new AbortController();
+    
     try {
       setProcessing(true);
-      // Mock processing time
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Mock processing time with cleanup support
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(resolve, 3000);
+        
+        // Clean up timeout if aborted
+        controller.signal.addEventListener('abort', () => {
+          clearTimeout(timeout);
+          reject(new Error('Analysis cancelled'));
+        });
+      });
       
       // Refresh data after analysis
-      await fetchSpatialData();
+      await fetchSpatialData(controller.signal);
       
     } catch (err) {
-      // console.error('Error running analysis:', err);
+      if (!controller.signal.aborted) {
+        // console.error('Error running analysis:', err);
+      }
     } finally {
-      setProcessing(false);
+      if (!controller.signal.aborted) {
+        setProcessing(false);
+      }
     }
+    
+    return () => controller.abort();
   };
 
   // Open map modal with specific data
@@ -309,11 +337,23 @@ export default function QGISSpatialAnalysis() {
 
   useEffect(() => {
     if (mounted) {
-      fetchSpatialData();
+      const controller = new AbortController();
+      
+      // Initial fetch
+      fetchSpatialData(controller.signal);
       
       // Auto-refresh every 5 minutes
-      const interval = setInterval(fetchSpatialData, 300000);
-      return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        if (!controller.signal.aborted) {
+          fetchSpatialData(controller.signal);
+        }
+      }, 300000);
+      
+      // Cleanup function
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
     }
   }, [mounted, fetchSpatialData]);
 

@@ -1,0 +1,51 @@
+name = "bgapp-frontend"
+compatibility_date = "2025-01-05"
+
+# Configuração específica para Cloudflare Pages
+pages_build_output_dir = "."
+
+# Headers de segurança e performance
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "SAMEORIGIN"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+for = "/assets/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.js"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.css"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirects para funcionalidades específicas
+[[redirects]]
+from = "/admin"
+to = "/admin.html"
+status = 200
+
+[[redirects]]
+from = "/dashboard"
+to = "/admin.html"
+status = 200
+
+[[redirects]]
+from = "/ml-demo"
+to = "/ml-demo.html"
+status = 200
+
+[[redirects]]
+from = "/realtime"
+to = "/realtime_angola.html"
+status = 200
+
