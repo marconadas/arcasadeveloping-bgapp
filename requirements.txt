@@ -43,6 +43,10 @@ psutil==5.9.6
 shapely>=2.0.0
 pyproj>=3.6.0
 
+# TASK-003: WebAssembly e JavaScript Integration para Deck.GL
+js2py==0.74
+wasmtime>=13.0.0  # Dependência opcional para WebAssembly
+
 # Para instalar dependências específicas:
 # pip install -r requirements-admin.txt  # Para funcionalidades de admin
 # pip install -r requirements-stac.txt   # Para integração STAC

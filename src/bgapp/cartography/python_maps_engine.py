@@ -29,6 +29,20 @@ import logging
 # Configurar logging
 logger = logging.getLogger(__name__)
 
+# TASK-003: Import do novo wrapper WebAssembly para Deck.GL
+try:
+    from .deckgl_wasm_wrapper import (
+        DeckGLWASMWrapper, 
+        DeckGLConfig, 
+        DeckGLViewState,
+        create_angola_marine_visualization
+    )
+    DECKGL_WASM_AVAILABLE = True
+    logger.info("✅ Deck.GL WASM Wrapper disponível")
+except ImportError as e:
+    DECKGL_WASM_AVAILABLE = False
+    logger.warning(f"⚠️ Deck.GL WASM Wrapper não disponível: {e}")
+
 
 class AngolaMarineCartography:
     """
@@ -1000,6 +1014,85 @@ class AngolaMarineCartography:
         """
         
         return html_report
+    
+    # TASK-003: Métodos de integração Deck.GL WASM
+    def create_deckgl_visualization(self, 
+                                  data: List[Dict[str, Any]], 
+                                  layer_type: str = "scatterplot",
+                                  title: str = "Visualização BGAPP Deck.GL") -> Optional[str]:
+        """
+        🌐 TASK-003: Criar visualização Deck.GL usando WebAssembly
+        
+        Args:
+            data: Dados oceanográficos para visualizar
+            layer_type: Tipo de camada ('scatterplot', 'heatmap', 'icon')
+            title: Título da visualização
+            
+        Returns:
+            HTML da visualização ou None se não disponível
+        """
+        if not DECKGL_WASM_AVAILABLE:
+            logger.warning("⚠️ Deck.GL WASM não disponível - usando fallback")
+            return self._create_deckgl_fallback(data, layer_type, title)
+        
+        try:
+            logger.info(f"🚀 Criando visualização Deck.GL: {layer_type} com {len(data)} pontos")
+            
+            # Criar wrapper configurado para Angola
+            wrapper = create_angola_marine_visualization(data, layer_type)
+            
+            # Renderizar para HTML
+            html_output = wrapper.render_to_html(title, include_controls=True)
+            
+            # Log das estatísticas
+            stats = wrapper.get_layer_stats()
+            logger.info(f"✅ Visualização Deck.GL criada: {stats}")
+            
+            return html_output
+            
+        except Exception as e:
+            logger.error(f"❌ Erro na criação Deck.GL: {e}")
+            return self._create_deckgl_fallback(data, layer_type, title)
+    
+    def get_deckgl_capabilities(self) -> Dict[str, Any]:
+        """
+        🔍 Obter informações sobre capacidades Deck.GL disponíveis
+        
+        Returns:
+            Informações sobre o sistema Deck.GL
+        """
+        capabilities = {
+            'deckgl_wasm_available': DECKGL_WASM_AVAILABLE,
+            'supported_layer_types': ['scatterplot', 'heatmap', 'icon'],
+            'supported_formats': ['html', 'json'],
+            'version': '1.0.0',
+            'task': 'TASK-003 - WebAssembly Deck.GL Integration'
+        }
+        
+        if DECKGL_WASM_AVAILABLE:
+            try:
+                # Testar criação de wrapper
+                test_data = [{"longitude": 13.2, "latitude": -8.8, "value": 1}]
+                wrapper = create_angola_marine_visualization(test_data, "scatterplot")
+                stats = wrapper.get_layer_stats()
+                
+                capabilities.update({
+                    'test_successful': True,
+                    'test_stats': stats,
+                    'fallback_available': True
+                })
+                
+            except Exception as e:
+                capabilities.update({
+                    'test_successful': False,
+                    'error': str(e),
+                    'fallback_available': True
+                })
+        else:
+            capabilities['fallback_available'] = True
+            capabilities['recommended_action'] = 'pip install js2py wasmtime'
+        
+        return capabilities
 
 
 # Instância global do engine cartográfico
