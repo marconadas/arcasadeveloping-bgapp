@@ -314,7 +314,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                   <Input
                     id="map-name"
                     value={config.name}
-                    onChange={(e) => setConfig(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfig(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="Ex: Mapa Oceanográfico Angola"
                   />
                 </div>
@@ -323,7 +323,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                   <Label htmlFor="map-category">Categoria</Label>
                   <Select 
                     value={config.category} 
-                    onValueChange={(value) => {
+                    onValueChange={(value: string) => {
                       setConfig(prev => ({ ...prev, category: value }));
                       suggestLayersForCategory(value);
                     }}
@@ -347,7 +347,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                 <Textarea
                   id="map-description"
                   value={config.description}
-                  onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setConfig(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Descrição detalhada do mapa..."
                   rows={3}
                 />
@@ -362,7 +362,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                     <Input
                       type="number"
                       value={config.center[0]}
-                      onChange={(e) => setConfig(prev => ({ 
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfig(prev => ({ 
                         ...prev, 
                         center: [parseFloat(e.target.value) || 0, prev.center[1]] 
                       }))}
@@ -372,7 +372,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                     <Input
                       type="number"
                       value={config.center[1]}
-                      onChange={(e) => setConfig(prev => ({ 
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfig(prev => ({ 
                         ...prev, 
                         center: [prev.center[0], parseFloat(e.target.value) || 0] 
                       }))}
@@ -387,7 +387,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                   <div className="px-2">
                     <Slider
                       value={[config.zoom]}
-                      onValueChange={(value) => setConfig(prev => ({ ...prev, zoom: value[0] }))}
+                      onValueChange={(value: number[]) => setConfig(prev => ({ ...prev, zoom: value[0] }))}
                       max={20}
                       min={1}
                       step={1}
@@ -403,7 +403,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                   <Label>Camada Base Padrão</Label>
                   <Select 
                     value={config.defaultBaseLayer} 
-                    onValueChange={(value) => setConfig(prev => ({ ...prev, defaultBaseLayer: value }))}
+                    onValueChange={(value: string) => setConfig(prev => ({ ...prev, defaultBaseLayer: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -529,7 +529,7 @@ export function MapCreatorTools({ className, onMapCreated }: MapCreatorToolsProp
                       </div>
                       <Switch
                         checked={enabled}
-                        onCheckedChange={(checked) => updateControl(controlName, checked)}
+                        onCheckedChange={(checked: boolean) => updateControl(controlName, checked)}
                       />
                     </div>
                   ))}

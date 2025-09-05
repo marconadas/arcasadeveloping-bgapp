@@ -13,6 +13,7 @@ import {
   DevicePhoneMobileIcon,
   ChartBarIcon,
   CloudArrowUpIcon,
+  CloudIcon,
   GlobeAltIcon,
   PlayIcon,
   ArrowTopRightOnSquareIcon as ExternalLinkIcon
@@ -478,7 +479,7 @@ export default function ScientificInterfacesHubCloudflare() {
       case 'monitoring': return EyeIcon;
       case 'spatial': return MapIcon;
       case 'fisheries': return BeakerIcon;
-      case 'weather': return BoltIcon;
+      case 'weather': return CloudIcon;
       case 'social': return GlobeAltIcon;
       case 'data': return CloudArrowUpIcon;
       case 'mobile': return DevicePhoneMobileIcon;
