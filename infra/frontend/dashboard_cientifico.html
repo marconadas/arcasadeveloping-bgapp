@@ -682,7 +682,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Fix para dropdown de exportação ficar acima dos filtros */
+        /* Fix para dropdown de exportação - SOLUÇÃO CORRETA */
         .dropdown-menu {
             z-index: 10500 !important;
             background: rgba(255, 255, 255, 0.98) !important;
@@ -690,20 +690,29 @@
             border: 1px solid rgba(0, 0, 0, 0.1) !important;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
             border-radius: 12px !important;
-            padding: 8px !important;
-            display: block !important; /* Forçar visibilidade */
-            visibility: visible !important;
-            opacity: 1 !important;
-            min-height: 250px !important; /* Garantir altura suficiente */
-            overflow: visible !important;
+            padding: 12px !important;
+            min-width: 240px !important;
+            margin-top: 8px !important;
+            /* Bootstrap controla display - apenas melhoramos visual e posição */
         }
 
-        /* Garantir que quando dropdown está ativo, seja visível */
+        /* Quando dropdown está ativo - garantir visibilidade total */
         .dropdown.show .dropdown-menu {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            transform: translateY(0) !important;
+            z-index: 10500 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
+        }
+
+        /* Melhorar espaçamento dos itens */
+        .dropdown-menu .dropdown-item {
+            padding: 12px 16px !important;
+            margin: 4px 0 !important;
+            border-radius: 8px !important;
+            white-space: nowrap !important;
         }
 
         .dropdown-item {
@@ -7676,6 +7685,47 @@
             
             console.log('📊 Power BI API exposta globalmente');
             console.log('🚀 Dashboard BGAPP inicializado com todas as funcionalidades avançadas');
+        
+        // 🔧 FIX: Garantir funcionamento correto do dropdown de exportação
+        setTimeout(() => {
+            const exportButton = document.querySelector('[data-bs-toggle="dropdown"]');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (exportButton && dropdownMenu) {
+                console.log('🔧 Configurando dropdown de exportação...');
+                
+                // Forçar comportamento correto do dropdown
+                exportButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const dropdown = exportButton.closest('.btn-group');
+                    const isOpen = dropdown.classList.contains('show');
+                    
+                    // Toggle manual do dropdown
+                    if (isOpen) {
+                        dropdown.classList.remove('show');
+                        dropdownMenu.classList.remove('show');
+                        console.log('🔽 Dropdown fechado');
+                    } else {
+                        dropdown.classList.add('show');
+                        dropdownMenu.classList.add('show');
+                        console.log('🔼 Dropdown aberto');
+                    }
+                });
+                
+                // Fechar quando clicar fora
+                document.addEventListener('click', (e) => {
+                    if (!exportButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        const dropdown = exportButton.closest('.btn-group');
+                        dropdown.classList.remove('show');
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+                
+                console.log('✅ Dropdown de exportação configurado manualmente');
+            }
+        }, 2000);
         });
     </script>
 </body>
