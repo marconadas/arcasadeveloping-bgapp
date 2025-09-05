@@ -265,7 +265,8 @@ export default function PredictiveFiltersManager() {
                       variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // TODO: Implementar visualização no mapa
+                        // Abrir visualização no mapa - Feature planejada para v2.1
+                        window.open('/maps?filter=' + encodeURIComponent(filter.id), '_blank');
                       }}
                     >
                       <MapIcon className="h-4 w-4 mr-1" />

@@ -1,5 +1,5 @@
 {
-  "/_not-found": "app/_not-found.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/ml-auto-ingestion/page": "app/ml-auto-ingestion/page.js",
   "/ml-models-manager/page": "app/ml-models-manager/page.js",
   "/ml-predictive-filters/page": "app/ml-predictive-filters/page.js",
