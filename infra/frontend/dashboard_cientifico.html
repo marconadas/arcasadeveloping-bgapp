@@ -2283,8 +2283,29 @@
         
         // Inicializar dashboard com sistema de erros avançado
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DASHBOARD INICIALIZANDO - DOMContentLoaded');
+            console.log('🔧 currentFilters inicial:', currentFilters);
+            
             // Configurar tratamento global de erros primeiro
             setupGlobalErrorHandling();
+            
+            console.log('📋 Verificando elementos de filtro na inicialização...');
+            setTimeout(() => {
+                const periodEl = document.getElementById('period-filter');
+                const regionEl = document.getElementById('region-filter');
+                const parameterEl = document.getElementById('parameter-filter');
+                const depthEl = document.getElementById('depth-filter');
+                
+                console.log('📋 Elementos encontrados:', {
+                    'period-filter': !!periodEl,
+                    'region-filter': !!regionEl,
+                    'parameter-filter': !!parameterEl,
+                    'depth-filter': !!depthEl
+                });
+                
+                if (periodEl) console.log('🔍 Valor inicial period-filter:', periodEl.value);
+                if (regionEl) console.log('🔍 Valor inicial region-filter:', regionEl.value);
+            }, 1000);
             
             initializeDashboard();
             
@@ -3308,6 +3329,8 @@
         }
 
         function applyFiltersToData() {
+            console.log('📊 FUNÇÃO applyFiltersToData() CHAMADA com filtros:', currentFilters);
+            
             // Dados base
             const baseData = {
                 totalObservations: 12847,
@@ -3814,13 +3837,34 @@
         }
 
         function applyFilters() {
+            console.log('🔍 FUNÇÃO applyFilters() CHAMADA');
+            
+            // Verificar se os elementos existem
+            const periodEl = document.getElementById('period-filter');
+            const regionEl = document.getElementById('region-filter');
+            const parameterEl = document.getElementById('parameter-filter');
+            const depthEl = document.getElementById('depth-filter');
+            
+            console.log('📋 Elementos dos filtros:', {
+                periodEl: !!periodEl,
+                regionEl: !!regionEl,
+                parameterEl: !!parameterEl,
+                depthEl: !!depthEl
+            });
+            
+            if (!periodEl || !regionEl || !parameterEl || !depthEl) {
+                console.error('❌ ERRO: Elementos de filtro não encontrados!');
+                return;
+            }
+            
             // Capturar valores dos filtros
-            currentFilters.period = document.getElementById('period-filter').value;
-            currentFilters.region = document.getElementById('region-filter').value;
-            currentFilters.parameter = document.getElementById('parameter-filter').value;
-            currentFilters.depth = document.getElementById('depth-filter').value;
+            currentFilters.period = periodEl.value;
+            currentFilters.region = regionEl.value;
+            currentFilters.parameter = parameterEl.value;
+            currentFilters.depth = depthEl.value;
 
-            console.log('🔍 Aplicando filtros:', currentFilters);
+            console.log('🔍 Filtros aplicados:', currentFilters);
+            console.log('🔄 Chamando loadDashboardData()...');
             
             // Recarregar dados com filtros
             loadDashboardData();
