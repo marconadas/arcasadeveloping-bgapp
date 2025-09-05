@@ -107,7 +107,7 @@ export default function ServicesIntegrationCloudflare() {
               headers: {
                 'Accept': 'application/json',
               },
-              timeout: 5000
+              signal: AbortSignal.timeout(5000)
             });
 
             if (response.ok) {
@@ -136,7 +136,7 @@ export default function ServicesIntegrationCloudflare() {
           try {
             const response = await fetch(config.url, { 
               method: 'HEAD',  // Apenas verificar se existe
-              timeout: 3000 
+              signal: AbortSignal.timeout(3000) 
             });
             
             if (response.ok) {

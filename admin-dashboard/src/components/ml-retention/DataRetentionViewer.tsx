@@ -190,7 +190,7 @@ const DataRetentionViewer: React.FC<DataViewerProps> = ({ onRefresh }) => {
     return `${(sizeMb / 1024).toFixed(1)} GB`;
   };
 
-  const uniqueTables = [...new Set(data.map(record => record.table_name))];
+  const uniqueTables = Array.from(new Set(data.map(record => record.table_name)));
 
   return (
     <div className="space-y-6">

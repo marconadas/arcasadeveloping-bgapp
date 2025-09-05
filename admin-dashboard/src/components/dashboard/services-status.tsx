@@ -25,6 +25,8 @@ interface WorkflowStatus {
     status: string
     clientAccess: boolean
   }>
+  company?: string
+  status?: string
 }
 
 export function ServicesStatus() {

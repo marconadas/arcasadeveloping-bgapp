@@ -81,7 +81,7 @@ export interface DataConnector {
 export interface ScientificInterface {
   id: string;
   name: string;
-  category: 'analysis' | 'monitoring' | 'spatial' | 'fisheries' | 'weather' | 'social' | 'data' | 'mobile';
+  category: 'analysis' | 'monitoring' | 'spatial' | 'fisheries' | 'weather' | 'social' | 'data' | 'mobile' | 'testing' | 'utilities';
   url: string;
   description: string;
   isActive: boolean;
@@ -687,7 +687,7 @@ class BGAPPAPIClient {
       if (response.ok) {
         const realData = await response.json();
         console.log('✅ ML Models: Dados REAIS carregados da API');
-        return realData.models || this.getFallbackMLModels();
+        return realData.models || [];
       }
     } catch (error) {
       console.warn('⚠️ ML API indisponível, usando fallback baseado em dados reais');

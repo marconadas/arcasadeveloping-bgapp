@@ -29,7 +29,7 @@ export function DebugErrorBoundary() {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       // Verificar se há erros conhecidos
-      const knownErrors = [];
+      const knownErrors: string[] = [];
       
       if (componentId === 'maps') {
         knownErrors.push('URLs localhost não convertidas para mapas');
