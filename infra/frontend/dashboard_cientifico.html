@@ -659,7 +659,11 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         /* Painel de Análise Preditiva com IA */
@@ -3219,6 +3223,16 @@
                 }
             });
         }
+
+        function clearLoadingSpinner(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const spinner = element.querySelector('.loading-spinner');
+                if (spinner) {
+                    spinner.remove();
+                }
+            }
+        }
         
         function handleChartError(chartId, error) {
             console.error(`❌ Erro carregando ${chartId}:`, error);
@@ -3293,20 +3307,141 @@
             }
         }
 
+        function applyFiltersToData() {
+            // Dados base
+            const baseData = {
+                totalObservations: 12847,
+                observationsChange: '+15.3',
+                speciesCount: 156,
+                newSpecies: 8,
+                dataQuality: 97.2,
+                predictionAccuracy: 96.8
+            };
+
+            let multiplier = 1;
+            let qualityAdjustment = 0;
+            let accuracyAdjustment = 0;
+
+            // Ajustar com base no período
+            switch (currentFilters.period) {
+                case '24h':
+                    multiplier = 0.05;
+                    qualityAdjustment = -2;
+                    accuracyAdjustment = -3;
+                    break;
+                case '7d':
+                    multiplier = 0.3;
+                    qualityAdjustment = -1;
+                    accuracyAdjustment = -1;
+                    break;
+                case '30d':
+                    multiplier = 1;
+                    break;
+                case '90d':
+                    multiplier = 2.8;
+                    qualityAdjustment = 1;
+                    accuracyAdjustment = 1;
+                    break;
+                case '1y':
+                    multiplier = 12;
+                    qualityAdjustment = 2;
+                    accuracyAdjustment = 2;
+                    break;
+            }
+
+            // Ajustar com base na região
+            switch (currentFilters.region) {
+                case 'north':
+                    multiplier *= 0.7;
+                    qualityAdjustment += 1;
+                    break;
+                case 'center':
+                    multiplier *= 1.2;
+                    break;
+                case 'south':
+                    multiplier *= 0.9;
+                    accuracyAdjustment += 1;
+                    break;
+                case 'azores':
+                    multiplier *= 0.4;
+                    qualityAdjustment += 2;
+                    accuracyAdjustment += 1;
+                    break;
+                case 'madeira':
+                    multiplier *= 0.3;
+                    qualityAdjustment += 1;
+                    accuracyAdjustment += 2;
+                    break;
+            }
+
+            // Ajustar com base no parâmetro
+            switch (currentFilters.parameter) {
+                case 'temperature':
+                    break; // Base
+                case 'salinity':
+                    multiplier *= 0.8;
+                    qualityAdjustment += 1;
+                    break;
+                case 'ph':
+                    multiplier *= 0.6;
+                    accuracyAdjustment -= 1;
+                    break;
+                case 'oxygen':
+                    multiplier *= 0.7;
+                    break;
+                case 'turbidity':
+                    multiplier *= 0.5;
+                    qualityAdjustment -= 1;
+                    break;
+            }
+
+            // Ajustar com base na profundidade
+            switch (currentFilters.depth) {
+                case 'surface':
+                    break; // Base
+                case 'shallow':
+                    multiplier *= 0.9;
+                    break;
+                case 'medium':
+                    multiplier *= 0.7;
+                    qualityAdjustment -= 1;
+                    break;
+                case 'deep':
+                    multiplier *= 0.4;
+                    qualityAdjustment -= 2;
+                    accuracyAdjustment -= 1;
+                    break;
+            }
+
+            // Calcular valores finais
+            const result = {
+                totalObservations: Math.round(baseData.totalObservations * multiplier),
+                observationsChange: multiplier > 1 ? `+${(15.3 * multiplier / 2).toFixed(1)}` : `+${(15.3 * multiplier).toFixed(1)}`,
+                speciesCount: Math.round(baseData.speciesCount * (0.5 + multiplier * 0.5)),
+                newSpecies: Math.round(baseData.newSpecies * (0.3 + multiplier * 0.7)),
+                dataQuality: Math.min(99.9, Math.max(85, baseData.dataQuality + qualityAdjustment)),
+                predictionAccuracy: Math.min(99.9, Math.max(80, baseData.predictionAccuracy + accuracyAdjustment))
+            };
+
+            console.log('🔄 Dados filtrados calculados:', result);
+            return result;
+        }
+
         async function loadMetrics() {
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
-                // Métricas sempre carregam com sucesso
+                console.log('📊 Carregando métricas com filtros:', currentFilters);
+                const filteredData = applyFiltersToData();
                 
-                // Simular métricas (substituir por chamadas à API)
-                document.getElementById('total-observations').textContent = '12,847';
-                document.getElementById('observations-change').textContent = '+15.3';
-                document.getElementById('species-count').textContent = '156';
-                document.getElementById('new-species').textContent = '8';
-                document.getElementById('data-quality').textContent = '97.2%';
-                document.getElementById('prediction-accuracy').textContent = '96.8%';
+                // Atualizar métricas com dados filtrados
+                document.getElementById('total-observations').textContent = filteredData.totalObservations.toLocaleString('pt-PT');
+                document.getElementById('observations-change').textContent = filteredData.observationsChange;
+                document.getElementById('species-count').textContent = filteredData.speciesCount.toString();
+                document.getElementById('new-species').textContent = filteredData.newSpecies.toString();
+                document.getElementById('data-quality').textContent = filteredData.dataQuality + '%';
+                document.getElementById('prediction-accuracy').textContent = filteredData.predictionAccuracy + '%';
                 
             } catch (error) {
                 console.error('Erro carregando métricas:', error);
@@ -3321,6 +3456,110 @@
             }
         }
 
+        function generateTimeSeriesData() {
+            // Determinar número de pontos baseado no período
+            let numDays;
+            let interval = 'daily';
+            
+            switch (currentFilters.period) {
+                case '24h':
+                    numDays = 1;
+                    interval = 'hourly';
+                    break;
+                case '7d':
+                    numDays = 7;
+                    break;
+                case '30d':
+                    numDays = 30;
+                    break;
+                case '90d':
+                    numDays = 90;
+                    break;
+                case '1y':
+                    numDays = 365;
+                    break;
+                default:
+                    numDays = 30;
+            }
+
+            const dates = [];
+            const temperatures = [];
+            const salinity = [];
+
+            // Valores base ajustados por região e profundidade
+            let tempBase = 24;
+            let salinityBase = 35;
+            let tempVariation = 3;
+            let salinityVariation = 1.5;
+
+            // Ajustar com base na região
+            switch (currentFilters.region) {
+                case 'north':
+                    tempBase = 18;
+                    salinityBase = 35.2;
+                    break;
+                case 'center':
+                    tempBase = 22;
+                    salinityBase = 35.5;
+                    break;
+                case 'south':
+                    tempBase = 26;
+                    salinityBase = 35.8;
+                    break;
+                case 'azores':
+                    tempBase = 20;
+                    salinityBase = 35.3;
+                    break;
+                case 'madeira':
+                    tempBase = 24;
+                    salinityBase = 35.6;
+                    break;
+            }
+
+            // Ajustar com base na profundidade
+            switch (currentFilters.depth) {
+                case 'surface':
+                    // Valores base já definidos
+                    break;
+                case 'shallow':
+                    tempBase -= 2;
+                    tempVariation = 2;
+                    break;
+                case 'medium':
+                    tempBase -= 5;
+                    tempVariation = 1.5;
+                    salinityBase += 0.2;
+                    break;
+                case 'deep':
+                    tempBase -= 8;
+                    tempVariation = 1;
+                    salinityBase += 0.5;
+                    break;
+            }
+
+            if (interval === 'hourly') {
+                // Dados por hora para período de 24h
+                for (let i = 23; i >= 0; i--) {
+                    const date = new Date();
+                    date.setHours(date.getHours() - i);
+                    dates.push(date.toISOString().slice(0, 16).replace('T', ' '));
+                    temperatures.push(tempBase + (Math.random() - 0.5) * tempVariation);
+                    salinity.push(salinityBase + (Math.random() - 0.5) * salinityVariation);
+                }
+            } else {
+                // Dados diários
+                for (let i = numDays - 1; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    dates.push(date.toISOString().split('T')[0]);
+                    temperatures.push(tempBase + (Math.random() - 0.5) * tempVariation);
+                    salinity.push(salinityBase + (Math.random() - 0.5) * salinityVariation);
+                }
+            }
+
+            return { dates, temperatures, salinity };
+        }
+
         async function loadTimeSeriesChart() {
             // LEGACY FUNCTION - Desabilitada em favor do initializeTimeSeriesChart()
             console.log('⚠️ Legacy loadTimeSeriesChart called - usando nova implementação');
@@ -3330,20 +3569,15 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1500));
                 
-                // Séries temporais sempre carregam com sucesso
+                console.log('📈 Carregando gráfico temporal com filtros:', currentFilters);
                 
-                // Dados simulados para série temporal
-                const dates = [];
-                const temperatures = [];
-                const salinity = [];
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('timeseries-chart');
                 
-                for (let i = 30; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    dates.push(date.toISOString().split('T')[0]);
-                    temperatures.push(22 + Math.random() * 6);
-                    salinity.push(35 + Math.random() * 2);
-                }
+                const chartData = generateTimeSeriesData();
+                const dates = chartData.dates;
+                const temperatures = chartData.temperatures;
+                const salinity = chartData.salinity;
 
                 const data = [
                     {
@@ -3396,6 +3630,9 @@
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
                 
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('species-chart');
+                
                 // Dados de espécies sempre carregam com sucesso
                 
                 const data = [{
@@ -3435,6 +3672,9 @@
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 1200));
+                
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('heatmap-chart');
                 
                 // Heatmap sempre carrega com sucesso
                 
@@ -3493,6 +3733,9 @@
             try {
                 // Simular delay de rede
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 800));
+                
+                // Limpar spinner antes de renderizar
+                clearLoadingSpinner('correlation-chart');
                 
                 // Matriz de correlação sempre carrega com sucesso
                 
