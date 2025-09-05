@@ -5647,14 +5647,10 @@
         
         // Função para atualizar os painéis de estatísticas principais
         function updateStatisticsPanels() {
-            console.log('📊 Atualizando painéis de estatísticas...');
-            
-            // Observações Totais
-            const totalObs = document.getElementById('total-observations');
-            if (totalObs) {
-                const count = Math.floor(55000 + Math.random() * 5000);
-                totalObs.textContent = count.toLocaleString();
-            }
+            console.log('⚠️ updateStatisticsPanels() DESABILITADA - usando filtros dinâmicos');
+            // FUNÇÃO DESABILITADA - Esta função estava sobrescrevendo os valores filtrados
+            // Os dados agora são controlados pela função applyFiltersToData()
+            return;
             
             const obsChange = document.getElementById('observations-change');
             if (obsChange) {
