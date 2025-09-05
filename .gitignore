@@ -51,3 +51,5 @@ Thumbs.db
 # Cloudflare
 .wrangler/
 
+.encryption_key
+SETUP_CREDENTIALS.md
