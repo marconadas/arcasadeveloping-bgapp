@@ -3185,9 +3185,20 @@
                 return;
             }
             
-            // Se gráficos já foram inicializados, só atualizar dados
+            // Se gráficos já foram inicializados, atualizar dados com filtros
             if (chartsInitialized) {
-                console.log('📊 Gráficos já inicializados - apenas atualizando dados');
+                console.log('📊 Gráficos já inicializados - atualizando com filtros');
+                
+                // Atualizar métricas com filtros
+                loadMetrics().catch(err => console.error('Erro atualizando métricas:', err));
+                
+                // Atualizar gráficos com filtros
+                loadTimeSeriesChart().catch(err => console.error('Erro atualizando série temporal:', err));
+                loadSpeciesChart().catch(err => console.error('Erro atualizando gráfico de espécies:', err));
+                loadHeatmap().catch(err => console.error('Erro atualizando heatmap:', err));
+                loadCorrelationMatrix().catch(err => console.error('Erro atualizando matriz de correlação:', err));
+                
+                // Atualizar APIs
                 apiIntegrationSystem.refreshAllAPIs();
                 return;
             }
