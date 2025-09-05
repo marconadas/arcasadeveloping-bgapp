@@ -98,10 +98,13 @@ export default function MLPredictiveFilters() {
   const [mounted, setMounted] = useState(false);
 
   // Fetch all ML data
-  const fetchMLData = useCallback(async () => {
+  const fetchMLData = useCallback(async (signal?: AbortSignal) => {
     try {
       setLoading(true);
       setError(null);
+
+      // Check if aborted before starting
+      if (signal?.aborted) return;
 
       // Fetch filters, points and stats in parallel
       const [filtersData, statsData] = await Promise.all([
@@ -209,49 +212,85 @@ export default function MLPredictiveFilters() {
         } as MLStats)
       ]);
 
-      setFilters(filtersData);
-      setStats(statsData);
+      // Check if aborted before setting state
+      if (!signal?.aborted) {
+        setFilters(filtersData);
+        setStats(statsData);
+      }
 
     } catch (err) {
-      // console.error('Error fetching ML data:', err);
-      setError('Erro ao carregar dados de Machine Learning');
+      // Only set error if not aborted
+      if (!signal?.aborted) {
+        // console.error('Error fetching ML data:', err);
+        setError('Erro ao carregar dados de Machine Learning');
+      }
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
   // Refresh specific filter
   const refreshFilter = async (filterId: string) => {
+    const controller = new AbortController();
+    
     try {
       setRefreshing(true);
-      // Mock refresh - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Update filter data
-      setFilters(prev => prev.map(filter => 
-        filter.filter_id === filterId 
-          ? { ...filter, last_updated: new Date().toISOString() }
-          : filter
-      ));
+      // Mock refresh with cleanup support
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(resolve, 2000);
+        
+        // Clean up timeout if aborted
+        controller.signal.addEventListener('abort', () => {
+          clearTimeout(timeout);
+          reject(new Error('Refresh cancelled'));
+        });
+      });
+      
+      // Update filter data if not aborted
+      if (!controller.signal.aborted) {
+        setFilters(prev => prev.map(filter => 
+          filter.filter_id === filterId 
+            ? { ...filter, last_updated: new Date().toISOString() }
+            : filter
+        ));
+      }
       
     } catch (err) {
-      // console.error('Error refreshing filter:', err);
+      if (!controller.signal.aborted) {
+        // console.error('Error refreshing filter:', err);
+      }
     } finally {
-      setRefreshing(false);
+      if (!controller.signal.aborted) {
+        setRefreshing(false);
+      }
     }
+    
+    return () => controller.abort();
   };
 
   // Toggle filter active state
   const toggleFilter = async (filterId: string) => {
+    const controller = new AbortController();
+    
     try {
-      setFilters(prev => prev.map(filter => 
-        filter.filter_id === filterId 
-          ? { ...filter, is_active: !filter.is_active }
-          : filter
-      ));
+      // Update state if not aborted
+      if (!controller.signal.aborted) {
+        setFilters(prev => prev.map(filter => 
+          filter.filter_id === filterId 
+            ? { ...filter, is_active: !filter.is_active }
+            : filter
+        ));
+      }
     } catch (err) {
-      // console.error('Error toggling filter:', err);
+      if (!controller.signal.aborted) {
+        // console.error('Error toggling filter:', err);
+      }
     }
+    
+    return () => controller.abort();
   };
 
   useEffect(() => {
@@ -260,11 +299,23 @@ export default function MLPredictiveFilters() {
 
   useEffect(() => {
     if (mounted) {
-      fetchMLData();
+      const controller = new AbortController();
+      
+      // Initial fetch
+      fetchMLData(controller.signal);
       
       // Auto-refresh every 2 minutes
-      const interval = setInterval(fetchMLData, 120000);
-      return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        if (!controller.signal.aborted) {
+          fetchMLData(controller.signal);
+        }
+      }, 120000);
+      
+      // Cleanup function
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
     }
   }, [mounted, fetchMLData]);
 

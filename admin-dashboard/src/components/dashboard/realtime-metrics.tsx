@@ -166,11 +166,19 @@ export function RealtimeMetrics() {
 
   // Simulate WebSocket connection and real-time updates
   useEffect(() => {
+    // Track active timers for cleanup
+    let metricsInterval: NodeJS.Timeout | null = null;
+    let notificationInterval: NodeJS.Timeout | null = null;
+    let isMounted = true;
+    
     // Simulate connection
-    setWsStatus(prev => ({ ...prev, connected: true, reconnectAttempts: 0 }))
+    if (isMounted) {
+      setWsStatus(prev => ({ ...prev, connected: true, reconnectAttempts: 0 }))
+    }
     
     // Simulate real-time data updates
-    const interval = setInterval(() => {
+    metricsInterval = setInterval(() => {
+      if (!isMounted) return;
       setMetrics(prevMetrics => 
         prevMetrics.map(metric => {
           const variation = (Math.random() - 0.5) * 5 // Smaller variations for realism
@@ -192,11 +200,15 @@ export function RealtimeMetrics() {
         })
       )
 
-      setWsStatus(prev => ({ ...prev, lastMessage: new Date() }))
+      if (isMounted) {
+        setWsStatus(prev => ({ ...prev, lastMessage: new Date() }))
+      }
     }, 3000) // Update every 3 seconds
 
     // Generate occasional notifications
-    const notificationInterval = setInterval(() => {
+    notificationInterval = setInterval(() => {
+      if (!isMounted) return;
+      
       if (Math.random() > 0.8) {
         const types = ['info', 'success'] as const
         const type = types[Math.floor(Math.random() * types.length)]
@@ -213,13 +225,18 @@ export function RealtimeMetrics() {
           timestamp: new Date()
         }
 
-        setNotifications(prev => [newNotification, ...prev.slice(0, 4)])
+        if (isMounted) {
+          setNotifications(prev => [newNotification, ...prev.slice(0, 4)])
+        }
       }
     }, 15000)
 
+    // Cleanup function
     return () => {
-      clearInterval(interval)
-      clearInterval(notificationInterval)
+      isMounted = false;
+      if (metricsInterval) clearInterval(metricsInterval);
+      if (notificationInterval) clearInterval(notificationInterval);
+      setWsStatus(prev => ({ ...prev, connected: false }));
     }
   }, [])
 
