@@ -106,7 +106,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         setStats(statsResponse.data);
       }
     } catch (error) {
-      logger.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados:', { error: String(error) });
       toast.error('Erro ao carregar dados dos mapas');
     } finally {
       setLoading(false);
@@ -140,7 +140,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      logger.error('Erro ao criar mapa:', error);
+      logger.error('Erro ao criar mapa:', { error: String(error) });
       toast.error('Erro ao criar mapa');
     }
   };
@@ -160,7 +160,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      logger.error('Erro ao atualizar mapa:', error);
+      logger.error('Erro ao atualizar mapa:', { error: String(error) });
       toast.error('Erro ao atualizar mapa');
     }
   };
@@ -175,7 +175,7 @@ export function MapsManagement({ className }: MapsManagementProps) {
         loadInitialData();
       }
     } catch (error) {
-      logger.error('Erro ao deletar mapa:', error);
+      logger.error('Erro ao deletar mapa:', { error: String(error) });
       toast.error('Erro ao deletar mapa');
     }
   };

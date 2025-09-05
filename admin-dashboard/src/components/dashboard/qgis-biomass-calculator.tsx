@@ -336,7 +336,7 @@ export default function QGISBiomassCalculator() {
       setStats(statsData);
 
     } catch (err) {
-      // logger.error('Error fetching biomass data:', err);
+      // logger.error('Error fetching biomass data:', { error: String(err) });
       setError('Erro ao carregar dados de biomassa');
     } finally {
       setLoading(false);
@@ -354,7 +354,7 @@ export default function QGISBiomassCalculator() {
       await fetchBiomassData();
       
     } catch (err) {
-      // logger.error('Error calculating biomass:', err);
+      // logger.error('Error calculating biomass:', { error: String(err) });
     } finally {
       setCalculating(false);
     }

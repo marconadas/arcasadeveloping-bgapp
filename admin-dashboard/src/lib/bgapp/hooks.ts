@@ -65,7 +65,7 @@ export function useBGAPPData<T>(
         
         return result;
       } catch (error) {
-        logger.warn(`BGAPP API failed for ${queryKey}, attempting fallback:`, error);
+        logger.warn(`BGAPP API failed for ${queryKey}, attempting fallback:`, { error: String(error) });
         
         // Tentar cache local primeiro
         if (enableOffline) {
@@ -84,7 +84,7 @@ export function useBGAPPData<T>(
                 return data;
               }
             } catch (parseError) {
-              logger.warn('Failed to parse cached data:', parseError);
+              logger.warn('Failed to parse cached data:', { error: String(parseError) });
             }
           }
         }
@@ -100,7 +100,7 @@ export function useBGAPPData<T>(
       }
     },
     staleTime,
-    cacheTime,
+    gcTime: cacheTime,
     retry: retryAttempts,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchInterval: refreshInterval,

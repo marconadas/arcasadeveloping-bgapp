@@ -79,7 +79,7 @@ export default function BGAPPIntegrationBulletproof() {
         });
         
       } catch (apiError) {
-        logger.warn('⚠️ API Error, usando fallback:', apiError);
+        logger.warn('⚠️ API Error, usando fallback:', { error: String(apiError) });
       }
 
       // SEMPRE garantir dados para demo (usar API se disponível, senão fallback)
@@ -153,7 +153,7 @@ export default function BGAPPIntegrationBulletproof() {
       logger.info('✅ TODOS OS DADOS CARREGADOS - DEMO PRONTA!');
       
     } catch (err) {
-      logger.error('🚨 ERRO CRÍTICO BGAPP:', err);
+      logger.error('🚨 ERRO CRÍTICO BGAPP:', err as Error);
       setError(`Erro ao carregar dados do BGAPP: ${err}`);
       
       // FALLBACK URGENTE: Dados estáticos para demo

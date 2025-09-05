@@ -54,7 +54,7 @@ export default function BGAPPIntegration() {
       setFisheriesData(fisheriesResponse);
       setCopernicusData(copernicusResponse);
     } catch (err) {
-      // logger.error('Error fetching BGAPP data:', err);
+      // logger.error('Error fetching BGAPP data:', { error: String(err) });
       setError('Erro ao carregar dados do BGAPP');
     } finally {
       setLoading(false);

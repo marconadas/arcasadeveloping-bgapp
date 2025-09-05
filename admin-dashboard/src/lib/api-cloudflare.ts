@@ -418,5 +418,5 @@ export const bgappApiCloudflare = {
 
 // 🔧 Debug info
 if (ENV.isDevelopment && typeof window !== 'undefined') {
-  logger.info('🌐 BGAPP API Cloudflare initialized with:', ENV.apiUrl);
+  logger.info('🌐 BGAPP API Cloudflare initialized with:', { apiUrl: ENV.apiUrl });
 }

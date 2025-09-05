@@ -36,8 +36,8 @@ export class ErrorBoundarySiliconValley extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error('🚨 Silicon Valley Error Boundary caught error:', error);
-    logger.error('📊 Error Info:', errorInfo);
+    logger.error('🚨 Silicon Valley Error Boundary caught error:', { error: String(error) });
+    logger.error('📊 Error Info:', { errorInfo: String(errorInfo) });
     
     this.setState({
       hasError: true,

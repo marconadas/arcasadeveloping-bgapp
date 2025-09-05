@@ -103,7 +103,7 @@ export default function ServicesIntegrationComplete() {
       logger.info('✅ Serviços carregados:', Object.keys(servicesData));
 
     } catch (err: any) {
-      logger.error('❌ Erro ao carregar serviços:', err);
+      logger.error('❌ Erro ao carregar serviços:', err as Error);
       setError(err.message || 'Erro desconhecido');
     } finally {
       setLoading(false);

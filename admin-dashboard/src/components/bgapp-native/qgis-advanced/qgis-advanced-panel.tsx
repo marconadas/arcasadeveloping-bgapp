@@ -67,7 +67,7 @@ export default function QGISAdvancedPanel() {
       }, 2000);
       
     } catch (error) {
-      logger.error('Erro ao criar análise QGIS:', error);
+      logger.error('Erro ao criar análise QGIS:', { error: String(error) });
       setIsCreatingAnalysis(false);
     }
   };

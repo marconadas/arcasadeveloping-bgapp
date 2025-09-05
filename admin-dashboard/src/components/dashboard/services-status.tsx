@@ -71,7 +71,7 @@ export function ServicesStatus() {
       const data = await response.json()
       setWorkflowInfo(data)
     } catch (error) {
-      logger.error('Failed to fetch workflow info:', error)
+      logger.error('Failed to fetch workflow info:', { error: String(error) })
     }
   }
 
