@@ -6539,7 +6539,8 @@
                     // Simular exportação Excel
                     const data = this.generateSampleData();
                     const excelData = this.convertToExcel(data);
-                    this.downloadFile(excelData, `${filename}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    // Usar MIME type mais compatível para Excel
+                    this.downloadFile(excelData, `${filename}.xls`, 'application/vnd.ms-excel');
                     this.showExportSuccess('Excel', filename);
                 } catch (error) {
                     this.showExportError('Excel', error);
@@ -6595,8 +6596,81 @@
             },
             
             convertToExcel(data) {
-                // Simulação de dados Excel (em produção usaria uma biblioteca como SheetJS)
-                return this.convertToCSV(data);
+                console.log('📊 Gerando arquivo Excel...');
+                
+                // Criar formato Excel básico usando HTML table (compatível com Excel)
+                let excelContent = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                          xmlns="http://www.w3.org/TR/REC-html40">
+                    <head>
+                        <meta charset="utf-8">
+                        <!--[if gte mso 9]>
+                        <xml>
+                            <x:ExcelWorkbook>
+                                <x:ExcelWorksheets>
+                                    <x:ExcelWorksheet>
+                                        <x:Name>BGAPP Dashboard</x:Name>
+                                        <x:WorksheetSource HRef="sheet.htm"/>
+                                    </x:ExcelWorksheet>
+                                </x:ExcelWorksheets>
+                            </x:ExcelWorkbook>
+                        </xml>
+                        <![endif]-->
+                        <style>
+                            table { border-collapse: collapse; width: 100%; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>BGAPP - Dashboard Científico</h1>
+                        <h2>Dados Exportados em ${new Date().toLocaleString('pt-PT')}</h2>
+                        <h3>Filtros Aplicados:</h3>
+                        <p>Período: ${currentFilters.period} | Região: ${currentFilters.region} | Parâmetro: ${currentFilters.parameter} | Profundidade: ${currentFilters.depth}</p>
+                        
+                        <table>
+                `;
+                
+                // Adicionar cabeçalho
+                if (data.length > 0) {
+                    excelContent += '<tr>';
+                    data[0].forEach(header => {
+                        excelContent += `<th>${header}</th>`;
+                    });
+                    excelContent += '</tr>';
+                    
+                    // Adicionar dados
+                    for (let i = 1; i < data.length; i++) {
+                        excelContent += '<tr>';
+                        data[i].forEach(cell => {
+                            excelContent += `<td>${cell}</td>`;
+                        });
+                        excelContent += '</tr>';
+                    }
+                }
+                
+                excelContent += `
+                        </table>
+                        
+                        <h3>Métricas Atuais:</h3>
+                        <table>
+                            <tr><th>Métrica</th><th>Valor</th></tr>
+                            <tr><td>Observações Totais</td><td>${document.getElementById('total-observations')?.textContent || 'N/A'}</td></tr>
+                            <tr><td>Espécies Identificadas</td><td>${document.getElementById('species-count')?.textContent || 'N/A'}</td></tr>
+                            <tr><td>Qualidade dos Dados</td><td>${document.getElementById('data-quality')?.textContent || 'N/A'}</td></tr>
+                            <tr><td>Precisão ML</td><td>${document.getElementById('prediction-accuracy')?.textContent || 'N/A'}</td></tr>
+                        </table>
+                        
+                        <p><small>Gerado por BGAPP - Dashboard Científico | ${new Date().toISOString()}</small></p>
+                    </body>
+                    </html>
+                `;
+                
+                console.log('✅ Arquivo Excel gerado com', data.length, 'linhas');
+                console.log('📊 Tamanho do conteúdo Excel:', excelContent.length, 'caracteres');
+                console.log('🔍 Primeiros 200 caracteres:', excelContent.substring(0, 200));
+                return excelContent;
             },
             
             async generatePDF() {
