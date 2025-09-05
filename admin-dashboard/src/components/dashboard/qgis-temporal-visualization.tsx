@@ -127,8 +127,11 @@ export default function QGISTemporalVisualization() {
   const [mounted, setMounted] = useState(false);
 
   // Fetch temporal data
-  const fetchTemporalData = useCallback(async () => {
+  const fetchTemporalData = useCallback(async (signal?: AbortSignal) => {
     try {
+      // Check if aborted before starting
+      if (signal?.aborted) return;
+      
       setLoading(true);
       setError(null);
 
@@ -251,16 +254,24 @@ export default function QGISTemporalVisualization() {
         } as TemporalStats)
       ]);
 
-      setVariables(variablesData);
-      setAnimations(animationsData);
-      setMigrationTracks(migrationsData);
-      setStats(statsData);
+      // Check if aborted before setting state
+      if (!signal?.aborted) {
+        setVariables(variablesData);
+        setAnimations(animationsData);
+        setMigrationTracks(migrationsData);
+        setStats(statsData);
+      }
 
     } catch (err) {
-      // console.error('Error fetching temporal data:', err);
-      setError('Erro ao carregar dados temporais');
+      // Only set error if not aborted
+      if (!signal?.aborted) {
+        // console.error('Error fetching temporal data:', err);
+        setError('Erro ao carregar dados temporais');
+      }
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -319,11 +330,24 @@ export default function QGISTemporalVisualization() {
 
   useEffect(() => {
     if (mounted) {
-      fetchTemporalData();
+      const controller = new AbortController();
+      let refreshInterval: NodeJS.Timeout | null = null;
+      
+      // Initial fetch
+      fetchTemporalData(controller.signal);
       
       // Auto-refresh every 10 minutes
-      const interval = setInterval(fetchTemporalData, 600000);
-      return () => clearInterval(interval);
+      refreshInterval = setInterval(() => {
+        if (!controller.signal.aborted) {
+          fetchTemporalData(controller.signal);
+        }
+      }, 600000);
+      
+      // Cleanup function
+      return () => {
+        controller.abort();
+        if (refreshInterval) clearInterval(refreshInterval);
+      };
     }
   }, [mounted, fetchTemporalData]);
 
