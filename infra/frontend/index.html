@@ -1123,39 +1123,7 @@
             'lighting': false
         };
 
-        // Dados simulados para demonstração
-        const angolaSpeciesData = [
-            {name: 'Thunnus albacares', common: 'Atum-amarelo', lat: -8.8, lng: 13.2, abundance: 85},
-            {name: 'Sardina pilchardus', common: 'Sardinha', lat: -9.2, lng: 13.1, abundance: 92},
-            {name: 'Tursiops truncatus', common: 'Golfinho-roaz', lat: -8.5, lng: 13.5, abundance: 78},
-            {name: 'Merluccius capensis', common: 'Pescada-do-cabo', lat: -10.1, lng: 13.8, abundance: 71},
-            {name: 'Dentex angolensis', common: 'Dentão-angolano', lat: -9.8, lng: 13.4, abundance: 66}
-        ];
-
-        const oceanographicData = {
-            temperature: [
-                {lat: -8.0, lng: 12.5, value: 26.2, timestamp: new Date()},
-                {lat: -9.0, lng: 13.0, value: 25.8, timestamp: new Date()},
-                {lat: -10.0, lng: 13.5, value: 24.9, timestamp: new Date()},
-                {lat: -11.0, lng: 14.0, value: 23.7, timestamp: new Date()}
-            ],
-            salinity: [
-                {lat: -8.0, lng: 12.5, value: 35.2},
-                {lat: -9.0, lng: 13.0, value: 35.8},
-                {lat: -10.0, lng: 13.5, value: 36.1},
-                {lat: -11.0, lng: 14.0, value: 36.4}
-            ]
-        };
-
-        // Funções de mapa removidas - seção não existe mais
-        function initializeMap() {
-            console.log('🗺️ Seção de mapa removida - apenas oceano background ativo');
-        }
-
-        function initializeDeckGL() {
-            console.log('🌐 deck.gl disponível para uso futuro');
-        }
-
+       
         // Funções dos controles - simplificadas (sem mapa)
         function showMLLayer(modelType) {
             console.log(`🧠 Modelo ML selecionado: ${modelType}`);
@@ -1372,33 +1340,6 @@
             }, 3000);
         });
 
-        // Tooltip interativo
-        document.addEventListener('mousemove', function(e) {
-            const tooltip = document.querySelector('.tooltip');
-            if (tooltip) {
-                tooltip.style.left = e.clientX + 15 + 'px';
-                tooltip.style.top = e.clientY - 10 + 'px';
-            }
-        });
-
-        // Efeitos de hover avançados
-        document.querySelectorAll('.capability-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                gsap.to(this, {
-                    scale: 1.05,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                gsap.to(this, {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            });
-        });
     </script>
 </body>
 </html>

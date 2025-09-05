@@ -255,15 +255,15 @@ export interface FisheriesChartData {
 // API FUNCTIONS
 // =============================================================================
 
-// Dashboard
-export const getDashboardOverview = async (): Promise<DashboardOverview> => {
-  const response = await api.get<DashboardOverview>('/api/dashboard/overview');
+// Dashboard with AbortController support
+export const getDashboardOverview = async (signal?: AbortSignal): Promise<DashboardOverview> => {
+  const response = await api.get<DashboardOverview>('/api/dashboard/overview', { signal });
   return response.data;
 };
 
-// System Health
-export const getSystemHealth = async (): Promise<SystemHealth> => {
-  const response = await api.get<SystemHealth>('/admin-dashboard/system-health');
+// System Health with AbortController support
+export const getSystemHealth = async (signal?: AbortSignal): Promise<SystemHealth> => {
+  const response = await api.get<SystemHealth>('/admin-dashboard/system-health', { signal });
   return response.data;
 };
 
@@ -273,14 +273,14 @@ export const initializeDashboard = async (): Promise<any> => {
   return response.data;
 };
 
-// Copernicus
-export const getCopernicusStatus = async (): Promise<any> => {
-  const response = await api.get('/admin-dashboard/copernicus-status');
+// Copernicus with AbortController support
+export const getCopernicusStatus = async (signal?: AbortSignal): Promise<any> => {
+  const response = await api.get('/admin-dashboard/copernicus-status', { signal });
   return response.data;
 };
 
-export const getCopernicusRealTimeData = async (): Promise<CopernicusRealTimeData> => {
-  const response = await api.get<CopernicusRealTimeData>('/admin-dashboard/copernicus-advanced/real-time-data');
+export const getCopernicusRealTimeData = async (signal?: AbortSignal): Promise<CopernicusRealTimeData> => {
+  const response = await api.get<CopernicusRealTimeData>('/admin-dashboard/copernicus-advanced/real-time-data', { signal });
   return response.data;
 };
 
@@ -294,15 +294,15 @@ export const getCopernicusRequestStatus = async (requestId: string): Promise<any
   return response.data;
 };
 
-// Oceanographic Data
-export const getOceanographicData = async (): Promise<OceanographicData> => {
-  const response = await api.get<OceanographicData>('/admin-dashboard/oceanographic-data');
+// Oceanographic Data with AbortController support
+export const getOceanographicData = async (signal?: AbortSignal): Promise<OceanographicData> => {
+  const response = await api.get<OceanographicData>('/admin-dashboard/oceanographic-data', { signal });
   return response.data;
 };
 
-// Fisheries
-export const getFisheriesStats = async (): Promise<FisheriesStats> => {
-  const response = await api.get<FisheriesStats>('/admin-dashboard/fisheries-stats');
+// Fisheries with AbortController support
+export const getFisheriesStats = async (signal?: AbortSignal): Promise<FisheriesStats> => {
+  const response = await api.get<FisheriesStats>('/admin-dashboard/fisheries-stats', { signal });
   return response.data;
 };
 
@@ -316,9 +316,9 @@ export const getFisheriesChartData = async (): Promise<FisheriesChartData> => {
   return response.data;
 };
 
-// Species & Biodiversity
-export const getSpeciesSummary = async (): Promise<SpeciesSummary> => {
-  const response = await api.get<SpeciesSummary>('/admin-dashboard/species-summary');
+// Species & Biodiversity with AbortController support
+export const getSpeciesSummary = async (signal?: AbortSignal): Promise<SpeciesSummary> => {
+  const response = await api.get<SpeciesSummary>('/admin-dashboard/species-summary', { signal });
   return response.data;
 };
 
@@ -328,19 +328,19 @@ export const getZeeAngolaInfo = async (): Promise<any> => {
   return response.data;
 };
 
-// Maps
-export const getZeeAngolaMap = async (): Promise<MapData> => {
-  const response = await api.get<MapData>('/admin-dashboard/maps/zee-angola');
+// Maps with AbortController support
+export const getZeeAngolaMap = async (signal?: AbortSignal): Promise<MapData> => {
+  const response = await api.get<MapData>('/admin-dashboard/maps/zee-angola', { signal });
   return response.data;
 };
 
-export const getOceanographicMap = async (): Promise<MapData> => {
-  const response = await api.get<MapData>('/admin-dashboard/maps/oceanographic');
+export const getOceanographicMap = async (signal?: AbortSignal): Promise<MapData> => {
+  const response = await api.get<MapData>('/admin-dashboard/maps/oceanographic', { signal });
   return response.data;
 };
 
-export const getSpeciesDistributionMap = async (): Promise<MapData> => {
-  const response = await api.get<MapData>('/admin-dashboard/maps/species-distribution');
+export const getSpeciesDistributionMap = async (signal?: AbortSignal): Promise<MapData> => {
+  const response = await api.get<MapData>('/admin-dashboard/maps/species-distribution', { signal });
   return response.data;
 };
 

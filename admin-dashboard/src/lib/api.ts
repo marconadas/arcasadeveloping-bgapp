@@ -34,7 +34,7 @@ const MINIO_API_URL = ENV.isDevelopment ? 'http://localhost:9001' : 'https://bga
 const FLOWER_API_URL = ENV.isDevelopment ? 'http://localhost:5555' : 'https://bgapp-monitor.majearcasa.workers.dev';
 const KEYCLOAK_URL = ENV.isDevelopment ? 'http://localhost:8083' : 'https://bgapp-auth.majearcasa.workers.dev';
 
-// Create axios instances for all services
+// Create axios instances for all services with AbortController support
 const adminApi = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
@@ -165,14 +165,14 @@ mlApi.interceptors.response.use(
 
 // API Functions
 
-// Dashboard
-export const getDashboardStats = async (): Promise<DashboardStats> => {
-  const response = await adminApi.get<ApiResponse<DashboardStats>>('/dashboard/stats');
+// Dashboard with AbortController support
+export const getDashboardStats = async (signal?: AbortSignal): Promise<DashboardStats> => {
+  const response = await adminApi.get<ApiResponse<DashboardStats>>('/dashboard/stats', { signal });
   return handleApiResponse(response);
 };
 
-// Services - ENDPOINT CORRETO PARA DADOS REAIS
-export const getServices = async (): Promise<ServiceStatus[]> => {
+// Services - ENDPOINT CORRETO PARA DADOS REAIS with AbortController
+export const getServices = async (signal?: AbortSignal): Promise<ServiceStatus[]> => {
   try {
     // Usar endpoint correto que retorna dados reais + cache busting
     const cacheBuster = `?v=2.0.0&t=${Date.now()}`;
@@ -180,7 +180,8 @@ export const getServices = async (): Promise<ServiceStatus[]> => {
       headers: {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache'
-      }
+      },
+      signal
     });
     
     console.log('🔗 Services API Response:', response.data);
@@ -213,37 +214,37 @@ export const restartService = async (serviceName: string): Promise<void> => {
   handleApiResponse(response);
 };
 
-// System Metrics
-export const getSystemMetrics = async (): Promise<SystemMetrics> => {
-  const response = await adminApi.get<ApiResponse<SystemMetrics>>('/metrics');
+// System Metrics with AbortController support
+export const getSystemMetrics = async (signal?: AbortSignal): Promise<SystemMetrics> => {
+  const response = await adminApi.get<ApiResponse<SystemMetrics>>('/metrics', { signal });
   return handleApiResponse(response);
 };
 
-export const getMetricsHistory = async (hours: number = 24): Promise<SystemMetrics[]> => {
-  const response = await adminApi.get<ApiResponse<SystemMetrics[]>>(`/metrics/history?hours=${hours}`);
+export const getMetricsHistory = async (hours: number = 24, signal?: AbortSignal): Promise<SystemMetrics[]> => {
+  const response = await adminApi.get<ApiResponse<SystemMetrics[]>>(`/metrics/history?hours=${hours}`, { signal });
   return handleApiResponse(response);
 };
 
-// Connectors
-export const getConnectors = async (): Promise<Connector[]> => {
-  const response = await adminApi.get<ApiResponse<Connector[]>>('/connectors');
+// Connectors with AbortController support
+export const getConnectors = async (signal?: AbortSignal): Promise<Connector[]> => {
+  const response = await adminApi.get<ApiResponse<Connector[]>>('/connectors', { signal });
   return handleApiResponse(response);
 };
 
-export const runConnector = async (connectorId: string, config?: Record<string, any>): Promise<IngestJob> => {
-  const response = await adminApi.post<ApiResponse<IngestJob>>(`/connectors/${connectorId}/run`, config);
+export const runConnector = async (connectorId: string, config?: Record<string, any>, signal?: AbortSignal): Promise<IngestJob> => {
+  const response = await adminApi.post<ApiResponse<IngestJob>>(`/connectors/${connectorId}/run`, config, { signal });
   return handleApiResponse(response);
 };
 
-export const getConnectorJobs = async (limit: number = 50): Promise<IngestJob[]> => {
-  const response = await adminApi.get<ApiResponse<IngestJob[]>>(`/ingest/jobs?limit=${limit}`);
+export const getConnectorJobs = async (limit: number = 50, signal?: AbortSignal): Promise<IngestJob[]> => {
+  const response = await adminApi.get<ApiResponse<IngestJob[]>>(`/ingest/jobs?limit=${limit}`, { signal });
   return handleApiResponse(response);
 };
 
-// Machine Learning - DADOS REAIS DO WORKER
-export const getMLModels = async (): Promise<MLModel[]> => {
+// Machine Learning - DADOS REAIS DO WORKER with AbortController
+export const getMLModels = async (signal?: AbortSignal): Promise<MLModel[]> => {
   try {
-    const response = await adminApi.get<any>('/api/ml/models');
+    const response = await adminApi.get<any>('/api/ml/models', { signal });
     
     if (response.data && response.data.success && response.data.models) {
       console.log('🧠 ML Models obtidos:', response.data.total, 'modelos');
