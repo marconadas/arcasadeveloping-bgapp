@@ -3486,12 +3486,36 @@
                 console.log('  - Espécies:', filteredData.speciesCount);
                 console.log('  - Qualidade:', filteredData.dataQuality + '%');
                 
-                document.getElementById('total-observations').textContent = filteredData.totalObservations.toLocaleString('pt-PT');
-                document.getElementById('observations-change').textContent = filteredData.observationsChange;
-                document.getElementById('species-count').textContent = filteredData.speciesCount.toString();
-                document.getElementById('new-species').textContent = filteredData.newSpecies.toString();
-                document.getElementById('data-quality').textContent = filteredData.dataQuality + '%';
-                document.getElementById('prediction-accuracy').textContent = filteredData.predictionAccuracy + '%';
+                // Verificar se os elementos existem
+                const totalObsEl = document.getElementById('total-observations');
+                const obsChangeEl = document.getElementById('observations-change');
+                const speciesCountEl = document.getElementById('species-count');
+                const newSpeciesEl = document.getElementById('new-species');
+                const dataQualityEl = document.getElementById('data-quality');
+                const predictionAccEl = document.getElementById('prediction-accuracy');
+                
+                console.log('🔍 VERIFICANDO ELEMENTOS DOM:');
+                console.log('  - total-observations:', !!totalObsEl, totalObsEl ? totalObsEl.textContent : 'N/A');
+                console.log('  - species-count:', !!speciesCountEl, speciesCountEl ? speciesCountEl.textContent : 'N/A');
+                console.log('  - data-quality:', !!dataQualityEl, dataQualityEl ? dataQualityEl.textContent : 'N/A');
+                
+                if (totalObsEl) totalObsEl.textContent = filteredData.totalObservations.toLocaleString('pt-PT');
+                if (obsChangeEl) obsChangeEl.textContent = filteredData.observationsChange;
+                if (speciesCountEl) speciesCountEl.textContent = filteredData.speciesCount.toString();
+                if (newSpeciesEl) newSpeciesEl.textContent = filteredData.newSpecies.toString();
+                if (dataQualityEl) dataQualityEl.textContent = filteredData.dataQuality + '%';
+                if (predictionAccEl) predictionAccEl.textContent = filteredData.predictionAccuracy + '%';
+                
+                // Forçar re-render visual
+                if (totalObsEl) {
+                    totalObsEl.style.color = '#ff6b6b';
+                    setTimeout(() => totalObsEl.style.color = '', 500);
+                }
+                
+                console.log('🔍 VALORES APÓS ATUALIZAÇÃO:');
+                console.log('  - total-observations:', totalObsEl ? totalObsEl.textContent : 'N/A');
+                console.log('  - species-count:', speciesCountEl ? speciesCountEl.textContent : 'N/A');
+                console.log('  - data-quality:', dataQualityEl ? dataQualityEl.textContent : 'N/A');
                 
                 console.log('✅ MÉTRICAS ATUALIZADAS NO DOM!');
                 
