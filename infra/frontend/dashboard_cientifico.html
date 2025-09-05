@@ -90,10 +90,33 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem 0;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            overflow: visible !important; /* Garantir que dropdown seja visível */
+            position: relative !important;
         }
 
         .dashboard-container {
             padding: 2rem 0;
+            overflow: visible !important; /* Garantir que dropdowns sejam visíveis */
+        }
+
+        /* Garantir que container-fluid também permita overflow */
+        .container-fluid {
+            overflow: visible !important;
+        }
+
+        /* Fix específico para dropdowns no header */
+        .dashboard-header .dropdown {
+            position: static !important;
+        }
+
+        .dashboard-header .dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: auto !important;
+            right: 0 !important;
+            transform: none !important;
+            min-width: 200px !important;
+            max-height: none !important;
         }
 
         /* SISTEMA DE RESPONSIVIDADE AVANÇADA */
@@ -668,6 +691,19 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
             border-radius: 12px !important;
             padding: 8px !important;
+            display: block !important; /* Forçar visibilidade */
+            visibility: visible !important;
+            opacity: 1 !important;
+            min-height: 250px !important; /* Garantir altura suficiente */
+            overflow: visible !important;
+        }
+
+        /* Garantir que quando dropdown está ativo, seja visível */
+        .dropdown.show .dropdown-menu {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
         .dropdown-item {
