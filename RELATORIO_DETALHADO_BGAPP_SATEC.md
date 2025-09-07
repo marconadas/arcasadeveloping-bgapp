@@ -1021,7 +1021,7 @@ const services = [
 
 ---
 
-## 🔬 VALIDAÇÃO CIENTÍFICA E PARCERIAS
+## 10. VALIDAÇÃO CIENTÍFICA E PARCERIAS
 
 ### **Validação por Especialistas**
 
@@ -1138,7 +1138,7 @@ const services = [
 
 ---
 
-## 🔮 ROADMAP FUTURO
+## 13. ROADMAP FUTURO
 
 ### **Curto Prazo (6 meses)**
 - **Melhoria da precisão** dos modelos (>96%)
@@ -1201,6 +1201,37 @@ const services = [
 3. **Planeamento de integração** com soluções existentes
 4. **Definição de roadmap** conjunto de desenvolvimento
 5. **Assinatura de acordo** de colaboração
+
+---
+
+## 15. CONTACTOS E PRÓXIMOS PASSOS
+
+### 15.1 Equipa Técnica
+
+**MareDatum Consultoria e Gestão de Projectos Unipessoal LDA**
+- **Direção Técnica:** Especialistas em ciência de dados e oceanografia
+- **Desenvolvimento:** Equipa multidisciplinar com experiência em ML e geoespacial
+- **Validação Científica:** Parcerias com instituições académicas e de investigação
+
+### 15.2 Próximos Passos
+
+**Fase I - Apresentação e Validação (1-2 semanas)**
+1. **Apresentação técnica** detalhada à SATEC
+2. **Demonstração ao vivo** da plataforma BGAPP
+3. **Discussão de requisitos** específicos e customizações
+4. **Avaliação de integração** com sistemas existentes
+
+**Fase II - Planeamento Estratégico (2-4 semanas)**
+1. **Definição de roadmap** conjunto de desenvolvimento
+2. **Estruturação de parceria** técnica e comercial
+3. **Planeamento de recursos** e cronograma
+4. **Assinatura de acordo** de colaboração
+
+**Fase III - Implementação (3-6 meses)**
+1. **Integração técnica** com sistemas SATEC
+2. **Customizações específicas** para necessidades angolanas
+3. **Validação em ambiente** de produção
+4. **Formação de utilizadores** e documentação
 
 ---
 
