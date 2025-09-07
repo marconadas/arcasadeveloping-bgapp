@@ -322,7 +322,7 @@ async def load(self, processed_data: ProcessedData) -> bool:
 - **Especialização:** Base de dados taxonômica de peixes
 - **Integração:** Validação taxonômica e dados biológicos
 
-#### **Fontes Nacionais Angolanas:**
+#### 5.1.2 Fontes Nacionais Angolanas:
 
 **1. Checklist Científico Local**
 - **Arquivo:** `configs/species.yaml`
@@ -372,7 +372,7 @@ async def load(self, processed_data: ProcessedData) -> bool:
 - **Resolução:** 250m
 - **Implementação:** `src/bgapp/ingest/modis_ndvi.py`
 
-#### **Sistema de Armazenamento Histórico:**
+#### 5.2.2 Sistema de Armazenamento Histórico:
 
 **1. Tabela `aggregated_time_series`**
 - **Retenção:** 5 anos (1825 dias) para dados agregados
@@ -394,7 +394,7 @@ async def load(self, processed_data: ProcessedData) -> bool:
 
 ### 5.3 Arquitetura de Integração de Dados
 
-#### **Pipeline ETL Científico Implementado:**
+#### 5.3.1 Pipeline ETL Científico Implementado:
 
 ```python
 class DataProcessingPipeline:
@@ -448,19 +448,19 @@ class DataProcessingPipeline:
 
 ### 5.5 Evidências de Integração Bem-Sucedida
 
-#### **Dados de Biodiversidade:**
+#### 5.5.1 Dados de Biodiversidade:
 - **35+ espécies marinhas** angolanas catalogadas e validadas
 - **Integração multi-fonte** (GBIF + OBIS + fontes locais)
 - **Validação taxonômica** por especialistas
 - **Georreferenciação precisa** para ZEE angolana
 
-#### **Dados Históricos:**
+#### 5.5.2 Dados Históricos:
 - **20+ anos de dados** oceanográficos integrados
 - **Séries temporais contínuas** com validação de qualidade
 - **Agregações otimizadas** para análise de tendências
 - **Sistema de retenção** configurável por tipo de dado
 
-#### **Performance e Confiabilidade:**
+#### 5.5.3 Performance e Confiabilidade:
 - **99.9% uptime** em produção
 - **Latência <1s** para consultas complexas
 - **Escalabilidade horizontal** comprovada
@@ -474,7 +474,7 @@ class DataProcessingPipeline:
 
 A BGAPP implementa uma **arquitetura híbrida inovadora** que combina **Cloudflare Workers** para APIs leves e **Celery** para processamento pesado, otimizando performance e escalabilidade:
 
-#### **1. Cloudflare Workers (APIs Serverless)**
+#### 6.1.1 Cloudflare Workers (APIs Serverless)
 **Localização:** `workers/` - Processamento distribuído global
 - **`api-worker.js`** - APIs do dashboard administrativo
 - **`monitoring-worker.js`** - Monitorização de serviços
@@ -487,7 +487,7 @@ A BGAPP implementa uma **arquitetura híbrida inovadora** que combina **Cloudfla
 - **Cache edge** inteligente
 - **Custo otimizado** (pay-per-use)
 
-#### **2. Celery (Processamento Assíncrono Pesado)**
+#### 6.1.2 Celery (Processamento Assíncrono Pesado)
 **Localização:** `src/bgapp/async_processing/` - Processamento local especializado
 
 ```python
@@ -528,7 +528,7 @@ def process_oceanographic_data(self, data_source: str, parameters: Dict[str, Any
 - **Scheduler** para tarefas periódicas
 - **Monitorização** com Flower (porta 5555)
 
-#### **2. Pipeline de Validação e Qualidade**
+#### 6.1.3 Pipeline de Validação e Qualidade
 ```python
 class DataProcessingPipeline:
     async def extract(self, source: DataSource, parameters: Dict) -> RawData:
@@ -549,7 +549,7 @@ class DataProcessingPipeline:
         # Cache → Redis para acesso rápido
 ```
 
-#### **3. Sistema de Monitorização de APIs**
+#### 6.1.4 Sistema de Monitorização de APIs
 ```python
 class SystemHealthMonitor:
     """Monitor de saúde das APIs externas"""
@@ -577,16 +577,16 @@ class SystemHealthMonitor:
         }
 ```
 
-### **🔄 Fluxo de Recepção de Dados Híbrido**
+### 6.2 Fluxo de Recepção de Dados Híbrido
 
-#### **1. Recepção via Cloudflare Workers (APIs Leves)**
+#### 6.2.1 Recepção via Cloudflare Workers (APIs Leves)
 - **APIs RESTful** com latência <50ms globalmente
 - **Cache edge** automático para dados frequentes
 - **Rate limiting** inteligente
 - **CORS** e segurança avançada
 - **Escalabilidade** automática (0-1000+ req/s)
 
-#### **2. Processamento via Celery (Tarefas Pesadas)**
+#### 6.2.2 Processamento via Celery (Tarefas Pesadas)
 - **Scheduler Celery** para execução periódica
 - **Retry automático** com backoff exponencial
 - **Workers especializados** por tipo de dados
@@ -594,7 +594,7 @@ class SystemHealthMonitor:
 - **Load balancing** automático
 - **Error handling** robusto
 
-#### **3. Integração Híbrida Inteligente**
+#### 6.2.3 Integração Híbrida Inteligente
 ```javascript
 // Cloudflare Worker - API leve
 export default {
@@ -615,7 +615,7 @@ export default {
 };
 ```
 
-#### **4. Armazenamento Otimizado Multi-Camada**
+#### 6.2.4 Armazenamento Otimizado Multi-Camada
 - **Cloudflare KV** - Cache edge global
 - **PostgreSQL + PostGIS** - Dados espaciais persistentes
 - **MinIO/S3** - Dados raster (formato COG)
@@ -636,7 +636,7 @@ export default {
 - **Cache Edge:** Redução de 80% nas chamadas à API
 - **Otimização:** Tarefas certas no sistema certo
 
-#### **3. Confiabilidade e Disponibilidade**
+#### 6.3.3 Confiabilidade e Disponibilidade
 - **Workers:** 99.99% uptime global
 - **Celery:** Retry automático e fallback
 - **Monitorização:** Flower + Cloudflare Analytics
@@ -763,7 +763,7 @@ class MLSystemTester:
         return results
 ```
 
-#### **3. Testes de APIs Externas**
+#### 7.2.3 Testes de APIs Externas
 ```python
 def test_copernicus_auth():
     """Teste de autenticação Copernicus"""
@@ -830,7 +830,7 @@ const services = [
 ];
 ```
 
-#### **2. Testes de Funcionalidades (25+ Features Principais)**
+#### 7.3.2 Testes de Funcionalidades (25+ Features Principais)
 - **APIs Internas:** 25+ endpoints testados
 - **APIs Externas:** 4+ conectores reais + 5+ simuladores
 - **Frontend:** 15+ páginas testadas
@@ -838,7 +838,7 @@ const services = [
 - **Sistema de Dados Reais:** Filtros e animações funcionais
 - **Segurança:** 12+ vulnerabilidades testadas
 
-#### **3. Métricas de Qualidade**
+#### 7.3.3 Métricas de Qualidade
 - **Cobertura de Código:** >85%
 - **Testes Automatizados:** 50+ scripts
 - **Tempo de Execução:** <5 minutos
@@ -852,13 +852,13 @@ const services = [
 - **Notificações** em tempo real
 - **Rollback automático** em caso de falhas críticas
 
-#### **2. Monitorização em Produção**
+#### 7.4.2 Monitorização em Produção
 - **Health checks** contínuos
 - **Alertas automáticos** para degradação
 - **Métricas de performance** em tempo real
 - **Logs centralizados** para debugging
 
-#### **3. Testes de Regressão**
+#### 7.4.3 Testes de Regressão
 - **Validação automática** após mudanças
 - **Comparação de performance** histórica
 - **Detecção de regressões** precoces
@@ -872,13 +872,13 @@ const services = [
 - **Tempo de resposta:** <1s para 95% das consultas
 - **Disponibilidade:** 99.9% uptime
 
-#### **2. Testes de Segurança**
+#### 7.5.2 Testes de Segurança
 - **Penetration testing** automatizado
 - **Validação de autenticação** JWT
 - **Rate limiting** testado
 - **SQL injection** prevention validada
 
-#### **3. Testes de Compatibilidade**
+#### 7.5.3 Testes de Compatibilidade
 - **Browsers:** Chrome, Firefox, Safari, Edge
 - **Dispositivos:** Desktop, Tablet, Mobile
 - **Sistemas operativos:** Windows, macOS, Linux
@@ -910,7 +910,7 @@ const services = [
 - **Sistema de cache multi-camada** (Edge + Redis + Database)
 - **Monitorização** com Flower + Cloudflare Analytics
 
-#### **4. Conectores de Dados**
+#### 8.1.4 Conectores de Dados
 - **Copernicus Marine Service:** Conector real com autenticação
 - **STAC APIs:** Catálogos públicos funcionais
 - **GBIF/OBIS:** APIs de biodiversidade ativas
@@ -939,9 +939,9 @@ const services = [
 
 ## 9. PERSPECTIVAS DE ANÁLISE
 
-### **PERSPECTIVA PESSIMISTA: Desafios e Limitações**
+### 9.1 Perspectiva Pessimista: Desafios e Limitações
 
-#### **1. Qualidade dos Dados**
+#### 9.1.1 Qualidade dos Dados
 **Desafios Identificados:**
 - **Ruído nos dados:** Dados oceanográficos podem conter erros instrumentais
 - **Gaps temporais:** Lacunas em séries temporais podem afetar modelos
@@ -954,7 +954,7 @@ const services = [
 - **Validação cruzada** com múltiplas fontes
 - **Parcerias com instituições** para validação de campo
 
-#### **2. Generalização dos Modelos**
+#### 9.1.2 Generalização dos Modelos
 **Desafios Identificados:**
 - **Overfitting:** Modelos podem não generalizar para novas áreas
 - **Drift temporal:** Mudanças climáticas podem afetar performance
@@ -966,7 +966,7 @@ const services = [
 - **Ensemble methods** para robustez
 - **Monitorização contínua** de performance
 
-#### **3. Interpretabilidade Científica**
+#### 9.1.3 Interpretabilidade Científica
 **Desafios Identificados:**
 - **Black box:** Modelos complexos podem ser difíceis de interpretar
 - **Validação biológica:** Necessidade de validação por especialistas
@@ -978,9 +978,9 @@ const services = [
 - **Documentação metodológica** rigorosa
 - **Interpretação biológica** dos resultados
 
-### **PERSPECTIVA OTIMISTA: Oportunidades e Potencial**
+### 9.2 Perspectiva Otimista: Oportunidades e Potencial
 
-#### **1. Avanços em Validação Científica**
+#### 9.2.1 Avanços em Validação Científica
 **Oportunidades:**
 - **Validação cruzada espacial e temporal** robusta
 - **Métricas científicas** padronizadas (R², RMSE, AUC)
@@ -993,7 +993,7 @@ const services = [
 - **Correlação alta** com dados observados (r > 0.94)
 - **Aprovação científica** de geofísicos e biólogos
 
-#### **2. Integração de Conhecimento de Domínio**
+#### 9.2.2 Integração de Conhecimento de Domínio
 **Oportunidades:**
 - **Colaboração estreita** com especialistas angolanos
 - **Incorporação de conhecimento local** nos modelos
@@ -1006,7 +1006,7 @@ const services = [
 - **Validação local** com MINPERMAR e universidades
 - **Aplicação prática** em estudos de conservação
 
-#### **3. Tecnologia de Ponta**
+#### 9.2.3 Tecnologia de Ponta
 **Oportunidades:**
 - **Edge computing** para processamento distribuído
 - **Real-time processing** de dados oceanográficos
@@ -1023,40 +1023,40 @@ const services = [
 
 ## 10. VALIDAÇÃO CIENTÍFICA E PARCERIAS
 
-### **Validação por Especialistas**
+### 10.1 Validação por Especialistas
 
-#### **Geofísicos Experientes:**
+#### 10.1.1 Geofísicos Experientes:
 - **Validação de modelos oceanográficos** (temperatura, correntes)
 - **Verificação de parâmetros físicos** (salinidade, batimetria)
 - **Interpretação de padrões espaciais** e temporais
 - **Aprovação metodológica** para publicação científica
 
-#### **Biólogos Marinhos:**
+#### 10.1.2 Biólogos Marinhos:
 - **Validação de modelos de biodiversidade** e espécies
 - **Verificação taxonômica** das 35+ espécies catalogadas
 - **Interpretação ecológica** dos resultados
 - **Validação de adequação de habitat**
 
-### **Instituições Parceiras**
+### 10.2 Instituições Parceiras
 
-#### **Nacionais:**
+#### 10.2.1 Nacionais:
 - **MINPERMAR (Ministério das Pescas e do Mar):** Validação oficial
 - **Universidades angolanas:** Validação académica
 - **Institutos de investigação:** Dados de campo
 
-#### **Internacionais:**
+#### 10.2.2 Internacionais:
 - **OBIS/GBIF:** Dados de biodiversidade global
 - **Copernicus Marine:** Dados oceanográficos
 - **Universidades europeias:** Peer review científico
 
-### **Publicações Científicas**
+### 10.3 Publicações Científicas
 
-#### **Em Preparação:**
+#### 10.3.1 Em Preparação:
 - "Machine Learning-based Marine Biodiversity Prediction for Angola's EEZ"
 - "Ensemble Methods for Oceanographic Forecasting in Tropical Waters"
 - "Integration of Multi-source Data for Marine Conservation Planning"
 
-#### **Metodologia de Publicação:**
+#### 10.3.2 Metodologia de Publicação:
 1. **Revisão de literatura** científica rigorosa
 2. **Coleta e validação** de dados
 3. **Análise exploratória** e feature engineering
@@ -1068,37 +1068,37 @@ const services = [
 
 ## 11. IMPLEMENTAÇÃO E DEPLOYMENT
 
-### **Arquitetura de Produção**
+### 11.1 Arquitetura de Produção
 
-#### **Cloudflare Edge (APIs Leves):**
+#### 11.1.1 Cloudflare Edge (APIs Leves):
 - **Global CDN** para performance mundial
 - **Workers** para APIs serverless (latência <50ms)
 - **Pages** para frontend otimizado
 - **KV Storage** para cache edge global
 - **Security** com CORS e rate limiting
 
-#### **Backend Local (Processamento Pesado):**
+#### 11.1.2 Backend Local (Processamento Pesado):
 - **APIs RESTful** com FastAPI
 - **Celery + Redis** para processamento assíncrono
 - **ML Models** para análise científica
 - **Cache inteligente** multi-camada
 - **Monitorização** com Flower + alertas automáticos
 
-#### **Base de Dados:**
+#### 11.1.3 Base de Dados:
 - **PostgreSQL + PostGIS** para dados geoespaciais
 - **MinIO/S3** para dados raster
 - **Backup automático** com 99.99% disponibilidade
 - **Recovery** em caso de falhas
 
-### **Monitorização e Observabilidade**
+### 11.2 Monitorização e Observabilidade
 
-#### **Métricas em Tempo Real:**
+#### 11.2.1 Métricas em Tempo Real:
 - **Performance dos modelos** ML
 - **Qualidade dos dados** ingeridos
 - **Disponibilidade dos serviços** (99.9% uptime)
 - **Uso de recursos** e escalabilidade
 
-#### **Alertas Automáticos:**
+#### 11.2.2 Alertas Automáticos:
 - **Degradação de performance** dos modelos
 - **Falhas na ingestão** de dados
 - **Problemas de conectividade** com APIs
@@ -1108,29 +1108,29 @@ const services = [
 
 ## 12. IMPACTO CIENTÍFICO E ECONÔMICO
 
-### **Benefícios Científicos**
+### 12.1 Benefícios Científicos
 
-#### **Para a Investigação:**
+#### 12.1.1 Para a Investigação:
 - **Aceleração de decisões** científicas (80% redução no tempo)
 - **Visualização avançada** de dados complexos
 - **Predições precisas** para planeamento de estudos
 - **Colaboração internacional** facilitada
 
-#### **Para a Conservação:**
+#### 12.1.2 Para a Conservação:
 - **Identificação de hotspots** de biodiversidade
 - **Planeamento espacial** marinho otimizado
 - **Monitorização contínua** de espécies ameaçadas
 - **Avaliação de impacto** ambiental
 
-### **Benefícios Econômicos**
+### 12.2 Benefícios Econômicos
 
-#### **Economia Azul:**
+#### 12.2.1 Economia Azul:
 - **Planeamento pesqueiro** sustentável
 - **Identificação de zonas** de interesse económico
 - **Avaliação de recursos** marinhos
 - **Conformidade regulatória** internacional
 
-#### **ROI Projetado:**
+#### 12.2.2 ROI Projetado:
 - **Investimento inicial:** €2.5M - €3.5M
 - **Retorno em 3 anos:** 300-500%
 - **Mercado potencial Angola:** €15M - €25M
@@ -1140,19 +1140,19 @@ const services = [
 
 ## 13. ROADMAP FUTURO
 
-### **Curto Prazo (6 meses)**
+### 13.1 Curto Prazo (6 meses)
 - **Melhoria da precisão** dos modelos (>96%)
 - **Integração de novos datasets** angolanos
 - **Validação de campo** com parceiros locais
 - **Publicação científica** em revistas indexadas
 
-### **Médio Prazo (1-2 anos)**
+### 13.2 Médio Prazo (1-2 anos)
 - **Deep learning** para classificação avançada
 - **Real-time model updates** automáticos
 - **Integração IoT** com sensores marinhos
 - **Expansão regional** para outros países
 
-### **Longo Prazo (3+ anos)**
+### 13.3 Longo Prazo (3+ anos)
 - **Modelos federados** para privacidade
 - **AI explicável (XAI)** para transparência
 - **Integração com satélites** de nova geração
@@ -1162,7 +1162,7 @@ const services = [
 
 ## 14. CONCLUSÕES E RECOMENDAÇÕES
 
-### **Pontos Fortes da Plataforma**
+### 14.1 Pontos Fortes da Plataforma
 
 1. **Validação Científica Rigorosa:** Modelos com >95% de precisão validados por especialistas
 2. **Arquitetura Robusta:** Tecnologia de ponta com escalabilidade comprovada
@@ -1170,7 +1170,7 @@ const services = [
 4. **Aplicação Prática:** Foco específico na ZEE angolana com dados locais
 5. **Parcerias Científicas:** Colaboração com instituições nacionais e internacionais
 
-### **Oportunidades de Colaboração com SATEC**
+### 14.2 Oportunidades de Colaboração com SATEC
 
 1. **Expansão Tecnológica:** Integração com soluções SATEC existentes
 2. **Mercado Europeu:** Adaptação da plataforma para mercados europeus
@@ -1178,29 +1178,13 @@ const services = [
 4. **Consultoria Científica:** Apoio técnico para projetos similares
 5. **Formação Especializada:** Capacitação de equipas em tecnologias marinhas
 
-### **Recomendações Estratégicas**
+### 14.3 Recomendações Estratégicas
 
 1. **Validação Contínua:** Manter parcerias científicas para validação contínua
 2. **Investimento em R&D:** Continuar investimento em melhorias dos modelos
 3. **Expansão de Dados:** Integrar mais fontes de dados regionais
 4. **Formação de Utilizadores:** Capacitar utilizadores finais na plataforma
 5. **Monitorização de Impacto:** Medir impacto científico e económico
-
----
-
-## 📞 CONTACTOS E PRÓXIMOS PASSOS
-
-### **Equipa Técnica**
-- **Tech Lead:** Marcos Santos - marcos@maredatum.com
-- **CEO:** Paulo Fernandes - paulo@maredatum.com
-- **Data Science:** Equipa especializada em ML marinho
-
-### **Próximos Passos**
-1. **Demonstração técnica** da plataforma em funcionamento
-2. **Discussão de parceria** estratégica com SATEC
-3. **Planeamento de integração** com soluções existentes
-4. **Definição de roadmap** conjunto de desenvolvimento
-5. **Assinatura de acordo** de colaboração
 
 ---
 
