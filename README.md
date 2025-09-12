@@ -9,11 +9,17 @@
 
 ## 🚀 **Acesso Rápido**
 
-| **Aplicação** | **URL** | **Descrição** |
-|---------------|---------|---------------|
-| **Admin Dashboard** | [bgapp-admin.pages.dev](https://bgapp-admin.pages.dev) | Dashboard administrativo principal |
-| **Frontend Principal** | [bgapp-frontend.pages.dev](https://bgapp-frontend.pages.dev) | Interface científica pública |
-| **API Endpoints** | [bgapp-admin-api-worker.majearcasa.workers.dev](https://bgapp-admin-api-worker.majearcasa.workers.dev) | APIs REST para dados oceanográficos |
+| **Aplicação** | **URL** | **Descrição** | **Status** |
+|---------------|---------|---------------|------------|
+| **Admin Dashboard** | [bgapp-admin.pages.dev](https://bgapp-admin.pages.dev) | Dashboard administrativo principal | ✅ ATIVO |
+| **Backend API** | [bgapp-admin-api-worker.majearcasa.workers.dev](https://bgapp-admin-api-worker.majearcasa.workers.dev) | APIs REST para dados oceanográficos | ✅ ATIVO |
+| **Frontend Principal** | [bgapp-frontend.pages.dev](https://bgapp-frontend.pages.dev) | Interface científica pública | ✅ ATIVO |
+
+### 🔧 **Endpoints Principais do Backend**
+- **Health Check**: `GET /health`
+- **Dados Copernicus**: `GET /admin-dashboard/copernicus-advanced/real-time-data`
+- **Dashboard Overview**: `GET /api/dashboard/overview`
+- **System Health**: `GET /admin-dashboard/system-health`
 
 ---
 
@@ -41,8 +47,9 @@ O **BGAPP (Biodiversity and Geographic Analysis Platform)** é uma plataforma ci
 - **deck.gl** - Visualizações WebGL
 
 ### ⚙️ **Backend**
-- **Cloudflare Workers** - APIs serverless
-- **Python FastAPI** - Endpoints ML
+- **Cloudflare Workers** - APIs serverless (PRINCIPAL) ✅
+- **Next.js API Routes** - Endpoints integrados
+- **Python FastAPI** - Desenvolvimento local (não produção)
 - **PostgreSQL + PostGIS** - Base de dados geoespacial
 - **Redis** - Cache distribuído
 
