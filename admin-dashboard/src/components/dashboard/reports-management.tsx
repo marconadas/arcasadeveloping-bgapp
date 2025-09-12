@@ -116,7 +116,7 @@ const mockReports: Report[] = [
     id: '6',
     name: 'Melhorias Interface Científica',
     filename: 'ui_improvements_scientific.pdf',
-    description: 'Relatório das melhorias implementadas nas 42 interfaces científicas do hub BGAPP.',
+    description: 'Relatório das melhorias implementadas nas 41 interfaces científicas do hub BGAPP.',
     type: 'melhorias',
     icon: '✨',
     generated_at: '2024-01-01T08:00:00Z',
@@ -266,7 +266,7 @@ ${report.description}
 🔍 PRINCIPAIS CONCLUSÕES
 
 • Sistema BGAPP v2.0.0 operacional com 99.9% de uptime
-• 42 interfaces científicas totalmente funcionais
+• 41 interfaces científicas totalmente funcionais
 • Machine Learning com precisão de 95%+ nos modelos
 • Integração completa com serviços Cloudflare Pages
 • Dados oceanográficos em tempo real da costa angolana

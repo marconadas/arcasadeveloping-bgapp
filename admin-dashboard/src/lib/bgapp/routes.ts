@@ -15,7 +15,8 @@ import {
   ServerIcon,
   FolderIcon,
   CogIcon,
-  BellIcon
+  BellIcon,
+  CircleStackIcon as DatabaseIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -241,7 +242,7 @@ export const bgappRoutes: BGAPPRoute[] = [
     label: '🔬 Hub Científico',
     icon: BeakerIcon,
     category: 'scientific',
-    description: 'Portal unificado para 43 interfaces científicas (incluindo ML Demo deck.gl)',
+    description: 'Portal unificado para 41 interfaces científicas especializadas',
     badge: 'HUB',
     isNew: true,
     children: [
@@ -325,6 +326,17 @@ export const bgappRoutes: BGAPPRoute[] = [
         description: 'Catálogo STAC para dados marinhos',
         iframeUrl: 'https://bgapp-frontend.pages.dev/stac.html',
         component: 'STACOceanographic'
+      },
+      {
+        id: 'stac-enhanced',
+        label: 'STAC Avançado',
+        icon: DatabaseIcon,
+        category: 'scientific',
+        description: 'Interface STAC com bibliotecas expandidas - PySTAC, StackSTAC, Folium',
+        component: 'EnhancedSTACInterface',
+        badge: 'NOVO',
+        isNew: true,
+        features: ['PySTAC Client', 'StackSTAC', 'Folium Maps', 'Temporal Analysis', 'Multi-Catalog Search']
       },
       {
         id: 'mobile-interfaces',

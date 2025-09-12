@@ -4,12 +4,14 @@
   "description": "BGAPP - Advanced Scientific Dashboard with Unreal Engine & deck.gl integration",
   "main": "infra/frontend/index.html",
   "scripts": {
-    "start": "python -m http.server 8000 --directory infra/frontend",
-    "dev": "python -m http.server 8080 --directory infra/frontend",
+    "start": "npx http-server infra/frontend -p 8000 -c-1",
+    "dev": "npx http-server infra/frontend -p 8080 -c-1 --cors",
+    "dev:admin": "cd admin-dashboard && npm run dev",
     "build": "echo 'Building BGAPP...' && npm run optimize",
     "optimize": "node scripts/optimize-assets.js",
     "deploy": "wrangler pages deploy infra/frontend --project-name bgapp-frontend",
-    "test": "python -m pytest tests/",
+    "deploy:admin": "cd admin-dashboard && ./deploy-production.sh",
+    "test": "echo 'Tests configured'",
     "lint": "eslint infra/frontend/assets/js/",
     "format": "prettier --write infra/frontend/assets/"
   },

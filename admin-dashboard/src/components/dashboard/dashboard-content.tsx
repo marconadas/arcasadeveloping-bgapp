@@ -523,7 +523,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="Armazenamento"
           description="Gestão de armazenamento e ficheiros do sistema"
-          src="http://localhost:9001"
+          src="https://bgapp-storage.majearcasa.workers.dev"
           icon={FolderIcon}
         />
       
@@ -1057,7 +1057,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <IframeWrapper
           title="API Admin"
           description="Interface de administração das APIs BGAPP"
-          src="http://localhost:8000/docs"
+          src="https://bgapp-api.majearcasa.workers.dev/docs"
           icon={GlobeAltIcon}
         />
 
@@ -1080,27 +1080,27 @@ export function DashboardContent({ section }: DashboardContentProps) {
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>API Admin</span>
-                  <a href="http://localhost:8000/docs" target="_blank" className="text-green-600 font-medium hover:underline">:8000</a>
+                  <a href="https://bgapp-api.majearcasa.workers.dev/docs" target="_blank" className="text-green-600 font-medium hover:underline">API</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>STAC API</span>
-                  <a href="http://localhost:8081" target="_blank" className="text-green-600 font-medium hover:underline">:8081</a>
+                  <a href="https://bgapp-stac.majearcasa.workers.dev" target="_blank" className="text-green-600 font-medium hover:underline">STAC</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>STAC Browser</span>
-                  <a href="http://localhost:8082" target="_blank" className="text-green-600 font-medium hover:underline">:8082</a>
+                  <a href="https://bgapp-stac.majearcasa.workers.dev/browser" target="_blank" className="text-green-600 font-medium hover:underline">Browser</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>PyGeoAPI</span>
-                  <a href="http://localhost:5080" target="_blank" className="text-green-600 font-medium hover:underline">:5080</a>
+                  <a href="https://bgapp-pygeoapi.majearcasa.workers.dev" target="_blank" className="text-green-600 font-medium hover:underline">PyGeo</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>Keycloak</span>
-                  <a href="http://localhost:8083" target="_blank" className="text-green-600 font-medium hover:underline">:8083</a>
+                  <a href="https://bgapp-auth.majearcasa.workers.dev" target="_blank" className="text-green-600 font-medium hover:underline">Auth</a>
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>Flower (Celery)</span>
-                  <a href="http://localhost:5555" target="_blank" className="text-green-600 font-medium hover:underline">:5555</a>
+                  <a href="https://bgapp-monitor.majearcasa.workers.dev" target="_blank" className="text-green-600 font-medium hover:underline">Monitor</a>
                 </div>
               </div>
             </div>
@@ -1117,21 +1117,21 @@ export function DashboardContent({ section }: DashboardContentProps) {
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <span>MinIO Storage</span>
-                  <a href="http://localhost:9001" target="_blank" className="text-green-600 font-medium hover:underline">:9001</a>
+                  <a href="https://bgapp-storage.majearcasa.workers.dev" target="_blank" className="text-green-600 font-medium hover:underline">Storage</a>
                 </div>
               </div>
               <h3 className="font-semibold mt-6">Links Rápidos</h3>
               <div className="flex flex-wrap gap-2">
-                <a href="http://localhost:8000/docs" target="_blank" className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                <a href="https://bgapp-api.majearcasa.workers.dev/docs" target="_blank" className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
                   API Docs
                 </a>
-                <a href="http://localhost:9001" target="_blank" className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                <a href="https://bgapp-storage.majearcasa.workers.dev" target="_blank" className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">
                   MinIO Console
                 </a>
-                <a href="http://localhost:5555" target="_blank" className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700">
+                <a href="https://bgapp-monitor.majearcasa.workers.dev" target="_blank" className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700">
                   Flower
                 </a>
-                <a href="http://localhost:8083" target="_blank" className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700">
+                <a href="https://bgapp-auth.majearcasa.workers.dev" target="_blank" className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700">
                   Keycloak
                 </a>
               </div>
@@ -1325,7 +1325,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('http://localhost:5555', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-monitor.majearcasa.workers.dev', '_blank')}>
               <CardHeader>
                 <CardTitle>Flower Monitor</CardTitle>
                 <CardDescription>Monitor Celery</CardDescription>
@@ -1335,7 +1335,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
               </CardContent>
             </Card>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('http://localhost:9001', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-storage.majearcasa.workers.dev', '_blank')}>
               <CardHeader>
                 <CardTitle>MinIO Console</CardTitle>
                 <CardDescription>Console de armazenamento</CardDescription>
@@ -1409,7 +1409,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             🔐 Segurança e Autenticação
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('http://localhost:8083', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-auth.majearcasa.workers.dev', '_blank')}>
               <CardHeader>
                 <CardTitle>Keycloak Admin</CardTitle>
                 <CardDescription>Gestão de autenticação</CardDescription>
@@ -1493,7 +1493,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
             🛠️ Ferramentas de Desenvolvimento
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('http://localhost:8000/docs', '_blank')}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.open('https://bgapp-api.majearcasa.workers.dev/docs', '_blank')}>
               <CardHeader>
                 <CardTitle>API Docs</CardTitle>
                 <CardDescription>Documentação FastAPI</CardDescription>

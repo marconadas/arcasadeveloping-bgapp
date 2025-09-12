@@ -36,8 +36,18 @@ export interface EnvironmentConfig {
 
 // 🎯 Detectar ambiente automaticamente
 const getEnvironment = (): EnvironmentConfig => {
-  const isDevelopment = process.env.NODE_ENV === 'development' || 
-                       (typeof window !== 'undefined' && window.location.hostname === 'localhost');
+  // Melhor detecção de ambiente
+  let isDevelopment = false;
+  
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    isDevelopment = hostname === 'localhost' || 
+                   hostname === '127.0.0.1' || 
+                   hostname.startsWith('192.168.') ||
+                   hostname.includes('.local');
+  } else {
+    isDevelopment = process.env.NODE_ENV === 'development';
+  }
   
   const isProduction = !isDevelopment;
 
@@ -46,7 +56,7 @@ const getEnvironment = (): EnvironmentConfig => {
     return {
       isDevelopment: true,
       isProduction: false,
-      baseUrl: 'http://localhost:3000',
+      baseUrl: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
       apiUrl: 'https://bgapp-admin-api-worker.majearcasa.workers.dev',
       frontendUrl: 'https://bgapp-frontend.pages.dev',
       scientificInterfacesUrl: 'https://bgapp-frontend.pages.dev',
@@ -204,4 +214,6 @@ export const getMockApiResponse = (endpoint: string): any => {
 // 🔧 Debug info (apenas em desenvolvimento)
 if (ENV.isDevelopment && typeof window !== 'undefined') {
   console.log('🌐 BGAPP Environment Config:', ENV);
+  console.log('🔧 Backend URL:', ENV.apiUrl);
+  console.log('✅ Copernicus Endpoint:', `${ENV.apiUrl}/admin-dashboard/copernicus-advanced/real-time-data`);
 }

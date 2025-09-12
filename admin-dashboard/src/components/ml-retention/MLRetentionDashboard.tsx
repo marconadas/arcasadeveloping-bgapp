@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { useMLRetentionMetrics } from '@/hooks/useMLRetentionMetrics';
+import { Skeleton } from '@/components/ui/skeleton';
 import DataRetentionViewer from './DataRetentionViewer';
 import RetentionDataStats from './RetentionDataStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -76,34 +77,50 @@ const MLRetentionDashboard: React.FC = () => {
     isConnected 
   } = useMLRetentionMetrics(30000, true);
 
-  // Mock data for policies and performance history
-  const [policies] = React.useState<RetentionPolicy[]>([
-    {
-      policy_id: 'fs_high_quality',
-      name: 'High Quality Features',
-      table_name: 'ml_feature_store',
-      retention_days: 730,
-      enabled: true,
-      next_execution: new Date(Date.now() + 3600000).toISOString()
-    },
-    {
-      policy_id: 'tc_frequent',
-      name: 'Frequent Training Cache',
-      table_name: 'ml_training_cache',
-      retention_days: 180,
-      enabled: true,
-      next_execution: new Date(Date.now() + 7200000).toISOString()
-    }
-  ]);
+  // Estados para dados reais da API
+  const [policies, setPolicies] = React.useState<RetentionPolicy[]>([]);
+  const [performanceHistory, setPerformanceHistory] = React.useState<any[]>([]);
+  const [loadingPolicies, setLoadingPolicies] = React.useState(true);
+  const [loadingPerformance, setLoadingPerformance] = React.useState(true);
 
-  const [performanceHistory] = React.useState(() => 
-    Array.from({ length: 24 }, (_, i) => ({
-      hour: `${i}:00`,
-      cache_hit_ratio: 0.7 + Math.random() * 0.25,
-      response_time: 50 + Math.random() * 100,
-      space_usage: 500 + Math.random() * 200
-    }))
-  );
+  // Importar serviço de dados
+  React.useEffect(() => {
+    const loadPolicies = async () => {
+      try {
+        const mlService = (await import('@/services/data/MLRetentionService')).default;
+        const response = await mlService.getPolicies();
+        if (response.success && response.data) {
+          setPolicies(response.data);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar políticas:', error);
+      } finally {
+        setLoadingPolicies(false);
+      }
+    };
+
+    const loadPerformance = async () => {
+      try {
+        const mlService = (await import('@/services/data/MLRetentionService')).default;
+        const response = await mlService.getPerformanceHistory({ interval: 'hour', limit: 24 });
+        if (response.success && response.data) {
+          setPerformanceHistory(response.data.map((item: any, i: number) => ({
+            hour: `${i}:00`,
+            cache_hit_ratio: item.cache_hit_ratio,
+            response_time: item.response_time_ms,
+            space_usage: item.space_usage_gb * 1024 // Converter GB para MB
+          })));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+      } finally {
+        setLoadingPerformance(false);
+      }
+    };
+
+    loadPolicies();
+    loadPerformance();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {

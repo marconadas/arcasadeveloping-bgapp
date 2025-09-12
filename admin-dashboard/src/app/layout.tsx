@@ -7,6 +7,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bgapp-admin.pages.dev'),
   title: 'BGAPP - Marine Angola | Painel Administrativo v2.0.0',
   description: 'Dashboard administrativo para gestão completa da plataforma oceanográfica e meteorológica BGAPP Marine Angola',
   authors: [{ name: 'Mare Datum Consultoria' }],
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     siteName: 'BGAPP Marine Angola',
     images: [
       {
-        url: '/logo.png',
+        url: 'https://bgapp-admin.pages.dev/logo.png',
         width: 800,
         height: 600,
         alt: 'BGAPP Marine Angola Logo',
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'BGAPP - Dashboard Administrativo',
     description: 'Plataforma de gestão oceanográfica e meteorológica para Angola',
-    images: ['/logo.png'],
+    images: ['https://bgapp-admin.pages.dev/logo.png'],
   },
   icons: {
     icon: [

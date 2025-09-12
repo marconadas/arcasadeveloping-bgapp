@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { InterfaceCounter } from '@/lib/bgapp/interface-counter'
 
 /**
  * 🚀 SIDEBAR STATIC SILICON VALLEY - VERSÃO ESTÁVEL
  * Sidebar completamente estática sem problemas de hydration
+ * Agora com contagem dinâmica de interfaces
  */
 
 interface NavItem {
@@ -30,9 +32,9 @@ const navigationItems: NavItem[] = [
     id: 'scientific-hub',
     label: '🔬 Hub Científico BGAPP',
     icon: '🔬',
-    badge: '43 INTERFACES',
+    badge: InterfaceCounter.generateBadge(), // Contagem dinâmica automática
     children: [
-      { id: 'scientific-interfaces', label: 'Portal Interfaces (43)', icon: '🔬', badge: 'HUB' },
+      { id: 'scientific-interfaces', label: `Portal Interfaces (${InterfaceCounter.getTotalCount()})`, icon: '🔬', badge: 'HUB' },
       { id: 'enhanced-ocean-system', label: '🌊 Enhanced Ocean System', icon: '🌊', badge: 'NOVO' },
       // Interfaces individuais funcionam dentro do Hub - não precisam aparecer separadamente
     ]

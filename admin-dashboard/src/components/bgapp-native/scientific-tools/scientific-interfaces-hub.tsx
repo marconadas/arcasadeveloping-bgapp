@@ -25,7 +25,7 @@ import { useScientificInterfaces } from '@/lib/bgapp/hooks';
 
 /**
  * 🔬 SCIENTIFIC INTERFACES HUB - Silicon Valley Grade A+
- * Portal unificado para todas as 42 interfaces científicas BGAPP
+ * Portal unificado para todas as 41 interfaces científicas BGAPP
  */
 
 export default function ScientificInterfacesHub() {
@@ -144,7 +144,7 @@ export default function ScientificInterfacesHub() {
             🔬 Hub Científico BGAPP
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Portal unificado para {interfaces?.length || 42} interfaces científicas especializadas
+            Portal unificado para {interfaces?.length || 41} interfaces científicas especializadas
           </p>
           {isUsingFallback && (
             <div className="flex items-center gap-2 mt-2">
@@ -194,7 +194,7 @@ export default function ScientificInterfacesHub() {
               <div>
                 <p className="text-sm text-gray-600">Total Interfaces</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {interfaces?.length || 42}
+                  {interfaces?.length || 41}
                 </p>
               </div>
               <BeakerIcon className="h-8 w-8 text-purple-600" />
@@ -440,7 +440,7 @@ export default function ScientificInterfacesHub() {
         <CardHeader>
           <CardTitle>🗂️ Todas as Interfaces por Categoria</CardTitle>
           <CardDescription>
-            Navegação completa por todas as 42 interfaces disponíveis
+            Navegação completa por todas as 41 interfaces disponíveis
           </CardDescription>
         </CardHeader>
         <CardContent>
