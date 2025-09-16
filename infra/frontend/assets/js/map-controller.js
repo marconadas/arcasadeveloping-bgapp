@@ -90,7 +90,8 @@ class BGAPPMapController {
       { name: 'copernicusIntegration', class: 'CopernicusIntegration' },
       { name: 'projectionManager', class: 'ProjectionManager' },
       { name: 'offlineCapability', class: 'OfflineMapCapability' },
-      { name: 'threeDVisualization', class: 'ThreeDVisualization' }
+      { name: 'threeDVisualization', class: 'ThreeDVisualization' },
+      { name: 'gfwIntegration', class: 'GFWIntegration' } // Global Fishing Watch Integration
     ];
 
     for (const { name, class: ComponentClassName } of componentInitializers) {
@@ -153,6 +154,10 @@ class BGAPPMapController {
           
         case 'threeDVisualization':
           if (component.create3DControl) component.create3DControl(this.map);
+          break;
+          
+        case 'gfwIntegration':
+          if (component.initialize) await component.initialize(this.map);
           break;
       }
     } catch (error) {

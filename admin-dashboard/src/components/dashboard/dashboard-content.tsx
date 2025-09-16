@@ -43,6 +43,9 @@ import QGISSpatialAnalysis from './qgis-spatial-analysis'
 import QGISTemporalVisualization from './qgis-temporal-visualization'
 import QGISBiomassCalculator from './qgis-biomass-calculator'
 
+// 🎣 Global Fishing Watch Integration
+import { GFWManagement } from '../gfw/gfw-management'
+
 // 🔧 Enhanced Components
 import SmartIFrameWrapper from '../iframe-enhanced/smart-iframe-wrapper'
 import { AdvancedAnalytics } from './advanced-analytics'
@@ -84,6 +87,12 @@ export function DashboardContent({ section }: DashboardContentProps) {
       
       case 'services-integration':
         return <ServicesIntegrationCloudflare />
+      
+      // 🎣 GLOBAL FISHING WATCH
+      case 'gfw':
+      case 'global-fishing-watch':
+      case 'fishing-monitoring':
+        return <GFWManagement />
       
       // 🧠 MACHINE LEARNING SYSTEM
       case 'ml-system':

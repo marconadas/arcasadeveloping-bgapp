@@ -107,6 +107,16 @@ class MLDemoUIEnhancer {
             link.href = '/static/css/ml-demo-enhanced-ui.css';
             document.head.appendChild(link);
         }
+
+        // Carregar tema padronizado após o CSS de melhorias
+        if (!document.querySelector('#ml-demo-theme-styles')) {
+            const theme = document.createElement('link');
+            theme.id = 'ml-demo-theme-styles';
+            theme.rel = 'stylesheet';
+            theme.href = '/static/css/ml-demo-theme.css';
+            // garantir ordem: após enhanced-ui
+            requestAnimationFrame(() => document.head.appendChild(theme));
+        }
         
         // Melhorar container principal (exceto mapa)
         const containers = document.querySelectorAll('.container, .main-content, .ml-container');

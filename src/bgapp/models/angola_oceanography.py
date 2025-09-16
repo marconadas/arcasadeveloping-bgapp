@@ -15,12 +15,28 @@ class AngolaOceanographicModel:
     """Modelo oceanográfico para a costa angolana"""
     
     def __init__(self):
-        # Definir limites da ZEE angolana
+        # Definir limites da ZEE angolana (coordenadas corrigidas)
         self.bounds = {
-            'lat_min': -18.2,  # Sul (Cunene com margem)
+            'lat_min': -18.0,  # Sul (fronteira Namíbia)
             'lat_max': -4.2,   # Norte (Cabinda)
-            'lon_min': 8.5,    # CRÍTICO: Limite oceânico oeste (era 11.4!)
+            'lon_min': 8.5,    # Limite oceânico oeste (200nm da costa)
             'lon_max': 17.5    # Limite oceânico leste ZEE
+        }
+        
+        # Limites específicos por região
+        self.regional_bounds = {
+            'continental': {
+                'lat_min': -17.266,  # Rio Cunene
+                'lat_max': -6.02,    # Após gap RDC
+                'lon_min': 8.5,      # Costa atlântica
+                'lon_max': 17.5      # Limite oceânico
+            },
+            'cabinda': {
+                'lat_min': -6.02,    # Limite sul
+                'lat_max': -4.2,     # Limite norte
+                'lon_min': 11.5,     # Limite oeste
+                'lon_max': 13.5      # Limite leste
+            }
         }
         
         # Parâmetros das correntes principais

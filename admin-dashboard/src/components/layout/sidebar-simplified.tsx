@@ -61,6 +61,14 @@ const navigationItems: NavItem[] = [
   },
   
   {
+    id: 'global-fishing-watch',
+    label: 'Global Fishing Watch',
+    icon: '🎣',
+    badge: 'NOVO',
+    description: 'Monitorização de atividades pesqueiras'
+  },
+  
+  {
     id: 'machine-learning',
     label: 'Machine Learning',
     icon: CpuChipIcon,

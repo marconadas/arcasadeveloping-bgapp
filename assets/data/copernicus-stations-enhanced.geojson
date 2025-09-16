@@ -1,0 +1,90 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Estação Copernicus Cabinda Norte",
+        "type": "copernicus_station",
+        "temp": 28.1,
+        "chl": 0.96,
+        "salinity": 35.1,
+        "conditions": "Águas tropicais - Baixa produtividade",
+        "status": "ativo",
+        "last_update": "2024-01-15"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [12.0, -5.0]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Estação Copernicus Luanda Central",
+        "type": "copernicus_station",
+        "temp": 24.4,
+        "chl": 3.25,
+        "salinity": 35.29,
+        "conditions": "Condições normais",
+        "status": "ativo",
+        "last_update": "2024-01-15"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.2, -8.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zona de Upwelling Benguela",
+        "type": "upwelling_station",
+        "temp": 17.6,
+        "chl": 30.24,
+        "salinity": 35.5,
+        "conditions": "Upwelling ativo - Alta produtividade",
+        "status": "ativo",
+        "last_update": "2024-01-15"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.4, -12.6]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Estação Copernicus Namibe Costeiro",
+        "type": "upwelling_station",
+        "temp": 18.4,
+        "chl": 18.40,
+        "salinity": 35.53,
+        "conditions": "Upwelling ativo - Alta produtividade",
+        "status": "ativo",
+        "last_update": "2024-01-15"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [12.1, -15.2]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Estação Copernicus Tombwa Profundo",
+        "type": "upwelling_station",
+        "temp": 17.4,
+        "chl": 8.85,
+        "salinity": 35.54,
+        "conditions": "Upwelling ativo - Alta produtividade",
+        "status": "ativo",
+        "last_update": "2024-01-15"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.8, -16.8]
+      }
+    }
+  ]
+}

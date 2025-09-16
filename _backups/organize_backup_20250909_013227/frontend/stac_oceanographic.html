@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, omº
+    quaisinitial-scale=1.0">
+    <title>BGAPP - Coleções STAC Oceanográficas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .status-healthy { color: #198754; }
+        .status-unhealthy { color: #dc3545; }
+        .status-error { color: #fd7e14; }
+        .collection-card { transition: transform 0.2s; }
+        .collection-card:hover { transform: translateY(-2px); }
+        .relevance-badge { font-size: 0.8em; }
+        #map { height: 400px; }
+        .data-type-badge { margin: 2px; }
+        .loading { display: none; }
+        .loading.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row bg-primary text-white py-3 mb-4">
+            <div class="col">
+                <h1><i class="bi bi-water"></i> BGAPP - Coleções STAC Oceanográficas</h1>
+                <p class="mb-0">Integração com APIs STAC públicas para dados oceanográficos e marinhos</p>
+            </div>
+        </div>
+
+        <!-- Status das APIs -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-activity"></i> Status das APIs STAC</h5>
+                        <button class="btn btn-sm btn-outline-primary float-end" onclick="checkAPIsHealth()">
+                            <i class="bi bi-arrow-clockwise"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
+                        <div id="apis-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo das Coleções -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-collection"></i> Resumo das Coleções</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="collections-summary"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-geo-alt"></i> Área de Cobertura</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="map"></div>
+                        <small class="text-muted">Área de interesse: Angola e ZEE</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coleções Prioritárias -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-star"></i> Coleções Prioritárias</h5>
+                        <button class="btn btn-sm btn-outline-primary float-end" onclick="loadCollections()">
+                            <i class="bi bi-arrow-clockwise"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
+                        <div id="priority-collections"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dados Oceanográficos Recentes -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-thermometer-half"></i> Dados Oceanográficos Recentes</h5>
+                        <div class="float-end">
+                            <select class="form-select form-select-sm d-inline-block" style="width: auto;" id="days-back">
+                                <option value="3">3 dias</option>
+                                <option value="7" selected>7 dias</option>
+                                <option value="14">14 dias</option>
+                                <option value="30">30 dias</option>
+                            </select>
+                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadRecentData()">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
+                        <div id="recent-data"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Busca Personalizada -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-search"></i> Busca Personalizada</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="search-form">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Coleção</label>
+                                    <select class="form-select" id="search-collection">
+                                        <option value="">Selecionar coleção...</option>
+                                        <option value="zee_angola_sst">ZEE Angola - Temperatura SST</option>
+                                        <option value="zee_angola_chlorophyll">ZEE Angola - Clorofila-a</option>
+                                        <option value="zee_angola_biodiversity">ZEE Angola - Biodiversidade Marinha</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Período</label>
+                                    <input type="text" class="form-control" id="search-datetime" 
+                                           placeholder="2024-01-01/2024-01-31" value="2024-01-01/2024-01-31">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Limite</label>
+                                    <input type="number" class="form-control" id="search-limit" value="10" min="1" max="100">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary d-block w-100">
+                                        <i class="bi bi-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="mt-3">
+                            <div class="loading text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                            </div>
+                            <div id="search-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Detectar ambiente e usar API adequada
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal 
+            ? 'http://localhost:8085/admin-api'
+            : 'https://bgapp-stac-api.majearcasa.workers.dev';
+        let map;
+
+        // Inicializar mapa
+        function initMap() {
+            map = L.map('map').setView([-11.2, 11.0], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Adicionar retângulo da área de Angola
+            const angolaBounds = [[8.1559051, -18.922632], [13.794773, -4.2610419]];
+            L.rectangle([[angolaBounds[0][1], angolaBounds[0][0]], [angolaBounds[1][1], angolaBounds[1][0]]], {
+                color: "#0d6efd",
+                weight: 2,
+                fillOpacity: 0.1
+            }).addTo(map);
+        }
+
+        // Verificar saúde das APIs
+        async function checkAPIsHealth() {
+            const container = document.getElementById('apis-status');
+            const loading = container.parentElement.querySelector('.loading');
+            
+            loading.classList.add('show');
+            container.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    let html = `
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">BGAPP STAC API</h6>
+                                        <p class="card-text small">${data.service}</p>
+                                        <div class="status-healthy">
+                                            <i class="bi bi-circle-fill"></i> HEALTHY
+                                        </div>
+                                        <small class="text-muted">Versão: ${data.version}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">COLEÇÕES DISPONÍVEIS</h6>
+                                        <p class="card-text small">Coleções STAC ativas</p>
+                                        <div class="status-healthy">
+                                            <i class="bi bi-circle-fill"></i> ${data.collections_count || 0} COLEÇÕES
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-success mt-3">
+                            <strong>Status:</strong> Todos os serviços STAC estão operacionais! 🌊
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="alert alert-danger">Erro ao verificar APIs</div>';
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-danger">Erro: Failed to fetch</div>`;
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Carregar resumo das coleções
+        async function loadSummary() {
+            const container = document.getElementById('collections-summary');
+            
+            try {
+                const response = await fetch(`${API_BASE}/collections`);
+                const data = await response.json();
+                
+                if (data.collections) {
+                    const collections = data.collections;
+                    let html = `
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>Coleções STAC</h6>
+                                <p class="h4 text-primary">${collections.length}</p>
+                            </div>
+                            <div class="col-6">
+                                <h6>ZEE Angola</h6>
+                                <p class="h4 text-success">✓ Ativa</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Tipos de Dados</h6>
+                            <div>
+                                <span class="badge bg-secondary data-type-badge">Temperatura SST</span>
+                                <span class="badge bg-secondary data-type-badge">Clorofila-a</span>
+                                <span class="badge bg-secondary data-type-badge">Biodiversidade</span>
+                                <span class="badge bg-secondary data-type-badge">Dados Marinhos</span>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="alert alert-warning">Nenhuma coleção encontrada</div>';
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-danger">Erro: Failed to fetch</div>`;
+            }
+        }
+
+        // Carregar coleções prioritárias
+        async function loadCollections() {
+            const container = document.getElementById('priority-collections');
+            const loading = container.parentElement.querySelector('.loading');
+            
+            loading.classList.add('show');
+            container.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE}/collections`);
+                const data = await response.json();
+                
+                if (data.collections) {
+                    let html = '<div class="row">';
+                    
+                    data.collections.forEach(collection => {
+                        html += `
+                            <div class="col-lg-6 mb-3">
+                                <div class="card collection-card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title">${collection.title}</h6>
+                                            <span class="badge bg-primary relevance-badge">5★</span>
+                                        </div>
+                                        <p class="card-text small">${collection.description.substring(0, 150)}...</p>
+                                        <div class="mt-2">
+                                            <span class="badge bg-light text-dark me-1">Angola</span>
+                                            <span class="badge bg-light text-dark me-1">ZEE</span>
+                                            <span class="badge bg-light text-dark me-1">Oceanografia</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="bi bi-server"></i> BGAPP Marine Angola
+                                            </small>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="badge bg-info">ID: ${collection.id}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="alert alert-danger">Erro ao carregar coleções</div>';
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-danger">Erro: Failed to fetch</div>`;
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Carregar dados recentes
+        async function loadRecentData() {
+            const container = document.getElementById('recent-data');
+            const loading = container.parentElement.querySelector('.loading');
+            const daysBack = document.getElementById('days-back').value;
+            
+            loading.classList.add('show');
+            container.innerHTML = '';
+            
+            try {
+                // Como não temos endpoint específico, vamos mostrar informações das coleções disponíveis
+                const response = await fetch(`${API_BASE}/collections`);
+                const data = await response.json();
+                
+                if (data.collections) {
+                    let html = `
+                        <h6><i class="bi bi-thermometer-half"></i> Coleções Oceanográficas Disponíveis</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Coleção</th>
+                                        <th>Tipo</th>
+                                        <th>Período</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    data.collections.forEach(collection => {
+                        let dataType = 'Dados Marinhos';
+                        if (collection.id.includes('sst')) dataType = '🌡️ Temperatura SST';
+                        if (collection.id.includes('chlorophyll')) dataType = '🟢 Clorofila-a';
+                        if (collection.id.includes('biodiversity')) dataType = '🐟 Biodiversidade';
+                        
+                        html += `
+                            <tr>
+                                <td><strong>${collection.title}</strong></td>
+                                <td><small>${dataType}</small></td>
+                                <td><small>2020-presente</small></td>
+                                <td><span class="badge bg-success">Ativo</span></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-info mt-3">
+                            <strong>Disponível:</strong> ${data.collections.length} coleções de dados oceanográficos para Angola 🇦🇴
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i> 
+                            Nenhuma coleção encontrada.
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-danger">Erro: Failed to fetch</div>`;
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Busca personalizada
+        document.getElementById('search-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const collection = document.getElementById('search-collection').value;
+            const datetime = document.getElementById('search-datetime').value;
+            const limit = document.getElementById('search-limit').value;
+            const container = document.getElementById('search-results');
+            const loading = container.parentElement.querySelector('.loading');
+            
+            if (!collection) {
+                alert('Por favor, selecione uma coleção');
+                return;
+            }
+            
+            loading.classList.add('show');
+            container.innerHTML = '';
+            
+            try {
+                // Buscar informações da coleção específica
+                const response = await fetch(`${API_BASE}/collections/${collection}`);
+                const collectionData = await response.json();
+                
+                if (collectionData) {
+                    let html = `
+                        <h6>Informações da Coleção: ${collection}</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">${collectionData.title}</h6>
+                                <p class="card-text">${collectionData.description}</p>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <strong>ID:</strong> ${collectionData.id}<br>
+                                        <strong>Versão STAC:</strong> ${collectionData.stac_version}<br>
+                                        <strong>Licença:</strong> ${collectionData.license}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Período solicitado:</strong> ${datetime}<br>
+                                        <strong>Limite:</strong> ${limit} itens<br>
+                                        <strong>Status:</strong> <span class="badge bg-success">Disponível</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <strong>Área Espacial:</strong><br>
+                                    <small class="text-muted">BBox: ${JSON.stringify(collectionData.extent?.spatial?.bbox || 'Angola ZEE')}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-success mt-3">
+                            <strong>✓ Coleção encontrada!</strong> Esta coleção está disponível no catálogo STAC do BGAPP.
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i> 
+                            Coleção "${collection}" não encontrada.
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-danger">Erro: Failed to fetch</div>`;
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            checkAPIsHealth();
+            loadSummary();
+            loadCollections();
+            loadRecentData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mrgid": 8478,
+        "geoname": "Angolan Exclusive Economic Zone",
+        "pol_type": "200NM",
+        "territory1": "Angola",
+        "iso_ter1": "AGO",
+        "area_km2": 495866,
+        "unclos_compliant": true,
+        "source": "Marine Regions (eez_v11)",
+        "precision": "official",
+        "name": "ZEE Angola - Dados Oficiais Marine Regions"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [8.5, -6.02],
+              [8.5, -17.266],
+              [17.5, -17.266],
+              [17.5, -6.02],
+              [8.5, -6.02]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

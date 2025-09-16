@@ -1,0 +1,133 @@
+{
+  "type": "FeatureCollection",
+  "stac_version": "1.0.0", 
+  "id": "zee_angola_biodiversity",
+  "title": "Biodiversidade Marinha - Angola",
+  "description": "Dados de biodiversidade e riqueza de espécies nas águas angolanas",
+  "license": "proprietary",
+  "extent": {
+    "spatial": {
+      "bbox": [11.0, -18.0, 14.0, -5.0]
+    },
+    "temporal": {
+      "interval": [["2024-01-01T00:00:00Z", "2024-12-31T23:59:59Z"]]
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "zee_angola_bio_001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.5, -12.5]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Research Vessel",
+        "instrument": "CTD + Biological Sampling",
+        "biodiversity:species_count": 45,
+        "biodiversity:shannon_index": 2.8,
+        "biodiversity:dominant_species": "Sardinha (Sardinella aurita)",
+        "biodiversity:biomass": 1250.5,
+        "biodiversity:biomass_unit": "kg/km²",
+        "quality": "high",
+        "collection": "zee_angola_biodiversity",
+        "region": "Luanda Marine Park",
+        "conservation_status": "protected",
+        "fishing_pressure": "moderate"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_bio_002",
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [13.2, -11.8]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Research Vessel",
+        "instrument": "CTD + Biological Sampling",
+        "biodiversity:species_count": 62,
+        "biodiversity:shannon_index": 3.2,
+        "biodiversity:dominant_species": "Atum (Thunnus albacares)",
+        "biodiversity:biomass": 2100.8,
+        "biodiversity:biomass_unit": "kg/km²",
+        "quality": "high",
+        "collection": "zee_angola_biodiversity",
+        "region": "Cabinda Marine Reserve",
+        "conservation_status": "high_priority",
+        "fishing_pressure": "low"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_bio_003",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [14.1, -13.1]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z", 
+        "platform": "Research Vessel",
+        "instrument": "CTD + Biological Sampling",
+        "biodiversity:species_count": 78,
+        "biodiversity:shannon_index": 3.6,
+        "biodiversity:dominant_species": "Anchova (Engraulis encrasicolus)",
+        "biodiversity:biomass": 3400.2,
+        "biodiversity:biomass_unit": "kg/km²",
+        "quality": "high",
+        "collection": "zee_angola_biodiversity",
+        "region": "Benguela Upwelling Zone",
+        "conservation_status": "critical",
+        "fishing_pressure": "high"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_bio_004",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.8, -12.0]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Research Vessel",
+        "instrument": "CTD + Biological Sampling",
+        "biodiversity:species_count": 38,
+        "biodiversity:shannon_index": 2.4,
+        "biodiversity:dominant_species": "Cavala (Scomber japonicus)",
+        "biodiversity:biomass": 890.3,
+        "biodiversity:biomass_unit": "kg/km²",
+        "quality": "medium",
+        "collection": "zee_angola_biodiversity",
+        "region": "Central Plateau",
+        "conservation_status": "stable",
+        "fishing_pressure": "moderate"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_bio_005",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.3, -12.8]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Research Vessel", 
+        "instrument": "CTD + Biological Sampling",
+        "biodiversity:species_count": 52,
+        "biodiversity:shannon_index": 2.9,
+        "biodiversity:dominant_species": "Pescada (Merluccius capensis)",
+        "biodiversity:biomass": 1680.7,
+        "biodiversity:biomass_unit": "kg/km²",
+        "quality": "high",
+        "collection": "zee_angola_biodiversity",
+        "region": "Namibe Shelf",
+        "conservation_status": "monitoring",
+        "fishing_pressure": "moderate"
+      }
+    }
+  ]
+}

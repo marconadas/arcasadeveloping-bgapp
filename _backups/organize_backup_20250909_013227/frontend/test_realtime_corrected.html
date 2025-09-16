@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste: realtime_angola.html CORRIGIDO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #666;
+        }
+        
+        .success { border-left-color: #00ff00; background: rgba(0, 255, 0, 0.1); }
+        .error { border-left-color: #ff4444; background: rgba(255, 68, 68, 0.1); color: #ff4444; }
+        .info { border-left-color: #00aaff; background: rgba(0, 170, 255, 0.1); color: #00aaff; }
+        
+        .test-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #00aa00;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 TESTE: realtime_angola.html CORRIGIDO</h1>
+        <p>Validando se as correções aplicadas funcionaram</p>
+        
+        <div id="testResults"></div>
+        
+        <button onclick="runTests()">🚀 Executar Testes</button>
+        <button onclick="loadPageInFrame()">📄 Carregar Página</button>
+        <button onclick="checkConsoleErrors()">🔍 Verificar Erros</button>
+        
+        <div class="test-result info">
+            <strong>📋 CORREÇÕES APLICADAS:</strong><br>
+            ✅ Erro de sintaxe JavaScript corrigido<br>
+            ✅ Sistema de timing do Leaflet implementado<br>
+            ✅ Sistema de fallback automático<br>
+            ✅ Estrutura de código limpa<br>
+            ✅ Carregamento de dados em tempo real
+        </div>
+        
+        <iframe id="testFrame" class="test-frame" src="about:blank"></iframe>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        function addResult(test, status, message) {
+            testResults.push({ test, status, message, timestamp: new Date() });
+            updateResultsDisplay();
+        }
+        
+        function updateResultsDisplay() {
+            const container = document.getElementById('testResults');
+            container.innerHTML = '<h3>📊 RESULTADOS DOS TESTES:</h3>';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `test-result ${result.status}`;
+                
+                const icon = result.status === 'success' ? '✅' : result.status === 'error' ? '❌' : 'ℹ️';
+                div.innerHTML = `
+                    <strong>${icon} ${result.test}</strong><br>
+                    ${result.message}<br>
+                    <small>${result.timestamp.toLocaleTimeString()}</small>
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // Calcular taxa de sucesso
+            const successCount = testResults.filter(r => r.status === 'success').length;
+            const totalCount = testResults.length;
+            const successRate = totalCount > 0 ? Math.round((successCount / totalCount) * 100) : 0;
+            
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = `test-result ${successRate === 100 ? 'success' : successRate >= 80 ? 'info' : 'error'}`;
+            summaryDiv.innerHTML = `
+                <strong>📈 RESUMO: ${successCount}/${totalCount} testes passou (${successRate}%)</strong><br>
+                ${successRate === 100 ? '🎉 TODOS OS TESTES PASSARAM!' : 
+                  successRate >= 80 ? '⚠️ Maioria dos testes passou' : 
+                  '❌ Vários testes falharam'}
+            `;
+            container.appendChild(summaryDiv);
+        }
+        
+        function runTests() {
+            testResults = [];
+            addResult('Inicialização', 'info', 'Iniciando bateria de testes...');
+            
+            // Teste 1: Verificar se arquivo existe
+            fetch('realtime_angola.html', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        addResult('Arquivo Existe', 'success', 'Arquivo realtime_angola.html encontrado');
+                        return testPageContent();
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    addResult('Arquivo Existe', 'error', 'Erro ao acessar arquivo: ' + error.message);
+                });
+        }
+        
+        async function testPageContent() {
+            try {
+                // Teste 2: Carregar conteúdo da página
+                const response = await fetch('realtime_angola.html');
+                const content = await response.text();
+                
+                // Teste 3: Verificar se não há erros de sintaxe óbvios
+                if (content.includes('} catch (error) {') && !content.includes('catch (error) {')) {
+                    addResult('Sintaxe JavaScript', 'success', 'Estrutura try/catch correta encontrada');
+                } else {
+                    addResult('Sintaxe JavaScript', 'error', 'Problema na estrutura try/catch');
+                }
+                
+                // Teste 4: Verificar se Leaflet está incluído
+                if (content.includes('leaflet@1.9.4/dist/leaflet.js')) {
+                    addResult('Leaflet JS', 'success', 'Script Leaflet encontrado');
+                } else {
+                    addResult('Leaflet JS', 'error', 'Script Leaflet não encontrado');
+                }
+                
+                // Teste 5: Verificar se CSS está incluído
+                if (content.includes('leaflet@1.9.4/dist/leaflet.css')) {
+                    addResult('Leaflet CSS', 'success', 'CSS Leaflet encontrado');
+                } else {
+                    addResult('Leaflet CSS', 'error', 'CSS Leaflet não encontrado');
+                }
+                
+                // Teste 6: Verificar função waitForLeaflet
+                if (content.includes('waitForLeaflet')) {
+                    addResult('Sistema Timing', 'success', 'Sistema de timing implementado');
+                } else {
+                    addResult('Sistema Timing', 'error', 'Sistema de timing não encontrado');
+                }
+                
+                // Teste 7: Verificar sistema de fallback
+                if (content.includes('tryFallback') || content.includes('fallback')) {
+                    addResult('Sistema Fallback', 'success', 'Sistema de fallback implementado');
+                } else {
+                    addResult('Sistema Fallback', 'error', 'Sistema de fallback não encontrado');
+                }
+                
+                // Teste 8: Verificar debug
+                if (content.includes('debugLog')) {
+                    addResult('Sistema Debug', 'success', 'Sistema de debug implementado');
+                } else {
+                    addResult('Sistema Debug', 'error', 'Sistema de debug não encontrado');
+                }
+                
+            } catch (error) {
+                addResult('Teste Conteúdo', 'error', 'Erro ao testar conteúdo: ' + error.message);
+            }
+        }
+        
+        function loadPageInFrame() {
+            addResult('Carregamento Visual', 'info', 'Carregando página no iframe...');
+            
+            const frame = document.getElementById('testFrame');
+            frame.src = 'realtime_angola.html';
+            
+            frame.onload = () => {
+                addResult('Carregamento Visual', 'success', 'Página carregada no iframe');
+                
+                // Aguardar um pouco e verificar se há erros
+                setTimeout(() => {
+                    try {
+                        const frameDoc = frame.contentDocument || frame.contentWindow.document;
+                        const mapDiv = frameDoc.getElementById('map');
+                        
+                        if (mapDiv) {
+                            addResult('Elemento Mapa', 'success', 'Div do mapa encontrada');
+                            
+                            // Verificar se há conteúdo no mapa após 5 segundos
+                            setTimeout(() => {
+                                if (mapDiv.children.length > 0) {
+                                    addResult('Mapa Renderizado', 'success', 'Mapa parece ter conteúdo renderizado');
+                                } else {
+                                    addResult('Mapa Renderizado', 'error', 'Mapa não tem conteúdo renderizado');
+                                }
+                            }, 5000);
+                            
+                        } else {
+                            addResult('Elemento Mapa', 'error', 'Div do mapa não encontrada');
+                        }
+                    } catch (error) {
+                        addResult('Verificação DOM', 'error', 'Erro ao acessar DOM: ' + error.message);
+                    }
+                }, 2000);
+            };
+            
+            frame.onerror = () => {
+                addResult('Carregamento Visual', 'error', 'Erro ao carregar página no iframe');
+            };
+        }
+        
+        function checkConsoleErrors() {
+            addResult('Verificação Console', 'info', 'Para verificar erros, abra o DevTools (F12) e veja o Console');
+        }
+        
+        // Auto-executar testes quando página carrega
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runTests();
+                setTimeout(loadPageInFrame, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

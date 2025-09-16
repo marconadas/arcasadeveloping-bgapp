@@ -75,6 +75,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css"/>
   -->
   <link rel="stylesheet" href="assets/css/map-styles.css?v=20250115fresh">
+  <!-- Global Fishing Watch Integration Styles -->
+  <link rel="stylesheet" href="assets/css/gfw-integration.css?v=1.0.0">
   <style>
     /* APPLE DESIGN SYSTEM - PAINEL FLUTUANTE */
     :root {
@@ -511,6 +513,49 @@
       </div>
     </section>
 
+    <!-- Global Fishing Watch Controls -->
+    <section class="section">
+      <h2 class="section-title">
+        <span aria-hidden="true">🎣</span>
+        Global Fishing Watch
+      </h2>
+      
+      <div class="gfw-quick-controls" style="display: flex; flex-direction: column; gap: 8px;">
+        <button id="btn-gfw-activity" 
+                class="btn control" 
+                style="background: #3498db;"
+                aria-label="Mostrar Atividade de Pesca"
+                aria-pressed="false"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true">🎣</span>
+          Atividade de Pesca
+        </button>
+        
+        <button id="btn-gfw-heatmap" 
+                class="btn control" 
+                style="background: #e74c3c;"
+                aria-label="Mostrar Mapa de Calor"
+                aria-pressed="false"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true">🔥</span>
+          Mapa de Calor
+        </button>
+        
+        <button id="btn-gfw-alerts" 
+                class="btn control" 
+                style="background: #f39c12;"
+                aria-label="Mostrar Alertas de Pesca"
+                aria-pressed="false"
+                role="button"
+                tabindex="0">
+          <span aria-hidden="true">⚠️</span>
+          Alertas
+        </button>
+      </div>
+    </section>
+
     <footer style="margin-top: 8px; font-size: 11px; color: #7f8c8d;">
       <div role="status" aria-live="polite" aria-label="Status do Sistema">
         <span class="status-indicator status-online" aria-hidden="true"></span>
@@ -559,6 +604,8 @@
   <script src="assets/js/bathymetry-gebco.js?v=fresh"></script>
   <!-- Sistema de Funcionalidades Reais - NOVO -->
   <script src="assets/js/real-functionality.js?v=2.0.0"></script>
+  <!-- Global Fishing Watch Integration -->
+  <script src="assets/js/gfw-integration.js?v=1.0.0"></script>
   <!-- SCRIPTS OPCIONAIS (reativar gradualmente):
   <script src="assets/js/sentinel2-integration.js?v=fresh"></script>
   <script src="assets/js/attribution-system.js?v=fresh"></script>
@@ -977,6 +1024,62 @@
             showEOXDisabledNotification();
           });
           console.log('✅ Event listener EOX OFF configurado');
+        }
+
+        // Global Fishing Watch Event Listeners
+        const gfwElements = {
+          btnGfwActivity: document.getElementById('btn-gfw-activity'),
+          btnGfwHeatmap: document.getElementById('btn-gfw-heatmap'),
+          btnGfwAlerts: document.getElementById('btn-gfw-alerts')
+        };
+
+        // Inicializar GFW se não existir
+        if (!window.gfwIntegration && window.GFWIntegration) {
+          window.gfwIntegration = new GFWIntegration();
+          window.gfwIntegration.initialize(map).then(() => {
+            console.log('✅ GFW Integration inicializada');
+          }).catch(error => {
+            console.error('❌ Erro ao inicializar GFW:', error);
+          });
+        }
+
+        if (gfwElements.btnGfwActivity) {
+          gfwElements.btnGfwActivity.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            
+            if (window.gfwIntegration) {
+              window.gfwIntegration.toggleLayer('activity');
+              console.log('🎣 GFW Activity toggled:', e.target.classList.contains('active'));
+            }
+          });
+          console.log('✅ Event listener GFW Activity configurado');
+        }
+
+        if (gfwElements.btnGfwHeatmap) {
+          gfwElements.btnGfwHeatmap.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            
+            if (window.gfwIntegration) {
+              window.gfwIntegration.toggleLayer('heatmap');
+              console.log('🔥 GFW Heatmap toggled:', e.target.classList.contains('active'));
+            }
+          });
+          console.log('✅ Event listener GFW Heatmap configurado');
+        }
+
+        if (gfwElements.btnGfwAlerts) {
+          gfwElements.btnGfwAlerts.addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            e.target.setAttribute('aria-pressed', e.target.classList.contains('active'));
+            
+            if (window.gfwIntegration) {
+              window.gfwIntegration.toggleLayer('alerts');
+              console.log('⚠️ GFW Alerts toggled:', e.target.classList.contains('active'));
+            }
+          });
+          console.log('✅ Event listener GFW Alerts configurado');
         }
 
         console.log('🎯 Todos os event listeners configurados com sucesso!');

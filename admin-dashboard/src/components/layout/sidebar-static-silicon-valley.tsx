@@ -48,6 +48,14 @@ const navigationItems: NavItem[] = [
     badge: 'LIVE',
   },
 
+  // 🎣 GLOBAL FISHING WATCH
+  {
+    id: 'global-fishing-watch',
+    label: '🎣 Global Fishing Watch',
+    icon: '🎣',
+    badge: 'NOVO',
+  },
+
   // 🧠 MACHINE LEARNING
   {
     id: 'ml-system',

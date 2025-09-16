@@ -1,6 +1,6 @@
 """
 STAC (SpatioTemporal Asset Catalog) Connector
-Moderno conector para catálogos STAC de dados de satélite e geoespaciais
+Modern connector for satellite and geospatial data STAC catalogs
 """
 
 import argparse

@@ -1,0 +1,93 @@
+# Bibliotecas STAC Expandidas para BGAPP
+# Data: 2025-09-12
+
+# ==================================
+# CORE STAC Libraries
+# ==================================
+pystac>=1.9.0                    # Manipulação de catálogos STAC
+pystac-client>=0.7.5            # Cliente para APIs STAC
+stac-pydantic>=3.0.0            # Modelos Pydantic para STAC
+stac-fastapi.api>=3.0.0         # API STAC de alta performance
+stac-fastapi.types>=3.0.0       # Tipos para STAC FastAPI
+stac-fastapi.extensions>=3.0.0  # Extensões STAC API
+
+# ==================================
+# PROCESSAMENTO DE DADOS
+# ==================================
+stackstac>=0.5.0                 # STAC para xarray/dask
+odc-stac>=0.3.8                 # Open Data Cube com STAC
+odc-geo>=0.4.0                  # Geometrias para ODC
+rio-stac>=0.8.0                 # Rasterio + STAC
+stac-geoparquet>=0.5.0          # STAC com GeoParquet
+xarray>=2023.0.0                # Arrays N-dimensionais
+dask[complete]>=2023.0.0        # Computação paralela
+rasterio>=1.3.0                 # I/O de rasters
+shapely>=2.0.0                  # Geometrias
+geopandas>=0.14.0               # DataFrames geoespaciais
+pyarrow>=14.0.0                 # Suporte Parquet
+
+# ==================================
+# VISUALIZAÇÃO
+# ==================================
+titiler.core>=0.15.0            # Tiles dinâmicos
+titiler.application>=0.15.0     # Aplicação TiTiler
+leafmap>=0.29.0                 # Mapas interativos Python
+folium>=0.15.0                  # Mapas web
+localtileserver>=0.7.0          # Servidor de tiles local
+matplotlib>=3.7.0               # Gráficos
+plotly>=5.17.0                  # Gráficos interativos
+ipyleaflet>=0.17.0              # Mapas Jupyter
+
+# ==================================
+# VALIDAÇÃO E QUALIDADE
+# ==================================
+stac-validator>=3.3.0           # Validador STAC
+jsonschema>=4.19.0              # Validação JSON Schema
+
+# ==================================
+# FERRAMENTAS DE INGESTÃO
+# ==================================
+stactools>=0.5.0                # Pipeline de ingestão
+sat-search>=0.3.0               # Busca multi-catálogo
+planetary-computer>=1.0.0       # Microsoft Planetary Computer
+sentinelsat>=1.2.0              # Download Sentinel
+landsatxplore>=0.15.0           # Download Landsat
+
+# ==================================
+# ARMAZENAMENTO E CLOUD
+# ==================================
+boto3>=1.28.0                   # AWS S3
+azure-storage-blob>=12.19.0    # Azure Blob Storage
+google-cloud-storage>=2.10.0   # Google Cloud Storage
+fsspec>=2023.10.0               # Sistema de arquivos abstrato
+s3fs>=2023.10.0                 # S3 filesystem
+
+# ==================================
+# EXTENSÕES E EXTRAS
+# ==================================
+pystac-extensions>=0.1.0        # Extensões STAC
+cogeo-mosaic>=7.0.0             # Mosaicos COG
+rio-cogeo>=5.0.0                # Criação de COGs
+morecantile>=5.0.0              # TileMatrixSets
+geojson-pydantic>=1.0.0         # Modelos GeoJSON
+
+# ==================================
+# DESENVOLVIMENTO E TESTES
+# ==================================
+pytest>=7.4.0                   # Framework de testes
+pytest-asyncio>=0.21.0          # Testes assíncronos
+pytest-cov>=4.1.0               # Cobertura de testes
+black>=23.0.0                   # Formatação de código
+ruff>=0.1.0                     # Linting
+mypy>=1.5.0                     # Type checking
+
+# ==================================
+# DEPENDÊNCIAS BASE (já existentes)
+# ==================================
+fastapi>=0.104.0
+uvicorn>=0.24.0
+requests>=2.31.0
+httpx>=0.25.0
+pydantic>=2.4.0
+python-multipart>=0.0.6
+aiofiles>=23.2.0
