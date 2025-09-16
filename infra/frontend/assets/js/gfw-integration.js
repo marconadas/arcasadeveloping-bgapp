@@ -95,16 +95,36 @@ class GFWIntegration {
    */
   async loadApiToken() {
     try {
-      // Em produção, carregar de variável de ambiente ou endpoint seguro
-      const response = await fetch('/api/config/gfw-token');
+      // Em produção, carregar do worker API configurado
+      const apiUrl = window.location.hostname.includes('localhost') 
+        ? '/api/config/gfw-token'
+        : 'https://bgapp-api-worker.majearcasa.workers.dev/api/config/gfw-token';
+        
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Origin': window.location.origin,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       this.config.token = data.token;
       this.config.headers['Authorization'] = `Bearer ${this.config.token}`;
+      console.log('✅ GFW API token carregado com sucesso');
     } catch (error) {
-      console.warn('⚠️ Usando token hardcoded (desenvolvimento apenas)');
-      // Token para desenvolvimento (em produção, usar método seguro)
-      this.config.token = '***REMOVED***';
-      this.config.headers['Authorization'] = `Bearer ${this.config.token}`;
+      console.error('❌ Erro ao carregar token GFW:', error);
+      // Fallback para token hardcoded apenas em desenvolvimento
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.warn('⚠️ Usando token fallback (desenvolvimento apenas)');
+        this.config.token = '***REMOVED***';
+        this.config.headers['Authorization'] = `Bearer ${this.config.token}`;
+      } else {
+        throw new Error('Não foi possível carregar o token GFW em produção');
+      }
     }
   }
 

@@ -102,6 +102,67 @@ export default {
         });
       }
       
+      // 🎣 Global Fishing Watch - Status
+      if (path === '/api/config/gfw-status') {
+        return jsonResponse({
+          status: 'active',
+          integration: 'global_fishing_watch',
+          version: '1.0.0',
+          token_configured: Boolean(env && env.GFW_API_TOKEN),
+          features: [
+            'fishing_activity',
+            'heatmaps',
+            'vessel_tracking',
+            'alerts',
+            'protected_areas'
+          ],
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // 🎣 Global Fishing Watch - Secure Token (basic protection)
+      if (path === '/api/config/gfw-token') {
+        // Básica proteção: permitir apenas se origem conhecida ou header presente
+        const origin = request.headers.get('Origin') || '';
+        const allowedOrigins = (env && env.ALLOWED_ORIGINS) ? env.ALLOWED_ORIGINS.split(',') : [];
+        const adminKeyHeader = request.headers.get('x-admin-key');
+
+        const originAllowed = allowedOrigins.length === 0 || allowedOrigins.some(o => origin.includes(o.trim()));
+        const adminKeyAllowed = adminKeyHeader && env && env.ADMIN_ACCESS_KEY && adminKeyHeader === env.ADMIN_ACCESS_KEY;
+
+        if (!originAllowed && !adminKeyAllowed) {
+          return jsonResponse({ error: 'Unauthorized' }, 401);
+        }
+
+        return jsonResponse({
+          token: env && env.GFW_API_TOKEN ? env.GFW_API_TOKEN : null,
+          type: 'Bearer',
+          expires: '2033-12-31'
+        });
+      }
+
+      // 🎣 Global Fishing Watch - Settings
+      if (path === '/api/config/gfw-settings') {
+        return jsonResponse({
+          api: {
+            baseUrl: 'https://api.globalfishingwatch.org/v3',
+            tilesUrl: 'https://tiles.globalfishingwatch.org'
+          },
+          datasets: {
+            fishing: 'public-global-fishing-activity:v20231026',
+            vessels: 'public-global-all-vessels:v20231026',
+            encounters: 'public-global-encounters:v20231026',
+            portVisits: 'public-global-port-visits:v20231026'
+          },
+          defaults: {
+            zoom: 5,
+            timeRange: 30,
+            vesselTypes: ['fishing', 'carrier', 'support'],
+            confidenceLevel: 3
+          }
+        });
+      }
+
       // Services endpoint (without /status) - for admin compatibility
       if (path === '/services') {
         // Atualizar dados dinâmicos
