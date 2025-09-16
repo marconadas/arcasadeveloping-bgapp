@@ -12,11 +12,12 @@ name = "bgapp-api-worker"
 NODE_ENV = "production"
 API_VERSION = "1.2.0"
 ENVIRONMENT = "production"
-ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org,https://bgapp-frontend.pages.dev"
 RATE_LIMIT_REQUESTS = "1000"
 RATE_LIMIT_WINDOW = "3600"
-GFW_API_TOKEN = "${GFW_API_TOKEN}"
-ADMIN_ACCESS_KEY = "${ADMIN_ACCESS_KEY}"
+FRONTEND_BASE = "https://bgapp-frontend.pages.dev"
+# Note: GFW_API_TOKEN and ADMIN_ACCESS_KEY should be set as secrets via wrangler CLI or Cloudflare dashboard
+# They should NOT be stored in this file for security reasons
 
 # KV Namespaces para cache (desabilitado temporariamente)
 # [[env.production.kv_namespaces]]

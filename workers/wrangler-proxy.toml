@@ -1,0 +1,16 @@
+name = "bgapp-gfw-proxy"
+main = "gfw-proxy.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Production environment
+[env.production]
+name = "bgapp-gfw-proxy"
+
+# Environment variables
+[env.production.vars]
+NODE_ENV = "production"
+ALLOWED_ORIGINS = "*"
+
+# Note: GFW_API_TOKEN should be set as a secret via wrangler CLI
+# wrangler secret put GFW_API_TOKEN --env production

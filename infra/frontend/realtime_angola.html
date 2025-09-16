@@ -2470,11 +2470,23 @@
       debugLog('Carregando serviços em tempo real...', 'info');
       
       try {
-        // Simular dados de embarcações e observações
-        const vessels = await simulateVesselsData();
-        const observations = await simulateObservationsData();
-        
+        // Embarcações (GFW v3 via Worker)
+        let vessels = { count: '--' };
+        try {
+          const vResp = await fetch('/api/gfw/vessel-presence');
+          if (vResp.ok) {
+            const vJson = await vResp.json();
+            vessels = { count: Number.isFinite(Number(vJson.vessel_count)) ? Number(vJson.vessel_count) : '--' };
+          } else {
+            vessels = await simulateVesselsData();
+          }
+        } catch (_) {
+          vessels = await simulateVesselsData();
+        }
         document.getElementById('vessels-value').textContent = vessels.count;
+
+        // Observações (manter até termos endpoint real)
+        const observations = await simulateObservationsData();
         document.getElementById('observations-value').textContent = observations.count;
         
         // Atualizar dados meteorológicos
@@ -2531,7 +2543,24 @@
     
     function updateRealtimeData(data) {
       debugLog('Atualizando dados em tempo real da API', 'info');
-      // Processar dados em tempo real específicos da API
+      try {
+        if (data && typeof data === 'object') {
+          if (Number.isFinite(Number(data.temperature))) {
+            document.getElementById('sst-value').textContent = Number(data.temperature).toFixed(1) + '°C';
+          }
+          if (Number.isFinite(Number(data.chlorophyll))) {
+            document.getElementById('chl-value').textContent = Number(data.chlorophyll).toFixed(1);
+          }
+          if (Number.isFinite(Number(data.current_speed))) {
+            document.getElementById('current-value').textContent = Number(data.current_speed).toFixed(2) + ' m/s';
+          }
+          if (Number.isFinite(Number(data.salinity))) {
+            document.getElementById('salinity').textContent = Number(data.salinity).toFixed(1);
+          }
+        }
+      } catch (e) {
+        debugLog('Falha ao aplicar dados em tempo real: ' + e.message, 'warning');
+      }
     }
     
     function updateServicesStatus(status) {
@@ -2855,9 +2884,21 @@
     function addVesselsOverlay() {
       if (vesselsLayer) return;
       
+      // Usar GFW Integration se disponível
+      if (window.gfwIntegration) {
+        try {
+          window.gfwIntegration.toggleLayer('activity', true);
+          debugLog('Camada GFW Embarcações ativada', 'success');
+          vesselsLayer = true; // Marcador para saber que está ativo
+          return;
+        } catch (e) {
+          debugLog('Erro ao ativar GFW: ' + e.message, 'warning');
+        }
+      }
+      
+      // Fallback: dados simulados se GFW não estiver disponível
       vesselsLayer = L.layerGroup();
       
-      // Simular embarcações
       const vessels = [
         { lat: -6, lon: 12.2, type: 'Pesqueiro', name: 'Maria Fernanda' },
         { lat: -9, lon: 12.7, type: 'Cargueiro', name: 'Atlantic Star' },
@@ -2878,11 +2919,24 @@
       });
       
       vesselsLayer.addTo(app.map);
-      debugLog('Camada Embarcações adicionada', 'success');
+      debugLog('Camada Embarcações (simulada) adicionada', 'info');
     }
     
     function removeVesselsOverlay() {
-      if (vesselsLayer) {
+      // Desativar GFW se estiver usando
+      if (window.gfwIntegration && vesselsLayer === true) {
+        try {
+          window.gfwIntegration.toggleLayer('activity', false);
+          debugLog('Camada GFW Embarcações desativada', 'info');
+          vesselsLayer = null;
+          return;
+        } catch (e) {
+          debugLog('Erro ao desativar GFW: ' + e.message, 'warning');
+        }
+      }
+      
+      // Remover camada simulada
+      if (vesselsLayer && vesselsLayer !== true) {
         app.map.removeLayer(vesselsLayer);
         vesselsLayer = null;
         debugLog('Camada Embarcações removida', 'info');
@@ -3309,6 +3363,22 @@
     }
   }
   
+  </script>
+  <script src="assets/js/gfw-integration.js?v=1"></script>
+  <script>
+    // Inicializar GFW Integration com o mapa existente
+    (async function initGFW() {
+      try {
+        if (window.app && app.map && window.GFWIntegration) {
+          window.gfwIntegration = new GFWIntegration();
+          await gfwIntegration.initialize(app.map);
+          // Ativar camada de atividade para exibir embarcações
+          gfwIntegration.toggleLayer('activity', true);
+        }
+      } catch (e) {
+        console.error('Erro ao inicializar GFW Integration na página realtime:', e);
+      }
+    })();
   </script>
 </body>
 </html>

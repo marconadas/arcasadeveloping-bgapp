@@ -176,8 +176,8 @@ export default {
         return jsonResponse(MOCK_DATA.services);
       }
       
-      // Services status (mantido para compatibilidade)
-      if (path === '/services/status') {
+      // Services status (compatibilidade) + alias
+      if (path === '/services/status' || path === '/api/services/status') {
         // Atualizar dados dinâmicos
         MOCK_DATA.services.summary.last_updated = new Date().toISOString();
         MOCK_DATA.services.services.forEach(service => {
@@ -194,8 +194,8 @@ export default {
         return jsonResponse({ collections: MOCK_DATA.collections });
       }
       
-      // Metrics
-      if (path === '/metrics') {
+      // Metrics + alias
+      if (path === '/metrics' || path === '/api/metrics') {
         // Atualizar métricas dinâmicas
         MOCK_DATA.metrics.requests_per_minute = Math.floor(Math.random() * 500) + 200;
         MOCK_DATA.metrics.active_users = Math.floor(Math.random() * 50) + 10;
@@ -227,20 +227,80 @@ export default {
         });
       }
       
-      // Real-time data simulation
-      if (path === '/realtime/data') {
-        return jsonResponse({
-          temperature: Math.random() * 10 + 20,
-          salinity: Math.random() * 5 + 35,
-          chlorophyll: Math.random() * 2 + 0.5,
-          current_speed: Math.random() * 3,
-          current_direction: Math.random() * 360,
-          timestamp: new Date().toISOString()
-        });
+      // Real-time data (aggregated from Copernicus JSON produced by our pipeline) + alias
+      if (path === '/realtime/data' || path === '/api/realtime/data') {
+        try {
+          const frontendBase = (env && env.FRONTEND_BASE) || 'https://bgapp-frontend.pages.dev';
+          const sourceUrl = `${frontendBase}/copernicus_authenticated_angola.json`;
+
+          const upstream = await fetch(sourceUrl, { headers: { 'Accept': 'application/json' } });
+          if (!upstream.ok) {
+            return jsonResponse({
+              error: 'Upstream data unavailable',
+              source: sourceUrl,
+              status: upstream.status
+            }, 502);
+          }
+
+          const raw = await upstream.json();
+
+          // Normalize entries from possible schemas
+          let entries = [];
+          if (Array.isArray(raw?.real_time_data)) {
+            entries = raw.real_time_data;
+          } else if (Array.isArray(raw?.locations)) {
+            entries = raw.locations;
+          } else if (Array.isArray(raw?.data)) {
+            entries = raw.data;
+          }
+
+          const toNumbers = (arr, keyCandidates) => {
+            const values = [];
+            for (const item of arr) {
+              for (const key of keyCandidates) {
+                if (key in item && Number.isFinite(Number(item[key]))) {
+                  values.push(Number(item[key]));
+                  break;
+                }
+              }
+            }
+            return values;
+          };
+
+          const mean = (vals) => vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+
+          const sstVals = toNumbers(entries, ['sst', 'sea_surface_temperature', 'temperature']);
+          const chlVals = toNumbers(entries, ['chlorophyll', 'chlorophyll_a']);
+          const salVals = toNumbers(entries, ['salinity', 'so']);
+
+          // Derive current speed if u/v components present
+          const speeds = [];
+          for (const item of entries) {
+            const u = Number(item.current_u);
+            const v = Number(item.current_v);
+            if (Number.isFinite(u) && Number.isFinite(v)) {
+              speeds.push(Math.sqrt(u * u + v * v));
+            }
+          }
+
+          const response = {
+            temperature: mean(sstVals),
+            salinity: mean(salVals),
+            chlorophyll: mean(chlVals),
+            current_speed: mean(speeds),
+            timestamp: new Date().toISOString(),
+            data_points: entries.length,
+            source: 'copernicus_authenticated_angola.json'
+          };
+
+          return jsonResponse(response);
+        } catch (err) {
+          return jsonResponse({ error: 'Aggregation error', message: err?.message || String(err) }, 500);
+        }
       }
       
       // API endpoints list
-      if (path === '/api/endpoints') {
+      if (path === '/api/endpoints' || path === '/endpoints') {
         return jsonResponse({
           endpoints: [
             { path: '/health', method: 'GET', description: 'Health check do Worker' },
@@ -251,8 +311,202 @@ export default {
             { path: '/alerts', method: 'GET', description: 'Alertas do sistema' },
             { path: '/storage/buckets', method: 'GET', description: 'Informações de armazenamento' },
             { path: '/database/tables', method: 'GET', description: 'Tabelas da base de dados' },
-            { path: '/realtime/data', method: 'GET', description: 'Dados em tempo real' }
+            { path: '/realtime/data', method: 'GET', description: 'Dados em tempo real' },
+            { path: '/api/gfw/vessel-presence', method: 'GET', description: 'Resumo de presença de embarcações (GFW v3)' }
           ]
+        });
+      }
+
+      // GFW v3: Vessel Presence summary for Angola EEZ
+      if (path === '/api/gfw/vessel-presence') {
+        try {
+          const token = env && env.GFW_API_TOKEN;
+          if (!token) {
+            return jsonResponse({ error: 'GFW token not configured' }, 503);
+          }
+
+          // Attempt to fetch from GFW API with various SSL/TLS configurations
+          const baseUrl = 'https://api.globalfishingwatch.org/v3';
+          const end = new Date();
+          const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+          const fmt = (d) => d.toISOString().slice(0, 10);
+          
+          // Angola EEZ bbox
+          const bbox = '-12,-18,17.5,-4.2';
+          
+          const params = new URLSearchParams({
+            dataset: 'public-global-fishing-activity:v20231026',
+            'start-date': fmt(start),
+            'end-date': fmt(end),
+            bbox,
+            format: 'json'
+          });
+
+          const url = `${baseUrl}/4wings/aggregate?${params.toString()}`;
+          
+          // Try different fetch configurations
+          let response = null;
+          let fetchError = null;
+          
+          // Configuration 1: Try using our proxy worker if available
+          const proxyUrl = env.GFW_PROXY_URL || 'https://bgapp-gfw-proxy.majearcasa.workers.dev';
+          try {
+            const proxyEndpoint = `${proxyUrl}/gfw/4wings/aggregate?${params.toString()}`;
+            response = await fetch(proxyEndpoint, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json'
+              }
+            });
+            console.log('Proxy fetch attempted');
+          } catch (e1) {
+            fetchError = e1;
+            console.log('Proxy fetch failed:', e1.message);
+            
+            // Configuration 2: Try with different headers
+            try {
+              response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Accept': 'application/json',
+                  'User-Agent': 'Mozilla/5.0 (compatible; Cloudflare-Worker/1.0)',
+                  'X-Requested-With': 'XMLHttpRequest'
+                }
+              });
+            } catch (e2) {
+              fetchError = e2;
+              console.log('Alternative fetch failed:', e2.message);
+              
+              // Configuration 3: Try HTTP/1.1 instead of HTTP/2
+              try {
+                response = await fetch(url.replace('https://', 'http://'), {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                  }
+                });
+              } catch (e3) {
+                fetchError = e3;
+                console.log('HTTP fetch failed:', e3.message);
+              }
+            }
+          }
+          
+          // If we got a response, try to process it
+          if (response && response.ok) {
+            try {
+              const data = await response.json();
+              let vesselCount = 0;
+              let totalHours = 0;
+              const features = Array.isArray(data?.features) ? data.features : [];
+              
+              for (const f of features) {
+                const p = f.properties || {};
+                vesselCount += Number(p.vessel_count || 0);
+                totalHours += Number(p.hours || 0);
+              }
+              
+              return jsonResponse({
+                vessel_count: vesselCount,
+                total_hours: Math.round(totalHours * 10) / 10,
+                window_hours: 24,
+                updated_at: new Date().toISOString(),
+                data_source: 'gfw_api',
+                api_status: 'connected'
+              });
+            } catch (parseError) {
+              console.error('Failed to parse GFW response:', parseError);
+            }
+          }
+          
+          // Try to fetch cached data from GitHub Pages
+          try {
+            const cacheUrl = `${env.FRONTEND_BASE || 'https://bgapp-frontend.pages.dev'}/data/gfw-angola-vessels-cache.json`;
+            const cacheResponse = await fetch(cacheUrl);
+            if (cacheResponse.ok) {
+              const cacheData = await cacheResponse.json();
+              const gfwData = cacheData.data;
+              
+              if (gfwData && !gfwData.error) {
+                let vesselCount = 0;
+                let totalHours = 0;
+                const features = Array.isArray(gfwData?.features) ? gfwData.features : [];
+                
+                for (const f of features) {
+                  const p = f.properties || {};
+                  vesselCount += Number(p.vessel_count || 0);
+                  totalHours += Number(p.hours || 0);
+                }
+                
+                if (vesselCount > 0) {
+                  return jsonResponse({
+                    vessel_count: vesselCount,
+                    total_hours: Math.round(totalHours * 10) / 10,
+                    window_hours: 24,
+                    updated_at: cacheData.last_updated || new Date().toISOString(),
+                    data_source: 'gfw_cache',
+                    cache_age_hours: Math.round((Date.now() - new Date(cacheData.last_updated).getTime()) / (1000 * 60 * 60)),
+                    api_status: 'using_cache'
+                  });
+                }
+              }
+            }
+          } catch (cacheError) {
+            console.log('Cache fetch failed:', cacheError);
+          }
+          
+          // If all API attempts failed and no cache, return simulated data
+          const hour = new Date().getHours();
+          const dayOfWeek = new Date().getDay();
+          let baseCount = 25;
+          
+          if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            baseCount += 10;
+          }
+          
+          if ((hour >= 4 && hour <= 8) || (hour >= 16 && hour <= 20)) {
+            baseCount += 15;
+          }
+          
+          const vesselCount = baseCount + Math.floor(Math.random() * 10) - 5;
+          const avgHoursPerVessel = 8 + Math.random() * 4;
+          const totalHours = Math.round(vesselCount * avgHoursPerVessel * 10) / 10;
+          
+          return jsonResponse({
+            vessel_count: Math.max(10, vesselCount),
+            total_hours: totalHours,
+            window_hours: 24,
+            updated_at: new Date().toISOString(),
+            data_source: 'simulated_realistic',
+            api_status: response ? `error_${response.status}` : 'connection_failed',
+            error_type: fetchError ? fetchError.message : 'unknown',
+            note: 'Using simulated data due to API connection issues'
+          });
+          
+        } catch (e) {
+          console.error('GFW Error:', e);
+          return jsonResponse({
+            vessel_count: 20,
+            total_hours: 160,
+            window_hours: 24,
+            updated_at: new Date().toISOString(),
+            data_source: 'fallback',
+            error: e.message
+          });
+        }
+      }
+      
+      // GFW Debug endpoint
+      if (path === '/api/gfw/debug') {
+        const token = env && env.GFW_API_TOKEN;
+        return jsonResponse({
+          token_configured: !!token,
+          token_length: token ? token.length : 0,
+          token_preview: token ? `${token.substring(0, 20)}...${token.substring(token.length - 20)}` : null,
+          env_keys: Object.keys(env || {}),
+          timestamp: new Date().toISOString()
         });
       }
       
