@@ -48,12 +48,24 @@ const navigationItems: NavItem[] = [
     badge: 'LIVE',
   },
 
+  // 🌊 COPERNICUS INTEGRATION
+  {
+    id: 'copernicus',
+    label: '🌊 Copernicus Integration',
+    icon: '🛰️',
+    badge: 'LIVE',
+    children: [
+      { id: 'copernicus-monitoring', label: 'Monitoramento API', icon: '📊' },
+      { id: 'copernicus-integration', label: 'Configuração', icon: '⚙️' },
+    ]
+  },
+
   // 🎣 GLOBAL FISHING WATCH
   {
     id: 'global-fishing-watch',
     label: '🎣 Global Fishing Watch',
     icon: '🎣',
-    badge: 'NOVO',
+    badge: 'ENHANCED',
   },
 
   // 🧠 MACHINE LEARNING

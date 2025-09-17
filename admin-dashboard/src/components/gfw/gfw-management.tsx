@@ -27,7 +27,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { api } from '@/lib/api';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface GFWStats {
   totalVessels: number;
