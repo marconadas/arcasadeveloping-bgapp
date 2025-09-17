@@ -1,0 +1,26 @@
+name = "bgapp-copernicus-official"
+main = "copernicus-official-worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Configurações para produção
+[env.production]
+name = "bgapp-copernicus-official"
+
+# Variáveis de ambiente
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "2.0.0"
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org,https://bgapp-frontend.pages.dev"
+RATE_LIMIT_REQUESTS = "500"
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "https://bgapp-frontend.pages.dev"
+COPERNICUS_CLIENT_ID = "cdse-public"
+COPERNICUS_IDENTITY_URL = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
+COPERNICUS_CATALOG_URL = "https://catalogue.dataspace.copernicus.eu/odata/v1/Products"
+COPERNICUS_STAC_URL = "https://catalogue.dataspace.copernicus.eu/stac"
+
+# Configurações de performance
+[build]
+command = ""

@@ -57,7 +57,7 @@ const getEnvironment = (): EnvironmentConfig => {
       isDevelopment: true,
       isProduction: false,
       baseUrl: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
-      apiUrl: 'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+      apiUrl: 'https://bgapp-copernicus-official.majearcasa.workers.dev',
       frontendUrl: 'https://bgapp-frontend.pages.dev',
       scientificInterfacesUrl: 'https://bgapp-frontend.pages.dev',
       externalServices: {
@@ -69,7 +69,7 @@ const getEnvironment = (): EnvironmentConfig => {
       // URLs de fallback para garantir funcionamento
       fallbackUrls: {
         apiUrl: [
-          'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+          'https://bgapp-copernicus-official.majearcasa.workers.dev',
           'https://bgapp-admin.majearcasa.workers.dev',
           'http://localhost:8000'
         ],
@@ -95,7 +95,7 @@ const getEnvironment = (): EnvironmentConfig => {
       isDevelopment: false,
       isProduction: true,
       baseUrl: 'https://bgapp-admin.pages.dev',
-      apiUrl: 'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+      apiUrl: 'https://bgapp-copernicus-official.majearcasa.workers.dev',
       frontendUrl: 'https://bgapp-frontend.pages.dev',
       scientificInterfacesUrl: 'https://bgapp-frontend.pages.dev',
       externalServices: {
@@ -107,7 +107,7 @@ const getEnvironment = (): EnvironmentConfig => {
       // URLs de fallback para produção
       fallbackUrls: {
         apiUrl: [
-          'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+          'https://bgapp-copernicus-official.majearcasa.workers.dev',
           'https://bgapp-admin.majearcasa.workers.dev',
           'https://bgapp-api.majearcasa.workers.dev'
         ],

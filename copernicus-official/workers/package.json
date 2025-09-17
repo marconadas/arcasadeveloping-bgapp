@@ -1,0 +1,13 @@
+{
+  "name": "copernicus-official-worker",
+  "version": "2.0.0",
+  "description": "Worker oficial para integração Copernicus CDSE com TOTP",
+  "type": "module",
+  "dependencies": {
+    "otplib": "^12.0.1"
+  },
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  }
+}
