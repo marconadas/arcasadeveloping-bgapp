@@ -32,6 +32,10 @@
 # API redirects para worker
 /api/*                   https://bgapp-api-worker.majearcasa.workers.dev/:splat  200
 
+# GFW API proxy redirects
+/gfw/*                   https://bgapp-api-worker.majearcasa.workers.dev/gfw/:splat  200
+/4wings/*                https://bgapp-api-worker.majearcasa.workers.dev/4wings/:splat  200
+
 # Assets e recursos estáticos (sem redirect)
 /BGAPP/assets/*          /BGAPP/assets/:splat   200
 /BGAPP/static/*          /BGAPP/static/:splat   200

@@ -80,3 +80,12 @@
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
   Access-Control-Allow-Headers: Content-Type, Authorization
+
+# GFW API proxy redirects
+/gfw/*
+  X-Redirect-Location: https://bgapp-api-worker.majearcasa.workers.dev
+  X-Redirect-Type: proxy
+
+/4wings/*
+  X-Redirect-Location: https://bgapp-api-worker.majearcasa.workers.dev
+  X-Redirect-Type: proxy
