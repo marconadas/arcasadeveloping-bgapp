@@ -3158,12 +3158,28 @@
               }, 3000);
             }
             return;
+          } else if (gfwData.data_source === 'gfw_cache' && gfwData.vessel_count > 0) {
+            // GFW data from cache
+            updateVesselDisplay(gfwData.vessel_count, 'gfw_cache');
+            updateGFWStatus('online');
+            debugLog(`📦 GFW Cache: ${gfwData.vessel_count} embarcações (cache age: ${gfwData.cache_age_hours}h)`, 'success');
+
+            // Indicador de dados do cache
+            if (refreshIndicator) {
+              refreshIndicator.textContent = '📦';
+              refreshIndicator.style.color = '#34C759';
+              setTimeout(() => {
+                refreshIndicator.textContent = '⏳';
+                refreshIndicator.style.color = '#666';
+              }, 3000);
+            }
+            return;
           } else if (gfwData.data_source === 'gfw_api_connected_estimate' && gfwData.vessel_count > 0) {
             // GFW API connected but vessel data estimated
             updateVesselDisplay(gfwData.vessel_count, 'gfw_api_connected_estimate');
             updateGFWStatus('connected');
             debugLog(`🛰️ GFW API conectada: ${gfwData.vessel_count} embarcações (estimado, ${gfwData.api_info?.total_datasets} datasets disponíveis)`, 'success');
-            
+
             // Indicador de API conectada
             if (refreshIndicator) {
               refreshIndicator.textContent = '🛰️';
