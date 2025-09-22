@@ -1,0 +1,7 @@
+# Wrangler configuration for BGAPP Admin Dashboard
+name = "bgapp-admin"
+compatibility_date = "2024-09-04"
+pages_build_output_dir = "out"
+
+[env.production]
+name = "bgapp-admin"
