@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "fishing_zones",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Zona de Pesca Artesanal Norte", "type": "artisanal", "regulation": "open" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 11.8, -5.2 ], [ 12.8, -5.2 ], [ 12.8, -6.2 ], [ 11.8, -6.2 ], [ 11.8, -5.2 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "Zona de Pesca Industrial Centro", "type": "industrial", "regulation": "restricted" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 13.2, -12.2 ], [ 14.2, -12.2 ], [ 14.2, -13.2 ], [ 13.2, -13.2 ], [ 13.2, -12.2 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "Zona de Pesca Artesanal Sul", "type": "artisanal", "regulation": "seasonal" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 11.5, -15.5 ], [ 12.5, -15.5 ], [ 12.5, -16.5 ], [ 11.5, -16.5 ], [ 11.5, -15.5 ] ] ] } }
+]
+}

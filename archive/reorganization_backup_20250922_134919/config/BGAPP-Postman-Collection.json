@@ -1,0 +1,468 @@
+{
+  "info": {
+    "_postman_id": "bgapp-marine-angola",
+    "name": "🌊 BGAPP Marine Angola API",
+    "description": "Complete API collection for BGAPP Marine Angola system with ML, STAC, Maps, and more",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "📊 Dashboard & System",
+      "item": [
+        {
+          "name": "📊 Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/dashboard/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        },
+        {
+          "name": "❤️ Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/health",
+              "host": ["{{BASE_URL}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "📈 System Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/metrics",
+              "host": ["{{BASE_URL}}"],
+              "path": ["metrics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Services Management",
+      "item": [
+        {
+          "name": "🔧 List All Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/services",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services"]
+            }
+          }
+        },
+        {
+          "name": "▶️ Start Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"force\": false,\n  \"timeout\": 30\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/services/{{SERVICE_NAME}}/start",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services", "{{SERVICE_NAME}}", "start"]
+            }
+          }
+        },
+        {
+          "name": "⏹️ Stop Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/services/{{SERVICE_NAME}}/stop",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services", "{{SERVICE_NAME}}", "stop"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧠 Machine Learning & AI",
+      "item": [
+        {
+          "name": "🧠 Get ML Models",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/ml/models",
+              "host": ["{{BASE_URL}}"],
+              "path": ["ml", "models"]
+            }
+          }
+        },
+        {
+          "name": "🎯 Make ML Prediction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelId\": \"marine-species-prediction\",\n  \"features\": {\n    \"temperature\": 25.5,\n    \"depth\": 100,\n    \"salinity\": 35.2,\n    \"latitude\": -12.5,\n    \"longitude\": 18.5,\n    \"season\": \"summer\"\n  },\n  \"options\": {\n    \"confidence_threshold\": 0.8,\n    \"return_probabilities\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/ml/predict",
+              "host": ["{{BASE_URL}}"],
+              "path": ["ml", "predict"]
+            }
+          }
+        },
+        {
+          "name": "🐟 Biodiversity Studies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/biodiversity-studies?page=1&pageSize=50&region=angola",
+              "host": ["{{BASE_URL}}"],
+              "path": ["biodiversity-studies"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "50"
+                },
+                {
+                  "key": "region",
+                  "value": "angola"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "🦎 MaxEnt Models",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/maxent/models",
+              "host": ["{{BASE_URL}}"],
+              "path": ["maxent", "models"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛰️ STAC API (Satellite Data)",
+      "item": [
+        {
+          "name": "🛰️ STAC Collections",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{STAC_URL}}/collections",
+              "host": ["{{STAC_URL}}"],
+              "path": ["collections"]
+            }
+          }
+        },
+        {
+          "name": "📡 STAC Collection Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{STAC_URL}}/collections/{{COLLECTION_ID}}",
+              "host": ["{{STAC_URL}}"],
+              "path": ["collections", "{{COLLECTION_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "🔍 STAC Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collections\": [\"{{COLLECTION_ID}}\"],\n  \"bbox\": [11, -18, 24, -4],\n  \"datetime\": \"2024-01-01T00:00:00Z/2024-12-31T23:59:59Z\",\n  \"limit\": 50,\n  \"query\": {\n    \"eo:cloud_cover\": {\n      \"lt\": 10\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{STAC_URL}}/search",
+              "host": ["{{STAC_URL}}"],
+              "path": ["search"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌍 PyGeoAPI (OGC Features)",
+      "item": [
+        {
+          "name": "🌍 PyGeoAPI Collections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{PYGEOAPI_URL}}/collections",
+              "host": ["{{PYGEOAPI_URL}}"],
+              "path": ["collections"]
+            }
+          }
+        },
+        {
+          "name": "📍 Collection Features",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{PYGEOAPI_URL}}/collections/{{COLLECTION_ID}}/items?limit=100",
+              "host": ["{{PYGEOAPI_URL}}"],
+              "path": ["collections", "{{COLLECTION_ID}}", "items"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗺️ Maps System",
+      "item": [
+        {
+          "name": "🗺️ All Maps",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/maps?category=biodiversity",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "maps"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "biodiversity"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "➕ Create Marine Map",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Marine Biodiversity Angola\",\n  \"description\": \"Interactive map showing marine biodiversity data for Angola coastal waters\",\n  \"category\": \"biodiversity\",\n  \"tags\": [\"marine\", \"angola\", \"biodiversity\"],\n  \"config\": {\n    \"center\": [-12.5, 18.5],\n    \"zoom\": 6,\n    \"layers\": [\n      {\n        \"type\": \"base\",\n        \"name\": \"Satellite\",\n        \"url\": \"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}\"\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/maps",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "maps"]
+            }
+          }
+        },
+        {
+          "name": "📊 Maps Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/maps/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "maps", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💾 Storage & Data",
+      "item": [
+        {
+          "name": "💾 Storage Buckets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/storage/buckets",
+              "host": ["{{BASE_URL}}"],
+              "path": ["storage", "buckets"]
+            }
+          }
+        },
+        {
+          "name": "📁 Bucket Objects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/storage/buckets/{{BUCKET_NAME}}/objects",
+              "host": ["{{BASE_URL}}"],
+              "path": ["storage", "buckets", "{{BUCKET_NAME}}", "objects"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://bgapp-api.majearcasa.workers.dev"
+    },
+    {
+      "key": "STAC_URL",
+      "value": "https://bgapp-stac.majearcasa.workers.dev"
+    },
+    {
+      "key": "PYGEOAPI_URL",
+      "value": "https://bgapp-pygeoapi.majearcasa.workers.dev"
+    },
+    {
+      "key": "AUTH_TOKEN",
+      "value": "bgapp_admin_28D4Pf0OMN0nABk0xnpCMbEszH5Q4lF8Ovksw_RdGnk"
+    },
+    {
+      "key": "SERVICE_NAME",
+      "value": "copernicus"
+    },
+    {
+      "key": "COLLECTION_ID",
+      "value": "angola-marine-data"
+    },
+    {
+      "key": "BUCKET_NAME",
+      "value": "bgapp-data"
+    }
+  ]
+}

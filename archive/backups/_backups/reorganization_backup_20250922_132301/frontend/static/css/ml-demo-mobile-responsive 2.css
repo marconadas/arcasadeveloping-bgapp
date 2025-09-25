@@ -1,0 +1,892 @@
+/**
+ * 📱 ML Demo Mobile & Tablet Responsive Styles
+ * Otimizações específicas para dispositivos móveis e tablets
+ * 
+ * FOCO:
+ * - Interface consistente em todos os tamanhos
+ * - Navegação touch-friendly
+ * - Performance otimizada para mobile
+ * - Mapa deck.gl responsivo
+ */
+
+/* =====================================
+   📱 MOBILE FIRST APPROACH
+   ===================================== */
+
+/* Base styles para mobile (320px+) */
+@media screen and (max-width: 767px) {
+    
+    /* Container principal mobile */
+    body.ml-demo-enhanced {
+        padding: 0;
+        overflow-x: hidden;
+    }
+    
+    .container, .demo-container {
+        padding: 0.5rem;
+        margin: 0;
+    }
+    
+    .ml-demo-container {
+        border-radius: 0;
+        margin: 0;
+        backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.98);
+    }
+    
+    /* Header mobile */
+    .demo-header {
+        padding: 1rem 0.5rem;
+        text-align: center;
+    }
+    
+    .ml-demo-title {
+        font-size: 1.5rem !important;
+        line-height: 1.3;
+        margin: 0.5rem 0;
+    }
+    
+    /* Status cards mobile - grid 2x3 */
+    .demo-stats {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+        margin: 1rem 0;
+    }
+    
+    .stat-card, .ml-status-card {
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+        text-align: center;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .stat-number, .ml-status-value {
+        font-size: 1.5rem !important;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label, .ml-status-label {
+        font-size: 0.7rem !important;
+        line-height: 1.2;
+    }
+    
+    /* Controles mobile - stack vertical */
+    .demo-controls, .ml-controls-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem 0.5rem;
+    }
+    
+    .controls-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem;
+    }
+    
+    .ml-control-button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    /* Insights sections mobile */
+    .insights-section, .insights-enhanced {
+        margin: 0.5rem 0;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .insight-card, .insights-card-enhanced {
+        margin-bottom: 0.75rem !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .insights-title {
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem;
+    }
+    
+    .insights-content {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    /* Mapa mobile - altura reduzida */
+    #map-container, .map-container, [class*="deck"] {
+        height: 300px !important;
+        max-height: 40vh !important;
+        border-radius: 8px !important;
+        margin: 1rem 0 !important;
+    }
+    
+    /* Controles do mapa mobile */
+    .map-controls-overlay {
+        top: 5px !important;
+        left: 5px !important;
+        padding: 0.5rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .map-control-button {
+        padding: 0.375rem !important;
+        margin: 0.125rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Notificações mobile */
+    .notification {
+        top: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+        max-width: none !important;
+    }
+    
+    .notification-content {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    /* Indicador de status mobile */
+    .retention-status-indicator {
+        bottom: 10px !important;
+        left: 10px !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 20px !important;
+    }
+    
+    /* Performance metrics mobile */
+    .performance-metrics {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    
+    .metric-card {
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .metric-value {
+        font-size: 1.25rem !important;
+    }
+    
+    .metric-label {
+        font-size: 0.65rem !important;
+    }
+    
+    /* Seções demo mobile */
+    .demo-section {
+        padding: 1rem !important;
+        margin: 0.5rem 0 !important;
+        border-radius: 8px !important;
+    }
+    
+    /* AI panels mobile - stack vertical */
+    .row .col-md-4 {
+        margin-bottom: 0.75rem;
+    }
+    
+    .ai-panel {
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* Typography mobile */
+    h1 { font-size: 1.75rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.25rem !important; }
+    h4 { font-size: 1.125rem !important; }
+    h5 { font-size: 1rem !important; }
+    h6 { font-size: 0.875rem !important; }
+    
+    p { font-size: 0.875rem !important; line-height: 1.5; }
+    
+    /* Touch targets */
+    button, .btn, [role="button"] {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        touch-action: manipulation;
+    }
+}
+
+/* =====================================
+   📱 TABLET STYLES (768px - 1023px)
+   ===================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    
+    .container, .demo-container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    /* Status cards tablet - grid 3x2 */
+    .demo-stats {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    .stat-card, .ml-status-card {
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    .stat-number, .ml-status-value {
+        font-size: 2rem;
+    }
+    
+    /* Controles tablet - grid 2 colunas */
+    .demo-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .ml-control-button {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Insights tablet - lado a lado */
+    #ai-insights-panel .row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .insight-card {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Mapa tablet - altura média */
+    #map-container, .map-container, [class*="deck"] {
+        height: 400px !important;
+        max-height: 50vh !important;
+        margin: 1.5rem 0;
+    }
+    
+    /* AI panels tablet - 2 por linha */
+    .row .col-md-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0.5rem;
+    }
+    
+    .ai-panel {
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+/* =====================================
+   🖥️ DESKTOP ENHANCEMENTS (1024px+)
+   ===================================== */
+
+@media screen and (min-width: 1024px) {
+    
+    /* Status cards desktop - grid 6x1 */
+    .demo-stats {
+        display: grid !important;
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    /* Controles desktop - grid flexível */
+    .demo-controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    /* Mapa desktop - altura completa */
+    #map-container, .map-container, [class*="deck"] {
+        height: 500px !important;
+        max-height: 60vh !important;
+    }
+    
+    /* AI panels desktop - 3 por linha */
+    .row .col-md-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* =====================================
+   🎯 TOUCH OPTIMIZATIONS
+   ===================================== */
+
+/* Melhorar experiência touch */
+@media (hover: none) and (pointer: coarse) {
+    
+    /* Aumentar áreas de toque */
+    button, .btn, [role="button"], .ml-control-button {
+        min-height: 48px !important;
+        min-width: 48px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Remover hover effects em touch devices */
+    .ml-control-button:hover,
+    .ml-status-card:hover,
+    .interactive-element:hover {
+        transform: none !important;
+        box-shadow: inherit !important;
+    }
+    
+    /* Touch feedback */
+    .ml-control-button:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    .ml-status-card:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    /* Scrolling otimizado */
+    .demo-container {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+}
+
+/* =====================================
+   🔄 ORIENTATION CHANGES
+   ===================================== */
+
+/* Landscape mobile */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    
+    .demo-header {
+        padding: 0.5rem;
+    }
+    
+    .ml-demo-title {
+        font-size: 1.25rem !important;
+        margin: 0.25rem 0;
+    }
+    
+    /* Status cards landscape - 6x1 grid */
+    .demo-stats {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 0.25rem !important;
+    }
+    
+    .stat-card {
+        padding: 0.5rem !important;
+        min-height: 60px;
+    }
+    
+    .stat-number {
+        font-size: 1rem !important;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Mapa landscape - altura reduzida */
+    #map-container, .map-container {
+        height: 200px !important;
+        max-height: 30vh !important;
+    }
+    
+    /* Controles landscape - horizontal scroll */
+    .demo-controls {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        padding: 0.5rem !important;
+        gap: 0.5rem !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .ml-control-button {
+        flex-shrink: 0;
+        min-width: 120px;
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Portrait tablet */
+@media screen and (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+    
+    /* Status cards portrait tablet - 3x2 */
+    .demo-stats {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    /* Insights side by side */
+    #ai-insights-panel {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    /* Mapa portrait tablet */
+    #map-container, .map-container {
+        height: 350px !important;
+        max-height: 45vh !important;
+    }
+}
+
+/* Landscape tablet */
+@media screen and (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    
+    /* Status cards landscape tablet - 6x1 */
+    .demo-stats {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+    
+    /* Controles em 3 colunas */
+    .demo-controls {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.75rem;
+    }
+    
+    /* Layout side-by-side para insights */
+    .demo-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: start;
+    }
+    
+    /* Mapa landscape tablet */
+    #map-container, .map-container {
+        height: 300px !important;
+        max-height: 40vh !important;
+    }
+}
+
+/* =====================================
+   📏 SPECIFIC BREAKPOINTS
+   ===================================== */
+
+/* iPhone SE / Small phones (375px) */
+@media screen and (max-width: 375px) {
+    
+    .ml-demo-title {
+        font-size: 1.25rem !important;
+    }
+    
+    .demo-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.375rem !important;
+    }
+    
+    .stat-card {
+        padding: 0.5rem !important;
+        min-height: 70px;
+    }
+    
+    .stat-number {
+        font-size: 1.25rem !important;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem !important;
+    }
+    
+    .ml-control-button {
+        padding: 0.625rem 0.75rem !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* iPad / Large tablets (1024px) */
+@media screen and (min-width: 1024px) and (max-width: 1366px) {
+    
+    .container, .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+    
+    /* Status cards iPad - 6x1 */
+    .demo-stats {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    /* Controles iPad - 4 colunas */
+    .demo-controls {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 1rem;
+    }
+    
+    /* Mapa iPad */
+    #map-container, .map-container {
+        height: 450px !important;
+        max-height: 55vh !important;
+    }
+}
+
+/* =====================================
+   🎨 VISUAL IMPROVEMENTS MOBILE
+   ===================================== */
+
+/* Melhorar legibilidade mobile */
+@media screen and (max-width: 767px) {
+    
+    /* Contraste melhorado */
+    .insights-content {
+        color: #1e293b !important;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+    
+    /* Badges mobile */
+    .ml-badge {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.65rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Progress bars mobile */
+    .progress-enhanced, .progress-bar {
+        height: 6px !important;
+        border-radius: 3px !important;
+    }
+    
+    /* Shadows reduzidas mobile */
+    .ml-demo-container,
+    .ml-status-card,
+    .insights-section {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Spacing otimizado */
+    .demo-section {
+        margin: 0.75rem 0 !important;
+    }
+    
+    .insight-item {
+        padding: 0.5rem !important;
+        margin: 0.375rem 0 !important;
+    }
+}
+
+/* =====================================
+   🚀 PERFORMANCE OPTIMIZATIONS
+   ===================================== */
+
+/* Reduzir animações em dispositivos lentos */
+@media (prefers-reduced-motion: reduce) {
+    
+    .ml-control-button,
+    .ml-status-card,
+    .interactive-element {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .ml-glow-effect::after,
+    .shimmer-effect,
+    .typing-effect {
+        animation: none !important;
+    }
+    
+    .retention-status-dot {
+        animation: none !important;
+    }
+}
+
+/* Otimizações para conexões lentas */
+@media (prefers-reduced-data: reduce) {
+    
+    /* Reduzir efeitos visuais pesados */
+    .ml-demo-container {
+        backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .ml-glow-effect::after {
+        display: none !important;
+    }
+    
+    .shimmer-effect {
+        background: #f1f5f9 !important;
+        animation: none !important;
+    }
+}
+
+/* =====================================
+   🌙 DARK MODE MOBILE
+   ===================================== */
+
+@media (prefers-color-scheme: dark) and (max-width: 767px) {
+    
+    body.ml-demo-enhanced {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+    
+    .ml-demo-container {
+        background: rgba(15, 23, 42, 0.95) !important;
+        border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    
+    .ml-status-card {
+        background: linear-gradient(145deg, #1e293b 0%, #334155 100%) !important;
+        color: #e2e8f0;
+    }
+    
+    .insights-section {
+        background: rgba(30, 41, 59, 0.9) !important;
+        color: #e2e8f0;
+    }
+    
+    .ml-control-button {
+        background: linear-gradient(145deg, #334155 0%, #475569 100%) !important;
+        color: #e2e8f0;
+        border-color: rgba(71, 85, 105, 0.6);
+    }
+}
+
+/* =====================================
+   🔧 UTILITY CLASSES RESPONSIVE
+   ===================================== */
+
+/* Hide/show baseado no dispositivo */
+.mobile-only {
+    display: none;
+}
+
+.tablet-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media screen and (max-width: 767px) {
+    .mobile-only { display: block !important; }
+    .tablet-only { display: none !important; }
+    .desktop-only { display: none !important; }
+    .mobile-hide { display: none !important; }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .mobile-only { display: none !important; }
+    .tablet-only { display: block !important; }
+    .desktop-only { display: none !important; }
+    .tablet-hide { display: none !important; }
+}
+
+@media screen and (min-width: 1024px) {
+    .mobile-only { display: none !important; }
+    .tablet-only { display: none !important; }
+    .desktop-only { display: block !important; }
+    .desktop-hide { display: none !important; }
+}
+
+/* Texto responsivo */
+.text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+}
+
+.title-responsive {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Spacing responsivo */
+.spacing-responsive {
+    padding: clamp(0.5rem, 2vw, 2rem);
+    margin: clamp(0.25rem, 1vw, 1rem) 0;
+}
+
+/* =====================================
+   🎯 MOBILE NAVIGATION ENHANCEMENTS
+   ===================================== */
+
+/* Navegação mobile melhorada */
+@media screen and (max-width: 767px) {
+    
+    /* Sticky header mobile */
+    .demo-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    }
+    
+    /* Scroll suave */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Botão scroll to top */
+    .scroll-to-top {
+        position: fixed;
+        bottom: 60px;
+        right: 15px;
+        width: 44px;
+        height: 44px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.25rem;
+        cursor: pointer;
+        z-index: 999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+    }
+    
+    .scroll-to-top.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Menu mobile colapsável */
+    .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 101;
+    }
+    
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 280px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-left: 1px solid rgba(226, 232, 240, 0.6);
+        z-index: 100;
+        transition: right 0.3s ease;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+    
+    .mobile-menu.open {
+        right: 0;
+    }
+    
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* =====================================
+   ⚡ PERFORMANCE MOBILE
+   ===================================== */
+
+/* Otimizações de performance para mobile */
+@media screen and (max-width: 767px) {
+    
+    /* Reduzir blur effects */
+    .ml-demo-container,
+    .demo-header,
+    .retention-status-indicator {
+        backdrop-filter: blur(5px) !important;
+    }
+    
+    /* Simplificar gradientes */
+    .ml-status-value {
+        background: #3b82f6 !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+    
+    /* Reduzir shadows */
+    .ml-shadow-soft { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important; }
+    .ml-shadow-medium { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; }
+    .ml-shadow-strong { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important; }
+    
+    /* Otimizar transforms */
+    .ml-control-button:hover {
+        transform: none !important;
+    }
+    
+    .interactive-element:hover {
+        transform: none !important;
+    }
+}
+
+/* =====================================
+   🎯 ACCESSIBILITY MOBILE
+   ===================================== */
+
+/* Melhorar acessibilidade mobile */
+@media screen and (max-width: 767px) {
+    
+    /* Contraste melhorado */
+    .insights-content {
+        color: #0f172a !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Focus states melhorados */
+    button:focus,
+    .ml-control-button:focus {
+        outline: 2px solid #3b82f6 !important;
+        outline-offset: 2px !important;
+    }
+    
+    /* Texto mais legível */
+    .metric-label,
+    .stat-label {
+        font-weight: 600 !important;
+        color: #374151 !important;
+    }
+    
+    /* Links touch-friendly */
+    a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem;
+    }
+}

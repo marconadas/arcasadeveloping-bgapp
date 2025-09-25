@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre o MINPERMAR",
+    "fisheries": "Pescas e Recursos Marinhos",
+    "aquaculture": "Aquicultura",
+    "blueEconomy": "Economia Azul",
+    "services": "Serviços ao Cidadão",
+    "education": "Educação e Capacitação",
+    "studies": "Estudos e Relatórios",
+    "news": "Notícias e Eventos",
+    "transparency": "Transparência",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "title": "Ministério das Pescas e Recursos Marinhos",
+    "subtitle": "Promovendo o desenvolvimento sustentável dos recursos marinhos de Angola",
+    "cta": "Explorar Serviços",
+    "learnMore": "Saber Mais"
+  },
+  "about": {
+    "mission": "Missão",
+    "vision": "Visão",
+    "values": "Valores",
+    "missionText": "Promover o desenvolvimento sustentável das pescas e recursos marinhos, garantindo a segurança alimentar e o crescimento económico de Angola.",
+    "visionText": "Ser reconhecido como um ministério de excelência na gestão dos recursos marinhos, contribuindo para a economia azul nacional.",
+    "valuesText": "Sustentabilidade, Transparência, Inovação, Inclusão Social e Responsabilidade Ambiental."
+  },
+  "services": {
+    "title": "Serviços Digitais",
+    "licensing": "Licenciamento de Pesca",
+    "certification": "Certificação de Produtos",
+    "consultation": "Consultoria Técnica",
+    "reporting": "Denúncias Online"
+  },
+  "stats": {
+    "fishermenRegistered": "Pescadores Registados",
+    "aquacultureFarms": "Explorações Aquícolas",
+    "protectedAreas": "Áreas Protegidas",
+    "annualProduction": "Produção Anual (toneladas)"
+  },
+  "footer": {
+    "description": "Ministério das Pescas e Recursos Marinhos de Angola - Promovendo o desenvolvimento sustentável dos recursos marinhos.",
+    "quickLinks": "Links Rápidos",
+    "contact": "Contacto",
+    "followUs": "Siga-nos",
+    "address": "Luanda, Angola",
+    "phone": "+244 222 000 000",
+    "email": "info@minpermar.gov.ao"
+  },
+  "common": {
+    "readMore": "Ler Mais",
+    "viewAll": "Ver Todos",
+    "download": "Descarregar",
+    "search": "Pesquisar",
+    "loading": "A carregar...",
+    "error": "Erro ao carregar dados"
+  }
+}

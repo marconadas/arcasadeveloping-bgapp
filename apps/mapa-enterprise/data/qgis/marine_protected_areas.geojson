@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "marine_protected_areas",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Área Protegida Luanda", "type": "marine_reserve", "protection_level": "high" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 12.0, -8.0 ], [ 13.0, -8.0 ], [ 13.0, -9.0 ], [ 12.0, -9.0 ], [ 12.0, -8.0 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "Área Protegida Namibe", "type": "no_take_zone", "protection_level": "maximum" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 13.0, -15.0 ], [ 14.0, -15.0 ], [ 14.0, -16.0 ], [ 13.0, -16.0 ], [ 13.0, -15.0 ] ] ] } }
+]
+}

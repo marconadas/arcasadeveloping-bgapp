@@ -30,7 +30,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
-    sys.path.append('../../')
+    # Path already in PYTHONPATH
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +116,7 @@ def create_retention_api() -> FastAPI:
         response = await call_next(request)
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Client-Version, X-Client-Platform, X-Request-ID"
         return response
     
     # =====================================

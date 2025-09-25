@@ -1,0 +1,4794 @@
+{
+  "dependencies": {
+    "favicon-16x16.png": {
+      "references": [],
+      "size": 798,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "powerbi-integration.js": {
+      "references": [],
+      "size": 8858,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-real-functionality.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "index-fresh.html"
+      ],
+      "size": 13257,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-backup 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/BGAPP/manifest.json",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://bgapp-admin.pages.dev/",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://cdn.plot.ly/plotly-latest.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "assets/js/enhanced-ocean-shaders-v1.js",
+        "assets/js/advanced-3d-marine-visualization-v2.js",
+        "assets/js/unreal-engine-inspired-dashboard.js",
+        "assets/js/safe-ocean-integration-v1.js"
+      ],
+      "size": 36742,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "admin.html.backup.20250902_011744": {
+      "references": [],
+      "size": 149406,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-mobile-menu.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "#dashboard",
+        "#services",
+        "#config",
+        "assets/js/admin-mobile-final.js"
+      ],
+      "size": 9225,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ocean-test 2.html": {
+      "references": [
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 21463,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "force-cache-clear.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 6222,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "realtime_copernicus_angola.json": {
+      "references": [],
+      "size": 2331,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "favicon.ico": {
+      "references": [],
+      "size": 1992,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-deckgl-final 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        ");\n                    link.click("
+      ],
+      "size": 71480,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/three@0.158.0/build/three.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "%23ocean"
+      ],
+      "size": 54162,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "test_zee_limpa.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js?v=20250831"
+      ],
+      "size": 3561,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "admin.html.backup.20250902_012818": {
+      "references": [],
+      "size": 56251,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-fresh.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/manifest.json",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css",
+        "assets/css/map-styles.css?v=20250115fresh",
+        "#",
+        "#",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/nezasa-polyfill.js?v=fresh",
+        "https://unpkg.com/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js",
+        "assets/js/zee_angola_official.js?v=fresh",
+        "assets/js/eox-layers.js?v=fresh",
+        "assets/js/bathymetry-gebco.js?v=fresh",
+        "assets/js/real-functionality.js?v=2.0.0",
+        "assets/js/sentinel2-integration.js?v=fresh",
+        "assets/js/attribution-system.js?v=fresh",
+        "assets/js/copernicus-integration.js?v=fresh",
+        "assets/js/projection-manager.js?v=fresh",
+        "assets/js/offline-capability.js?v=fresh",
+        "assets/js/3d-visualization.js?v=fresh",
+        "url);\n        const params = new URLSearchParams(urlObj.search"
+      ],
+      "size": 92954,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "advanced-animations-demo.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "https://unpkg.com/deck.gl@8.9.35/dist.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js",
+        "assets/js/leaflet-native-animations.js?v=2025-01-09-23-25",
+        "assets/js/advanced-animation-system.js?v=2025-01-09-23-16",
+        "assets/js/windy-api-integration.js?v=2025-01-09-23-15",
+        "assets/js/lottie-animations.js?v=2025-01-09-23-15",
+        "assets/js/gsap-transitions.js?v=2025-01-09-23-15",
+        "assets/js/wind-performance-config.js",
+        "assets/js/wind-animation-core.js",
+        "assets/js/wind-integration.js"
+      ],
+      "size": 36233,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "admin.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "assets/css/fontawesome-fallback.css",
+        "assets/css/admin.css",
+        "assets/css/components.css",
+        "assets/css/admin-inline.css",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+        "#main-content",
+        "#dashboard",
+        "dashboard.html",
+        "dashboard_cientifico.html",
+        "collaboration.html",
+        "stac_oceanographic.html",
+        "/BGAPP/",
+        "realtime_angola.html",
+        "qgis_dashboard.html",
+        "qgis_fisheries.html",
+        "#analytics",
+        "#metocean",
+        "#processing",
+        "#coastal-analysis",
+        "#boundary-processor",
+        "mobile_pwa.html",
+        "mobile.html",
+        "bgapp-enhanced-demo.html",
+        "bgapp-wind-animation-demo.html",
+        "minpermar-site/index.html",
+        "#cache",
+        "#async",
+        "http://localhost:5555",
+        "#ml",
+        "#models",
+        "#maxent",
+        "#mcda",
+        "#auth",
+        "#backup",
+        "#security-dashboard",
+        "#audit",
+        "#alerts",
+        "#realtime-monitoring",
+        "#system-health",
+        "#gateway",
+        "#api",
+        "#services",
+        "#databases",
+        "#storage",
+        "health_dashboard.html",
+        "#ingest",
+        "#reports",
+        "#config",
+        "#users",
+        "#logs",
+        "debug.html",
+        "test_dashboard.html",
+        "dashboard.html",
+        "dashboard_cientifico.html",
+        "collaboration.html",
+        "/BGAPP/",
+        "realtime_angola.html",
+        "qgis_dashboard.html",
+        "mobile_pwa.html",
+        "health_dashboard.html",
+        "http://localhost:8082",
+        "http://localhost:5555",
+        "http://localhost:9001",
+        "http://localhost:8083",
+        "minpermar-site/index.html",
+        "#maxent",
+        "#mcda",
+        "#coastal-analysis",
+        "#boundary-processor",
+        "#security-dashboard",
+        "#audit",
+        "/static/logo.png",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "assets/js/fontawesome-fallback.js",
+        "assets/js/intelligent-cache.js",
+        "assets/js/admin.js?v=20250901-0330",
+        "assets/js/admin-mobile-final.js",
+        "assets/js/admin-test.js"
+      ],
+      "size": 149406,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "test_dashboard.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 6273,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "apple-touch-icon.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "bgapp-enhanced-ocean-system.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 25223,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "demonstracao_ministra_pescas.html 2.backup": {
+      "references": [],
+      "size": 82842,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "assets/css/ml-components.css?v=1.0.0",
+        "assets/css/unreal-engine-dashboard-styles.css",
+        "/static/css/ml-demo-enhanced-ui.css?v=2.1.0&t=20250904fix",
+        "/static/css/ml-demo-mobile-responsive.css?v=1.0.0&t=20250904mobile",
+        "/static/css/ml-demo-contrast-fixes.css?v=1.0.0&t=20250904contrast",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "assets/js/ml-service.js?v=3.0.1",
+        "assets/js/ml-map-overlays.js?v=1.0.0",
+        "assets/js/unreal-ml-visualizations.js?v=3.0.0",
+        "assets/js/ml-enhanced-visualizations-deckgl.js?v=3.0.1",
+        "/static/js/ml-demo-ui-enhancer.js?v=2.1.0&t=20250904fix",
+        "/static/js/ml-demo-retention-integration.js?v=2.1.0&t=20250904fix",
+        "/static/js/ml-demo-mobile-enhancer.js?v=1.0.0&t=20250904mobile",
+        "/static/js/ml-demo-contrast-enhancer.js?v=1.0.0&t=20250904contrast",
+        ");\n                link.click(",
+        ");\n                    link.click("
+      ],
+      "size": 123311,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_dependencies.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "blob",
+        "url"
+      ],
+      "size": 21208,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "demonstracao_ministra_pescas.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.29.1.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "#arrowhead",
+        "#arrowhead"
+      ],
+      "size": 63766,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "sw-wind-cache.js": {
+      "references": [
+        "/assets/js/wind-animation-core.js",
+        "/assets/js/wind-data-loader.js",
+        "/assets/js/wind-time-dimension.js",
+        "/assets/js/wind-integration.js",
+        "/assets/js/wind-testing.js"
+      ],
+      "size": 11462,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-wind-performance.js": {
+      "references": [],
+      "size": 5932,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-velocity-control.js": {
+      "references": [],
+      "size": 8116,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-wind-animation.js": {
+      "references": [],
+      "size": 9205,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "copernicus_authenticated_angola.json": {
+      "references": [],
+      "size": 2006,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "angola.geojson": {
+      "references": [],
+      "size": 2284,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-fixed.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        ");\n                link.click("
+      ],
+      "size": 29921,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "sw-advanced.js": {
+      "references": [
+        "/admin.html",
+        "/index.html",
+        "/assets/css/admin.css",
+        "/assets/js/admin.js",
+        "/assets/js/intelligent-cache.js",
+        "/manifest.json",
+        "/index.html"
+      ],
+      "size": 20796,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-deckgl-final.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        ");\n                    link.click("
+      ],
+      "size": 71480,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "demonstracao_ministra_pescas.html.backup": {
+      "references": [],
+      "size": 82842,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "dashboard_cientifico.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "assets/css/unreal-engine-dashboard-styles.css",
+        "oceanario-digital.html",
+        "sheet.htm",
+        "https://cdn.plot.ly/plotly-2.26.0.min.js",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "assets/js/performance-optimizer.js",
+        "assets/js/unreal-ui-components.js",
+        "assets/js/deck-gl-integration.js",
+        "assets/js/unreal-engine-integration.js",
+        "assets/js/unreal-engine-inspired-dashboard.js",
+        "assets/js/dashboard-integration.js",
+        "powerbi-integration.js",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        "${src}",
+        "blob",
+        "blob",
+        "url);\n            },\n            \n            showExportSuccess(format, filename"
+      ],
+      "size": 323468,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-enhanced-ocean-offline 2.html": {
+      "references": [
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 21033,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_realtime_corrected.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "about:blank"
+      ],
+      "size": 10896,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_api.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 3351,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "angola 2.geojson": {
+      "references": [],
+      "size": 2284,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac_oceanographic.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 25288,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index.txt": {
+      "references": [],
+      "size": 5108,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "collaboration.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js?v=20250831",
+        "blob",
+        "url"
+      ],
+      "size": 29475,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "404.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 11979,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_dependencies_complete.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "blob",
+        "url"
+      ],
+      "size": 19416,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-enhanced-ocean-offline.html": {
+      "references": [
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 21033,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_cabinda_coordinates.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 5176,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_redirects": {
+      "references": [],
+      "size": 1788,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "admin-ubiquiti.html": {
+      "references": [
+        "../favicon.ico",
+        "../favicon-32x32.png",
+        "../favicon-16x16.png",
+        "../apple-touch-icon.png",
+        "assets/css/ubiquiti-design-system.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "assets/css/fontawesome-fallback.css",
+        "assets/css/admin.css",
+        "assets/css/components.css",
+        "assets/css/admin-inline.css",
+        "#main-content",
+        "#dashboard",
+        "dashboard.html",
+        "dashboard_cientifico.html",
+        "collaboration.html",
+        "index.html",
+        "realtime_angola.html",
+        "mobile.html",
+        "minpermar/index.html",
+        "ubiquiti-ui-demo.html",
+        "/static/logo.png",
+        "assets/js/ubiquiti-navigation.js",
+        "assets/js/ubiquiti-integration.js",
+        "assets/js/admin.js"
+      ],
+      "size": 30513,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-admin-optimization.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 11300,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ADMIN_OPTIMIZATION_REPORT.md": {
+      "references": [],
+      "size": 4371,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-simple-map.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 5128,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "dashboard.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js",
+        "assets/js/zee_angola_official.js?v=20250831",
+        "blob",
+        "blob"
+      ],
+      "size": 27608,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "sw-backup.js": {
+      "references": [
+        "nezasa-polyfill.js"
+      ],
+      "size": 6254,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test-debug-fixes.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 14359,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_headers": {
+      "references": [],
+      "size": 1858,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "bgapp-enhanced-demo.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "/static/logo.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js",
+        "assets/js/enhanced-coastline-system.js",
+        "assets/js/robust-error-handler.js",
+        "assets/js/apple-ui-system.js",
+        "assets/js/bgapp-enhanced-system.js"
+      ],
+      "size": 13012,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ocean-test.html": {
+      "references": [
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 21463,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-oceanic-hybrid.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/BGAPP/manifest.json",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://bgapp-admin.pages.dev/",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://cdn.plot.ly/plotly-latest.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "assets/js/enhanced-ocean-shaders-v1.js",
+        "assets/js/advanced-3d-marine-visualization-v2.js",
+        "assets/js/unreal-engine-inspired-dashboard.js",
+        "assets/js/safe-ocean-integration-v1.js"
+      ],
+      "size": 59573,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "mobile.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "/static/logo.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js?v=20250831",
+        "blob",
+        "url"
+      ],
+      "size": 31342,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-integration-snippet 2.html": {
+      "references": [
+        "/static/css/ml-demo-enhanced-ui.css",
+        "/static/js/ml-demo-ui-enhancer.js",
+        "/static/js/ml-demo-retention-integration.js"
+      ],
+      "size": 7270,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "admin_new_services_integration.html": {
+      "references": [
+        "#maxent-service",
+        "#boundary-service",
+        "#coastal-service",
+        "#mcda-service"
+      ],
+      "size": 39594,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_mapa_simples.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 3386,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-apple-design.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js?v=fresh"
+      ],
+      "size": 23400,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "realtime_angola_fix.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 5716,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "enhanced-ocean 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 24445,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "health_dashboard.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      ],
+      "size": 30266,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_api_section.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "assets/js/admin.js?v=20250901-0315"
+      ],
+      "size": 5902,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ubiquiti-ui-demo.html": {
+      "references": [
+        "../favicon.ico",
+        "../apple-touch-icon.png",
+        "assets/css/ubiquiti-design-system.css",
+        "assets/js/ubiquiti-navigation.js"
+      ],
+      "size": 24491,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "realtime_angola_debug.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 24029,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "manifest.json": {
+      "references": [
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/apple-touch-icon.png",
+        "/logo.png"
+      ],
+      "size": 797,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "test-admin-simple.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 4811,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "bgapp-enhanced-ocean-system 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 25223,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "realtime_angola.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "#",
+        "#",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "/static/logo.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 110355,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "realtime_angola_fixed.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 23362,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "debug.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png"
+      ],
+      "size": 4479,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "qgis_dashboard.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      ],
+      "size": 42998,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "clear-cache.js": {
+      "references": [],
+      "size": 1413,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "test_final_validation.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 18496,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "powerbi-integration 2.js": {
+      "references": [],
+      "size": 8858,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-fixed 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        ");\n                link.click("
+      ],
+      "size": 29921,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-demo-integration-snippet.html": {
+      "references": [
+        "/static/css/ml-demo-enhanced-ui.css",
+        "/static/js/ml-demo-ui-enhancer.js",
+        "/static/js/ml-demo-retention-integration.js"
+      ],
+      "size": 7270,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-oceanic-hybrid 2.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/BGAPP/manifest.json",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://bgapp-admin.pages.dev/",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://cdn.plot.ly/plotly-latest.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "assets/js/enhanced-ocean-shaders-v1.js",
+        "assets/js/advanced-3d-marine-visualization-v2.js",
+        "assets/js/unreal-engine-inspired-dashboard.js",
+        "assets/js/safe-ocean-integration-v1.js"
+      ],
+      "size": 59573,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-fixed-css.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      ],
+      "size": 9642,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "force-particle-visibility.js": {
+      "references": [],
+      "size": 4018,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "bgapp-wind-animation-demo.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/wind-performance-config.js",
+        "assets/js/wind-animation-core.js",
+        "assets/js/wind-data-loader.js",
+        "assets/js/wind-time-dimension.js",
+        "assets/js/wind-integration.js",
+        "test-wind-animation.js",
+        "test-wind-performance.js",
+        "test-velocity-control.js",
+        "force-particle-visibility.js"
+      ],
+      "size": 24457,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "enhanced-ocean.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 24445,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "404 2.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 11979,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "qgis_fisheries.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+        "assets/js/zee_angola_official.js?v=20250831",
+        "assets/js/eox-layers.js?v=20250901",
+        "blob",
+        "url"
+      ],
+      "size": 61359,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "demonstracao_ministra_pescas 2.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.29.1.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "#arrowhead",
+        "#arrowhead"
+      ],
+      "size": 63766,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index 2.txt": {
+      "references": [],
+      "size": 5108,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "oceanario-digital.html": {
+      "references": [
+        "favicon.ico",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "assets/css/advanced-3d-marine-styles.css",
+        "assets/css/unreal-engine-dashboard-styles.css",
+        "dashboard_cientifico.html",
+        "dashboard_cientifico.html",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "assets/js/advanced-3d-marine-visualization-v2-fixed.js",
+        "assets/js/marine-3d-integration.js",
+        "assets/js/unreal-engine-integration.js",
+        "assets/js/performance-optimizer.js"
+      ],
+      "size": 61491,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "sw.js": {
+      "references": [
+        "nezasa-polyfill.js"
+      ],
+      "size": 6685,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "favicon-32x32.png": {
+      "references": [],
+      "size": 1970,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "mobile_pwa.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/manifest.json",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "#",
+        "#",
+        "#",
+        "#",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        "${e.target.result}",
+        "file);\n            }\n        }\n\n        // Handle Form Submit\n        async function handleSubmit(event) {\n            event.preventDefault();\n            \n            const observation = {\n                id: Date.now().toString(",
+        "photoInput.files[0]);\n            }\n            \n            // Save locally\n            appState.observations.push(observation",
+        "blob",
+        "url);\n        }\n\n        // Utility Functions\n        function cancelObservation("
+      ],
+      "size": 24155,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "index-backup.html": {
+      "references": [
+        "favicon.ico",
+        "favicon-32x32.png",
+        "favicon-16x16.png",
+        "apple-touch-icon.png",
+        "/BGAPP/manifest.json",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://bgapp-admin.pages.dev/",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "https://cdn.plot.ly/plotly-latest.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "assets/js/enhanced-ocean-shaders-v1.js",
+        "assets/js/advanced-3d-marine-visualization-v2.js",
+        "assets/js/unreal-engine-inspired-dashboard.js",
+        "assets/js/safe-ocean-integration-v1.js"
+      ],
+      "size": 36742,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_sst 2.json": {
+      "references": [],
+      "size": 3028,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/collections.json": {
+      "references": [
+        "/stac-data/zee_angola_sst.json",
+        "/stac-data/zee_angola_chlorophyll.json",
+        "/stac-data/zee_angola_biodiversity.json"
+      ],
+      "size": 3507,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_sst.json": {
+      "references": [],
+      "size": 3028,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_chlorophyll.json": {
+      "references": [],
+      "size": 3229,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/collections 2.json": {
+      "references": [
+        "/stac-data/zee_angola_sst.json",
+        "/stac-data/zee_angola_chlorophyll.json",
+        "/stac-data/zee_angola_biodiversity.json"
+      ],
+      "size": 3507,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_biodiversity 2.json": {
+      "references": [],
+      "size": 4310,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_chlorophyll 2.json": {
+      "references": [],
+      "size": 3229,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "stac-data/zee_angola_biodiversity.json": {
+      "references": [],
+      "size": 4310,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/css/d83afdaf189c48d1.css": {
+      "references": [
+        "/_next/static/media/55c55f0601d81cf3-s.woff2",
+        "/_next/static/media/26a46d62cd723877-s.woff2",
+        "/_next/static/media/97e0cb1ae144a2a9-s.woff2",
+        "/_next/static/media/581909926a08bbc8-s.woff2",
+        "/_next/static/media/df0a9ae256c0569c-s.woff2",
+        "/_next/static/media/8e9860b6e62d6359-s.woff2",
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:hsla(0,0%,100%,.5)}.leaflet-container{font-family:Helvetica Neue,Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:700 18px Lucida Console,Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:url(/_next/static/media/layers.ef6db872.png);width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(/_next/static/media/layers-2x.9859cd12.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(/_next/static/media/marker-icon.d577052a.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:hsla(0,0%,100%,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;box-sizing:border-box;background:hsla(0,0%,100%,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4",
+        "data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
+      ],
+      "size": 80686,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/432-940ee68eb6163d2a.js": {
+      "references": [],
+      "size": 18080,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/webpack-2fada69a37bc3f0e.js": {
+      "references": [
+        "static/css/d83afdaf189c48d1.css"
+      ],
+      "size": 3845,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/framework-0d01cdd3f4d700bf.js": {
+      "references": [],
+      "size": 140087,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/polyfills-c67a75d1b6f99dc8.js": {
+      "references": [],
+      "size": 91460,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/83-083cbc48c5e3c8f4.js": {
+      "references": [
+        "util",
+        "@emotion/is-prop-valid"
+      ],
+      "size": 684298,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/938-25da2b72b267cb27.js": {
+      "references": [],
+      "size": 104834,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/fd9d1056-c6485e9518545872.js": {
+      "references": [],
+      "size": 171903,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/main-app-524d4586f41c97aa.js": {
+      "references": [],
+      "size": 471,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/205-439b9f637acb1c1c.js": {
+      "references": [
+        "/dashboard_cientifico.html",
+        "/dashboard.html",
+        "/collaboration.html",
+        "/stac_oceanographic.html",
+        "/ml-demo.html",
+        "/advanced-animations-demo.html",
+        "/bgapp-enhanced-demo.html",
+        "/realtime_angola.html",
+        "/health_dashboard.html",
+        "/realtime_angola_debug.html",
+        "/realtime_angola_fixed.html",
+        "/qgis_dashboard.html",
+        "/qgis_fisheries.html",
+        "/index.html",
+        "/index-apple-design.html",
+        "/test_mapa_simples.html",
+        "/test_zee_limpa.html",
+        "/qgis_fisheries.html",
+        "/bgapp-wind-animation-demo.html",
+        "/minpermar-site/index.html",
+        "/admin.html",
+        "/admin-ubiquiti.html",
+        "/ubiquiti-ui-demo.html",
+        "/debug.html",
+        "/mobile_pwa.html",
+        "/mobile.html",
+        "/test_dashboard.html",
+        "/test_api.html",
+        "/test_dependencies.html",
+        "/test_final_validation.html",
+        "/test_realtime_corrected.html",
+        "/test-admin-simple.html",
+        "/test-mobile-menu.html",
+        "/test-debug-fixes.html",
+        "/test-real-functionality.html",
+        "/test-simple-map.html",
+        "/test_cabinda_coordinates.html",
+        "/test-admin-optimization.html",
+        "/force-cache-clear.html",
+        "/admin_new_services_integration.html",
+        "/qgis_dashboard.html",
+        "/qgis_fisheries.html",
+        "/dashboard_cientifico.html",
+        "/realtime_angola.html",
+        "/qgis_dashboard.html",
+        "/mobile_pwa.html",
+        "https://bgapp-frontend.pages.dev/realtime_angola.html",
+        "https://bgapp-frontend.pages.dev/dashboard_cientifico.html",
+        "https://bgapp-frontend.pages.dev/qgis_dashboard.html",
+        "https://bgapp-frontend.pages.dev/qgis_fisheries.html",
+        "/realtime_copernicus_angola.json",
+        "/bgapp-enhanced-ocean-system.html",
+        "https://bgapp-frontend.pages.dev/dashboard_cientifico.html",
+        "https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html",
+        "https://bgapp-frontend.pages.dev/dashboard_cientifico.html",
+        "https://bgapp-frontend.pages.dev/dashboard_cientifico.html",
+        "https://bgapp-frontend.pages.dev/collaboration.html",
+        "https://bgapp-frontend.pages.dev/index.html",
+        "https://bgapp-frontend.pages.dev/realtime_angola.html",
+        "https://bgapp-frontend.pages.dev/qgis_dashboard.html",
+        "https://bgapp-frontend.pages.dev/qgis_fisheries.html",
+        "https://bgapp-frontend.pages.dev/mobile_pwa.html",
+        "https://bgapp-frontend.pages.dev/mobile.html",
+        "https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html",
+        "https://bgapp-frontend.pages.dev/health_dashboard.html",
+        "https://bgapp-frontend.pages.dev/debug.html",
+        "https://bgapp-frontend.pages.dev/debug.html",
+        "https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html",
+        "https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html",
+        "https://bgapp-frontend.pages.dev/minpermar/dist/index.html",
+        "https://bgapp-frontend.pages.dev/dashboard_cientifico.html",
+        "https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html",
+        "https://bgapp-frontend.pages.dev/dashboard.html",
+        "https://bgapp-frontend.pages.dev/index.html",
+        "https://bgapp-frontend.pages.dev/realtime_angola.html",
+        "https://bgapp-frontend.pages.dev/mobile_pwa.html",
+        "https://bgapp-frontend.pages.dev/mobile.html",
+        "https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html",
+        "https://bgapp-frontend.pages.dev/bgapp-wind-animation-demo.html",
+        "https://bgapp-frontend.pages.dev/minpermar/dist/index.html",
+        "https://bgapp-frontend.pages.dev/health_dashboard.html",
+        "https://bgapp-frontend.pages.dev/debug.html"
+      ],
+      "size": 413017,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/main-afc31916d3192a99.js": {
+      "references": [
+        "pages-manifest.json",
+        "app-paths-manifest.json",
+        "app-path-routes-manifest.json",
+        "build-manifest.json",
+        "app-build-manifest.json",
+        "functions-config-manifest.json",
+        "export-marker.json",
+        "export-detail.json",
+        "prerender-manifest.json",
+        "routes-manifest.json",
+        "images-manifest.json",
+        "required-server-files.json",
+        "_devPagesManifest.json",
+        "middleware-manifest.json",
+        "_devMiddlewareManifest.json",
+        "react-loadable-manifest.json",
+        "font-manifest.json",
+        "next.config.js",
+        "index.json"
+      ],
+      "size": 109417,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/page-e6427ae24b6b8a9c.js": {
+      "references": [],
+      "size": 1248,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/layout-6742260071a5492a.js": {
+      "references": [],
+      "size": 12051,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/_not-found-3dd3242a41072f29.js": {
+      "references": [],
+      "size": 1827,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/ml-auto-ingestion/page-db2b905578b10952.js": {
+      "references": [],
+      "size": 1212,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/ml-predictive-filters/page-f9a0cbc764295eeb.js": {
+      "references": [],
+      "size": 1219,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/app/ml-models-manager/page-829eec3453123804.js": {
+      "references": [],
+      "size": 1216,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/pages/_error-0ffac66cb3fae446.js": {
+      "references": [],
+      "size": 250,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/chunks/pages/_app-8e650e1c50ef0819.js": {
+      "references": [],
+      "size": 284,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/aEFzmvFrCitF_ShHitEhZ/_ssgManifest.js": {
+      "references": [],
+      "size": 80,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/aEFzmvFrCitF_ShHitEhZ/_buildManifest.js": {
+      "references": [
+        "static/chunks/pages/_error-0ffac66cb3fae446.js"
+      ],
+      "size": 224,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/marker-icon.d577052a.png": {
+      "references": [],
+      "size": 1466,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/581909926a08bbc8-s.woff2": {
+      "references": [],
+      "size": 19072,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/layers-2x.9859cd12.png": {
+      "references": [],
+      "size": 1259,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/layers.ef6db872.png": {
+      "references": [],
+      "size": 696,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/97e0cb1ae144a2a9-s.woff2": {
+      "references": [],
+      "size": 11220,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/df0a9ae256c0569c-s.woff2": {
+      "references": [],
+      "size": 10280,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/55c55f0601d81cf3-s.woff2": {
+      "references": [],
+      "size": 25908,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/26a46d62cd723877-s.woff2": {
+      "references": [],
+      "size": 18820,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/8e9860b6e62d6359-s.woff2": {
+      "references": [],
+      "size": 85272,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "_next/static/media/e4af272ccee01ff0-s.p.woff2": {
+      "references": [],
+      "size": 48432,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-auto-ingestion/index.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-auto-ingestion/page-db2b905578b10952.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23347,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "ml-auto-ingestion/index.txt": {
+      "references": [],
+      "size": 5641,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-auto-ingestion/index 2.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-auto-ingestion/page-db2b905578b10952.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23347,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-auto-ingestion/index 2.txt": {
+      "references": [],
+      "size": 5641,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "minpermar-site/index.html": {
+      "references": [
+        "data:image/x-icon;base64,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",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHeUlEQVR4nJVXbYyUVxV+zr33fd+d2YHu7izsLiyUpUAKTTDWiFjArT/8VfEPrB/VRGObpomhBVd/mKjTLUltRFxqmzYSEzU1rbI2Umyiv0y2tkJDF8FYQUQi7G5hFxaY/ZqZ933vPebemdmdnZmFcpJJdmbvOc+5z/m8hDtJd0ZhsC8uf23ZsmdpEDSsA/G92qAVYBJEExB0KYfkhexg360qXQ2AFzNPiyNnBNBn7F8dn3giaRJLvgCiXWD+FIAVJKQEldSZwSY2AF0B8D5BvBEZHJ3424GpalsfzYGeHomBAes52nf0PgnQd0l6ax2WicHGXcqAqXgzYgIsERKQCgSCiaNhJv7puDj5EgYH40qbt3egu0j5sq371glP/kJIv5tNBNZxUZkgMHf1arFUkLGMk1CSpAeto/f8uPD4yPGf/bM6nLUOlA60PbTns5CJIyRkK8f5uAQqcFfCzAztKV/lGFM3jHkU7xx4q9oJsYB2C77t6YchE38icCt0PiYh1N2Du7uRJ0jd0kavMbklz5ixN5Pbv/15B26xFjqQERgYMG07ersg/DcIHIC1LkRGFcIIVIdxZsAwu4+9arUoArKhwapwWn4vumzephT5pH63atveB1wuZGxiwjlAyDgnCIZfJalawHFciLTs6mzF+nvbUM8JpQQafM99PCXrglv95zuBfl4m3hUp0ygoGUK8tqkn45dpEujOSPT1meXbJx8TXmIbRzbmlnaGksIBVV7QuqGNQbqpEetWL3cg6eYUjLFVRpBgTEKikwvYz6M4FKzCKWpEK2IZxWEs/MTmiauTT1tMi23tUefWfQ2hxHkh1Uo2MRdLitzNLXhD4NXQzCX6HY1EjiELPuXAQzyrh9FvWh142hewVl3pkgSzuVmQel128IVbNgQcSd4pvUQna9dMRBkgsBTXAS+mGBUZEqIWPL6MQ7IDfw+aK8BLjBvN0kukAy165pOQxJdL7XIBkgWuB150oBQQ60g1uFqBU6IRLRxVgM8HkY2xLexL7lv6oW8uUaLpLJFcyTzPQH1QghQ2VxlaG2jDEMYgp3yskTH2x5dxUHRgCEm0IIZtIHXEdikC65sc6Y3KF80bDLiD2SVRsTSoCFIpQhAKhRgzuQICX2FJKoGmQEEHDVgxmcVT187h+7IDZxM+VvoaBbYNuUJ/3qalgIlkMyQ2qdiYNVJ5gk3kbm8MIxeGSCb8uey34DO5EKs7WvDoI1uw7cH1WN3WhKb0PcgPjyJ/4EUUfpDByGgebx19G+cuX0MqGcDaKoer6LjnbIFhIKWE4bWKhEi7E0xsPWxM+PjY/Z04fXbYlaClPZcPsXnDShx7eQ+alybnuRy7hvCln6Oj90kEGzfghwD27fo0dj/1Ck6c+S8ak4HLoTg22LK5CxcujbuLWDaK+WNaFdgsCJQF9D2bVpXJaBuPRKLBm/stHL2KGz/qR8u3HoO/ccPc74nAg+fZUqsMOpzNmo7KRNS+vXc3hByoDEE+jBwTC0IwG2JT13Ls3vUwdt7XjKW//DW8x7+O1McfwOT1LD6cmMJ7Zy7i1WPHcebfI3VCELquWQqBJuVJo8MnqP0zvZ9kwycqB5M9VFaeuwEBYwWDZYUZPMej+FXzfbjW0QkvN4vpfISbk7OYns07EJs/lfp1bDKRIMP4nErOTJ2faWgcJ6HamV0XpGplG5AsS2wINPbLCfTLLpzUDUhdHIERwsXUkwKtTanigKrSt1IJbsuQWWcN8Qfi4tDhLBOdJKnYZWeVVHa4Z8JLOCja8T4lkUZsEwNSCvex5mNt6oIvjDsMCY+Z6fT1vx66UqKdj9TbcuxUmyJV0+GadAQV+Ni4th1rVqRdX1isXdeOcmYSljP+fZFdu9HJwlETYYyEWl7uhuWR2sk5PCuuVrTXGJEQCKMYw1dvuESNYl0DVBxmdvEpzpSig8wQUpgol5Vh8LrLDTsSrw2+PA3Cc6R8siGsmed2qsmUA7ft1UJZqm1lzObCGtrLk7Rmn2BooQLBMP0fnnx+wq5nwu3tmYzozM28osPcKaV8lYXU1fO8DF6d2a6sFpEF+wSzJuUrE+bPy9zsAbcRDfZpN47t4aGhw1FC6q/lDU+v54LYT1fMj0dinLg4XjVS7yzlUf6fS2P414UraAiUYRAxm4hYf/XK0OHZ8lGa0yrt7f6O3kf267Fjf6al4rhI6TRieTfglVKknbWrO+kRh4WvjB3v/y16jkgMfFEvupant+3dqUXwWqNAyq5Rbt9Y9C2wOA+u40lfMZuQOfzG+DsvvL74Wm7F/qM7oybePfTHJjOzPTZmSPpJRSQJzLE1eLt3nvufPWPPkiThJ+2s+YBN3F0P3Mrtn2abevy21tX7iMVekl673Rns08yudnaxsxVcwi0WvF0lhR06EkYXJojwIt+6+pOxf/xmppL2OzsAK/MPys6t+1pCX+0mg10APwhCKwm7ipfV7SNB2+vfIBKnmc0fEOPI2PGD40VTGeG24Dpyp7iSW9sraFvW/Z12AXk/4mitdaR4e3GdWfwv9uNzN/7SPzqn/RGe5/8HBET310A/P4QAAAAASUVORK5CYII=",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC5UlEQVR4nFWTTWxUVRTH/+ec+97Me/0YUik0bK073dQYTAk0IUEpTdxNXLgxMZG4EEyNC1ZuNQQWGjds0KVOJCExECwE2lAIMQZxYVyw8GNha0tbp9OZN+/dew55r1PFuzqLez5//z9h7zWbglYrAKCJYx/NmtlrMHsBMCKSx0a6sLr0xzWgFZrNprR2/4KeTZ44+uExEH8K0KsgBmCD6gSYgsx+aFs4t3P34q29HNoLDk6ffdskvkxgwHKDkapp1YCJjcko45ifM4+X/cbpr+9fvlROQuWH8aPz0wRZTmIxmGq3XwgTIY5c1d8XHpkBjVjCSWvTnTDMm8TH/146f5sx87Fjtc+rkU21XHjvLEk9wlAtQgbCqAXM2j9yi0dtBQ6k/jObfL/mJnznBCSaIi202zcp146cQM2w/mQbOTPGI8IstXEjH8ETCpKSV+XoxQMHccqp2alyRx/URBgshK1OFzURjI3vQ63IMbX2J67QKPKRGhL1yIOZEy7vNOeIMGmm1BiuU78I2Nru4a3ZV/DBOycxJoC7/wDbL72L+rcP8M3VZSQjKRqpUKenxIznXcm5AkW7RNkMFscYDgXShz+jmD4MkxgpGXTAnQb0zUB04Mj8F+zi93yeqROSggXo7GAObfw0dgi9JMXm2ha6/QKN4aS6TQgaXFxn9fmXJa3rMKVIiPpGGPIF3kwy3Ev2Y1UFWXsHLIx9oyl80KqAEyKYEZNe49Ve5wbUP8q4xiXnubiH720E6xShbgFgrtYrfEBaj5HWoqAUkWn+a002v2P8eKkA5Ox+K1CK5CY3wjo5JFB0c49+XuyKolK1BaKyIBMznfl98auMSzmu3D2/OO03Ti+GIV4rWBIyDYbABCWCoowZ2isg3cIEmp35a+niQmmD/5lp6Mj8iYa4TxSY2lXmwEwloSrWRwh6bmX5wvX/zPSvmwcWnZlxE3b4DTN93UwnK8DEj8mwsLLx21X80sqfsT6eAr7cc02RM1UzAAAAAElFTkSuQmCC",
+        "/minpermar-site/assets/apple-touch-icon-f2890812.png",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap",
+        "/minpermar-site/assets/vendor-b69f2a9f.js",
+        "/minpermar-site/assets/router-a94a9c26.js",
+        "/minpermar-site/assets/i18n-f16bbeb4.js",
+        "/minpermar-site/assets/index-df2673d1.css",
+        "/minpermar-site/assets/index-fc39c1aa.js"
+      ],
+      "size": 8487,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/clear-sw.js": {
+      "references": [
+        "sw.js",
+        "sw.js",
+        "sw.js"
+      ],
+      "size": 2649,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/vendor-b69f2a9f.js": {
+      "references": [],
+      "size": 141275,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-fc39c1aa.js": {
+      "references": [
+        "@emotion/is-prop-valid",
+        "./vendor-b69f2a9f.js",
+        "./router-a94a9c26.js",
+        "./i18n-f16bbeb4.js"
+      ],
+      "size": 229773,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-9f1e5de8.js": {
+      "references": [
+        "@emotion/is-prop-valid",
+        "./vendor-b69f2a9f.js",
+        "./router-a94a9c26.js",
+        "./i18n-f16bbeb4.js"
+      ],
+      "size": 212997,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-df2673d1.css": {
+      "references": [],
+      "size": 42101,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/i18n-f16bbeb4.js": {
+      "references": [
+        "./vendor-b69f2a9f.js"
+      ],
+      "size": 65239,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-00b4081e.css": {
+      "references": [],
+      "size": 37684,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-f55ff605.js": {
+      "references": [
+        "@emotion/is-prop-valid",
+        "./vendor-b69f2a9f.js",
+        "./router-a94a9c26.js",
+        "./i18n-f16bbeb4.js"
+      ],
+      "size": 179568,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-e650787d.css": {
+      "references": [],
+      "size": 29987,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-3c65e43f.css": {
+      "references": [],
+      "size": 30022,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/router-a94a9c26.js": {
+      "references": [
+        "./vendor-b69f2a9f.js"
+      ],
+      "size": 20642,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/apple-touch-icon-f2890812.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar-site/assets/index-faaa3f65.js": {
+      "references": [
+        "@emotion/is-prop-valid",
+        "./vendor-b69f2a9f.js",
+        "./router-a94a9c26.js",
+        "./i18n-f16bbeb4.js"
+      ],
+      "size": 179553,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/tsconfig.node.json": {
+      "references": [],
+      "size": 213,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/index.html": {
+      "references": [
+        "../favicon.ico",
+        "../favicon-32x32.png",
+        "../favicon-16x16.png",
+        "../apple-touch-icon.png",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap",
+        "/src/main.tsx"
+      ],
+      "size": 1710,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "minpermar/tailwind.config.js": {
+      "references": [
+        "./index.html"
+      ],
+      "size": 1649,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/README.md": {
+      "references": [],
+      "size": 5182,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/package-lock.json": {
+      "references": [
+        "bin/babel-parser.js",
+        "fraction.js",
+        "cli.js",
+        "node_modules/fraction.js",
+        "https://locize.com/i18next.html",
+        "bin/jiti.js",
+        "lib/cli.js",
+        "cli.js",
+        "bin/semver.js",
+        "lib/cli.js",
+        "lib/cli.js",
+        "cli.js",
+        "bin/vite.js"
+      ],
+      "size": 95206,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/package.json": {
+      "references": [],
+      "size": 1148,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/tsconfig.json": {
+      "references": [
+        "./tsconfig.node.json"
+      ],
+      "size": 659,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/vite.config.ts": {
+      "references": [],
+      "size": 722,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/postcss.config.js": {
+      "references": [],
+      "size": 80,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/index.html": {
+      "references": [
+        "data:image/x-icon;base64,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",
+        "data:image/png;base64,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",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC5UlEQVR4nFWTTWxUVRTH/+ec+97Me/0YUik0bK073dQYTAk0IUEpTdxNXLgxMZG4EEyNC1ZuNQQWGjds0KVOJCExECwE2lAIMQZxYVyw8GNha0tbp9OZN+/dew55r1PFuzqLez5//z9h7zWbglYrAKCJYx/NmtlrMHsBMCKSx0a6sLr0xzWgFZrNprR2/4KeTZ44+uExEH8K0KsgBmCD6gSYgsx+aFs4t3P34q29HNoLDk6ffdskvkxgwHKDkapp1YCJjcko45ifM4+X/cbpr+9fvlROQuWH8aPz0wRZTmIxmGq3XwgTIY5c1d8XHpkBjVjCSWvTnTDMm8TH/146f5sx87Fjtc+rkU21XHjvLEk9wlAtQgbCqAXM2j9yi0dtBQ6k/jObfL/mJnznBCSaIi202zcp146cQM2w/mQbOTPGI8IstXEjH8ETCpKSV+XoxQMHccqp2alyRx/URBgshK1OFzURjI3vQ63IMbX2J67QKPKRGhL1yIOZEy7vNOeIMGmm1BiuU78I2Nru4a3ZV/DBOycxJoC7/wDbL72L+rcP8M3VZSQjKRqpUKenxIznXcm5AkW7RNkMFscYDgXShz+jmD4MkxgpGXTAnQb0zUB04Mj8F+zi93yeqROSggXo7GAObfw0dgi9JMXm2ha6/QKN4aS6TQgaXFxn9fmXJa3rMKVIiPpGGPIF3kwy3Ev2Y1UFWXsHLIx9oyl80KqAEyKYEZNe49Ve5wbUP8q4xiXnubiH720E6xShbgFgrtYrfEBaj5HWoqAUkWn+a002v2P8eKkA5Ox+K1CK5CY3wjo5JFB0c49+XuyKolK1BaKyIBMznfl98auMSzmu3D2/OO03Ti+GIV4rWBIyDYbABCWCoowZ2isg3cIEmp35a+niQmmD/5lp6Mj8iYa4TxSY2lXmwEwloSrWRwh6bmX5wvX/zPSvmwcWnZlxE3b4DTN93UwnK8DEj8mwsLLx21X80sqfsT6eAr7cc02RM1UzAAAAAElFTkSuQmCC",
+        "/minpermar-site/assets/apple-touch-icon-f2890812.png",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap",
+        "/minpermar-site/assets/vendor-b69f2a9f.js",
+        "/minpermar-site/assets/router-a94a9c26.js",
+        "/minpermar-site/assets/i18n-f16bbeb4.js",
+        "/minpermar-site/assets/index-df2673d1.css",
+        "/minpermar-site/assets/index-fc39c1aa.js"
+      ],
+      "size": 8487,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/clear-sw.js": {
+      "references": [
+        "sw.js",
+        "sw.js",
+        "sw.js"
+      ],
+      "size": 2649,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/vendor-b69f2a9f.js": {
+      "references": [],
+      "size": 141275,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/index-fc39c1aa.js": {
+      "references": [
+        "@emotion/is-prop-valid",
+        "./vendor-b69f2a9f.js",
+        "./router-a94a9c26.js",
+        "./i18n-f16bbeb4.js"
+      ],
+      "size": 229773,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/index-df2673d1.css": {
+      "references": [],
+      "size": 42101,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/i18n-f16bbeb4.js": {
+      "references": [
+        "./vendor-b69f2a9f.js"
+      ],
+      "size": 65239,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/router-a94a9c26.js": {
+      "references": [
+        "./vendor-b69f2a9f.js"
+      ],
+      "size": 20642,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/dist/assets/apple-touch-icon-f2890812.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/public/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/public/clear-sw.js": {
+      "references": [
+        "sw.js",
+        "sw.js",
+        "sw.js"
+      ],
+      "size": 2649,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/App.tsx": {
+      "references": [],
+      "size": 3476,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/main.tsx": {
+      "references": [],
+      "size": 347,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/index.css": {
+      "references": [],
+      "size": 1748,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/types/index.ts": {
+      "references": [],
+      "size": 1090,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/utils/cn.ts": {
+      "references": [],
+      "size": 283,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/PagePlaceholder.tsx": {
+      "references": [],
+      "size": 2812,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/Card.tsx": {
+      "references": [],
+      "size": 2533,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/SearchBar.tsx": {
+      "references": [],
+      "size": 7800,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/MetricCard.tsx": {
+      "references": [],
+      "size": 3573,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/HeroSection.tsx": {
+      "references": [],
+      "size": 5743,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/Badge.tsx": {
+      "references": [],
+      "size": 1422,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/InteractiveDashboard.tsx": {
+      "references": [],
+      "size": 9840,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/Button.tsx": {
+      "references": [],
+      "size": 2096,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/ui/NotificationSystem.tsx": {
+      "references": [],
+      "size": 5369,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/Layout/EnhancedHeader.tsx": {
+      "references": [],
+      "size": 10517,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/Layout/Footer.tsx": {
+      "references": [],
+      "size": 8772,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/Layout/LanguageSelector.tsx": {
+      "references": [],
+      "size": 2340,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/components/Layout/Header.tsx": {
+      "references": [],
+      "size": 7466,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/i18n/config.ts": {
+      "references": [],
+      "size": 816,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/i18n/locales/pt.json": {
+      "references": [],
+      "size": 2183,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/i18n/locales/en.json": {
+      "references": [],
+      "size": 2060,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/i18n/locales/fr.json": {
+      "references": [],
+      "size": 2239,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Studies.tsx": {
+      "references": [],
+      "size": 648,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Transparency.tsx": {
+      "references": [],
+      "size": 686,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/News.tsx": {
+      "references": [],
+      "size": 597,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Aquaculture.tsx": {
+      "references": [],
+      "size": 2256,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Home.tsx": {
+      "references": [],
+      "size": 16081,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Contact.tsx": {
+      "references": [],
+      "size": 639,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Services.tsx": {
+      "references": [],
+      "size": 16505,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/BlueEconomy.tsx": {
+      "references": [],
+      "size": 693,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Fisheries.tsx": {
+      "references": [],
+      "size": 2271,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/Education.tsx": {
+      "references": [],
+      "size": 688,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/About.tsx": {
+      "references": [],
+      "size": 14603,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/legal/Terms.tsx": {
+      "references": [],
+      "size": 500,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/legal/Accessibility.tsx": {
+      "references": [],
+      "size": 533,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/legal/Privacy.tsx": {
+      "references": [],
+      "size": 526,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/services/Consultation.tsx": {
+      "references": [],
+      "size": 631,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/services/Reporting.tsx": {
+      "references": [],
+      "size": 610,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/services/Licensing.tsx": {
+      "references": [],
+      "size": 626,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "minpermar/src/pages/services/Certification.tsx": {
+      "references": [],
+      "size": 632,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "images/news/aquaculture-policy.jpg": {
+      "references": [],
+      "size": 8488,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/news/fishermen-training.jpg": {
+      "references": [],
+      "size": 8524,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/news/ocean-conference.jpg": {
+      "references": [],
+      "size": 7772,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/hero/fishing-boats.jpg": {
+      "references": [],
+      "size": 20507,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/leadership/minister.jpg": {
+      "references": [],
+      "size": 9058,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/leadership/secretary.jpg": {
+      "references": [],
+      "size": 6825,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "images/leadership/director.jpg": {
+      "references": [],
+      "size": 6332,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-predictive-filters/index.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-predictive-filters/page-f9a0cbc764295eeb.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23458,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "ml-predictive-filters/index.txt": {
+      "references": [],
+      "size": 5656,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-predictive-filters/index 2.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-predictive-filters/page-f9a0cbc764295eeb.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23458,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-predictive-filters/index 2.txt": {
+      "references": [],
+      "size": 5656,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "BGAPP/favicon-16x16.png": {
+      "references": [],
+      "size": 798,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/favicon.ico": {
+      "references": [],
+      "size": 1992,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js"
+      ],
+      "size": 58350,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/favicon-32x32 2.png": {
+      "references": [],
+      "size": 1970,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/niagara-underwater-demo.html": {
+      "references": [
+        "./favicon.ico",
+        "./apple-touch-icon.png"
+      ],
+      "size": 34839,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/apple-touch-icon.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/apple-touch-icon 2.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/favicon-16x16 2.png": {
+      "references": [],
+      "size": 798,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/favicon 2.ico": {
+      "references": [],
+      "size": 1992,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/logo 2.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index 2.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js"
+      ],
+      "size": 58350,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index-original-backup 2.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/three@0.158.0/build/three.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "%23ocean"
+      ],
+      "size": 54162,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index-original-backup.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/three@0.158.0/build/three.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js",
+        "%23ocean"
+      ],
+      "size": 54162,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index-niagara-enhanced.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js"
+      ],
+      "size": 46620,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/niagara-underwater-demo 2.html": {
+      "references": [
+        "./favicon.ico",
+        "./apple-touch-icon.png"
+      ],
+      "size": 34839,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/favicon-32x32.png": {
+      "references": [],
+      "size": 1970,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/index-niagara-enhanced 2.html": {
+      "references": [
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css",
+        "https://unpkg.com/aos@2.3.1/dist/aos.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "https://unpkg.com/deck.gl@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js",
+        "https://unpkg.com/@deck.gl/geo-layers@9.1.14/dist.min.js",
+        "https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.js",
+        "https://cdn.plot.ly/plotly-2.27.0.min.js",
+        "https://d3js.org/d3.v7.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://unpkg.com/aos@2.3.1/dist/aos.js"
+      ],
+      "size": 46620,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/advanced-3d-marine-styles.css": {
+      "references": [],
+      "size": 7900,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/ubiquiti-design-system.css": {
+      "references": [],
+      "size": 18015,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/admin-inline.css": {
+      "references": [],
+      "size": 5651,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/admin.css": {
+      "references": [],
+      "size": 27270,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/components.css": {
+      "references": [],
+      "size": 10919,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/ml-components.css": {
+      "references": [],
+      "size": 15858,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/fontawesome-fallback.css": {
+      "references": [],
+      "size": 4647,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/unreal-engine-dashboard-styles.css": {
+      "references": [],
+      "size": 13324,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/css/map-styles.css": {
+      "references": [],
+      "size": 6723,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/config/plugins.json": {
+      "references": [],
+      "size": 11180,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/safe-ocean-integration-v1.js": {
+      "references": [],
+      "size": 12054,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/3d-visualization.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"
+      ],
+      "size": 34703,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/enhanced-ocean-shaders-v1.js": {
+      "references": [],
+      "size": 21290,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/api-adapter.js": {
+      "references": [],
+      "size": 14380,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/copernicus-integration.js": {
+      "references": [],
+      "size": 28248,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-integration.js": {
+      "references": [],
+      "size": 30872,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-performance-config.js": {
+      "references": [],
+      "size": 6853,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/gsap-transitions.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"
+      ],
+      "size": 20804,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/advanced-3d-marine-visualization-v2.js": {
+      "references": [],
+      "size": 39952,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/cabinda_high_quality.js": {
+      "references": [],
+      "size": 8684,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ue5-ocean-shaders.js": {
+      "references": [],
+      "size": 25744,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/admin-mobile-fixed.js": {
+      "references": [],
+      "size": 8917,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ml-map-overlays.js": {
+      "references": [],
+      "size": 30962,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-time-dimension.js": {
+      "references": [],
+      "size": 20733,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/niagara-underwater-effects.js": {
+      "references": [],
+      "size": 49593,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/performance-optimizer.js": {
+      "references": [],
+      "size": 17253,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ml-enhanced-visualizations-deckgl.js": {
+      "references": [],
+      "size": 25130,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ml-service.js": {
+      "references": [],
+      "size": 5064,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ml-enhanced-visualizations.js": {
+      "references": [],
+      "size": 21787,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/admin-mobile-final.js": {
+      "references": [],
+      "size": 7814,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/unreal-engine-inspired-dashboard.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/SSAOPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/TAARenderPass.js"
+      ],
+      "size": 32238,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/admin-test.js": {
+      "references": [
+        "admin.css",
+        "components.css",
+        "admin-inline.css",
+        "fontawesome-fallback.css"
+      ],
+      "size": 6058,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/offline-capability.js": {
+      "references": [],
+      "size": 34027,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/enhanced-ocean-offline-v1.js": {
+      "references": [],
+      "size": 22793,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/projection-manager.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.min.js"
+      ],
+      "size": 30530,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/aguas_internas.js": {
+      "references": [],
+      "size": 60844,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/nezasa-polyfill.js": {
+      "references": [],
+      "size": 1546,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/map-controller.js": {
+      "references": [],
+      "size": 20878,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/dashboard-integration.js": {
+      "references": [],
+      "size": 22404,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/sentinel2-integration.js": {
+      "references": [],
+      "size": 13360,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/intelligent-cache.js": {
+      "references": [],
+      "size": 12188,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/enhanced-ocean-niagara-integration.js": {
+      "references": [
+        "three/addons/controls/OrbitControls.js",
+        "./niagara-underwater-effects.js"
+      ],
+      "size": 33862,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ml-services-integration.js": {
+      "references": [
+        "/stac-data/collections.json",
+        "https://bgapp-frontend.pages.dev/stac_oceanographic.html"
+      ],
+      "size": 28657,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/fontawesome-fallback.js": {
+      "references": [
+        "fontawesome-fallback.css",
+        "assets/css/fontawesome-fallback.css"
+      ],
+      "size": 3652,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/marine-3d-integration.js": {
+      "references": [
+        "assets/css/advanced-3d-marine-styles.css",
+        "assets/js/advanced-3d-marine-visualization-v2-fixed.js"
+      ],
+      "size": 18306,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/leaflet-native-animations.js": {
+      "references": [],
+      "size": 30322,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/eox-layers.js": {
+      "references": [],
+      "size": 41043,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/api-plugin-manager.js": {
+      "references": [
+        "/assets/config/plugins.json"
+      ],
+      "size": 25411,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ubiquiti-integration.js": {
+      "references": [
+        "assets/css/ubiquiti-design-system.css",
+        "assets/js/ubiquiti-navigation.js"
+      ],
+      "size": 17475,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/bathymetry-gebco.js": {
+      "references": [],
+      "size": 21105,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/ubiquiti-navigation.js": {
+      "references": [],
+      "size": 18782,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/admin.js": {
+      "references": [
+        "index.html",
+        "biodiversity_data.json"
+      ],
+      "size": 124995,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/advanced-3d-marine-visualization-v2-fixed.js": {
+      "references": [],
+      "size": 35198,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/lottie-animations.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
+      ],
+      "size": 22225,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/real-functionality.js": {
+      "references": [],
+      "size": 33848,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-animation-core.js": {
+      "references": [],
+      "size": 40000,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/apple-ui-system.js": {
+      "references": [],
+      "size": 33710,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/metocean.js": {
+      "references": [],
+      "size": 19747,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/advanced-animation-system.js": {
+      "references": [
+        "/assets/animations/loading-ocean.json",
+        "/assets/animations/wind-particles.json",
+        "/assets/animations/ocean-waves.json",
+        "/assets/animations/fish-swimming.json"
+      ],
+      "size": 25795,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/advanced-3d-marine-visualization.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js",
+        "/realtime_copernicus_angola.json",
+        "/realtime_copernicus_angola.json"
+      ],
+      "size": 32642,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/robust-error-handler.js": {
+      "references": [],
+      "size": 23124,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/api-resilience.js": {
+      "references": [],
+      "size": 17546,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/unreal-engine-integration.js": {
+      "references": [],
+      "size": 35208,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/enhanced-coastline-system.js": {
+      "references": [
+        "Falha ao carregar arquivo zee_angola_official.js"
+      ],
+      "size": 20447,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/attribution-system.js": {
+      "references": [],
+      "size": 18029,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/health-checker.js": {
+      "references": [
+        "api-resilience.js",
+        "api-plugin-manager.js",
+        "api-adapter.js"
+      ],
+      "size": 19050,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/unreal-ml-visualizations.js": {
+      "references": [],
+      "size": 13756,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/deck-gl-integration.js": {
+      "references": [
+        "https://unpkg.com/deck.gl@latest/dist.min.js",
+        "https://unpkg.com/@loaders.gl/core@latest/dist/dist.min.js",
+        "https://unpkg.com/@loaders.gl/csv@latest/dist/dist.min.js"
+      ],
+      "size": 23165,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/zee_angola_official.js": {
+      "references": [],
+      "size": 3802,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/bgapp-enhanced-system.js": {
+      "references": [],
+      "size": 22107,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-data-loader.js": {
+      "references": [
+        "/sw-wind-cache.js"
+      ],
+      "size": 22163,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/unreal-ui-components.js": {
+      "references": [],
+      "size": 25038,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/admin-mobile.js": {
+      "references": [],
+      "size": 5045,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/unreal-engine-ocean-v5.js": {
+      "references": [],
+      "size": 43536,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/wind-testing.js": {
+      "references": [],
+      "size": 35105,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/coastlines_official.js": {
+      "references": [],
+      "size": 10552,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/js/windy-api-integration.js": {
+      "references": [],
+      "size": 20266,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/favicon-16x16.png": {
+      "references": [],
+      "size": 798,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/favicon.ico": {
+      "references": [],
+      "size": 1992,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/apple-touch-icon.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-144.png": {
+      "references": [],
+      "size": 9467,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-192.png": {
+      "references": [],
+      "size": 12364,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-384.png": {
+      "references": [],
+      "size": 25315,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-152.png": {
+      "references": [],
+      "size": 10326,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-72.png": {
+      "references": [],
+      "size": 4508,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-96.png": {
+      "references": [],
+      "size": 6089,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/create-icons.py": {
+      "references": [],
+      "size": 3335,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-128.png": {
+      "references": [],
+      "size": 8131,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/icon-512.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/img/favicon-32x32.png": {
+      "references": [],
+      "size": 1970,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/data/angola-coastline-detailed.json": {
+      "references": [],
+      "size": 5309,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "BGAPP/assets/data/eox-angola-coastline.json": {
+      "references": [],
+      "size": 2860,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "static/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/css/ml-demo-enhanced-ui 2.css": {
+      "references": [],
+      "size": 19640,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/css/ml-demo-enhanced-ui.css": {
+      "references": [],
+      "size": 19640,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/css/ml-demo-mobile-responsive 2.css": {
+      "references": [],
+      "size": 21676,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/css/ml-demo-mobile-responsive.css": {
+      "references": [],
+      "size": 21676,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-mobile-enhancer.js": {
+      "references": [
+        "/static/css/ml-demo-mobile-responsive.css"
+      ],
+      "size": 21228,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-ui-enhancer 2.js": {
+      "references": [
+        "/static/css/ml-demo-enhanced-ui.css"
+      ],
+      "size": 25228,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-mobile-enhancer 2.js": {
+      "references": [
+        "/static/css/ml-demo-mobile-responsive.css"
+      ],
+      "size": 21228,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-ui-enhancer.js": {
+      "references": [
+        "/static/css/ml-demo-enhanced-ui.css"
+      ],
+      "size": 25228,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-retention-integration.js": {
+      "references": [],
+      "size": 23503,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "static/js/ml-demo-retention-integration 2.js": {
+      "references": [],
+      "size": 23503,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "enhanced-ocean-demo/index.html": {
+      "references": [
+        "../favicon.ico",
+        "../favicon-32x32.png",
+        "../favicon-16x16.png",
+        "../apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "../assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 25238,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "enhanced-ocean-demo/index 2.html": {
+      "references": [
+        "../favicon.ico",
+        "../favicon-32x32.png",
+        "../favicon-16x16.png",
+        "../apple-touch-icon.png",
+        "https://unpkg.com/three@0.160.0/build/three.min.js",
+        "../assets/js/enhanced-ocean-offline-v1.js",
+        "blob",
+        "url"
+      ],
+      "size": 25238,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-models-manager/index.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-models-manager/page-829eec3453123804.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23347,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "ml-models-manager/index.txt": {
+      "references": [],
+      "size": 5641,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-models-manager/index 2.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/83-083cbc48c5e3c8f4.js",
+        "/_next/static/chunks/205-439b9f637acb1c1c.js",
+        "/_next/static/chunks/app/ml-models-manager/page-829eec3453123804.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 23347,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "ml-models-manager/index 2.txt": {
+      "references": [],
+      "size": 5641,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "404/index.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 11979,
+      "is_critical": true,
+      "is_in_critical_dir": false
+    },
+    "404/index 2.html": {
+      "references": [
+        "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+        "/_next/static/css/d83afdaf189c48d1.css",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+        "/manifest.json",
+        "/favicon-16x16.png",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/favicon.ico",
+        "/apple-touch-icon.png",
+        "/_next/static/chunks/fd9d1056-c6485e9518545872.js",
+        "/_next/static/chunks/938-25da2b72b267cb27.js",
+        "/_next/static/chunks/main-app-524d4586f41c97aa.js",
+        "/_next/static/chunks/432-940ee68eb6163d2a.js",
+        "/_next/static/chunks/app/layout-6742260071a5492a.js",
+        "/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+        "/_next/static/chunks/webpack-2fada69a37bc3f0e.js"
+      ],
+      "size": 11979,
+      "is_critical": false,
+      "is_in_critical_dir": false
+    },
+    "assets/css/advanced-3d-marine-styles.css": {
+      "references": [],
+      "size": 7900,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/unreal-engine-dashboard-styles 2.css": {
+      "references": [],
+      "size": 13324,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/ubiquiti-design-system.css": {
+      "references": [],
+      "size": 18015,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/admin-inline.css": {
+      "references": [],
+      "size": 5651,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/admin.css": {
+      "references": [],
+      "size": 27270,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/components.css": {
+      "references": [],
+      "size": 10919,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/ml-components.css": {
+      "references": [],
+      "size": 15858,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/fontawesome-fallback.css": {
+      "references": [],
+      "size": 4647,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/unreal-engine-dashboard-styles.css": {
+      "references": [],
+      "size": 13324,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/css/map-styles.css": {
+      "references": [],
+      "size": 6723,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/config/plugins.json": {
+      "references": [],
+      "size": 11180,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/enhanced-ocean-offline-v1 2.js": {
+      "references": [],
+      "size": 22793,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/dashboard-integration 2.js": {
+      "references": [],
+      "size": 22404,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/safe-ocean-integration-v1.js": {
+      "references": [],
+      "size": 12054,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/3d-visualization.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"
+      ],
+      "size": 34703,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/enhanced-ocean-shaders-v1.js": {
+      "references": [],
+      "size": 21290,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/safe-ocean-integration-v1 2.js": {
+      "references": [],
+      "size": 12054,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/api-adapter.js": {
+      "references": [],
+      "size": 14380,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/copernicus-integration.js": {
+      "references": [],
+      "size": 28248,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-integration.js": {
+      "references": [],
+      "size": 30872,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-performance-config.js": {
+      "references": [],
+      "size": 6853,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/gsap-transitions.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"
+      ],
+      "size": 20804,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/advanced-3d-marine-visualization-v2.js": {
+      "references": [],
+      "size": 39952,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/deck-gl-integration 2.js": {
+      "references": [
+        "https://unpkg.com/deck.gl@latest/dist.min.js",
+        "https://unpkg.com/@loaders.gl/core@latest/dist/dist.min.js",
+        "https://unpkg.com/@loaders.gl/csv@latest/dist/dist.min.js"
+      ],
+      "size": 23165,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/cabinda_high_quality.js": {
+      "references": [],
+      "size": 8684,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ue5-ocean-shaders.js": {
+      "references": [],
+      "size": 25744,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/admin-mobile-fixed.js": {
+      "references": [],
+      "size": 8917,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-map-overlays.js": {
+      "references": [],
+      "size": 30962,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-time-dimension.js": {
+      "references": [],
+      "size": 20733,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-ui-components 2.js": {
+      "references": [],
+      "size": 25038,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/performance-optimizer 2.js": {
+      "references": [],
+      "size": 17253,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/performance-optimizer.js": {
+      "references": [],
+      "size": 17253,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-enhanced-visualizations-deckgl.js": {
+      "references": [],
+      "size": 25130,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-service.js": {
+      "references": [],
+      "size": 5064,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-inspired-dashboard 2.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/SSAOPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/TAARenderPass.js"
+      ],
+      "size": 32238,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-services-integration 2.js": {
+      "references": [
+        "/stac-data/collections.json",
+        "https://bgapp-frontend.pages.dev/stac_oceanographic.html"
+      ],
+      "size": 28657,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-enhanced-visualizations.js": {
+      "references": [],
+      "size": 21787,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/admin-mobile-final.js": {
+      "references": [],
+      "size": 7814,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-inspired-dashboard.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/SSAOPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/TAARenderPass.js"
+      ],
+      "size": 32238,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/admin-test.js": {
+      "references": [
+        "admin.css",
+        "components.css",
+        "admin-inline.css",
+        "fontawesome-fallback.css"
+      ],
+      "size": 6058,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/offline-capability.js": {
+      "references": [],
+      "size": 34027,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/enhanced-ocean-offline-v1.js": {
+      "references": [],
+      "size": 22793,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/projection-manager.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.min.js"
+      ],
+      "size": 30530,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/aguas_internas.js": {
+      "references": [],
+      "size": 60844,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/nezasa-polyfill.js": {
+      "references": [],
+      "size": 1546,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ue5-ocean-shaders 2.js": {
+      "references": [],
+      "size": 25744,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/map-controller.js": {
+      "references": [],
+      "size": 20878,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/dashboard-integration.js": {
+      "references": [],
+      "size": 22404,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/sentinel2-integration.js": {
+      "references": [],
+      "size": 13360,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/intelligent-cache.js": {
+      "references": [],
+      "size": 12188,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-services-integration.js": {
+      "references": [
+        "/stac-data/collections.json",
+        "https://bgapp-frontend.pages.dev/stac_oceanographic.html"
+      ],
+      "size": 28657,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/fontawesome-fallback.js": {
+      "references": [
+        "fontawesome-fallback.css",
+        "assets/css/fontawesome-fallback.css"
+      ],
+      "size": 3652,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/marine-3d-integration.js": {
+      "references": [
+        "assets/css/advanced-3d-marine-styles.css",
+        "assets/js/advanced-3d-marine-visualization-v2-fixed.js"
+      ],
+      "size": 18306,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/leaflet-native-animations.js": {
+      "references": [],
+      "size": 30322,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/eox-layers.js": {
+      "references": [],
+      "size": 41043,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/api-plugin-manager.js": {
+      "references": [
+        "/assets/config/plugins.json"
+      ],
+      "size": 25411,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ubiquiti-integration.js": {
+      "references": [
+        "assets/css/ubiquiti-design-system.css",
+        "assets/js/ubiquiti-navigation.js"
+      ],
+      "size": 17475,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/enhanced-ocean-shaders-v1 2.js": {
+      "references": [],
+      "size": 21290,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/bathymetry-gebco.js": {
+      "references": [],
+      "size": 21105,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ubiquiti-navigation.js": {
+      "references": [],
+      "size": 18782,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-ocean-v5 2.js": {
+      "references": [],
+      "size": 43536,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/admin.js": {
+      "references": [
+        "index.html",
+        "biodiversity_data.json"
+      ],
+      "size": 124995,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/advanced-3d-marine-visualization-v2-fixed.js": {
+      "references": [],
+      "size": 35198,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-integration 2.js": {
+      "references": [],
+      "size": 35208,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/lottie-animations.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
+      ],
+      "size": 22225,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-enhanced-visualizations 2.js": {
+      "references": [],
+      "size": 21787,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/real-functionality.js": {
+      "references": [],
+      "size": 33848,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-animation-core.js": {
+      "references": [],
+      "size": 40000,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/apple-ui-system.js": {
+      "references": [],
+      "size": 33710,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/metocean.js": {
+      "references": [],
+      "size": 19747,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/advanced-animation-system.js": {
+      "references": [
+        "/assets/animations/loading-ocean.json",
+        "/assets/animations/wind-particles.json",
+        "/assets/animations/ocean-waves.json",
+        "/assets/animations/fish-swimming.json"
+      ],
+      "size": 25795,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/advanced-3d-marine-visualization.js": {
+      "references": [
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js",
+        "/realtime_copernicus_angola.json",
+        "/realtime_copernicus_angola.json"
+      ],
+      "size": 32642,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/robust-error-handler.js": {
+      "references": [],
+      "size": 23124,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/api-resilience.js": {
+      "references": [],
+      "size": 17546,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-ml-visualizations 2.js": {
+      "references": [],
+      "size": 13756,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-integration.js": {
+      "references": [],
+      "size": 35208,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/enhanced-coastline-system.js": {
+      "references": [
+        "Falha ao carregar arquivo zee_angola_official.js"
+      ],
+      "size": 20447,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/attribution-system.js": {
+      "references": [],
+      "size": 18029,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/health-checker.js": {
+      "references": [
+        "api-resilience.js",
+        "api-plugin-manager.js",
+        "api-adapter.js"
+      ],
+      "size": 19050,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-ml-visualizations.js": {
+      "references": [],
+      "size": 13756,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/deck-gl-integration.js": {
+      "references": [
+        "https://unpkg.com/deck.gl@latest/dist.min.js",
+        "https://unpkg.com/@loaders.gl/core@latest/dist/dist.min.js",
+        "https://unpkg.com/@loaders.gl/csv@latest/dist/dist.min.js"
+      ],
+      "size": 23165,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/ml-enhanced-visualizations-deckgl 2.js": {
+      "references": [],
+      "size": 25130,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/zee_angola_official.js": {
+      "references": [],
+      "size": 3802,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/bgapp-enhanced-system.js": {
+      "references": [],
+      "size": 22107,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-data-loader.js": {
+      "references": [
+        "/sw-wind-cache.js"
+      ],
+      "size": 22163,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-ui-components.js": {
+      "references": [],
+      "size": 25038,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/admin-mobile.js": {
+      "references": [],
+      "size": 5045,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/unreal-engine-ocean-v5.js": {
+      "references": [],
+      "size": 43536,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/wind-testing.js": {
+      "references": [],
+      "size": 35105,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/coastlines_official.js": {
+      "references": [],
+      "size": 10552,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/js/windy-api-integration.js": {
+      "references": [],
+      "size": 20266,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/favicon-16x16.png": {
+      "references": [],
+      "size": 798,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "assets/img/favicon.ico": {
+      "references": [],
+      "size": 1992,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "assets/img/apple-touch-icon.png": {
+      "references": [],
+      "size": 12378,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-144.png": {
+      "references": [],
+      "size": 9467,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-192.png": {
+      "references": [],
+      "size": 12364,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-384.png": {
+      "references": [],
+      "size": 25315,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-152.png": {
+      "references": [],
+      "size": 10326,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-72.png": {
+      "references": [],
+      "size": 4508,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-96.png": {
+      "references": [],
+      "size": 6089,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/logo.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/create-icons.py": {
+      "references": [],
+      "size": 3335,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-128.png": {
+      "references": [],
+      "size": 8131,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/icon-512.png": {
+      "references": [],
+      "size": 7398,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/img/favicon-32x32.png": {
+      "references": [],
+      "size": 1970,
+      "is_critical": true,
+      "is_in_critical_dir": true
+    },
+    "assets/data/eox-angola-coastline 2.json": {
+      "references": [],
+      "size": 2860,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/data/angola-coastline-detailed 2.json": {
+      "references": [],
+      "size": 5309,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/data/angola-coastline-detailed.json": {
+      "references": [],
+      "size": 5309,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    },
+    "assets/data/eox-angola-coastline.json": {
+      "references": [],
+      "size": 2860,
+      "is_critical": false,
+      "is_in_critical_dir": true
+    }
+  },
+  "external_references": {
+    "package.json": [
+      "infra/frontend/index.html",
+      "node scripts/optimize-assets.js",
+      "chart.js"
+    ]
+  },
+  "categories": {
+    "critical": [
+      "favicon-16x16.png",
+      "favicon.ico",
+      "index.html",
+      "admin.html",
+      "apple-touch-icon.png",
+      "manifest.json",
+      "sw.js",
+      "favicon-32x32.png",
+      "ml-auto-ingestion/index.html",
+      "minpermar-site/index.html",
+      "minpermar-site/logo.png",
+      "minpermar-site/clear-sw.js",
+      "minpermar-site/assets/vendor-b69f2a9f.js",
+      "minpermar-site/assets/index-fc39c1aa.js",
+      "minpermar-site/assets/index-9f1e5de8.js",
+      "minpermar-site/assets/index-df2673d1.css",
+      "minpermar-site/assets/i18n-f16bbeb4.js",
+      "minpermar-site/assets/index-00b4081e.css",
+      "minpermar-site/assets/index-f55ff605.js",
+      "minpermar-site/assets/index-e650787d.css",
+      "minpermar-site/assets/index-3c65e43f.css",
+      "minpermar-site/assets/router-a94a9c26.js",
+      "minpermar-site/assets/apple-touch-icon-f2890812.png",
+      "minpermar-site/assets/index-faaa3f65.js",
+      "minpermar/tsconfig.node.json",
+      "minpermar/index.html",
+      "minpermar/tailwind.config.js",
+      "minpermar/README.md",
+      "minpermar/package-lock.json",
+      "minpermar/package.json",
+      "minpermar/tsconfig.json",
+      "minpermar/vite.config.ts",
+      "minpermar/postcss.config.js",
+      "minpermar/dist/index.html",
+      "minpermar/dist/logo.png",
+      "minpermar/dist/clear-sw.js",
+      "minpermar/dist/assets/vendor-b69f2a9f.js",
+      "minpermar/dist/assets/index-fc39c1aa.js",
+      "minpermar/dist/assets/index-df2673d1.css",
+      "minpermar/dist/assets/i18n-f16bbeb4.js",
+      "minpermar/dist/assets/router-a94a9c26.js",
+      "minpermar/dist/assets/apple-touch-icon-f2890812.png",
+      "minpermar/public/logo.png",
+      "minpermar/public/clear-sw.js",
+      "minpermar/src/App.tsx",
+      "minpermar/src/main.tsx",
+      "minpermar/src/index.css",
+      "minpermar/src/types/index.ts",
+      "minpermar/src/utils/cn.ts",
+      "minpermar/src/components/PagePlaceholder.tsx",
+      "minpermar/src/components/ui/Card.tsx",
+      "minpermar/src/components/ui/SearchBar.tsx",
+      "minpermar/src/components/ui/MetricCard.tsx",
+      "minpermar/src/components/ui/HeroSection.tsx",
+      "minpermar/src/components/ui/Badge.tsx",
+      "minpermar/src/components/ui/InteractiveDashboard.tsx",
+      "minpermar/src/components/ui/Button.tsx",
+      "minpermar/src/components/ui/NotificationSystem.tsx",
+      "minpermar/src/components/Layout/EnhancedHeader.tsx",
+      "minpermar/src/components/Layout/Footer.tsx",
+      "minpermar/src/components/Layout/LanguageSelector.tsx",
+      "minpermar/src/components/Layout/Header.tsx",
+      "minpermar/src/i18n/config.ts",
+      "minpermar/src/i18n/locales/pt.json",
+      "minpermar/src/i18n/locales/en.json",
+      "minpermar/src/i18n/locales/fr.json",
+      "minpermar/src/pages/Studies.tsx",
+      "minpermar/src/pages/Transparency.tsx",
+      "minpermar/src/pages/News.tsx",
+      "minpermar/src/pages/Aquaculture.tsx",
+      "minpermar/src/pages/Home.tsx",
+      "minpermar/src/pages/Contact.tsx",
+      "minpermar/src/pages/Services.tsx",
+      "minpermar/src/pages/BlueEconomy.tsx",
+      "minpermar/src/pages/Fisheries.tsx",
+      "minpermar/src/pages/Education.tsx",
+      "minpermar/src/pages/About.tsx",
+      "minpermar/src/pages/legal/Terms.tsx",
+      "minpermar/src/pages/legal/Accessibility.tsx",
+      "minpermar/src/pages/legal/Privacy.tsx",
+      "minpermar/src/pages/services/Consultation.tsx",
+      "minpermar/src/pages/services/Reporting.tsx",
+      "minpermar/src/pages/services/Licensing.tsx",
+      "minpermar/src/pages/services/Certification.tsx",
+      "ml-predictive-filters/index.html",
+      "BGAPP/favicon-16x16.png",
+      "BGAPP/favicon.ico",
+      "BGAPP/index.html",
+      "BGAPP/favicon-32x32 2.png",
+      "BGAPP/niagara-underwater-demo.html",
+      "BGAPP/apple-touch-icon.png",
+      "BGAPP/apple-touch-icon 2.png",
+      "BGAPP/favicon-16x16 2.png",
+      "BGAPP/logo.png",
+      "BGAPP/favicon 2.ico",
+      "BGAPP/logo 2.png",
+      "BGAPP/index 2.html",
+      "BGAPP/index-original-backup 2.html",
+      "BGAPP/index-original-backup.html",
+      "BGAPP/index-niagara-enhanced.html",
+      "BGAPP/niagara-underwater-demo 2.html",
+      "BGAPP/favicon-32x32.png",
+      "BGAPP/index-niagara-enhanced 2.html",
+      "BGAPP/assets/css/advanced-3d-marine-styles.css",
+      "BGAPP/assets/css/ubiquiti-design-system.css",
+      "BGAPP/assets/css/admin-inline.css",
+      "BGAPP/assets/css/admin.css",
+      "BGAPP/assets/css/components.css",
+      "BGAPP/assets/css/ml-components.css",
+      "BGAPP/assets/css/fontawesome-fallback.css",
+      "BGAPP/assets/css/unreal-engine-dashboard-styles.css",
+      "BGAPP/assets/css/map-styles.css",
+      "BGAPP/assets/config/plugins.json",
+      "BGAPP/assets/js/safe-ocean-integration-v1.js",
+      "BGAPP/assets/js/3d-visualization.js",
+      "BGAPP/assets/js/enhanced-ocean-shaders-v1.js",
+      "BGAPP/assets/js/api-adapter.js",
+      "BGAPP/assets/js/copernicus-integration.js",
+      "BGAPP/assets/js/wind-integration.js",
+      "BGAPP/assets/js/wind-performance-config.js",
+      "BGAPP/assets/js/gsap-transitions.js",
+      "BGAPP/assets/js/advanced-3d-marine-visualization-v2.js",
+      "BGAPP/assets/js/cabinda_high_quality.js",
+      "BGAPP/assets/js/ue5-ocean-shaders.js",
+      "BGAPP/assets/js/admin-mobile-fixed.js",
+      "BGAPP/assets/js/ml-map-overlays.js",
+      "BGAPP/assets/js/wind-time-dimension.js",
+      "BGAPP/assets/js/niagara-underwater-effects.js",
+      "BGAPP/assets/js/performance-optimizer.js",
+      "BGAPP/assets/js/ml-enhanced-visualizations-deckgl.js",
+      "BGAPP/assets/js/ml-service.js",
+      "BGAPP/assets/js/ml-enhanced-visualizations.js",
+      "BGAPP/assets/js/admin-mobile-final.js",
+      "BGAPP/assets/js/unreal-engine-inspired-dashboard.js",
+      "BGAPP/assets/js/admin-test.js",
+      "BGAPP/assets/js/offline-capability.js",
+      "BGAPP/assets/js/enhanced-ocean-offline-v1.js",
+      "BGAPP/assets/js/projection-manager.js",
+      "BGAPP/assets/js/aguas_internas.js",
+      "BGAPP/assets/js/nezasa-polyfill.js",
+      "BGAPP/assets/js/map-controller.js",
+      "BGAPP/assets/js/dashboard-integration.js",
+      "BGAPP/assets/js/sentinel2-integration.js",
+      "BGAPP/assets/js/intelligent-cache.js",
+      "BGAPP/assets/js/enhanced-ocean-niagara-integration.js",
+      "BGAPP/assets/js/ml-services-integration.js",
+      "BGAPP/assets/js/fontawesome-fallback.js",
+      "BGAPP/assets/js/marine-3d-integration.js",
+      "BGAPP/assets/js/leaflet-native-animations.js",
+      "BGAPP/assets/js/eox-layers.js",
+      "BGAPP/assets/js/api-plugin-manager.js",
+      "BGAPP/assets/js/ubiquiti-integration.js",
+      "BGAPP/assets/js/bathymetry-gebco.js",
+      "BGAPP/assets/js/ubiquiti-navigation.js",
+      "BGAPP/assets/js/admin.js",
+      "BGAPP/assets/js/advanced-3d-marine-visualization-v2-fixed.js",
+      "BGAPP/assets/js/lottie-animations.js",
+      "BGAPP/assets/js/real-functionality.js",
+      "BGAPP/assets/js/wind-animation-core.js",
+      "BGAPP/assets/js/apple-ui-system.js",
+      "BGAPP/assets/js/metocean.js",
+      "BGAPP/assets/js/advanced-animation-system.js",
+      "BGAPP/assets/js/advanced-3d-marine-visualization.js",
+      "BGAPP/assets/js/robust-error-handler.js",
+      "BGAPP/assets/js/api-resilience.js",
+      "BGAPP/assets/js/unreal-engine-integration.js",
+      "BGAPP/assets/js/enhanced-coastline-system.js",
+      "BGAPP/assets/js/attribution-system.js",
+      "BGAPP/assets/js/health-checker.js",
+      "BGAPP/assets/js/unreal-ml-visualizations.js",
+      "BGAPP/assets/js/deck-gl-integration.js",
+      "BGAPP/assets/js/zee_angola_official.js",
+      "BGAPP/assets/js/bgapp-enhanced-system.js",
+      "BGAPP/assets/js/wind-data-loader.js",
+      "BGAPP/assets/js/unreal-ui-components.js",
+      "BGAPP/assets/js/admin-mobile.js",
+      "BGAPP/assets/js/unreal-engine-ocean-v5.js",
+      "BGAPP/assets/js/wind-testing.js",
+      "BGAPP/assets/js/coastlines_official.js",
+      "BGAPP/assets/js/windy-api-integration.js",
+      "BGAPP/assets/img/favicon-16x16.png",
+      "BGAPP/assets/img/favicon.ico",
+      "BGAPP/assets/img/apple-touch-icon.png",
+      "BGAPP/assets/img/icon-144.png",
+      "BGAPP/assets/img/icon-192.png",
+      "BGAPP/assets/img/icon-384.png",
+      "BGAPP/assets/img/icon-152.png",
+      "BGAPP/assets/img/icon-72.png",
+      "BGAPP/assets/img/icon-96.png",
+      "BGAPP/assets/img/logo.png",
+      "BGAPP/assets/img/create-icons.py",
+      "BGAPP/assets/img/icon-128.png",
+      "BGAPP/assets/img/icon-512.png",
+      "BGAPP/assets/img/favicon-32x32.png",
+      "BGAPP/assets/data/angola-coastline-detailed.json",
+      "BGAPP/assets/data/eox-angola-coastline.json",
+      "enhanced-ocean-demo/index.html",
+      "ml-models-manager/index.html",
+      "404/index.html",
+      "assets/css/advanced-3d-marine-styles.css",
+      "assets/css/unreal-engine-dashboard-styles 2.css",
+      "assets/css/ubiquiti-design-system.css",
+      "assets/css/admin-inline.css",
+      "assets/css/admin.css",
+      "assets/css/components.css",
+      "assets/css/ml-components.css",
+      "assets/css/fontawesome-fallback.css",
+      "assets/css/unreal-engine-dashboard-styles.css",
+      "assets/css/map-styles.css",
+      "assets/config/plugins.json",
+      "assets/js/enhanced-ocean-offline-v1 2.js",
+      "assets/js/dashboard-integration 2.js",
+      "assets/js/safe-ocean-integration-v1.js",
+      "assets/js/3d-visualization.js",
+      "assets/js/enhanced-ocean-shaders-v1.js",
+      "assets/js/safe-ocean-integration-v1 2.js",
+      "assets/js/api-adapter.js",
+      "assets/js/copernicus-integration.js",
+      "assets/js/wind-integration.js",
+      "assets/js/wind-performance-config.js",
+      "assets/js/gsap-transitions.js",
+      "assets/js/advanced-3d-marine-visualization-v2.js",
+      "assets/js/deck-gl-integration 2.js",
+      "assets/js/cabinda_high_quality.js",
+      "assets/js/ue5-ocean-shaders.js",
+      "assets/js/admin-mobile-fixed.js",
+      "assets/js/ml-map-overlays.js",
+      "assets/js/wind-time-dimension.js",
+      "assets/js/unreal-ui-components 2.js",
+      "assets/js/performance-optimizer 2.js",
+      "assets/js/performance-optimizer.js",
+      "assets/js/ml-enhanced-visualizations-deckgl.js",
+      "assets/js/ml-service.js",
+      "assets/js/unreal-engine-inspired-dashboard 2.js",
+      "assets/js/ml-services-integration 2.js",
+      "assets/js/ml-enhanced-visualizations.js",
+      "assets/js/admin-mobile-final.js",
+      "assets/js/unreal-engine-inspired-dashboard.js",
+      "assets/js/admin-test.js",
+      "assets/js/offline-capability.js",
+      "assets/js/enhanced-ocean-offline-v1.js",
+      "assets/js/projection-manager.js",
+      "assets/js/aguas_internas.js",
+      "assets/js/nezasa-polyfill.js",
+      "assets/js/ue5-ocean-shaders 2.js",
+      "assets/js/map-controller.js",
+      "assets/js/dashboard-integration.js",
+      "assets/js/sentinel2-integration.js",
+      "assets/js/intelligent-cache.js",
+      "assets/js/ml-services-integration.js",
+      "assets/js/fontawesome-fallback.js",
+      "assets/js/marine-3d-integration.js",
+      "assets/js/leaflet-native-animations.js",
+      "assets/js/eox-layers.js",
+      "assets/js/api-plugin-manager.js",
+      "assets/js/ubiquiti-integration.js",
+      "assets/js/enhanced-ocean-shaders-v1 2.js",
+      "assets/js/bathymetry-gebco.js",
+      "assets/js/ubiquiti-navigation.js",
+      "assets/js/unreal-engine-ocean-v5 2.js",
+      "assets/js/admin.js",
+      "assets/js/advanced-3d-marine-visualization-v2-fixed.js",
+      "assets/js/unreal-engine-integration 2.js",
+      "assets/js/lottie-animations.js",
+      "assets/js/ml-enhanced-visualizations 2.js",
+      "assets/js/real-functionality.js",
+      "assets/js/wind-animation-core.js",
+      "assets/js/apple-ui-system.js",
+      "assets/js/metocean.js",
+      "assets/js/advanced-animation-system.js",
+      "assets/js/advanced-3d-marine-visualization.js",
+      "assets/js/robust-error-handler.js",
+      "assets/js/api-resilience.js",
+      "assets/js/unreal-ml-visualizations 2.js",
+      "assets/js/unreal-engine-integration.js",
+      "assets/js/enhanced-coastline-system.js",
+      "assets/js/attribution-system.js",
+      "assets/js/health-checker.js",
+      "assets/js/unreal-ml-visualizations.js",
+      "assets/js/deck-gl-integration.js",
+      "assets/js/ml-enhanced-visualizations-deckgl 2.js",
+      "assets/js/zee_angola_official.js",
+      "assets/js/bgapp-enhanced-system.js",
+      "assets/js/wind-data-loader.js",
+      "assets/js/unreal-ui-components.js",
+      "assets/js/admin-mobile.js",
+      "assets/js/unreal-engine-ocean-v5.js",
+      "assets/js/wind-testing.js",
+      "assets/js/coastlines_official.js",
+      "assets/js/windy-api-integration.js",
+      "assets/img/favicon-16x16.png",
+      "assets/img/favicon.ico",
+      "assets/img/apple-touch-icon.png",
+      "assets/img/icon-144.png",
+      "assets/img/icon-192.png",
+      "assets/img/icon-384.png",
+      "assets/img/icon-152.png",
+      "assets/img/icon-72.png",
+      "assets/img/icon-96.png",
+      "assets/img/logo.png",
+      "assets/img/create-icons.py",
+      "assets/img/icon-128.png",
+      "assets/img/icon-512.png",
+      "assets/img/favicon-32x32.png",
+      "assets/data/eox-angola-coastline 2.json",
+      "assets/data/angola-coastline-detailed 2.json",
+      "assets/data/angola-coastline-detailed.json",
+      "assets/data/eox-angola-coastline.json"
+    ],
+    "referenced": [
+      "test-real-functionality.html",
+      "test-mobile-menu.html",
+      "force-cache-clear.html",
+      "test_zee_limpa.html",
+      "index-fresh.html",
+      "advanced-animations-demo.html",
+      "test_dashboard.html",
+      "bgapp-enhanced-ocean-system.html",
+      "ml-demo.html",
+      "test_dependencies.html",
+      "demonstracao_ministra_pescas.html",
+      "sw-wind-cache.js",
+      "ml-demo-fixed.html",
+      "sw-advanced.js",
+      "ml-demo-deckgl-final.html",
+      "dashboard_cientifico.html",
+      "test_realtime_corrected.html",
+      "test_api.html",
+      "stac_oceanographic.html",
+      "collaboration.html",
+      "404.html",
+      "test_dependencies_complete.html",
+      "test-enhanced-ocean-offline.html",
+      "test_cabinda_coordinates.html",
+      "admin-ubiquiti.html",
+      "test-admin-optimization.html",
+      "test-simple-map.html",
+      "dashboard.html",
+      "sw-backup.js",
+      "test-debug-fixes.html",
+      "bgapp-enhanced-demo.html",
+      "ocean-test.html",
+      "index-oceanic-hybrid.html",
+      "mobile.html",
+      "admin_new_services_integration.html",
+      "test_mapa_simples.html",
+      "index-apple-design.html",
+      "realtime_angola_fix.html",
+      "health_dashboard.html",
+      "test_api_section.html",
+      "ubiquiti-ui-demo.html",
+      "realtime_angola_debug.html",
+      "test-admin-simple.html",
+      "realtime_angola.html",
+      "realtime_angola_fixed.html",
+      "debug.html",
+      "qgis_dashboard.html",
+      "test_final_validation.html",
+      "ml-demo-integration-snippet.html",
+      "index-fixed-css.html",
+      "bgapp-wind-animation-demo.html",
+      "enhanced-ocean.html",
+      "qgis_fisheries.html",
+      "oceanario-digital.html",
+      "mobile_pwa.html",
+      "index-backup.html",
+      "stac-data/collections.json",
+      "_next/static/css/d83afdaf189c48d1.css",
+      "_next/static/chunks/webpack-2fada69a37bc3f0e.js",
+      "_next/static/chunks/83-083cbc48c5e3c8f4.js",
+      "_next/static/chunks/205-439b9f637acb1c1c.js",
+      "_next/static/chunks/main-afc31916d3192a99.js",
+      "_next/static/aEFzmvFrCitF_ShHitEhZ/_buildManifest.js",
+      "static/js/ml-demo-mobile-enhancer.js",
+      "static/js/ml-demo-ui-enhancer.js"
+    ],
+    "standalone": [
+      "powerbi-integration.js",
+      "admin.html.backup.20250902_011744",
+      "realtime_copernicus_angola.json",
+      "admin.html.backup.20250902_012818",
+      "test-wind-performance.js",
+      "test-velocity-control.js",
+      "test-wind-animation.js",
+      "copernicus_authenticated_angola.json",
+      "angola.geojson",
+      "index.txt",
+      "_redirects",
+      "ADMIN_OPTIMIZATION_REPORT.md",
+      "_headers",
+      "logo.png",
+      "clear-cache.js",
+      "force-particle-visibility.js",
+      "stac-data/zee_angola_sst.json",
+      "stac-data/zee_angola_chlorophyll.json",
+      "stac-data/zee_angola_biodiversity.json",
+      "_next/static/chunks/432-940ee68eb6163d2a.js",
+      "_next/static/chunks/framework-0d01cdd3f4d700bf.js",
+      "_next/static/chunks/polyfills-c67a75d1b6f99dc8.js",
+      "_next/static/chunks/938-25da2b72b267cb27.js",
+      "_next/static/chunks/fd9d1056-c6485e9518545872.js",
+      "_next/static/chunks/main-app-524d4586f41c97aa.js",
+      "_next/static/chunks/app/page-e6427ae24b6b8a9c.js",
+      "_next/static/chunks/app/layout-6742260071a5492a.js",
+      "_next/static/chunks/app/_not-found-3dd3242a41072f29.js",
+      "_next/static/chunks/app/ml-auto-ingestion/page-db2b905578b10952.js",
+      "_next/static/chunks/app/ml-predictive-filters/page-f9a0cbc764295eeb.js",
+      "_next/static/chunks/app/ml-models-manager/page-829eec3453123804.js",
+      "_next/static/chunks/pages/_error-0ffac66cb3fae446.js",
+      "_next/static/chunks/pages/_app-8e650e1c50ef0819.js",
+      "_next/static/aEFzmvFrCitF_ShHitEhZ/_ssgManifest.js",
+      "_next/static/media/marker-icon.d577052a.png",
+      "_next/static/media/581909926a08bbc8-s.woff2",
+      "_next/static/media/layers-2x.9859cd12.png",
+      "_next/static/media/layers.ef6db872.png",
+      "_next/static/media/97e0cb1ae144a2a9-s.woff2",
+      "_next/static/media/df0a9ae256c0569c-s.woff2",
+      "_next/static/media/55c55f0601d81cf3-s.woff2",
+      "_next/static/media/26a46d62cd723877-s.woff2",
+      "_next/static/media/8e9860b6e62d6359-s.woff2",
+      "_next/static/media/e4af272ccee01ff0-s.p.woff2",
+      "ml-auto-ingestion/index.txt",
+      "images/news/aquaculture-policy.jpg",
+      "images/news/fishermen-training.jpg",
+      "images/news/ocean-conference.jpg",
+      "images/hero/fishing-boats.jpg",
+      "images/leadership/minister.jpg",
+      "images/leadership/secretary.jpg",
+      "images/leadership/director.jpg",
+      "ml-predictive-filters/index.txt",
+      "static/logo.png",
+      "static/css/ml-demo-enhanced-ui.css",
+      "static/css/ml-demo-mobile-responsive.css",
+      "static/js/ml-demo-retention-integration.js",
+      "ml-models-manager/index.txt"
+    ],
+    "duplicates": [
+      "index-backup 2.html",
+      "ocean-test 2.html",
+      "ml-demo-deckgl-final 2.html",
+      "demonstracao_ministra_pescas.html 2.backup",
+      "demonstracao_ministra_pescas.html.backup",
+      "test-enhanced-ocean-offline 2.html",
+      "angola 2.geojson",
+      "ml-demo-integration-snippet 2.html",
+      "enhanced-ocean 2.html",
+      "bgapp-enhanced-ocean-system 2.html",
+      "powerbi-integration 2.js",
+      "ml-demo-fixed 2.html",
+      "index-oceanic-hybrid 2.html",
+      "404 2.html",
+      "demonstracao_ministra_pescas 2.html",
+      "index 2.txt",
+      "stac-data/zee_angola_sst 2.json",
+      "stac-data/collections 2.json",
+      "stac-data/zee_angola_biodiversity 2.json",
+      "stac-data/zee_angola_chlorophyll 2.json",
+      "ml-auto-ingestion/index 2.html",
+      "ml-auto-ingestion/index 2.txt",
+      "ml-predictive-filters/index 2.html",
+      "ml-predictive-filters/index 2.txt",
+      "static/css/ml-demo-enhanced-ui 2.css",
+      "static/css/ml-demo-mobile-responsive 2.css",
+      "static/js/ml-demo-ui-enhancer 2.js",
+      "static/js/ml-demo-mobile-enhancer 2.js",
+      "static/js/ml-demo-retention-integration 2.js",
+      "enhanced-ocean-demo/index 2.html",
+      "ml-models-manager/index 2.html",
+      "ml-models-manager/index 2.txt",
+      "404/index 2.html"
+    ],
+    "large": [],
+    "unused": [
+      "index-backup 2.html",
+      "admin.html.backup.20250902_011744",
+      "ocean-test 2.html",
+      "ml-demo-deckgl-final 2.html",
+      "admin.html.backup.20250902_012818",
+      "demonstracao_ministra_pescas.html 2.backup",
+      "demonstracao_ministra_pescas.html",
+      "copernicus_authenticated_angola.json",
+      "angola.geojson",
+      "ml-demo-fixed.html",
+      "sw-advanced.js",
+      "ml-demo-deckgl-final.html",
+      "demonstracao_ministra_pescas.html.backup",
+      "test-enhanced-ocean-offline 2.html",
+      "angola 2.geojson",
+      "index.txt",
+      "404.html",
+      "test_dependencies_complete.html",
+      "test-enhanced-ocean-offline.html",
+      "_redirects",
+      "ADMIN_OPTIMIZATION_REPORT.md",
+      "sw-backup.js",
+      "_headers",
+      "ocean-test.html",
+      "index-oceanic-hybrid.html",
+      "ml-demo-integration-snippet 2.html",
+      "realtime_angola_fix.html",
+      "enhanced-ocean 2.html",
+      "test_api_section.html",
+      "bgapp-enhanced-ocean-system 2.html",
+      "clear-cache.js",
+      "powerbi-integration 2.js",
+      "ml-demo-fixed 2.html",
+      "ml-demo-integration-snippet.html",
+      "index-oceanic-hybrid 2.html",
+      "index-fixed-css.html",
+      "enhanced-ocean.html",
+      "404 2.html",
+      "demonstracao_ministra_pescas 2.html",
+      "index 2.txt",
+      "index-backup.html",
+      "stac-data/zee_angola_sst 2.json",
+      "stac-data/collections 2.json",
+      "stac-data/zee_angola_biodiversity 2.json",
+      "stac-data/zee_angola_chlorophyll 2.json",
+      "_next/static/chunks/framework-0d01cdd3f4d700bf.js",
+      "_next/static/chunks/main-afc31916d3192a99.js",
+      "_next/static/chunks/app/page-e6427ae24b6b8a9c.js",
+      "_next/static/chunks/app/_not-found-3dd3242a41072f29.js",
+      "_next/static/chunks/pages/_error-0ffac66cb3fae446.js",
+      "_next/static/chunks/pages/_app-8e650e1c50ef0819.js",
+      "_next/static/aEFzmvFrCitF_ShHitEhZ/_ssgManifest.js",
+      "_next/static/aEFzmvFrCitF_ShHitEhZ/_buildManifest.js",
+      "_next/static/media/marker-icon.d577052a.png",
+      "_next/static/media/layers-2x.9859cd12.png",
+      "_next/static/media/layers.ef6db872.png",
+      "ml-auto-ingestion/index.txt",
+      "ml-auto-ingestion/index 2.html",
+      "ml-auto-ingestion/index 2.txt",
+      "images/news/aquaculture-policy.jpg",
+      "images/news/fishermen-training.jpg",
+      "images/news/ocean-conference.jpg",
+      "images/hero/fishing-boats.jpg",
+      "images/leadership/minister.jpg",
+      "images/leadership/secretary.jpg",
+      "images/leadership/director.jpg",
+      "ml-predictive-filters/index.txt",
+      "ml-predictive-filters/index 2.html",
+      "ml-predictive-filters/index 2.txt",
+      "static/css/ml-demo-enhanced-ui 2.css",
+      "static/css/ml-demo-mobile-responsive 2.css",
+      "static/js/ml-demo-mobile-enhancer.js",
+      "static/js/ml-demo-ui-enhancer 2.js",
+      "static/js/ml-demo-mobile-enhancer 2.js",
+      "static/js/ml-demo-retention-integration 2.js",
+      "enhanced-ocean-demo/index 2.html",
+      "ml-models-manager/index.txt",
+      "ml-models-manager/index 2.html",
+      "ml-models-manager/index 2.txt",
+      "404/index 2.html"
+    ]
+  },
+  "summary": {
+    "total_files": 464,
+    "critical_files": 308,
+    "referenced_files": 65,
+    "standalone_files": 58,
+    "duplicate_files": 33,
+    "large_files": 0,
+    "unused_files": 80
+  }
+}

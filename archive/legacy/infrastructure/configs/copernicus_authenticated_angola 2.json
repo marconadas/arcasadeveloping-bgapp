@@ -1,0 +1,290 @@
+{
+  "success": true,
+  "timestamp": "2025-08-31T14:09:44.012292",
+  "data_source": "Copernicus Marine Service",
+  "authentication": {
+    "username": "msantos14",
+    "status": "authenticated",
+    "access_level": "full"
+  },
+  "coverage": {
+    "region": "Angola Exclusive Economic Zone",
+    "area_km2": 518000,
+    "monitoring_points": 5,
+    "spatial_resolution": "4km",
+    "temporal_resolution": "hourly"
+  },
+  "regional_statistics": {
+    "temperature": {
+      "mean": 21.2,
+      "min": 17.4,
+      "max": 28.1,
+      "std": 4.3
+    },
+    "chlorophyll": {
+      "mean": 12.34,
+      "min": 0.96,
+      "max": 30.24,
+      "std": 10.78
+    },
+    "salinity": {
+      "mean": 35.39,
+      "min": 35.1,
+      "max": 35.54
+    },
+    "upwelling_zones_active": 3,
+    "high_productivity_areas": 3
+  },
+  "monitoring_points": [
+    {
+      "point_id": "Cabinda Norte",
+      "location": "Cabinda",
+      "coordinates": {
+        "latitude": -5.0,
+        "longitude": 12.0
+      },
+      "zone": "angola_current",
+      "timestamp": "2025-08-31T14:09:44.012292",
+      "sea_surface_temperature": 28.11,
+      "salinity": 35.1,
+      "sea_level_anomaly": 0.189,
+      "chlorophyll_a": 0.963,
+      "dissolved_oxygen": 7.62,
+      "ph": 8.13,
+      "nitrate": 4.67,
+      "phosphate": 0.35,
+      "silicate": 2.71,
+      "current_velocity": {
+        "u_component": 0.066,
+        "v_component": -0.326,
+        "magnitude": 0.332,
+        "direction": 281.4
+      },
+      "conditions": "Águas tropicais - Baixa produtividade",
+      "productivity_level": "Baixa",
+      "upwelling_intensity": "Ausente",
+      "data_quality": "high",
+      "measurement_depth": 0,
+      "processing_level": "L4"
+    },
+    {
+      "point_id": "Luanda Central",
+      "location": "Luanda",
+      "coordinates": {
+        "latitude": -8.8,
+        "longitude": 13.2
+      },
+      "zone": "transition",
+      "timestamp": "2025-08-31T14:09:44.012292",
+      "sea_surface_temperature": 24.41,
+      "salinity": 35.29,
+      "sea_level_anomaly": 0.206,
+      "chlorophyll_a": 3.247,
+      "dissolved_oxygen": 9.05,
+      "ph": 8.13,
+      "nitrate": 3.59,
+      "phosphate": 0.264,
+      "silicate": 2.12,
+      "current_velocity": {
+        "u_component": -0.17,
+        "v_component": 0.078,
+        "magnitude": 0.187,
+        "direction": 155.4
+      },
+      "conditions": "Condições normais",
+      "productivity_level": "Média",
+      "upwelling_intensity": "Ausente",
+      "data_quality": "high",
+      "measurement_depth": 0,
+      "processing_level": "L4"
+    },
+    {
+      "point_id": "Benguela Upwelling",
+      "location": "Benguela",
+      "coordinates": {
+        "latitude": -12.6,
+        "longitude": 13.4
+      },
+      "zone": "benguela_current",
+      "timestamp": "2025-08-31T14:09:44.012292",
+      "sea_surface_temperature": 17.56,
+      "salinity": 35.5,
+      "sea_level_anomaly": 0.194,
+      "chlorophyll_a": 30.235,
+      "dissolved_oxygen": 12.41,
+      "ph": 8.29,
+      "nitrate": 3.63,
+      "phosphate": 0.428,
+      "silicate": 2.44,
+      "current_velocity": {
+        "u_component": -0.406,
+        "v_component": 0.259,
+        "magnitude": 0.482,
+        "direction": 147.5
+      },
+      "conditions": "Upwelling ativo - Alta produtividade",
+      "productivity_level": "Muito alta",
+      "upwelling_intensity": "Muito intenso",
+      "data_quality": "high",
+      "measurement_depth": 0,
+      "processing_level": "L4"
+    },
+    {
+      "point_id": "Namibe Coastal",
+      "location": "Namibe",
+      "coordinates": {
+        "latitude": -15.2,
+        "longitude": 12.1
+      },
+      "zone": "benguela_current",
+      "timestamp": "2025-08-31T14:09:44.012292",
+      "sea_surface_temperature": 18.39,
+      "salinity": 35.53,
+      "sea_level_anomaly": 0.217,
+      "chlorophyll_a": 18.403,
+      "dissolved_oxygen": 12.55,
+      "ph": 8.3,
+      "nitrate": 4.95,
+      "phosphate": 0.405,
+      "silicate": 2.13,
+      "current_velocity": {
+        "u_component": -0.243,
+        "v_component": 0.147,
+        "magnitude": 0.284,
+        "direction": 148.8
+      },
+      "conditions": "Upwelling ativo - Alta produtividade",
+      "productivity_level": "Muito alta",
+      "upwelling_intensity": "Intenso",
+      "data_quality": "high",
+      "measurement_depth": 0,
+      "processing_level": "L4"
+    },
+    {
+      "point_id": "Tombwa Deep",
+      "location": "Tombwa",
+      "coordinates": {
+        "latitude": -16.8,
+        "longitude": 11.8
+      },
+      "zone": "benguela_current",
+      "timestamp": "2025-08-31T14:09:44.012292",
+      "sea_surface_temperature": 17.38,
+      "salinity": 35.54,
+      "sea_level_anomaly": 0.174,
+      "chlorophyll_a": 8.847,
+      "dissolved_oxygen": 12.46,
+      "ph": 8.3,
+      "nitrate": 4.62,
+      "phosphate": 0.354,
+      "silicate": 2.49,
+      "current_velocity": {
+        "u_component": -0.428,
+        "v_component": 0.591,
+        "magnitude": 0.729,
+        "direction": 125.9
+      },
+      "conditions": "Upwelling ativo - Alta produtividade",
+      "productivity_level": "Muito alta",
+      "upwelling_intensity": "Muito intenso",
+      "data_quality": "high",
+      "measurement_depth": 0,
+      "processing_level": "L4"
+    }
+  ],
+  "alerts": [
+    {
+      "type": "info",
+      "priority": "medium",
+      "location": "Benguela",
+      "parameter": "upwelling",
+      "message": "Upwelling muito intenso em Benguela",
+      "value": "Chl-a: 30.2 mg/m³",
+      "impact": "Condições favoráveis para pesca",
+      "recommendation": "Monitorizar atividade pesqueira"
+    },
+    {
+      "type": "info",
+      "priority": "medium",
+      "location": "Namibe",
+      "parameter": "upwelling",
+      "message": "Upwelling intenso em Namibe",
+      "value": "Chl-a: 18.4 mg/m³",
+      "impact": "Condições favoráveis para pesca",
+      "recommendation": "Monitorizar atividade pesqueira"
+    },
+    {
+      "type": "info",
+      "priority": "medium",
+      "location": "Tombwa",
+      "parameter": "upwelling",
+      "message": "Upwelling muito intenso em Tombwa",
+      "value": "Chl-a: 8.8 mg/m³",
+      "impact": "Condições favoráveis para pesca",
+      "recommendation": "Monitorizar atividade pesqueira"
+    },
+    {
+      "type": "info",
+      "priority": "low",
+      "location": "Tombwa",
+      "parameter": "currents",
+      "message": "Corrente forte em Tombwa",
+      "value": "0.73 m/s",
+      "impact": "Navegação e pesca afetadas",
+      "recommendation": "Considerar nas operações marítimas"
+    }
+  ],
+  "forecast_24h": {
+    "forecast_timestamp": "2025-09-01T14:09:44.015961",
+    "forecast_points": [
+      {
+        "location": "Cabinda",
+        "forecast_period": "24h",
+        "temperature_trend": 0.1,
+        "chlorophyll_trend": 0.04,
+        "expected_conditions": "Águas tropicais - Baixa produtividade",
+        "confidence": "high"
+      },
+      {
+        "location": "Luanda",
+        "forecast_period": "24h",
+        "temperature_trend": 0.1,
+        "chlorophyll_trend": -0.07,
+        "expected_conditions": "Condições normais",
+        "confidence": "high"
+      },
+      {
+        "location": "Benguela",
+        "forecast_period": "24h",
+        "temperature_trend": 0.3,
+        "chlorophyll_trend": -0.19,
+        "expected_conditions": "Upwelling ativo - Alta produtividade",
+        "confidence": "medium"
+      },
+      {
+        "location": "Namibe",
+        "forecast_period": "24h",
+        "temperature_trend": 0.2,
+        "chlorophyll_trend": 0.23,
+        "expected_conditions": "Upwelling ativo - Alta produtividade",
+        "confidence": "high"
+      },
+      {
+        "location": "Tombwa",
+        "forecast_period": "24h",
+        "temperature_trend": 0.2,
+        "chlorophyll_trend": -0.12,
+        "expected_conditions": "Upwelling ativo - Alta produtividade",
+        "confidence": "high"
+      }
+    ],
+    "general_outlook": "Condições estáveis com possível intensificação do upwelling no sul",
+    "confidence_level": "high"
+  },
+  "data_quality": {
+    "availability": 98.5,
+    "accuracy": "high",
+    "latency_hours": 2.1,
+    "last_validation": "2025-08-31T14:09:44.012292"
+  }
+}

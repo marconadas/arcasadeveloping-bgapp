@@ -1,0 +1,96 @@
+name = "bgapp-arcasadeveloping"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "bgapp-arcasadeveloping"
+
+# Configurações para Cloudflare Pages
+pages_build_output_dir = "./infra/frontend"
+
+# Variáveis de ambiente
+[env.production.vars]
+NODE_ENV = "production"
+DOMAIN = "arcasadeveloping.org"
+SUBDIRECTORY = "BGAPP"
+CACHE_VERSION = "v1.2.0"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "production"
+
+# KV Namespaces para cache inteligente
+[[kv_namespaces]]
+binding = "BGAPP_CACHE"
+id = "bgapp_cache_production"
+preview_id = "bgapp_cache_preview"
+
+[[kv_namespaces]]
+binding = "BGAPP_CONFIG"
+id = "bgapp_config_production"
+preview_id = "bgapp_config_preview"
+
+# Configurações de domínio personalizado
+[[env.production.routes]]
+pattern = "bgapp.arcasadeveloping.org/*"
+custom_domain = true
+
+[[env.production.routes]]
+pattern = "arcasadeveloping.org/BGAPP/*"
+custom_domain = true
+
+# Configurações de performance
+[build]
+command = ""
+publish = "./infra/frontend"
+
+# Headers de segurança e performance
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "SAMEORIGIN"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+for = "/assets/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/api/*"
+[headers.values]
+Cache-Control = "public, max-age=300"
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Redirects para subdiretório BGAPP
+[[redirects]]
+from = "/"
+to = "/BGAPP/"
+status = 301
+
+[[redirects]]
+from = "/BGAPP"
+to = "/BGAPP/"
+status = 301
+
+[[redirects]]
+from = "/BGAPP/admin"
+to = "/BGAPP/admin.html"
+status = 200
+
+[[redirects]]
+from = "/admin"
+to = "/BGAPP/admin.html"
+status = 301
+
+[[redirects]]
+from = "/dashboard"
+to = "/BGAPP/admin.html"
+status = 301
+
+# Redirect para STAC Oceanographic Worker
+[[redirects]]
+from = "/BGAPP/admin-api/stac/*"
+to = "https://bgapp-stac-oceanographic.majearcasa.workers.dev/stac/:splat"
+status = 200

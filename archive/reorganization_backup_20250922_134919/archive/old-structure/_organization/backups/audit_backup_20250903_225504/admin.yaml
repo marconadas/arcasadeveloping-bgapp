@@ -1,0 +1,196 @@
+# Configuração do Painel Administrativo BGAPP
+admin:
+  title: "BGAPP - Painel Administrativo"
+  version: "1.0.0"
+  description: "Sistema de gestão para a plataforma BGAPP"
+  
+  # Configurações de interface
+  ui:
+    theme: "default"
+    language: "pt"
+    auto_refresh_interval: 30  # segundos
+    items_per_page: 50
+    
+  # Configurações de segurança
+  security:
+    require_authentication: true
+    session_timeout: 3600  # segundos
+    max_failed_logins: 5
+    
+  # Configurações de monitorização
+  monitoring:
+    cpu_alert_threshold: 80  # percentagem
+    memory_alert_threshold: 85  # percentagem
+    disk_alert_threshold: 90  # percentagem
+    service_timeout: 30  # segundos
+    
+  # Configurações de backup
+  backup:
+    auto_backup: true
+    backup_interval: "daily"  # daily, weekly, monthly
+    backup_retention: 30  # dias
+    backup_location: "/app/backups"
+    
+  # Configurações de logs
+  logging:
+    level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+    max_file_size: "10MB"
+    max_files: 10
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    
+# Configurações dos serviços
+services:
+  postgis:
+    name: "PostGIS"
+    port: 5432
+    health_check: "pg_isready"
+    critical: true
+    
+  minio:
+    name: "MinIO"
+    port: 9000
+    health_check: "/minio/health/live"
+    critical: true
+    
+  stac:
+    name: "STAC FastAPI"
+    port: 8081
+    health_check: "/"
+    critical: false
+    
+  pygeoapi:
+    name: "pygeoapi"
+    port: 5080
+    health_check: "/collections"
+    critical: true
+    
+  keycloak:
+    name: "Keycloak"
+    port: 8083
+    health_check: "/"
+    critical: false
+    
+  frontend:
+    name: "Frontend"
+    port: 8085
+    health_check: "/"
+    critical: true
+
+# Configurações dos conectores
+connectors:
+  obis:
+    name: "OBIS"
+    description: "Ocean Biodiversity Information System"
+    type: "biodiversity"
+    enabled: true
+    schedule: "0 */6 * * *"  # a cada 6 horas
+    timeout: 300
+    
+  cmems:
+    name: "Copernicus Marine"
+    description: "Dados oceanográficos do Copernicus"
+    type: "oceanography"
+    enabled: true
+    schedule: "0 2 * * *"  # diariamente às 2:00
+    timeout: 600
+    
+  modis:
+    name: "MODIS"
+    description: "Dados de satélite MODIS"
+    type: "satellite"
+    enabled: true
+    schedule: "0 4 * * *"  # diariamente às 4:00
+    timeout: 900
+    
+  erddap:
+    name: "ERDDAP"
+    description: "Environmental Research Division Data Access Program"
+    type: "oceanography"
+    enabled: true
+    schedule: "0 */12 * * *"  # a cada 12 horas
+    timeout: 300
+    
+  fisheries:
+    name: "Fisheries Angola"
+    description: "Dados pesqueiros de Angola"
+    type: "fisheries"
+    enabled: true
+    schedule: "0 6 * * 1"  # semanalmente às segundas-feiras às 6:00
+    timeout: 180
+    
+  copernicus_real:
+    name: "Copernicus Real-time"
+    description: "Dados em tempo real do Copernicus"
+    type: "realtime"
+    enabled: true
+    schedule: "*/15 * * * *"  # a cada 15 minutos
+    timeout: 120
+
+# Configurações dos modelos
+models:
+  biomass_marine:
+    name: "Biomassa Marinha"
+    description: "Modelo de estimativa de biomassa marinha"
+    type: "regression"
+    enabled: true
+    
+  biodiversity_indices:
+    name: "Índices de Biodiversidade"
+    description: "Cálculo de índices de biodiversidade"
+    type: "statistical"
+    enabled: true
+    
+  migration_patterns:
+    name: "Padrões de Migração"
+    description: "Análise de padrões migratórios"
+    type: "machine_learning"
+    enabled: true
+    
+  mcda_conservation:
+    name: "MCDA Conservação"
+    description: "Análise multi-critério para conservação"
+    type: "multicriteria"
+    enabled: true
+
+# Configurações de relatórios
+reports:
+  biodiversity_angola:
+    name: "Relatório de Biodiversidade Angola"
+    description: "Relatório completo da biodiversidade marinha angolana"
+    template: "biodiversity_template.html"
+    format: "pdf"
+    schedule: "0 8 1 * *"  # mensalmente no dia 1 às 8:00
+    
+  marine_biomass:
+    name: "Análise de Biomassa Marinha"
+    description: "Análise detalhada da biomassa marinha"
+    template: "biomass_template.html"
+    format: "pdf"
+    schedule: "0 8 15 * *"  # mensalmente no dia 15 às 8:00
+    
+  data_quality:
+    name: "Relatório de Qualidade dos Dados"
+    description: "Avaliação da qualidade e completude dos dados"
+    template: "quality_template.html"
+    format: "html"
+    schedule: "0 9 * * 1"  # semanalmente às segundas-feiras às 9:00
+
+# Configurações de utilizadores
+users:
+  roles:
+    admin:
+      name: "Administrador"
+      permissions: ["*"]
+      
+    scientist:
+      name: "Cientista"
+      permissions: [
+        "view_data", "export_data", "run_analysis",
+        "view_reports", "create_reports"
+      ]
+      
+    observer:
+      name: "Observador"
+      permissions: ["view_data", "view_reports"]
+      
+  default_role: "observer"

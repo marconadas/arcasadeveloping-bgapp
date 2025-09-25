@@ -1,0 +1,529 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.833025546846697,
+          -13.451092965251803
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-03-17T00:00:00",
+        "individualCount": 7,
+        "locality": "ZEE Angola - Ponto Marítimo 1",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 200
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.60361332517503,
+          -15.76850994910941
+        ]
+      },
+      "properties": {
+        "scientificName": "Thunnus albacares",
+        "eventDate": "2024-06-23T00:00:00",
+        "individualCount": 1,
+        "locality": "ZEE Angola - Ponto Marítimo 2",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 53
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.884264774705315,
+          -8.972443193141459
+        ]
+      },
+      "properties": {
+        "scientificName": "Tursiops truncatus",
+        "eventDate": "2024-05-16T00:00:00",
+        "individualCount": 1,
+        "locality": "ZEE Angola - Ponto Marítimo 3",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 166
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.717593429712565,
+          -16.684366643799336
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-08-09T00:00:00",
+        "individualCount": 2,
+        "locality": "ZEE Angola - Ponto Marítimo 4",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 39
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.712360916365315,
+          -12.53429577203837
+        ]
+      },
+      "properties": {
+        "scientificName": "Pelecanus onocrotalus",
+        "eventDate": "2024-07-30T00:00:00",
+        "individualCount": 7,
+        "locality": "ZEE Angola - Ponto Marítimo 5",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 138
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.910069224024676,
+          -18.00092695573851
+        ]
+      },
+      "properties": {
+        "scientificName": "Pelecanus onocrotalus",
+        "eventDate": "2024-12-14T00:00:00",
+        "individualCount": 3,
+        "locality": "ZEE Angola - Ponto Marítimo 6",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 143
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.164385630571621,
+          -12.998418306120504
+        ]
+      },
+      "properties": {
+        "scientificName": "Pelecanus onocrotalus",
+        "eventDate": "2024-09-13T00:00:00",
+        "individualCount": 5,
+        "locality": "ZEE Angola - Ponto Marítimo 7",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 95
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.04732454788629,
+          -9.778195492260261
+        ]
+      },
+      "properties": {
+        "scientificName": "Pelecanus onocrotalus",
+        "eventDate": "2024-08-21T00:00:00",
+        "individualCount": 4,
+        "locality": "ZEE Angola - Ponto Marítimo 8",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 143
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.985126281552336,
+          -13.604581261904887
+        ]
+      },
+      "properties": {
+        "scientificName": "Caretta caretta",
+        "eventDate": "2024-11-29T00:00:00",
+        "individualCount": 7,
+        "locality": "ZEE Angola - Ponto Marítimo 9",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 17
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.464865757067363,
+          -10.729952677687224
+        ]
+      },
+      "properties": {
+        "scientificName": "Tursiops truncatus",
+        "eventDate": "2024-05-11T00:00:00",
+        "individualCount": 6,
+        "locality": "ZEE Angola - Ponto Marítimo 10",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 16
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.041392817858483,
+          -9.412515240568684
+        ]
+      },
+      "properties": {
+        "scientificName": "Caretta caretta",
+        "eventDate": "2024-10-09T00:00:00",
+        "individualCount": 4,
+        "locality": "ZEE Angola - Ponto Marítimo 11",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 132
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.542718851871578,
+          -9.20307840274568
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-12-26T00:00:00",
+        "individualCount": 5,
+        "locality": "ZEE Angola - Ponto Marítimo 12",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 115
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.607578756398834,
+          -16.349176625960972
+        ]
+      },
+      "properties": {
+        "scientificName": "Merluccius capensis",
+        "eventDate": "2024-05-10T00:00:00",
+        "individualCount": 3,
+        "locality": "ZEE Angola - Ponto Marítimo 13",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 172
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.280964999225452,
+          -6.595957475263316
+        ]
+      },
+      "properties": {
+        "scientificName": "Pelecanus onocrotalus",
+        "eventDate": "2024-09-22T00:00:00",
+        "individualCount": 7,
+        "locality": "ZEE Angola - Ponto Marítimo 14",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 134
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.099343530198167,
+          -9.250053376112234
+        ]
+      },
+      "properties": {
+        "scientificName": "Tursiops truncatus",
+        "eventDate": "2024-06-01T00:00:00",
+        "individualCount": 2,
+        "locality": "ZEE Angola - Ponto Marítimo 15",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 58
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.058783535827484,
+          -15.215832503182941
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-09-13T00:00:00",
+        "individualCount": 4,
+        "locality": "ZEE Angola - Ponto Marítimo 16",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 160
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.006471332093833,
+          -13.167305803449189
+        ]
+      },
+      "properties": {
+        "scientificName": "Tursiops truncatus",
+        "eventDate": "2024-08-01T00:00:00",
+        "individualCount": 2,
+        "locality": "ZEE Angola - Ponto Marítimo 17",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 86
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.650135428055494,
+          -5.733007692302461
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-01-08T00:00:00",
+        "individualCount": 8,
+        "locality": "ZEE Angola - Ponto Marítimo 18",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 178
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.573073255939878,
+          -15.59103789576466
+        ]
+      },
+      "properties": {
+        "scientificName": "Dentex angolensis",
+        "eventDate": "2024-07-20T00:00:00",
+        "individualCount": 7,
+        "locality": "ZEE Angola - Ponto Marítimo 19",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 198
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.100566373882272,
+          -12.269740614368889
+        ]
+      },
+      "properties": {
+        "scientificName": "Merluccius capensis",
+        "eventDate": "2024-04-10T00:00:00",
+        "individualCount": 1,
+        "locality": "ZEE Angola - Ponto Marítimo 20",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Demo",
+        "habitat": "Marine",
+        "waterBody": "Atlantic Ocean",
+        "depth": 48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.2,
+          -5.6
+        ]
+      },
+      "properties": {
+        "scientificName": "Tursiops truncatus",
+        "eventDate": "2024-12-15T00:00:00",
+        "individualCount": 3,
+        "locality": "ZEE Cabinda - Costa Norte",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Marítimo",
+        "habitat": "Marine",
+        "depth": 45
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.8,
+          -8.9
+        ]
+      },
+      "properties": {
+        "scientificName": "Thunnus albacares",
+        "eventDate": "2024-12-14T00:00:00",
+        "individualCount": 12,
+        "locality": "ZEE Luanda - Costa Central",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Marítimo",
+        "habitat": "Marine",
+        "depth": 85
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.0,
+          -12.7
+        ]
+      },
+      "properties": {
+        "scientificName": "Merluccius capensis",
+        "eventDate": "2024-12-13T00:00:00",
+        "individualCount": 25,
+        "locality": "ZEE Benguela - Upwelling Zone",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Marítimo",
+        "habitat": "Marine",
+        "depth": 120
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.3,
+          -15.3
+        ]
+      },
+      "properties": {
+        "scientificName": "Caretta caretta",
+        "eventDate": "2024-12-12T00:00:00",
+        "individualCount": 2,
+        "locality": "ZEE Namibe - Costa Sul",
+        "country": "Angola",
+        "basisOfRecord": "HumanObservation",
+        "source": "BGAPP Angola Marítimo",
+        "habitat": "Marine",
+        "depth": 15
+      }
+    }
+  ]
+}

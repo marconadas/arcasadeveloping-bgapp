@@ -1,8 +1,0 @@
-{
-  "/_not-found": "app/_not-found.js",
-  "/ml-auto-ingestion/page": "app/ml-auto-ingestion/page.js",
-  "/ml-models-manager/page": "app/ml-models-manager/page.js",
-  "/ml-predictive-filters/page": "app/ml-predictive-filters/page.js",
-  "/page": "app/page.js",
-  "/stac-enhanced/page": "app/stac-enhanced/page.js"
-}

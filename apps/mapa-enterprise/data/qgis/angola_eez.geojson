@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "angola_eez",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Angola EEZ", "country": "Angola", "area_km2": 1650000 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 11.5, -4.5 ], [ 24.0, -4.5 ], [ 24.0, -18.0 ], [ 11.5, -18.0 ], [ 11.5, -4.5 ] ] ] } }
+]
+}

@@ -30,7 +30,7 @@ try:
 except ImportError:
     # Fallback para desenvolvimento
     import sys
-    sys.path.append('../../')
+    # Path already in PYTHONPATH
 
 logger = logging.getLogger(__name__)
 

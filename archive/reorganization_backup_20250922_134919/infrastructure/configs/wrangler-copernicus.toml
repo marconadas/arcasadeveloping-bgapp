@@ -1,0 +1,41 @@
+name = "bgapp-copernicus-official"
+main = "copernicus-official-worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Configurações para produção
+[env.production]
+name = "bgapp-copernicus-official"
+
+# Variáveis de ambiente
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "2.0.0"
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org,https://bgapp-frontend.pages.dev"
+RATE_LIMIT_REQUESTS = "500"
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "https://bgapp-frontend.pages.dev"
+COPERNICUS_CLIENT_ID = "cdse-public"
+COPERNICUS_IDENTITY_URL = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
+COPERNICUS_CATALOG_URL = "https://catalogue.dataspace.copernicus.eu/odata/v1/Products"
+COPERNICUS_STAC_URL = "https://catalogue.dataspace.copernicus.eu/stac"
+
+# Secrets (definir via CLI)
+# wrangler secret put COPERNICUS_USERNAME --env production
+# wrangler secret put COPERNICUS_PASSWORD --env production
+
+# KV Namespaces para cache Copernicus
+[[env.production.kv_namespaces]]
+binding = "COPERNICUS_CACHE"
+id = "copernicus_cache_official"
+preview_id = "copernicus_cache_preview"
+
+# Configurações de performance
+[build]
+command = ""
+
+# Rotas customizadas
+[[env.production.routes]]
+pattern = "api.bgapp.org/copernicus/*"
+zone_name = "bgapp.org"

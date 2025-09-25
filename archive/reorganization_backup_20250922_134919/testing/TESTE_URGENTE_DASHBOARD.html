@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>🚨 TESTE URGENTE - Dashboard BGAPP</title>
+    <style>
+        body { 
+            background: #000; 
+            color: #0f0; 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+        }
+        .critical { 
+            border: 3px solid #f00; 
+            padding: 20px; 
+            margin: 20px 0; 
+            background: #330000; 
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        .success { 
+            border: 3px solid #0f0; 
+            padding: 20px; 
+            margin: 20px 0; 
+            background: #003300; 
+        }
+        .test-result { 
+            background: #111; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 5px solid #007bff; 
+        }
+        button { 
+            background: #f00; 
+            color: #fff; 
+            padding: 15px 30px; 
+            border: none; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin: 10px; 
+        }
+        iframe { 
+            width: 100%; 
+            height: 600px; 
+            border: 2px solid #0f0; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="critical">
+        <h1>🚨 TESTE URGENTE - DASHBOARD BGAPP</h1>
+        <h2>📅 APRESENTAÇÃO: 17 DE SETEMBRO!</h2>
+        <p><strong>PROBLEMA:</strong> Dashboard mostra "unknown" e "N/A"</p>
+        <p><strong>OBJETIVO:</strong> Resolver AGORA!</p>
+    </div>
+
+    <button onclick="testEverything()">🚨 TESTE COMPLETO URGENTE</button>
+    <button onclick="openDashboardNewTab()">🚀 ABRIR DASHBOARD</button>
+    <button onclick="testAPIFromBrowser()">🔧 TESTAR API DO NAVEGADOR</button>
+
+    <div id="test-results"></div>
+
+    <h2>📊 DASHBOARD EMBED (para ver se carrega):</h2>
+    <iframe src="http://localhost:3000" id="dashboard-iframe"></iframe>
+
+    <script>
+        async function testAPIFromBrowser() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="test-result">🔄 Testando API do navegador...</div>';
+            
+            try {
+                // Teste direto da API
+                const response = await fetch('http://localhost:8000/api/dashboard/overview');
+                const data = await response.json();
+                
+                let html = '<div class="success">';
+                html += '<h3>✅ API FUNCIONANDO DO NAVEGADOR!</h3>';
+                html += `<p>Status: ${data.system_status?.overall}</p>`;
+                html += `<p>Temperatura: ${data.real_time_data?.sea_temperature}°C</p>`;
+                html += `<p>Estações: ${data.zee_angola?.monitoring_stations}</p>`;
+                html += '<p><strong>🎉 API ESTÁ PERFEITA!</strong></p>';
+                html += '<p><strong>❗ PROBLEMA ESTÁ NO FRONTEND/COMPONENTE!</strong></p>';
+                html += '</div>';
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="critical">❌ ERRO API: ${error.message}</div>`;
+            }
+        }
+
+        async function testEverything() {
+            const resultsDiv = document.getElementById('test-results');
+            let html = '<div class="test-result"><h2>🚨 TESTE COMPLETO URGENTE:</h2>';
+            
+            // 1. Testar API
+            try {
+                const apiResponse = await fetch('http://localhost:8000/health');
+                const apiData = await apiResponse.json();
+                html += `<p>✅ API Health: ${apiData.status}</p>`;
+            } catch (e) {
+                html += `<p>❌ API Health: ${e.message}</p>`;
+            }
+            
+            // 2. Testar Overview
+            try {
+                const overviewResponse = await fetch('http://localhost:8000/api/dashboard/overview');
+                const overviewData = await overviewResponse.json();
+                html += `<p>✅ Overview: ${overviewData.system_status?.overall}</p>`;
+                html += `<p>   Temp Mar: ${overviewData.real_time_data?.sea_temperature}°C</p>`;
+            } catch (e) {
+                html += `<p>❌ Overview: ${e.message}</p>`;
+            }
+            
+            // 3. Testar System Health
+            try {
+                const healthResponse = await fetch('http://localhost:8000/admin-dashboard/system-health');
+                const healthData = await healthResponse.json();
+                html += `<p>✅ System Health: ${healthData.overall_status}</p>`;
+                html += `<p>   Serviços: ${healthData.statistics?.online_services}/${healthData.statistics?.total_services}</p>`;
+            } catch (e) {
+                html += `<p>❌ System Health: ${e.message}</p>`;
+            }
+            
+            // 4. Testar Frontend
+            try {
+                const frontendResponse = await fetch('http://localhost:3000');
+                if (frontendResponse.ok) {
+                    html += '<p>✅ Frontend: Respondendo</p>';
+                } else {
+                    html += `<p>❌ Frontend: HTTP ${frontendResponse.status}</p>`;
+                }
+            } catch (e) {
+                html += `<p>❌ Frontend: ${e.message}</p>`;
+            }
+            
+            html += '<h3>🔍 DIAGNÓSTICO:</h3>';
+            html += '<p>Se API está OK mas dashboard mostra N/A:</p>';
+            html += '<p>1. ❗ Verificar console do navegador em localhost:3000</p>';
+            html += '<p>2. ❗ Problema pode estar no componente React</p>';
+            html += '<p>3. ❗ Verificar se está usando API correta</p>';
+            html += '</div>';
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function openDashboardNewTab() {
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        // Auto-start
+        setTimeout(testEverything, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "working_credentials": {
+    "username": "majearcasa@gmail.com",
+    "password": "ShadowZoro!.1995",
+    "endpoint": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+    "client_id": "cdse-public"
+  },
+  "test_date": "2024-08-31",
+  "status": "authenticated"
+}

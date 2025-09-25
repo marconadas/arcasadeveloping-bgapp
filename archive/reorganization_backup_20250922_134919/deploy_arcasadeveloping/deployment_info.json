@@ -1,0 +1,25 @@
+{
+  "domain": "arcasadeveloping.org",
+  "deployed_at": "2025-09-04T03:32:28.727993",
+  "version": "1.0.0",
+  "main_page": "index.html",
+  "features": [
+    "Mapa meteorológico interativo",
+    "Dados oceanográficos em tempo real",
+    "Visualização 3D",
+    "PWA (Progressive Web App)",
+    "Responsivo para mobile"
+  ],
+  "external_services": [
+    "EOX Maps",
+    "OpenStreetMap",
+    "GEBCO Bathymetry",
+    "CartoDB",
+    "ESRI"
+  ],
+  "requirements": {
+    "https": "Recomendado",
+    "modern_browser": "Requerido",
+    "javascript": "Requerido"
+  }
+}

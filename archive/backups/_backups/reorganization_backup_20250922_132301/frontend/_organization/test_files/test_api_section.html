@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Seção API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; }
+        #api-endpoints { border: 1px solid #ccc; padding: 20px; margin: 20px 0; min-height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Teste da Seção APIs e Conectores</h1>
+    
+    <button onclick="testLoadAPI()">Testar loadAPI()</button>
+    <button onclick="testGetEndpoints()">Testar getStaticEndpoints()</button>
+    <button onclick="testRenderEndpoints()">Testar renderEndpoints()</button>
+    
+    <div id="test-results"></div>
+    
+    <h3>Container de Endpoints:</h3>
+    <div id="api-endpoints">
+        <div class="loading">
+            <div class="spinner"></div>
+            A carregar endpoints...
+        </div>
+    </div>
+    
+    <script src="assets/js/admin.js?v=20250901-0315"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+        
+        function testLoadAPI() {
+            log('Testando função loadAPI()...', 'info');
+            
+            try {
+                if (typeof SectionLoader !== 'undefined' && SectionLoader.loadAPI) {
+                    log('✅ SectionLoader.loadAPI encontrada', 'success');
+                    
+                    // Executar a função
+                    SectionLoader.loadAPI().then(() => {
+                        log('✅ loadAPI() executada com sucesso', 'success');
+                    }).catch(error => {
+                        log(`❌ Erro ao executar loadAPI(): ${error.message}`, 'error');
+                    });
+                    
+                } else {
+                    log('❌ SectionLoader.loadAPI não encontrada', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+        
+        function testGetEndpoints() {
+            log('Testando função getStaticEndpoints()...', 'info');
+            
+            try {
+                if (typeof SectionLoader !== 'undefined' && SectionLoader.getStaticEndpoints) {
+                    const endpoints = SectionLoader.getStaticEndpoints();
+                    log(`✅ getStaticEndpoints() retornou ${endpoints.length} endpoints`, 'success');
+                    log(`Primeiro endpoint: ${endpoints[0].path} - ${endpoints[0].description}`, 'info');
+                } else {
+                    log('❌ SectionLoader.getStaticEndpoints não encontrada', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+        
+        function testRenderEndpoints() {
+            log('Testando função renderEndpoints()...', 'info');
+            
+            try {
+                if (typeof SectionLoader !== 'undefined' && SectionLoader.getStaticEndpoints && SectionLoader.renderEndpoints) {
+                    const endpoints = SectionLoader.getStaticEndpoints();
+                    const html = SectionLoader.renderEndpoints(endpoints);
+                    
+                    log(`✅ renderEndpoints() gerou ${html.length} caracteres de HTML`, 'success');
+                    
+                    // Aplicar ao container
+                    const container = document.getElementById('api-endpoints');
+                    container.innerHTML = html;
+                    
+                    log('✅ HTML aplicado ao container', 'success');
+                } else {
+                    log('❌ Funções necessárias não encontradas', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+        
+        // Teste automático ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Página carregada, iniciando testes automáticos...', 'info');
+            
+            setTimeout(() => {
+                log('Verificando se SectionLoader existe...', 'info');
+                if (typeof SectionLoader !== 'undefined') {
+                    log('✅ SectionLoader encontrado', 'success');
+                    log(`Métodos disponíveis: ${Object.keys(SectionLoader).join(', ')}`, 'info');
+                } else {
+                    log('❌ SectionLoader não encontrado', 'error');
+                }
+                
+                // Verificar CONFIG
+                if (typeof CONFIG !== 'undefined') {
+                    log('✅ CONFIG encontrado', 'success');
+                    log(`ADMIN_API: ${CONFIG.ADMIN_API}`, 'info');
+                } else {
+                    log('❌ CONFIG não encontrado', 'error');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

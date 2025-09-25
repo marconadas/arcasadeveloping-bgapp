@@ -1,0 +1,54 @@
+name = "bgapp-api-worker"
+main = "api-worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Configurações para desenvolvimento
+[env.development]
+name = "bgapp-api-worker-dev"
+
+[env.development.vars]
+NODE_ENV = "development"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "development"
+
+# Configurações para produção
+[env.production]
+name = "bgapp-api-worker"
+
+# Variáveis de ambiente
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org,https://bgapp-frontend.pages.dev"
+RATE_LIMIT_REQUESTS = "1000"
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "https://bgapp-frontend.pages.dev"
+# Note: GFW_API_TOKEN and ADMIN_ACCESS_KEY should be set as secrets via wrangler CLI or Cloudflare dashboard
+# They should NOT be stored in this file for security reasons
+# Secrets are automatically available in env object when set via wrangler secret put
+
+# KV Namespaces para cache de dados reais
+[[env.production.kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+[[env.development.kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+# D1 Database para dados persistentes
+[[env.production.d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+[[env.development.d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# Configurações de performance
+[build]
+command = ""

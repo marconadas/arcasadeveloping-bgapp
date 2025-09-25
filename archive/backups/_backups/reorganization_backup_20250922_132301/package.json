@@ -1,0 +1,53 @@
+{
+  "name": "realtime-angola-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "build:prod": "cp next.config.prod.mjs next.config.mjs && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "deploy": "npm run build:prod && npx wrangler pages deploy out --project-name realtime-angola"
+  },
+  "dependencies": {
+    "@deck.gl/core": "^9.1.14",
+    "@deck.gl/layers": "^9.1.14",
+    "@deck.gl/react": "^9.1.14",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@turf/turf": "^7.2.0",
+    "@types/chroma-js": "^3.1.1",
+    "@types/leaflet": "^1.9.20",
+    "@types/leaflet.markercluster": "^1.5.6",
+    "axios": "^1.12.2",
+    "chroma-js": "^3.1.2",
+    "clsx": "^2.1.1",
+    "deck.gl": "^9.1.14",
+    "framer-motion": "^12.23.15",
+    "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
+    "leaflet.markercluster": "^1.5.3",
+    "lucide-react": "^0.544.0",
+    "next": "14.2.32",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-leaflet": "^4.2.1",
+    "react-leaflet-cluster": "^3.1.1",
+    "recharts": "^3.2.1",
+    "swr": "^2.3.6",
+    "tailwind-merge": "^3.3.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.32",
+    "playwright": "^1.55.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

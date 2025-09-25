@@ -1,0 +1,123 @@
+{
+  "type": "FeatureCollection",
+  "stac_version": "1.0.0",
+  "id": "zee_angola_chlorophyll",
+  "title": "Clorofila-a - Angola",
+  "description": "Concentração de clorofila-a nas águas costeiras de Angola",
+  "license": "proprietary",
+  "extent": {
+    "spatial": {
+      "bbox": [11.0, -18.0, 14.0, -5.0]
+    },
+    "temporal": {
+      "interval": [["2024-01-01T00:00:00Z", "2024-12-31T23:59:59Z"]]
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "zee_angola_chl_001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.5, -12.5]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Sentinel-3",
+        "instrument": "OLCI",
+        "gsd": 300,
+        "eo:cloud_cover": 12,
+        "chl:value": 0.85,
+        "chl:unit": "mg/m³",
+        "quality": "high",
+        "collection": "zee_angola_chlorophyll",
+        "region": "Luanda Coast",
+        "upwelling_indicator": "moderate"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_chl_002", 
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.2, -11.8]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Sentinel-3",
+        "instrument": "OLCI",
+        "gsd": 300,
+        "eo:cloud_cover": 6,
+        "chl:value": 1.2,
+        "chl:unit": "mg/m³",
+        "quality": "high",
+        "collection": "zee_angola_chlorophyll",
+        "region": "Cabinda Coast",
+        "upwelling_indicator": "high"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_chl_003",
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [14.1, -13.1]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Sentinel-3",
+        "instrument": "OLCI",
+        "gsd": 300,
+        "eo:cloud_cover": 25,
+        "chl:value": 2.1,
+        "chl:unit": "mg/m³",
+        "quality": "medium",
+        "collection": "zee_angola_chlorophyll", 
+        "region": "Benguela Coast",
+        "upwelling_indicator": "very_high"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_chl_004",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.8, -12.0]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Sentinel-3", 
+        "instrument": "OLCI",
+        "gsd": 300,
+        "eo:cloud_cover": 3,
+        "chl:value": 0.65,
+        "chl:unit": "mg/m³",
+        "quality": "high",
+        "collection": "zee_angola_chlorophyll",
+        "region": "Central Coast",
+        "upwelling_indicator": "low"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zee_angola_chl_005",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.3, -12.8]
+      },
+      "properties": {
+        "datetime": "2024-01-15T10:30:00Z",
+        "platform": "Sentinel-3",
+        "instrument": "OLCI", 
+        "gsd": 300,
+        "eo:cloud_cover": 14,
+        "chl:value": 1.45,
+        "chl:unit": "mg/m³",
+        "quality": "high",
+        "collection": "zee_angola_chlorophyll",
+        "region": "Namibe Coast",
+        "upwelling_indicator": "moderate"
+      }
+    }
+  ]
+}

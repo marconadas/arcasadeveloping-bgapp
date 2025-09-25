@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <title>BGAPP - Limpeza Forçada de Cache</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover { background: #c0392b; }
+        .success { color: #2ecc71; font-weight: bold; }
+        .info { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 5px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 BGAPP - Limpeza de Cache</h1>
+        <p>Use esta página para forçar a limpeza completa do cache do BGAPP</p>
+        
+        <div class="info">
+            <h3>⚠️ Quando usar:</h3>
+            <p>• Quando ainda há erros de timing no metocean.js<br>
+            • Quando Service Worker serve versões antigas<br>
+            • Após atualizações críticas do código</p>
+        </div>
+
+        <button onclick="clearAllCache()">🗑️ Limpar TODO o Cache</button>
+        <button onclick="unregisterServiceWorker()">❌ Desregistrar Service Worker</button>
+        <button onclick="clearAndReload()">🔄 Limpar + Recarregar</button>
+        
+        <div id="status"></div>
+        
+        <div class="info">
+            <h3>📋 Passos após limpeza:</h3>
+            <p>1. Aguardar mensagem de sucesso<br>
+            2. Ir para index.html<br>
+            3. Verificar console sem erros<br>
+            4. Confirmar que metocean v2.0 foi carregado</p>
+        </div>
+    </div>
+
+    <script>
+        const status = document.getElementById('status');
+        
+        function updateStatus(message, isSuccess = false) {
+            status.innerHTML = `<p class="${isSuccess ? 'success' : ''}">${message}</p>`;
+        }
+
+        async function clearAllCache() {
+            updateStatus('🔄 Limpando cache...');
+            
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    let cleared = 0;
+                    
+                    for (const cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        cleared++;
+                        updateStatus(`🗑️ Cache ${cacheName} removido (${cleared}/${cacheNames.length})`);
+                    }
+                    
+                    updateStatus(`✅ ${cleared} caches removidos com sucesso!`, true);
+                } else {
+                    updateStatus('❌ Cache API não suportada');
+                }
+            } catch (error) {
+                updateStatus(`❌ Erro ao limpar cache: ${error.message}`);
+            }
+        }
+
+        async function unregisterServiceWorker() {
+            updateStatus('🔄 Desregistrando Service Worker...');
+            
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                        updateStatus('❌ Service Worker desregistrado');
+                    }
+                    
+                    updateStatus('✅ Todos os Service Workers desregistrados!', true);
+                } else {
+                    updateStatus('❌ Service Worker não suportado');
+                }
+            } catch (error) {
+                updateStatus(`❌ Erro ao desregistrar SW: ${error.message}`);
+            }
+        }
+
+        async function clearAndReload() {
+            updateStatus('🔄 Limpeza completa iniciada...');
+            
+            try {
+                // Limpar cache
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (const cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                    }
+                    updateStatus('✅ Cache limpo');
+                }
+                
+                // Desregistrar Service Worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                    updateStatus('✅ Service Worker desregistrado');
+                }
+                
+                // Limpar localStorage
+                localStorage.clear();
+                sessionStorage.clear();
+                updateStatus('✅ Storage limpo');
+                
+                updateStatus('🎉 Limpeza completa! Redirecionando...', true);
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                updateStatus(`❌ Erro na limpeza: ${error.message}`);
+            }
+        }
+
+        // Auto-executar limpeza se parâmetro for passado
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('auto') === 'true') {
+            setTimeout(clearAndReload, 1000);
+        }
+    </script>
+</body>
+</html>

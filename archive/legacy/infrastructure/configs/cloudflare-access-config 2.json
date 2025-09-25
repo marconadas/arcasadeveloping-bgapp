@@ -1,0 +1,69 @@
+{
+  "access_policies": [
+    {
+      "name": "BGAPP Admin Access",
+      "description": "Controle de acesso para o painel administrativo do BGAPP",
+      "decision": "allow",
+      "include": [
+        {
+          "email": ["majearcasa@gmail.com"]
+        },
+        {
+          "email_domain": ["arcasadeveloping.org"]
+        }
+      ],
+      "require": [],
+      "exclude": [],
+      "application_domain": "bgapp-arcasadeveloping.pages.dev",
+      "paths": ["/admin", "/admin/*"],
+      "session_duration": "24h",
+      "auto_redirect_to_identity": true
+    },
+    {
+      "name": "BGAPP Public Access",
+      "description": "Acesso público para visualizações básicas",
+      "decision": "allow",
+      "include": [
+        {
+          "everyone": true
+        }
+      ],
+      "application_domain": "bgapp-arcasadeveloping.pages.dev",
+      "paths": ["/", "/index.html", "/assets/*", "/api/public/*"],
+      "session_duration": "1h"
+    }
+  ],
+  "identity_providers": [
+    {
+      "name": "Google OAuth",
+      "type": "google",
+      "config": {
+        "client_id": "your-google-client-id",
+        "client_secret": "your-google-client-secret"
+      }
+    },
+    {
+      "name": "GitHub OAuth",
+      "type": "github",
+      "config": {
+        "client_id": "your-github-client-id",
+        "client_secret": "your-github-client-secret"
+      }
+    }
+  ],
+  "applications": [
+    {
+      "name": "BGAPP Enhanced",
+      "domain": "bgapp-arcasadeveloping.pages.dev",
+      "type": "self_hosted",
+      "session_duration": "24h",
+      "auto_redirect_to_identity": true,
+      "enable_binding_cookie": true,
+      "http_only_cookie_attribute": true,
+      "same_site_cookie_attribute": "lax",
+      "logo_url": "https://bgapp-arcasadeveloping.pages.dev/assets/img/icon-192.png",
+      "app_launcher_visible": true,
+      "service_auth_401_redirect": true
+    }
+  ]
+}

@@ -14,13 +14,13 @@ echo "   - GFW_API_TOKEN: [CONFIGURADO]"
 echo "   - ADMIN_ACCESS_KEY: $ADMIN_ACCESS_KEY"
 
 # Criar arquivo .env para wrangler
-cat > workers/.env.production << EOF
+cat > infrastructure/workers/.env.production << EOF
 GFW_API_TOKEN=$GFW_API_TOKEN
 ADMIN_ACCESS_KEY=$ADMIN_ACCESS_KEY
 EOF
 
 echo ""
-echo "✅ Arquivo .env.production criado em workers/"
+echo "✅ Arquivo .env.production criado em infrastructure/workers/"
 echo ""
 echo "📋 Próximos passos:"
 echo "   1. cd workers && npx wrangler deploy --env production"

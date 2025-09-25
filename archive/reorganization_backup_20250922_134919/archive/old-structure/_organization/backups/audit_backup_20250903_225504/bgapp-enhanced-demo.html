@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP Enhanced System - Demo</title>
+  
+  <!-- Meta Tags -->
+  <meta name="description" content="Sistema avançado de mapas meteorológicos e oceanográficos para Angola com linha costeira precisa e interface modernizada.">
+  <meta name="keywords" content="Angola, meteorologia, oceanografia, ZEE, linha costeira, BGAPP">
+  <meta name="author" content="BGAPP Development Team">
+  
+  <!-- PWA Meta Tags -->
+  
+  <meta name="application-name" content="BGAPP Enhanced">
+  
+  <!-- Favicon -->
+  
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  
+  <style>
+    /* Reset e base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    
+    /* Mapa em tela cheia */
+    #map {
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1 !important;
+    }
+    
+    /* Loading screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #007AFF, #34C759);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4000;
+      transition: opacity 0.5s ease;
+    }
+    
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Versão info */
+    .version-info {
+      position: fixed;
+      bottom: 8px;
+      right: 8px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 1001;
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .loading-content h1 {
+        font-size: 24px;
+      }
+      
+      .loading-content p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+        <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 48px; height: 48px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <h1 style="font-size: 28px; font-weight: 600; margin: 0;">BGAPP Enhanced</h1>
+      </div>
+      <p style="font-size: 16px; opacity: 0.9;">
+        Sistema Avançado de Mapas para Angola
+      </p>
+      <p style="font-size: 13px; opacity: 0.7; margin-top: 16px;">
+        Carregando componentes...
+      </p>
+    </div>
+  </div>
+  
+  <!-- Mapa principal -->
+  <div id="map"></div>
+  
+  <!-- Informações da versão -->
+  <div class="version-info">
+    BGAPP Enhanced v2.0.0 | Angola ZEE Precisa
+  </div>
+  
+  <!-- Scripts essenciais -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Dados oficiais da ZEE -->
+  <script src="assets/js/zee_angola_official.js"></script>
+  
+  <!-- Sistemas BGAPP Enhanced -->
+  <script src="assets/js/enhanced-coastline-system.js"></script>
+  <script src="assets/js/robust-error-handler.js"></script>
+  <script src="assets/js/apple-ui-system.js"></script>
+  <script src="assets/js/bgapp-enhanced-system.js"></script>
+  
+  <!-- Inicialização principal -->
+  <script>
+    console.log('🚀 BGAPP Enhanced Demo - Iniciando...');
+    
+    // Configurações globais
+    const APP_CONFIG = {
+      center: [-12.5, 13.5], // Centro de Angola
+      zoom: 6,
+      minZoom: 4,
+      maxZoom: 18,
+      enableDiagnostics: true,
+      enableNotifications: true
+    };
+    
+    // Variáveis globais
+    let map = null;
+    let bgappSystem = null;
+    
+    // Aguardar DOM estar pronto
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('✅ DOM Ready - Iniciando BGAPP Enhanced Demo');
+      
+      try {
+        // 1. Inicializar mapa base
+        await initializeBaseMap();
+        
+        // 2. Aguardar um pouco para estabilizar
+        await delay(500);
+        
+        // 3. Inicializar sistema BGAPP Enhanced
+        await initializeBGAPPSystem();
+        
+        // 4. Configurar eventos adicionais
+        setupAdditionalEvents();
+        
+        // 5. Ocultar loading screen
+        hideLoadingScreen();
+        
+        console.log('🎉 BGAPP Enhanced Demo inicializado com sucesso!');
+        
+      } catch (error) {
+        console.error('❌ Erro na inicialização:', error);
+        showErrorScreen(error);
+      }
+    });
+    
+    /**
+     * Inicializar mapa base
+     */
+    async function initializeBaseMap() {
+      console.log('🗺️ Inicializando mapa base...');
+      
+      // Criar mapa Leaflet
+      map = L.map('map', {
+        center: APP_CONFIG.center,
+        zoom: APP_CONFIG.zoom,
+        minZoom: APP_CONFIG.minZoom,
+        maxZoom: APP_CONFIG.maxZoom,
+        zoomControl: true,
+        attributionControl: true,
+        preferCanvas: true // Melhor performance
+      });
+      
+      // Adicionar camada base OpenStreetMap
+      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+        crossOrigin: true
+      });
+      
+      osmLayer.addTo(map);
+      
+      // Tornar mapa acessível globalmente
+      window.map = map;
+      
+      console.log('✅ Mapa base inicializado');
+    }
+    
+    /**
+     * Inicializar sistema BGAPP Enhanced
+     */
+    async function initializeBGAPPSystem() {
+      console.log('🌟 Inicializando BGAPP Enhanced System...');
+      
+      // Verificar se classes estão disponíveis
+      if (typeof BGAPPEnhancedSystem === 'undefined') {
+        throw new Error('BGAPPEnhancedSystem não carregado');
+      }
+      
+      // Criar instância do sistema
+      bgappSystem = new BGAPPEnhancedSystem();
+      
+      // Inicializar com o mapa
+      await bgappSystem.initialize(map);
+      
+      // Tornar sistema acessível globalmente
+      window.bgappSystem = bgappSystem;
+      
+      console.log('✅ BGAPP Enhanced System inicializado');
+    }
+    
+    /**
+     * Configurar eventos adicionais
+     */
+    function setupAdditionalEvents() {
+      console.log('🎛️ Configurando eventos adicionais...');
+      
+      // Event listener para mudanças de zoom
+      map.on('zoomend', function() {
+        const zoom = map.getZoom();
+        console.log(`🔍 Zoom alterado para: ${zoom}`);
+        
+        // Ajustar opacidade das camadas baseado no zoom
+        adjustLayerOpacityByZoom(zoom);
+      });
+      
+      // Event listener para mudanças de centro
+      map.on('moveend', function() {
+        const center = map.getCenter();
+        console.log(`📍 Centro alterado para: ${center.lat.toFixed(3)}, ${center.lng.toFixed(3)}`);
+      });
+      
+      // Event listener para cliques no mapa
+      map.on('click', function(e) {
+        console.log(`🖱️ Clique no mapa: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`);
+        
+        // Mostrar coordenadas em popup temporário
+        showCoordinatesPopup(e.latlng);
+      });
+      
+      // Event listener para redimensionamento da janela
+      window.addEventListener('resize', function() {
+        if (map) {
+          setTimeout(() => {
+            map.invalidateSize();
+            console.log('🔄 Tamanho do mapa invalidado após redimensionamento');
+          }, 100);
+        }
+      });
+      
+      // Atalho para informações do sistema (Ctrl+I)
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'i') {
+          e.preventDefault();
+          showSystemInfo();
+        }
+      });
+      
+      console.log('✅ Eventos adicionais configurados');
+    }
+    
+    /**
+     * Ajustar opacidade das camadas baseado no zoom
+     */
+    function adjustLayerOpacityByZoom(zoom) {
+      // Exemplo: reduzir opacidade da ZEE em zooms muito altos
+      if (zoom > 10) {
+        // Lógica para ajustar opacidade
+        console.log('🔍 Zoom alto detectado - ajustando opacidades');
+      }
+    }
+    
+    /**
+     * Mostrar coordenadas em popup temporário
+     */
+    function showCoordinatesPopup(latlng) {
+      const popup = L.popup()
+        .setLatLng(latlng)
+        .setContent(`
+          <div style="font-size: 12px; line-height: 1.4;">
+            <strong>📍 Coordenadas</strong><br>
+            Lat: ${latlng.lat.toFixed(6)}<br>
+            Lng: ${latlng.lng.toFixed(6)}
+          </div>
+        `)
+        .openOn(map);
+      
+      // Fechar automaticamente após 3 segundos
+      setTimeout(() => {
+        map.closePopup(popup);
+      }, 3000);
+    }
+    
+    /**
+     * Mostrar informações do sistema
+     */
+    function showSystemInfo() {
+      if (!bgappSystem) {
+        alert('Sistema BGAPP não inicializado');
+        return;
+      }
+      
+      const info = bgappSystem.getSystemInfo();
+      const infoText = `
+🌟 BGAPP Enhanced System Info
+
+✅ Inicializado: ${info.initialized ? 'Sim' : 'Não'}
+📊 Passo atual: ${info.currentStep}/${info.initializationSteps}
+
+🧩 Componentes:
+• Coastline: ${info.components.coastline.loaded ? '✅' : '❌'}
+• Error Handler: ${info.components.errorHandler.loaded ? '✅' : '❌'}
+• Apple UI: ${info.components.ui.loaded ? '✅' : '❌'}
+
+🗺️ Mapa: ${info.components.map ? '✅' : '❌'}
+      `;
+      
+      alert(infoText);
+    }
+    
+    /**
+     * Ocultar loading screen
+     */
+    function hideLoadingScreen() {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.remove();
+        }, 500);
+      }
+    }
+    
+    /**
+     * Mostrar tela de erro
+     */
+    function showErrorScreen(error) {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.innerHTML = `
+          <div class="loading-content">
+            <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+            <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 8px; color: #ff6b6b;">
+              Erro na Inicialização
+            </h1>
+            <p style="font-size: 14px; opacity: 0.9; margin-bottom: 16px;">
+              ${error.message}
+            </p>
+            <button onclick="window.location.reload()" 
+                    style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
+              🔄 Recarregar Página
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    /**
+     * Utilitário para delay
+     */
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    // Função de diagnóstico global
+    window.diagnoseBGAPP = function() {
+      console.group('🔍 BGAPP Enhanced Diagnostics');
+      
+      console.log('📊 Variáveis globais:');
+      console.log('  - map:', !!window.map);
+      console.log('  - bgappSystem:', !!window.bgappSystem);
+      console.log('  - L (Leaflet):', !!window.L);
+      
+      if (window.bgappSystem) {
+        console.log('📋 Info do sistema:');
+        console.log(window.bgappSystem.getSystemInfo());
+      }
+      
+      console.log('🌍 Estado do mapa:');
+      if (window.map) {
+        console.log('  - Centro:', window.map.getCenter());
+        console.log('  - Zoom:', window.map.getZoom());
+        console.log('  - Camadas:', window.map._layers ? Object.keys(window.map._layers).length : 'N/A');
+      }
+      
+      console.groupEnd();
+    };
+    
+    // Expor função de diagnóstico
+    console.log('💡 Use diagnoseBGAPP() no console para diagnósticos');
+  </script>
+</body>
+</html>

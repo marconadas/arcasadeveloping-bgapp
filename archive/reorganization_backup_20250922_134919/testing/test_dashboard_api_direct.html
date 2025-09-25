@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Teste Direto da API Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .test-result {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { border-color: #10b981; background: #dcfce7; }
+        .error { border-color: #ef4444; background: #fee2e2; }
+        .loading { border-color: #f59e0b; background: #fef3c7; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: 600;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste Direto da API Dashboard</h1>
+        <p>Testando diretamente os endpoints para identificar por que o dashboard não carrega dados reais.</p>
+        
+        <div>
+            <button onclick="testServicesEndpoint()">🔗 Testar /api/services/status</button>
+            <button onclick="testHealthEndpoint()">🩺 Testar /health</button>
+            <button onclick="testCorsHeaders()">🌐 Testar CORS</button>
+            <button onclick="testFromDashboard()">📊 Testar como Dashboard</button>
+            <button onclick="clearResults()">🧹 Limpar</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://bgapp-admin-api-worker.majearcasa.workers.dev';
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(title, content, type = 'loading') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${title}</strong>\n${content}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        async function testServicesEndpoint() {
+            addResult('🔗 Testando /api/services/status', 'Fazendo request...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/services/status`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                let parsedData;
+                
+                try {
+                    parsedData = JSON.parse(responseText);
+                } catch (parseError) {
+                    throw new Error(`Resposta não é JSON válido: ${responseText}`);
+                }
+                
+                if (response.ok) {
+                    addResult(
+                        '✅ /api/services/status - SUCESSO',
+                        `Status: ${response.status}
+Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}
+
+Resposta:
+${JSON.stringify(parsedData, null, 2)}
+
+ANÁLISE:
+- Mock Data: ${parsedData.mock_data ? 'SIM ❌' : 'NÃO ✅'}
+- Real Check: ${parsedData.real_check ? 'SIM ✅' : 'NÃO ❌'}
+- Health: ${parsedData.summary?.health_percentage}%
+- PostgreSQL: ${parsedData.data?.find(s => s.name.includes('PostgreSQL'))?.status || 'N/A'}
+- Redis: ${parsedData.data?.find(s => s.name.includes('Redis'))?.status || 'N/A'}`,
+                        'success'
+                    );
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${responseText}`);
+                }
+                
+            } catch (error) {
+                addResult(
+                    '❌ /api/services/status - ERRO',
+                    `Erro: ${error.message}
+                    
+Possíveis causas:
+- CORS bloqueado
+- Endpoint não existe
+- Worker offline
+- Timeout`,
+                    'error'
+                );
+            }
+        }
+        
+        async function testHealthEndpoint() {
+            addResult('🩺 Testando /health', 'Fazendo request...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(
+                        '✅ /health - SUCESSO',
+                        `Worker está funcionando:
+${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                addResult('❌ /health - ERRO', `Worker pode estar offline: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testCorsHeaders() {
+            addResult('🌐 Testando CORS', 'Verificando headers...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`, {
+                    method: 'OPTIONS'
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                addResult(
+                    '✅ CORS Headers',
+                    `Headers CORS:
+${JSON.stringify(corsHeaders, null, 2)}
+
+Status: ${response.status}
+CORS OK: ${corsHeaders['Access-Control-Allow-Origin'] === '*' ? 'SIM ✅' : 'PROBLEMA ❌'}`,
+                    corsHeaders['Access-Control-Allow-Origin'] ? 'success' : 'error'
+                );
+                
+            } catch (error) {
+                addResult('❌ CORS - ERRO', `CORS pode estar bloqueado: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testFromDashboard() {
+            addResult('📊 Testando como Dashboard faria', 'Simulando request do dashboard...', 'loading');
+            
+            try {
+                // Simular exatamente como o dashboard faz
+                const response = await fetch(`${API_BASE}/api/services/status`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    timeout: 30000
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Verificar formato esperado pelo dashboard
+                if (data && data.success && data.data) {
+                    const services = data.data;
+                    const offlineServices = services.filter(s => s.status === 'offline');
+                    const onlineServices = services.filter(s => s.status === 'online');
+                    
+                    addResult(
+                        '✅ Formato Dashboard - CORRETO',
+                        `Formato correto para dashboard:
+- Success: ${data.success}
+- Total Serviços: ${services.length}
+- Online: ${onlineServices.length}
+- Offline: ${offlineServices.length}
+
+Serviços Offline (como esperado):
+${offlineServices.map(s => `- ${s.name}: ${s.error || 'offline'}`).join('\n')}
+
+Serviços Online:
+${onlineServices.map(s => `- ${s.name}: ${s.response_time}ms`).join('\n')}
+
+✅ DASHBOARD DEVE FUNCIONAR COM ESTES DADOS!`,
+                        'success'
+                    );
+                } else {
+                    addResult(
+                        '❌ Formato Dashboard - INCORRETO',
+                        `Formato não compatível:
+${JSON.stringify(data, null, 2)}
+
+Dashboard espera: { success: true, data: [...] }`,
+                        'error'
+                    );
+                }
+                
+            } catch (error) {
+                addResult(
+                    '❌ Dashboard Test - ERRO',
+                    `Dashboard não consegue obter dados:
+Erro: ${error.message}
+
+Possível causa: ${error.name === 'TypeError' ? 'CORS ou Network' : 'API Error'}`,
+                    'error'
+                );
+            }
+        }
+        
+        // Auto-test ao carregar
+        setTimeout(() => {
+            addResult('🚀 Iniciando Testes Automáticos', 'Executando bateria de testes...', 'loading');
+            testHealthEndpoint();
+            setTimeout(() => testServicesEndpoint(), 1000);
+            setTimeout(() => testCorsHeaders(), 2000);
+            setTimeout(() => testFromDashboard(), 3000);
+        }, 500);
+        
+        console.log('🧪 Dashboard API Tester carregado');
+    </script>
+</body>
+</html>

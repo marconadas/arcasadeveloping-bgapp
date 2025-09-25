@@ -1,0 +1,534 @@
+{
+  "info": {
+    "_postman_id": "bgapp-carto-complete",
+    "name": "🌊 BGAPP + CARTO Complete Integration",
+    "description": "Complete integration between BGAPP Marine Angola and CARTO API with all endpoints and workflows",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔧 CARTO Integration Status",
+      "item": [
+        {
+          "name": "📊 Integration Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/status",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "status"]
+            }
+          }
+        },
+        {
+          "name": "❤️ Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/health",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗺️ CARTO Tables & Data",
+      "item": [
+        {
+          "name": "📋 List CARTO Tables",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/tables",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "tables"]
+            }
+          }
+        },
+        {
+          "name": "🔍 Get Table Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/tables/{{TABLE_NAME}}",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "tables", "{{TABLE_NAME}}"]
+            }
+          }
+        },
+        {
+          "name": "🐟 Get Marine Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/marine-data?limit=100",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "marine-data"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔍 CARTO SQL Queries",
+      "item": [
+        {
+          "name": "💻 Execute Custom SQL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"SELECT * FROM marine_biodiversity WHERE location LIKE '%angola%' LIMIT 50\",\n  \"format\": \"json\"\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/sql",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "sql"]
+            }
+          }
+        },
+        {
+          "name": "🐠 Marine Species Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"SELECT species_name, scientific_name, conservation_status, COUNT(*) as observations, AVG(depth) as avg_depth, AVG(temperature) as avg_temp FROM marine_biodiversity WHERE country = 'Angola' GROUP BY species_name, scientific_name, conservation_status ORDER BY observations DESC\",\n  \"format\": \"json\"\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/sql",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "sql"]
+            }
+          }
+        },
+        {
+          "name": "🌊 Coastal Analysis Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"SELECT region, COUNT(*) as species_count, AVG(depth) as avg_depth, MIN(depth) as min_depth, MAX(depth) as max_depth, ST_AsGeoJSON(ST_ConvexHull(ST_Collect(the_geom))) as region_boundary FROM marine_biodiversity WHERE country = 'Angola' AND the_geom IS NOT NULL GROUP BY region ORDER BY species_count DESC\",\n  \"format\": \"json\"\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/sql",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "sql"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 Data Synchronization",
+      "item": [
+        {
+          "name": "⚡ Sync CARTO → BGAPP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"table_name\": \"marine_biodiversity\",\n  \"limit\": 1000,\n  \"force\": false\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/sync",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "sync"]
+            }
+          }
+        },
+        {
+          "name": "🔄 Force Full Sync",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"table_name\": \"marine_biodiversity\",\n  \"limit\": 5000,\n  \"force\": true\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/sync",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "sync"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗺️ Integrated Maps",
+      "item": [
+        {
+          "name": "📋 List Integrated Maps",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/maps",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "maps"]
+            }
+          }
+        },
+        {
+          "name": "➕ Create Marine Biodiversity Map",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Angola Marine Biodiversity (CARTO)\",\n  \"description\": \"Interactive map showing marine biodiversity data from CARTO for Angola coastal waters\",\n  \"table_name\": \"marine_biodiversity\",\n  \"query\": \"SELECT * FROM marine_biodiversity WHERE country = 'Angola' AND the_geom IS NOT NULL\",\n  \"viz_type\": \"points\",\n  \"style\": {\n    \"color\": \"#2E8B57\",\n    \"size\": 8,\n    \"opacity\": 0.8,\n    \"stroke\": \"#1F5F3F\",\n    \"strokeWidth\": 1\n  },\n  \"center\": [-12.5, 18.5],\n  \"zoom\": 6\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/maps",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "maps"]
+            }
+          }
+        },
+        {
+          "name": "➕ Create Conservation Status Map",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Conservation Status Map (CARTO)\",\n  \"description\": \"Map showing species conservation status from CARTO data\",\n  \"table_name\": \"marine_biodiversity\",\n  \"query\": \"SELECT *, CASE WHEN conservation_status = 'Endangered' THEN '#FF0000' WHEN conservation_status = 'Vulnerable' THEN '#FF8C00' WHEN conservation_status = 'Near Threatened' THEN '#FFD700' ELSE '#00FF00' END as status_color FROM marine_biodiversity WHERE conservation_status IS NOT NULL AND the_geom IS NOT NULL\",\n  \"viz_type\": \"choropleth\",\n  \"style\": {\n    \"colorField\": \"conservation_status\",\n    \"colorScale\": \"viridis\",\n    \"size\": 10,\n    \"opacity\": 0.7\n  },\n  \"center\": [-12.5, 18.5],\n  \"zoom\": 6\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/maps",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "maps"]
+            }
+          }
+        },
+        {
+          "name": "🗑️ Delete Integrated Map",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/maps/{{MAP_ID}}",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "maps", "{{MAP_ID}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Spatial Analysis",
+      "item": [
+        {
+          "name": "🌍 Spatial Analysis - Angola",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/analysis/spatial?region=angola",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "analysis", "spatial"],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "angola"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "🏖️ Coastal Region Analysis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/integrations/carto/analysis/spatial?region=luanda coastal",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "integrations", "carto", "analysis", "spatial"],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "luanda coastal"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧠 ML Integration with CARTO Data",
+      "item": [
+        {
+          "name": "🎯 ML Prediction with CARTO Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelId\": \"marine-species-prediction\",\n  \"data_source\": \"carto\",\n  \"carto_query\": \"SELECT AVG(temperature) as avg_temp, AVG(depth) as avg_depth, AVG(salinity) as avg_salinity FROM marine_biodiversity WHERE location LIKE '%angola%' AND temperature IS NOT NULL\",\n  \"features\": {\n    \"temperature\": 25.5,\n    \"depth\": 100,\n    \"salinity\": 35.2,\n    \"latitude\": -12.5,\n    \"longitude\": 18.5,\n    \"season\": \"summer\",\n    \"use_carto_context\": true\n  },\n  \"options\": {\n    \"confidence_threshold\": 0.8,\n    \"return_probabilities\": true,\n    \"include_similar_species\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/ml/predict",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["ml", "predict"]
+            }
+          }
+        },
+        {
+          "name": "📈 Biodiversity Trend Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analysis_type\": \"biodiversity_trend\",\n  \"data_source\": \"carto\",\n  \"parameters\": {\n    \"region\": \"angola\",\n    \"time_period\": \"2020-2024\",\n    \"species_groups\": [\"fish\", \"marine_mammals\", \"corals\"],\n    \"environmental_factors\": [\"temperature\", \"depth\", \"salinity\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/ml/analyze",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["ml", "analyze"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 BGAPP Native Endpoints",
+      "item": [
+        {
+          "name": "❤️ BGAPP Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/health",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "📊 BGAPP Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/dashboard/stats",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        },
+        {
+          "name": "🗺️ BGAPP All Maps",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{BGAPP_AUTH_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BGAPP_BASE_URL}}/api/maps?include_carto=true",
+              "host": ["{{BGAPP_BASE_URL}}"],
+              "path": ["api", "maps"],
+              "query": [
+                {
+                  "key": "include_carto",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BGAPP_BASE_URL",
+      "value": "https://bgapp-api.majearcasa.workers.dev"
+    },
+    {
+      "key": "BGAPP_AUTH_TOKEN",
+      "value": "bgapp_admin_28D4Pf0OMN0nABk0xnpCMbEszH5Q4lF8Ovksw_RdGnk"
+    },
+    {
+      "key": "TABLE_NAME",
+      "value": "marine_biodiversity"
+    },
+    {
+      "key": "MAP_ID",
+      "value": "your-map-id"
+    }
+  ]
+}
+

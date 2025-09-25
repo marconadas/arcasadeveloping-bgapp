@@ -1,0 +1,612 @@
+/**
+ * 🎣 Global Fishing Watch Integration - Estilos
+ * Estilos customizados para a integração GFW no BGAPP
+ */
+
+/* =============================================================================
+   CONTROLES GFW
+============================================================================= */
+
+.gfw-controls {
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 320px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.gfw-controls h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gfw-controls h3::before {
+  content: '🎣';
+  font-size: 20px;
+}
+
+/* Time Filter */
+.time-filter {
+  margin-bottom: 15px;
+}
+
+.time-filter label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.time-filter select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.time-filter select:hover {
+  border-color: #3498db;
+}
+
+.time-filter select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* Date Range Picker */
+.date-range-picker {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.date-range-picker.show {
+  display: block;
+}
+
+.date-range-picker input[type="date"] {
+  width: calc(50% - 5px);
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* View Type Buttons */
+.view-type {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  background: #f0f0f0;
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.view-type button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+  font-weight: 500;
+}
+
+.view-type button:hover {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.view-type button.active {
+  background: #3498db;
+  color: white;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Filters */
+.filters {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.filter-group {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.filter-group checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.filter-group input[type="checkbox"] + label {
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 13px;
+  color: #333;
+}
+
+/* =============================================================================
+   POPUPS GFW
+============================================================================= */
+
+.gfw-popup {
+  min-width: 200px;
+}
+
+.gfw-popup h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.gfw-popup p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #555;
+}
+
+.gfw-popup strong {
+  color: #333;
+}
+
+.gfw-popup button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gfw-popup button:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Vessel Popup */
+.gfw-vessel-popup {
+  min-width: 250px;
+}
+
+.gfw-vessel-popup h4 {
+  color: #2980b9;
+}
+
+/* Alert Popup */
+.gfw-alert-popup {
+  min-width: 220px;
+}
+
+.gfw-alert-popup h4 {
+  color: #e74c3c;
+}
+
+/* =============================================================================
+   MARCADORES E ÍCONES
+============================================================================= */
+
+/* Vessel Icons */
+.gfw-vessel-icon {
+  background: none;
+  border: none;
+}
+
+.vessel-marker {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.vessel-marker.fishing {
+  color: #3498db;
+}
+
+.vessel-marker.carrier {
+  color: #e74c3c;
+}
+
+.vessel-marker.support {
+  color: #f39c12;
+}
+
+/* Alert Icons */
+.gfw-alert-icon {
+  background: none;
+  border: none;
+}
+
+.gfw-alert {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  animation: pulse 2s infinite;
+}
+
+.gfw-alert.illegal_fishing {
+  color: #e74c3c;
+}
+
+.gfw-alert.protected_area {
+  color: #f39c12;
+}
+
+.gfw-alert.encounters {
+  color: #9b59b6;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* =============================================================================
+   LEGENDA GFW
+============================================================================= */
+
+.gfw-legend {
+  position: absolute;
+  bottom: 80px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 200px;
+  backdrop-filter: blur(10px);
+  display: none;
+}
+
+.gfw-legend.show {
+  display: block;
+}
+
+.gfw-legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.gfw-legend-item {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.gfw-legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.gfw-legend-color {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   LOADING E STATUS
+============================================================================= */
+
+.gfw-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  z-index: 2000;
+}
+
+.gfw-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.gfw-loading-text {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Status Badge */
+.gfw-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #27ae60;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gfw-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+.gfw-status.error {
+  background: #e74c3c;
+}
+
+.gfw-status.warning {
+  background: #f39c12;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* =============================================================================
+   RESPONSIVIDADE
+============================================================================= */
+
+@media (max-width: 768px) {
+  .gfw-controls {
+    right: 5px;
+    top: 70px;
+    max-width: 280px;
+    padding: 12px;
+  }
+  
+  .gfw-legend {
+    bottom: 60px;
+    right: 5px;
+    max-width: 180px;
+  }
+  
+  .view-type {
+    flex-wrap: wrap;
+  }
+  
+  .view-type button {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gfw-controls {
+    position: fixed;
+    top: auto;
+    bottom: 60px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  
+  .gfw-legend {
+    display: none !important;
+  }
+}
+
+/* =============================================================================
+   DARK MODE
+============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  .gfw-controls,
+  .gfw-legend,
+  .gfw-loading {
+    background: rgba(30, 30, 30, 0.95);
+    color: #e0e0e0;
+  }
+  
+  .gfw-controls h3,
+  .gfw-legend h4,
+  .gfw-popup h4 {
+    color: #ecf0f1;
+  }
+  
+  .time-filter select,
+  .date-range-picker input[type="date"] {
+    background: #2c2c2c;
+    color: #e0e0e0;
+    border-color: #444;
+  }
+  
+  .view-type {
+    background: #2c2c2c;
+  }
+  
+  .view-type button {
+    color: #bbb;
+  }
+  
+  .view-type button.active {
+    background: #3498db;
+    color: white;
+  }
+  
+  .filter-group {
+    border-bottom-color: #444;
+  }
+  
+  .gfw-popup,
+  .gfw-vessel-popup,
+  .gfw-alert-popup {
+    background: rgba(30, 30, 30, 0.95);
+    color: #e0e0e0;
+  }
+  
+  .gfw-popup p,
+  .filter-group label {
+    color: #bbb;
+  }
+  
+  .gfw-popup strong {
+    color: #e0e0e0;
+  }
+}
+
+/* =============================================================================
+   ANIMAÇÕES E TRANSIÇÕES
+============================================================================= */
+
+.gfw-layer-enter {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.gfw-layer-exit {
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Vessel tracking animation */
+.vessel-track-line {
+  stroke-dasharray: 5, 5;
+  animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* =============================================================================
+   ACESSIBILIDADE
+============================================================================= */
+
+.gfw-controls:focus-within {
+  outline: 3px solid #3498db;
+  outline-offset: 2px;
+}
+
+.gfw-controls button:focus,
+.gfw-controls select:focus,
+.gfw-controls input:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Skip link for screen readers */
+.gfw-skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 9999;
+  padding: 10px;
+  background: #3498db;
+  color: white;
+  text-decoration: none;
+}
+
+.gfw-skip-link:focus {
+  left: 10px;
+  top: 10px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .gfw-controls,
+  .gfw-legend {
+    border: 2px solid black;
+  }
+  
+  .view-type button.active {
+    outline: 2px solid black;
+  }
+}

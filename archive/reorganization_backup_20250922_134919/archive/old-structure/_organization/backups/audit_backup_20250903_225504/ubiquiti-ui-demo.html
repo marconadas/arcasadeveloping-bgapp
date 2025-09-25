@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Ubiquiti UI Demo | Design System Melhorado</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Demonstração do novo sistema de design BGAPP inspirado na excelência da Ubiquiti">
+    <meta name="author" content="BGAPP Development Team">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/ubiquiti-design-system.css">
+    
+    <style>
+        /* Demo-specific styles */
+        .demo-section {
+            margin-bottom: var(--ubq-space-16);
+            padding-bottom: var(--ubq-space-8);
+            border-bottom: 1px solid var(--ubq-border-primary);
+        }
+        
+        .demo-section:last-child {
+            border-bottom: none;
+        }
+        
+        .demo-title {
+            font-size: var(--ubq-text-3xl);
+            font-weight: 700;
+            color: var(--ubq-text-primary);
+            margin-bottom: var(--ubq-space-6);
+            display: flex;
+            align-items: center;
+            gap: var(--ubq-space-3);
+        }
+        
+        .demo-subtitle {
+            font-size: var(--ubq-text-lg);
+            color: var(--ubq-text-secondary);
+            margin-bottom: var(--ubq-space-8);
+            line-height: 1.6;
+        }
+        
+        .demo-grid {
+            display: grid;
+            gap: var(--ubq-space-6);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        
+        .demo-code {
+            background: var(--ubq-bg-secondary);
+            border: 1px solid var(--ubq-border-primary);
+            border-radius: var(--ubq-radius-md);
+            padding: var(--ubq-space-4);
+            font-family: var(--ubq-font-mono);
+            font-size: var(--ubq-text-sm);
+            color: var(--ubq-text-secondary);
+            overflow-x: auto;
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--ubq-space-4);
+        }
+        
+        .color-swatch {
+            text-align: center;
+        }
+        
+        .color-box {
+            width: 100%;
+            height: 80px;
+            border-radius: var(--ubq-radius-md);
+            margin-bottom: var(--ubq-space-2);
+            border: 1px solid var(--ubq-border-primary);
+        }
+        
+        .color-name {
+            font-size: var(--ubq-text-sm);
+            font-weight: 500;
+            color: var(--ubq-text-primary);
+        }
+        
+        .color-value {
+            font-size: var(--ubq-text-xs);
+            color: var(--ubq-text-muted);
+            font-family: var(--ubq-font-mono);
+        }
+        
+        .component-showcase {
+            padding: var(--ubq-space-6);
+            background: var(--ubq-bg-elevated);
+            border: 1px solid var(--ubq-border-primary);
+            border-radius: var(--ubq-radius-lg);
+        }
+        
+        .typography-scale {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubq-space-4);
+        }
+        
+        .typography-item {
+            display: flex;
+            align-items: baseline;
+            gap: var(--ubq-space-4);
+        }
+        
+        .typography-label {
+            min-width: 80px;
+            font-size: var(--ubq-text-sm);
+            color: var(--ubq-text-muted);
+            font-family: var(--ubq-font-mono);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--ubq-blue-600) 0%, var(--ubq-blue-800) 100%);
+            color: white;
+            padding: var(--ubq-space-16) 0;
+            text-align: center;
+            margin-bottom: var(--ubq-space-16);
+        }
+        
+        .hero-title {
+            font-size: var(--ubq-text-5xl);
+            font-weight: 700;
+            margin-bottom: var(--ubq-space-4);
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: var(--ubq-text-xl);
+            opacity: 0.9;
+            margin-bottom: var(--ubq-space-8);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--ubq-space-4);
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: var(--ubq-space-3);
+            padding: var(--ubq-space-4);
+            background: var(--ubq-bg-elevated);
+            border: 1px solid var(--ubq-border-primary);
+            border-radius: var(--ubq-radius-md);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--ubq-success);
+        }
+        
+        .improvement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .improvement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--ubq-space-3);
+            padding: var(--ubq-space-4) 0;
+            border-bottom: 1px solid var(--ubq-border-primary);
+        }
+        
+        .improvement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .improvement-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--ubq-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--ubq-text-sm);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .improvement-content h4 {
+            font-size: var(--ubq-text-lg);
+            font-weight: 600;
+            color: var(--ubq-text-primary);
+            margin-bottom: var(--ubq-space-2);
+        }
+        
+        .improvement-content p {
+            color: var(--ubq-text-secondary);
+            line-height: 1.6;
+        }
+        
+        .toast-demo {
+            position: fixed;
+            top: var(--ubq-space-6);
+            right: var(--ubq-space-6);
+            z-index: var(--ubq-z-toast);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="ubq-container">
+            <h1 class="hero-title">
+                🎨 BGAPP Ubiquiti UI
+            </h1>
+            <p class="hero-subtitle">
+                Sistema de design unificado inspirado na excelência da Ubiquiti. 
+                Interface consistente, acessível e otimizada para todos os dispositivos.
+            </p>
+            <div class="ubq-flex ubq-justify-center ubq-gap-4">
+                <button class="ubq-btn ubq-btn-primary ubq-btn-lg" onclick="showToast('success', 'Sistema de design carregado com sucesso!')">
+                    ✨ Ver Demonstração
+                </button>
+                <button class="ubq-btn ubq-btn-secondary ubq-btn-lg" onclick="toggleTheme()">
+                    🌙 Alternar Tema
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <div class="ubq-container">
+        <!-- Status do Sistema -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                📊 Status do Sistema
+            </h2>
+            <p class="demo-subtitle">
+                Monitorização em tempo real das melhorias implementadas
+            </p>
+            
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <div>
+                        <div class="ubq-font-semibold">Design System</div>
+                        <div class="ubq-text-sm ubq-text-secondary">100% Implementado</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <div>
+                        <div class="ubq-font-semibold">Navegação Unificada</div>
+                        <div class="ubq-text-sm ubq-text-secondary">Ativo</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <div>
+                        <div class="ubq-font-semibold">Responsividade</div>
+                        <div class="ubq-text-sm ubq-text-secondary">Otimizada</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <div>
+                        <div class="ubq-font-semibold">Acessibilidade</div>
+                        <div class="ubq-text-sm ubq-text-secondary">WCAG AA</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Melhorias Implementadas -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                ✅ Melhorias Implementadas
+            </h2>
+            <p class="demo-subtitle">
+                Principais melhorias baseadas na auditoria UI/UX completa
+            </p>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item">
+                    <div class="improvement-icon">✓</div>
+                    <div class="improvement-content">
+                        <h4>Sistema de Design Unificado</h4>
+                        <p>Criação de design tokens centralizados com paleta de cores consistente, tipografia escalável e componentes padronizados.</p>
+                    </div>
+                </li>
+                <li class="improvement-item">
+                    <div class="improvement-icon">✓</div>
+                    <div class="improvement-content">
+                        <h4>Navegação Inteligente</h4>
+                        <p>Sistema de navegação responsivo com suporte touch, navegação por teclado e auto-hide em dispositivos móveis.</p>
+                    </div>
+                </li>
+                <li class="improvement-item">
+                    <div class="improvement-icon">✓</div>
+                    <div class="improvement-content">
+                        <h4>Componentes Touch-Friendly</h4>
+                        <p>Botões e elementos interativos otimizados para touch com área mínima de 44px e feedback visual aprimorado.</p>
+                    </div>
+                </li>
+                <li class="improvement-item">
+                    <div class="improvement-icon">✓</div>
+                    <div class="improvement-content">
+                        <h4>Acessibilidade Melhorada</h4>
+                        <p>Conformidade WCAG AA com ARIA labels, navegação por teclado e suporte a leitores de ecrã.</p>
+                    </div>
+                </li>
+                <li class="improvement-item">
+                    <div class="improvement-icon">✓</div>
+                    <div class="improvement-content">
+                        <h4>Tema Escuro/Claro</h4>
+                        <p>Suporte automático para preferências do sistema com transições suaves entre temas.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Paleta de Cores -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                🎨 Paleta de Cores Unificada
+            </h2>
+            <p class="demo-subtitle">
+                Sistema de cores consistente baseado no azul BGAPP com tons semânticos
+            </p>
+            
+            <div class="color-palette">
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-blue-500);"></div>
+                    <div class="color-name">Primary</div>
+                    <div class="color-value">#3b82f6</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-success);"></div>
+                    <div class="color-name">Success</div>
+                    <div class="color-value">#10b981</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-warning);"></div>
+                    <div class="color-name">Warning</div>
+                    <div class="color-value">#f59e0b</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-error);"></div>
+                    <div class="color-name">Error</div>
+                    <div class="color-value">#ef4444</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-info);"></div>
+                    <div class="color-name">Info</div>
+                    <div class="color-value">#06b6d4</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--ubq-gray-500);"></div>
+                    <div class="color-name">Neutral</div>
+                    <div class="color-value">#6b7280</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tipografia -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                📝 Sistema Tipográfico
+            </h2>
+            <p class="demo-subtitle">
+                Escala tipográfica baseada em proporção áurea com hierarquia clara
+            </p>
+            
+            <div class="typography-scale">
+                <div class="typography-item">
+                    <div class="typography-label">5xl</div>
+                    <div style="font-size: var(--ubq-text-5xl); font-weight: 700;">Título Principal</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">4xl</div>
+                    <div style="font-size: var(--ubq-text-4xl); font-weight: 600;">Título Seção</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">3xl</div>
+                    <div style="font-size: var(--ubq-text-3xl); font-weight: 600;">Subtítulo</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">2xl</div>
+                    <div style="font-size: var(--ubq-text-2xl); font-weight: 500;">Cabeçalho</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">xl</div>
+                    <div style="font-size: var(--ubq-text-xl);">Texto Destacado</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">base</div>
+                    <div style="font-size: var(--ubq-text-base);">Texto Corpo</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">sm</div>
+                    <div style="font-size: var(--ubq-text-sm); color: var(--ubq-text-secondary);">Texto Secundário</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">xs</div>
+                    <div style="font-size: var(--ubq-text-xs); color: var(--ubq-text-muted);">Texto Pequeno</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Componentes -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                🧩 Componentes
+            </h2>
+            <p class="demo-subtitle">
+                Biblioteca de componentes reutilizáveis com estados interativos
+            </p>
+            
+            <div class="demo-grid">
+                <!-- Botões -->
+                <div class="component-showcase">
+                    <h3 class="ubq-text-lg ubq-font-semibold ubq-m-4">Botões</h3>
+                    <div class="ubq-flex ubq-flex-col ubq-gap-3">
+                        <button class="ubq-btn ubq-btn-primary">Primário</button>
+                        <button class="ubq-btn ubq-btn-secondary">Secundário</button>
+                        <button class="ubq-btn ubq-btn-ghost">Ghost</button>
+                        <button class="ubq-btn ubq-btn-primary ubq-btn-sm">Pequeno</button>
+                        <button class="ubq-btn ubq-btn-primary ubq-btn-lg">Grande</button>
+                        <button class="ubq-btn ubq-btn-primary" disabled>Desativado</button>
+                    </div>
+                </div>
+
+                <!-- Inputs -->
+                <div class="component-showcase">
+                    <h3 class="ubq-text-lg ubq-font-semibold ubq-m-4">Inputs</h3>
+                    <div class="ubq-flex ubq-flex-col ubq-gap-4">
+                        <div>
+                            <label class="ubq-label">Nome</label>
+                            <input class="ubq-input" type="text" placeholder="Digite seu nome">
+                        </div>
+                        <div>
+                            <label class="ubq-label">Email</label>
+                            <input class="ubq-input" type="email" placeholder="seu@email.com">
+                        </div>
+                        <div>
+                            <label class="ubq-label">Mensagem</label>
+                            <textarea class="ubq-input" rows="3" placeholder="Sua mensagem..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards -->
+                <div class="component-showcase">
+                    <h3 class="ubq-text-lg ubq-font-semibold ubq-m-4">Cards</h3>
+                    <div class="ubq-card">
+                        <div class="ubq-card-header">
+                            <h4 class="ubq-font-semibold">Título do Card</h4>
+                        </div>
+                        <div class="ubq-card-body">
+                            <p class="ubq-text-secondary">
+                                Conteúdo do card com informações relevantes.
+                            </p>
+                        </div>
+                        <div class="ubq-card-footer">
+                            <button class="ubq-btn ubq-btn-primary ubq-btn-sm">Ação</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Métricas -->
+                <div class="component-showcase">
+                    <h3 class="ubq-text-lg ubq-font-semibold ubq-m-4">Métricas</h3>
+                    <div class="ubq-metric-card">
+                        <div class="ubq-metric-value">1,234</div>
+                        <div class="ubq-metric-label">Utilizadores Ativos</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Código de Exemplo -->
+        <section class="demo-section">
+            <h2 class="demo-title">
+                💻 Código de Exemplo
+            </h2>
+            <p class="demo-subtitle">
+                Como usar o sistema de design nos seus componentes
+            </p>
+            
+            <div class="demo-code">
+&lt;!-- Botão primário com ícone --&gt;
+&lt;button class="ubq-btn ubq-btn-primary"&gt;
+    &lt;svg width="20" height="20"&gt;...&lt;/svg&gt;
+    Ação Principal
+&lt;/button&gt;
+
+&lt;!-- Card com conteúdo --&gt;
+&lt;div class="ubq-card"&gt;
+    &lt;div class="ubq-card-header"&gt;
+        &lt;h3&gt;Título&lt;/h3&gt;
+    &lt;/div&gt;
+    &lt;div class="ubq-card-body"&gt;
+        &lt;p&gt;Conteúdo do card&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Grid responsivo --&gt;
+&lt;div class="ubq-grid ubq-grid-cols-3 ubq-gap-6"&gt;
+    &lt;div&gt;Item 1&lt;/div&gt;
+    &lt;div&gt;Item 2&lt;/div&gt;
+    &lt;div&gt;Item 3&lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-demo" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="assets/js/ubiquiti-navigation.js"></script>
+    <script>
+        // Toast notification system
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `ubq-toast ubq-toast-${type}`;
+            
+            const icon = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            }[type] || 'ℹ️';
+            
+            toast.innerHTML = `
+                <div>${icon}</div>
+                <div style="flex: 1;">
+                    <div class="ubq-font-medium">${message}</div>
+                </div>
+                <button onclick="this.parentElement.remove()" class="ubq-btn ubq-btn-ghost" style="padding: var(--ubq-space-1);">
+                    ✕
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+        
+        // Theme toggle
+        function toggleTheme() {
+            if (window.ubqNavigation) {
+                const newTheme = window.ubqNavigation.toggleTheme();
+                showToast('info', `Tema ${newTheme === 'light' ? 'claro' : 'escuro'} ativado`);
+            } else {
+                // Fallback manual
+                const body = document.body;
+                const isLight = body.classList.contains('ubq-theme-light');
+                
+                body.classList.remove('ubq-theme-light', 'ubq-theme-dark');
+                
+                if (isLight) {
+                    body.classList.add('ubq-theme-dark');
+                    localStorage.setItem('ubq-theme', 'dark');
+                    showToast('info', 'Tema escuro ativado');
+                } else {
+                    body.classList.add('ubq-theme-light');
+                    localStorage.setItem('ubq-theme', 'light');
+                    showToast('info', 'Tema claro ativado');
+                }
+            }
+        }
+        
+        // Demo interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('success', 'Bem-vindo ao novo sistema de design BGAPP!');
+            }, 1000);
+            
+            // Add hover effects to color swatches
+            document.querySelectorAll('.color-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    const color = window.getComputedStyle(this).backgroundColor;
+                    navigator.clipboard.writeText(color).then(() => {
+                        showToast('info', 'Cor copiada para a área de transferência!');
+                    });
+                });
+            });
+            
+            // Listen for navigation events
+            document.addEventListener('ubq-nav:navigate', function(e) {
+                console.log('Navigation:', e.detail);
+                showToast('info', `Navegou para: ${e.detail.section}`);
+            });
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K for navigation
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (window.ubqNavigation) {
+                    window.ubqNavigation.toggle();
+                }
+            }
+            
+            // T for theme toggle
+            if (e.key === 't' || e.key === 'T') {
+                if (!e.target.matches('input, textarea')) {
+                    toggleTheme();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+# 🔍 MCP-Powered Monitoring Worker Configuration
+# Intelligent monitoring and analytics for BGAPP infrastructure
+# Version: 1.0.0 - Production Monitoring
+
+name = "bgapp-mcp-monitoring"
+main = "mcp-monitoring-worker.js"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Production environment
+[env.production]
+name = "bgapp-mcp-monitoring"
+
+# Environment variables
+[env.production.vars]
+NODE_ENV = "production"
+MONITORING_VERSION = "1.0.0"
+ENVIRONMENT = "production"
+
+# Monitoring configuration
+MONITORING_ENABLED = "true"
+HEALTH_CHECK_INTERVAL = "300000"    # 5 minutes
+PERFORMANCE_CHECK_INTERVAL = "900000" # 15 minutes
+MCP_STATUS_CHECK_INTERVAL = "120000"  # 2 minutes
+ANALYTICS_UPDATE_INTERVAL = "1800000" # 30 minutes
+
+# Alert thresholds
+RESPONSE_TIME_WARNING = "1000"    # 1 second
+RESPONSE_TIME_CRITICAL = "3000"   # 3 seconds
+ERROR_RATE_WARNING = "5"          # 5%
+ERROR_RATE_CRITICAL = "10"        # 10%
+
+# Services to monitor
+MONITORED_SERVICES = "https://bgapp-enhanced-api-worker.majearcasa.workers.dev,https://bgapp-frontend.pages.dev,https://bgapp-admin.pages.dev"
+
+# MCP service priorities
+MCP_OSM_PRIORITY = "high"
+MCP_FIRECRAWL_PRIORITY = "medium"
+MCP_GIS_PRIORITY = "high"
+MCP_IGNITER_PRIORITY = "low"
+
+# Security and access
+ALLOWED_ORIGINS = "https://bgapp-admin.pages.dev,https://bgapp-frontend.pages.dev"
+MONITORING_ACCESS_KEY = "monitoring-key-will-be-set-as-secret"
+
+# KV Namespace for monitoring data storage
+[[env.production.kv_namespaces]]
+binding = "MONITORING_CACHE"
+id = "bgapp_monitoring_cache"
+preview_id = "bgapp_monitoring_cache_preview"
+
+# Scheduled triggers for automatic monitoring
+[triggers]
+crons = [
+  "*/5 * * * *",    # Health checks every 5 minutes
+  "*/15 * * * *",   # Performance checks every 15 minutes
+  "0 * * * *",      # Hourly comprehensive report
+  "0 0 * * *"       # Daily cleanup and archival
+]
+
+# Routes for monitoring dashboard
+[[env.production.routes]]
+pattern = "monitoring.bgapp.arcasadeveloping.org/*"
+custom_domain = true
+
+# Development environment
+[env.development]
+name = "bgapp-mcp-monitoring-dev"
+
+[env.development.vars]
+NODE_ENV = "development"
+MONITORING_VERSION = "1.0.0-dev"
+ENVIRONMENT = "development"
+MONITORING_ENABLED = "true"
+HEALTH_CHECK_INTERVAL = "60000"     # 1 minute for faster testing
+PERFORMANCE_CHECK_INTERVAL = "300000" # 5 minutes
+MCP_STATUS_CHECK_INTERVAL = "30000"   # 30 seconds
+MONITORED_SERVICES = "http://localhost:8085,https://bgapp-enhanced-api-worker-dev.majearcasa.workers.dev"
+ALLOWED_ORIGINS = "*"
+
+[[env.development.kv_namespaces]]
+binding = "MONITORING_CACHE"
+id = "bgapp_monitoring_cache_dev"
+preview_id = "bgapp_monitoring_cache_dev_preview"
+
+# Staging environment
+[env.staging]
+name = "bgapp-mcp-monitoring-staging"
+
+[env.staging.vars]
+NODE_ENV = "staging"
+MONITORING_VERSION = "1.0.0-staging"
+ENVIRONMENT = "staging"
+MONITORING_ENABLED = "true"
+HEALTH_CHECK_INTERVAL = "180000"    # 3 minutes
+PERFORMANCE_CHECK_INTERVAL = "600000" # 10 minutes
+MCP_STATUS_CHECK_INTERVAL = "60000"   # 1 minute
+MONITORED_SERVICES = "https://bgapp-enhanced-api-worker-staging.majearcasa.workers.dev,https://bgapp-staging.pages.dev"
+ALLOWED_ORIGINS = "https://bgapp-staging.pages.dev"
+
+[[env.staging.kv_namespaces]]
+binding = "MONITORING_CACHE"
+id = "bgapp_monitoring_cache_staging"
+preview_id = "bgapp_monitoring_cache_staging_preview"
+
+# Build configuration
+[build]
+command = ""
+watch_dir = "workers"
+
+# Analytics and observability
+[observability]
+enabled = true
+head_sampling_rate = 1.0

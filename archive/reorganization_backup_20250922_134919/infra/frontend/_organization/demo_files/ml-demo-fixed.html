@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP ML Demo - deck.gl WebGL2 Powered</title>
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- deck.gl - SIMPLIFIED INTEGRATION -->
+    <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #28a745;
+            --accent-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #000000 !important;
+        }
+        
+        * {
+            color: #000000 !important;
+        }
+        
+        .text-white, .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+        
+        .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-container {
+            padding: 2rem 0;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-map {
+            height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 2px solid #00d4ff;
+            position: relative;
+            background: #001122;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #6f42c1, #17a2b8);
+            border: none;
+            color: white !important;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
+            color: white !important;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-implemented {
+            background: #28a745;
+            color: white !important;
+        }
+        
+        .demo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #6f42c1 !important;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666 !important;
+            font-weight: 500;
+        }
+        
+        .demo-log {
+            background: #1a1a1a;
+            color: #00ff00 !important;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .demo-log div {
+            color: #00ff00 !important;
+        }
+        
+        .deck-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .deck-btn {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(111, 66, 193, 0.9));
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: white !important;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+        
+        .deck-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="demo-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h2 mb-2">🧠 BGAPP Machine Learning Demo - deck.gl WebGL2</h1>
+                    <p class="lead mb-0">Demonstração avançada com deck.gl framework de visualização</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="status-badge status-implemented">deck.gl Integrado</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container demo-container">
+        
+        <!-- Status Overview -->
+        <div class="demo-section">
+            <h3>📊 Status do Sistema deck.gl</h3>
+            <div class="demo-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="deckgl-status">🔄</div>
+                    <div class="stat-label">deck.gl Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="layers-count">0</div>
+                    <div class="stat-label">Layers Ativas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="data-points">0</div>
+                    <div class="stat-label">Pontos de Dados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="fps-display">60</div>
+                    <div class="stat-label">FPS WebGL2</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- deck.gl Map Demo -->
+        <div class="demo-section">
+            <h3>🌐 Mapa deck.gl WebGL2 com ML Layers</h3>
+            <p>Mapa interativo deck.gl com visualizações de Machine Learning de alta performance.</p>
+            
+            <div class="demo-controls">
+                <button class="btn btn-demo" onclick="createBiodiversityLayer()">
+                    🔥 Biodiversidade
+                </button>
+                <button class="btn btn-demo" onclick="createSpeciesLayer()">
+                    🐠 Espécies
+                </button>
+                <button class="btn btn-demo" onclick="createTemperatureLayer()">
+                    🌡️ Temperatura
+                </button>
+                <button class="btn btn-demo" onclick="createPredictionsLayer()">
+                    🔮 Predições ML
+                </button>
+                <button class="btn btn-demo" onclick="createCurrentsLayer()">
+                    🌊 Correntes
+                </button>
+                <button class="btn btn-demo" onclick="createAllLayers()">
+                    🎨 Todas as Layers
+                </button>
+                <button class="btn btn-demo" onclick="clearAllLayers()">
+                    🧹 Limpar
+                </button>
+            </div>
+            
+            <div id="demo-map" class="demo-map">
+                <!-- deck.gl controls -->
+                <div class="deck-controls">
+                    <button class="deck-btn" onclick="resetView()" title="Reset View">
+                        🎯 Reset
+                    </button>
+                    <button class="deck-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                        ⛶ Full
+                    </button>
+                    <button class="deck-btn" onclick="takeScreenshot()" title="Screenshot">
+                        📸 Print
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="demo-section">
+            <h3>🔧 Detalhes Técnicos deck.gl</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Arquitetura</h5>
+                    <ul>
+                        <li><strong>Framework:</strong> deck.gl v9.1.14 WebGL2</li>
+                        <li><strong>Rendering:</strong> GPU-accelerated com shaders</li>
+                        <li><strong>Performance:</strong> Otimizado para grandes datasets</li>
+                        <li><strong>Interatividade:</strong> Picking e hover avançados</li>
+                        <li><strong>Layers:</strong> HeatmapLayer, ScatterplotLayer, IconLayer</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Funcionalidades</h5>
+                    <ul>
+                        <li><strong>WebGL2:</strong> Rendering acelerado por GPU</li>
+                        <li><strong>Large Data:</strong> Milhares de pontos sem lag</li>
+                        <li><strong>Interactive:</strong> Click, hover, tooltips</li>
+                        <li><strong>Responsive:</strong> Funciona em mobile</li>
+                        <li><strong>Extensible:</strong> Layers customizáveis</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h5 class="mt-4">Log de Atividades</h5>
+            <div id="demo-log" class="demo-log">
+                <div>🚀 Inicializando deck.gl ML Demo...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified and robust deck.gl ML Demo
+        class DeckGLMLDemo {
+            constructor() {
+                this.deck = null;
+                this.layers = [];
+                this.logContainer = document.getElementById('demo-log');
+                this.isInitialized = false;
+                
+                this.stats = {
+                    layers: 0,
+                    dataPoints: 0,
+                    fps: 60
+                };
+                
+                this.viewState = {
+                    longitude: 13.5,
+                    latitude: -12.5,
+                    zoom: 6,
+                    pitch: 0,
+                    bearing: 0
+                };
+                
+                this.init();
+            }
+            
+            async init() {
+                this.log('🚀 Inicializando deck.gl ML Demo...');
+                
+                try {
+                    await this.waitForDeckGL();
+                    this.initializeDeck();
+                    this.createBaseLayers();
+                    this.updateStats();
+                    
+                    this.isInitialized = true;
+                    this.log('✅ deck.gl ML Demo inicializado com sucesso!');
+                    
+                } catch (error) {
+                    this.log(`❌ Erro: ${error.message}`);
+                    console.error('Erro na inicialização:', error);
+                }
+            }
+            
+            async waitForDeckGL() {
+                this.log('📚 Aguardando deck.gl...');
+                
+                return new Promise((resolve, reject) => {
+                    let attempts = 0;
+                    const maxAttempts = 50;
+                    
+                    const checkDeck = () => {
+                        attempts++;
+                        if (typeof deck !== 'undefined' && deck.DeckGL) {
+                            this.log('✅ deck.gl disponível');
+                            resolve();
+                        } else if (attempts >= maxAttempts) {
+                            reject(new Error('deck.gl não carregou após 5 segundos'));
+                        } else {
+                            setTimeout(checkDeck, 100);
+                        }
+                    };
+                    checkDeck();
+                });
+            }
+            
+            initializeDeck() {
+                this.log('🌐 Criando instância deck.gl...');
+                
+                this.deck = new deck.DeckGL({
+                    container: 'demo-map',
+                    initialViewState: this.viewState,
+                    controller: true,
+                    layers: [],
+                    onViewStateChange: ({viewState}) => {
+                        this.viewState = viewState;
+                    },
+                    onClick: (info) => {
+                        if (info.object) {
+                            this.log(`🎯 Click: ${info.object.type || 'objeto'} em ${info.coordinate[1].toFixed(3)}, ${info.coordinate[0].toFixed(3)}`);
+                            this.showObjectInfo(info.object);
+                        }
+                    },
+                    onHover: (info) => {
+                        // Simple hover handling
+                        const container = document.getElementById('demo-map');
+                        container.style.cursor = info.object ? 'pointer' : 'default';
+                    }
+                });
+                
+                this.log('✅ deck.gl instância criada');
+            }
+            
+            createBaseLayers() {
+                this.log('🗺️ Criando layer base...');
+                
+                // Simple base layer without complex loaders
+                const baseLayer = new deck.SolidPolygonLayer({
+                    id: 'ocean-base',
+                    data: [{
+                        polygon: [
+                            [5, -20],
+                            [16, -20],
+                            [16, -4],
+                            [5, -4],
+                            [5, -20]
+                        ]
+                    }],
+                    filled: true,
+                    getFillColor: [0, 50, 100, 50],
+                    getLineColor: [0, 100, 200, 100],
+                    lineWidthMinPixels: 1
+                });
+                
+                this.layers = [baseLayer];
+                this.deck.setProps({layers: this.layers});
+                this.updateStats();
+                
+                this.log('✅ Layer base criada');
+            }
+            
+            generateMLData(type, count) {
+                const data = [];
+                
+                for (let i = 0; i < count; i++) {
+                    const longitude = 8 + Math.random() * 6;   // 8°E a 14°E - Oceano Angola
+                    const latitude = -18 + Math.random() * 12; // -18°S a -6°S - Costa Angola
+                    
+                    const basePoint = {
+                        id: i,
+                        longitude,
+                        latitude,
+                        type: type
+                    };
+                    
+                    switch(type) {
+                        case 'biodiversity':
+                            data.push({
+                                ...basePoint,
+                                biodiversityIndex: Math.random(),
+                                weight: Math.random()
+                            });
+                            break;
+                            
+                        case 'species':
+                            const species = ['fish', 'whale', 'dolphin', 'turtle', 'coral', 'shark'];
+                            data.push({
+                                ...basePoint,
+                                species: species[Math.floor(Math.random() * species.length)],
+                                abundance: 1 + Math.random() * 9,
+                                confidence: 0.6 + Math.random() * 0.4
+                            });
+                            break;
+                            
+                        case 'temperature':
+                            data.push({
+                                ...basePoint,
+                                temperature: 18 + Math.random() * 12,
+                                weight: Math.random()
+                            });
+                            break;
+                            
+                        case 'predictions':
+                            const predTypes = ['high_bio', 'fishing', 'conservation', 'risk'];
+                            data.push({
+                                ...basePoint,
+                                predictionType: predTypes[Math.floor(Math.random() * predTypes.length)],
+                                confidence: 0.5 + Math.random() * 0.5
+                            });
+                            break;
+                    }
+                }
+                
+                return data;
+            }
+            
+            addLayer(layer) {
+                this.layers.push(layer);
+                this.deck.setProps({layers: this.layers});
+                this.updateStats();
+                this.log(`✅ Layer adicionada: ${layer.id}`);
+            }
+            
+            removeLayer(layerId) {
+                this.layers = this.layers.filter(layer => layer.id !== layerId);
+                this.deck.setProps({layers: this.layers});
+                this.updateStats();
+                this.log(`🗑️ Layer removida: ${layerId}`);
+            }
+            
+            clearLayers() {
+                // Keep only base layer
+                this.layers = this.layers.filter(layer => layer.id === 'ocean-base');
+                this.deck.setProps({layers: this.layers});
+                this.updateStats();
+                this.log('🧹 Layers ML limpas');
+            }
+            
+            updateStats() {
+                this.stats.layers = this.layers.length;
+                this.stats.dataPoints = this.layers.reduce((total, layer) => {
+                    return total + (layer.props.data ? layer.props.data.length : 0);
+                }, 0);
+                
+                // Update UI
+                document.getElementById('deckgl-status').textContent = this.isInitialized ? '✅' : '🔄';
+                document.getElementById('layers-count').textContent = this.stats.layers;
+                document.getElementById('data-points').textContent = this.stats.dataPoints;
+                document.getElementById('fps-display').textContent = this.stats.fps;
+            }
+            
+            showObjectInfo(object) {
+                const info = `
+                    Tipo: ${object.type}
+                    Coordenadas: ${object.latitude?.toFixed(4)}, ${object.longitude?.toFixed(4)}
+                    ${object.species ? `Espécie: ${object.species}` : ''}
+                    ${object.temperature ? `Temperatura: ${object.temperature.toFixed(1)}°C` : ''}
+                    ${object.biodiversityIndex ? `Biodiversidade: ${object.biodiversityIndex.toFixed(3)}` : ''}
+                    ${object.confidence ? `Confiança: ${(object.confidence * 100).toFixed(1)}%` : ''}
+                `;
+                
+                alert(info);
+            }
+            
+            log(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                this.logContainer.appendChild(logEntry);
+                this.logContainer.scrollTop = this.logContainer.scrollHeight;
+                
+                // Keep only last 20 entries
+                while (this.logContainer.children.length > 20) {
+                    this.logContainer.removeChild(this.logContainer.children[0]);
+                }
+            }
+        }
+        
+        // Global instance
+        let deckglDemo;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            deckglDemo = new DeckGLMLDemo();
+        });
+        
+        // Layer creation functions
+        function createBiodiversityLayer() {
+            if (!deckglDemo || !deckglDemo.isInitialized) {
+                alert('deck.gl ainda não inicializado');
+                return;
+            }
+            
+            deckglDemo.log('🔥 Criando layer de biodiversidade...');
+            
+            const data = deckglDemo.generateMLData('biodiversity', 500);
+            
+            const layer = new deck.HeatmapLayer({
+                id: 'biodiversity-heatmap',
+                data: data,
+                getPosition: d => [d.longitude, d.latitude],
+                getWeight: d => d.biodiversityIndex,
+                radiusPixels: 60,
+                opacity: 0.6,
+                pickable: true
+            });
+            
+            deckglDemo.addLayer(layer);
+        }
+        
+        function createSpeciesLayer() {
+            if (!deckglDemo || !deckglDemo.isInitialized) {
+                alert('deck.gl ainda não inicializado');
+                return;
+            }
+            
+            deckglDemo.log('🐠 Criando layer de espécies...');
+            
+            const data = deckglDemo.generateMLData('species', 200);
+            
+            const layer = new deck.ScatterplotLayer({
+                id: 'species-scatter',
+                data: data,
+                pickable: true,
+                opacity: 0.8,
+                stroked: true,
+                filled: true,
+                radiusScale: 100,
+                radiusMinPixels: 3,
+                radiusMaxPixels: 20,
+                getPosition: d => [d.longitude, d.latitude],
+                getRadius: d => d.abundance,
+                getFillColor: d => {
+                    const colors = {
+                        fish: [0, 170, 255],
+                        whale: [0, 102, 204],
+                        dolphin: [0, 153, 255],
+                        turtle: [0, 204, 102],
+                        coral: [255, 102, 0],
+                        shark: [255, 50, 50]
+                    };
+                    return colors[d.species] || [128, 128, 128];
+                },
+                getLineColor: [255, 255, 255]
+            });
+            
+            deckglDemo.addLayer(layer);
+        }
+        
+        function createTemperatureLayer() {
+            if (!deckglDemo || !deckglDemo.isInitialized) {
+                alert('deck.gl ainda não inicializado');
+                return;
+            }
+            
+            deckglDemo.log('🌡️ Criando layer de temperatura...');
+            
+            const data = deckglDemo.generateMLData('temperature', 300);
+            
+            const layer = new deck.HeatmapLayer({
+                id: 'temperature-heatmap',
+                data: data,
+                getPosition: d => [d.longitude, d.latitude],
+                getWeight: d => d.temperature / 30, // Normalize to 0-1
+                radiusPixels: 80,
+                opacity: 0.5,
+                pickable: true,
+                colorRange: [
+                    [0, 0, 255],      // Cold
+                    [0, 255, 255],    // Cool
+                    [0, 255, 0],      // Moderate
+                    [255, 255, 0],    // Warm
+                    [255, 0, 0]       // Hot
+                ]
+            });
+            
+            deckglDemo.addLayer(layer);
+        }
+        
+        function createPredictionsLayer() {
+            if (!deckglDemo || !deckglDemo.isInitialized) {
+                alert('deck.gl ainda não inicializado');
+                return;
+            }
+            
+            deckglDemo.log('🔮 Criando layer de predições...');
+            
+            const data = deckglDemo.generateMLData('predictions', 100);
+            
+            const layer = new deck.ScatterplotLayer({
+                id: 'predictions-scatter',
+                data: data,
+                pickable: true,
+                opacity: 0.9,
+                stroked: true,
+                filled: true,
+                radiusScale: 150,
+                radiusMinPixels: 5,
+                radiusMaxPixels: 25,
+                getPosition: d => [d.longitude, d.latitude],
+                getRadius: d => d.confidence * 15,
+                getFillColor: d => {
+                    const colors = {
+                        high_bio: [0, 255, 136],
+                        fishing: [0, 136, 255],
+                        conservation: [136, 255, 0],
+                        risk: [255, 68, 68]
+                    };
+                    return colors[d.predictionType] || [128, 128, 128];
+                },
+                getLineColor: [255, 255, 255]
+            });
+            
+            deckglDemo.addLayer(layer);
+        }
+        
+        function createCurrentsLayer() {
+            if (!deckglDemo || !deckglDemo.isInitialized) {
+                alert('deck.gl ainda não inicializado');
+                return;
+            }
+            
+            deckglDemo.log('🌊 Criando layer de correntes...');
+            
+            const data = [];
+            for (let i = 0; i < 30; i++) {
+                const startLon = 8 + Math.random() * 6;
+                const startLat = -18 + Math.random() * 12;
+                const direction = Math.random() * 2 * Math.PI;
+                const distance = 0.5 + Math.random() * 1.5;
+                
+                data.push({
+                    id: i,
+                    type: 'current',
+                    sourcePosition: [startLon, startLat],
+                    targetPosition: [
+                        startLon + Math.cos(direction) * distance,
+                        startLat + Math.sin(direction) * distance
+                    ],
+                    strength: 0.3 + Math.random() * 0.7
+                });
+            }
+            
+            const layer = new deck.LineLayer({
+                id: 'currents-lines',
+                data: data,
+                pickable: true,
+                getSourcePosition: d => d.sourcePosition,
+                getTargetPosition: d => d.targetPosition,
+                getColor: d => [0, 255, 255, 200],
+                getWidth: d => d.strength * 5,
+                widthMinPixels: 2,
+                widthMaxPixels: 10
+            });
+            
+            deckglDemo.addLayer(layer);
+        }
+        
+        function createAllLayers() {
+            deckglDemo.log('🎨 Criando todas as layers...');
+            
+            createBiodiversityLayer();
+            setTimeout(() => createSpeciesLayer(), 200);
+            setTimeout(() => createTemperatureLayer(), 400);
+            setTimeout(() => createPredictionsLayer(), 600);
+            setTimeout(() => createCurrentsLayer(), 800);
+            
+            deckglDemo.log('✅ Todas as layers criadas!');
+        }
+        
+        function clearAllLayers() {
+            if (!deckglDemo) return;
+            
+            deckglDemo.clearLayers();
+        }
+        
+        function resetView() {
+            if (!deckglDemo || !deckglDemo.deck) return;
+            
+            deckglDemo.log('🎯 Resetando vista para Angola...');
+            
+            deckglDemo.deck.setProps({
+                initialViewState: {
+                    longitude: 13.5,
+                    latitude: -12.5,
+                    zoom: 6,
+                    pitch: 0,
+                    bearing: 0,
+                    transitionDuration: 1000
+                }
+            });
+        }
+        
+        function toggleFullscreen() {
+            const container = document.getElementById('demo-map');
+            
+            if (!document.fullscreenElement) {
+                container.requestFullscreen();
+                deckglDemo.log('⛶ Fullscreen ativado');
+            } else {
+                document.exitFullscreen();
+                deckglDemo.log('⛶ Fullscreen desativado');
+            }
+        }
+        
+        function takeScreenshot() {
+            if (!deckglDemo || !deckglDemo.deck) return;
+            
+            deckglDemo.log('📸 Capturando screenshot...');
+            
+            const canvas = document.querySelector('#demo-map canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `bgapp-ml-deckgl-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                deckglDemo.log('✅ Screenshot salvo');
+            } else {
+                deckglDemo.log('❌ Canvas não encontrado');
+            }
+        }
+        
+        // Performance monitoring
+        setInterval(() => {
+            if (deckglDemo) {
+                // Simple FPS estimation
+                const now = performance.now();
+                if (deckglDemo.lastTime) {
+                    const fps = Math.round(1000 / (now - deckglDemo.lastTime));
+                    deckglDemo.stats.fps = fps;
+                    deckglDemo.updateStats();
+                }
+                deckglDemo.lastTime = now;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

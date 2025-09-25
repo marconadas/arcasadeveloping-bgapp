@@ -53,7 +53,7 @@ print_status "Starting BGAPP public deployment..."
 
 # 1. Deploy Admin Dashboard to Cloudflare Pages
 print_status "Deploying Admin Dashboard to Cloudflare Pages..."
-cd admin-dashboard
+cd apps/admin-dashboard
 
 if [ -f "package.json" ]; then
     # Build the Next.js app for static export
@@ -71,7 +71,7 @@ if [ -f "package.json" ]; then
         exit 1
     fi
 else
-    print_error "package.json not found in admin-dashboard directory"
+    print_error "package.json not found in apps/admin-dashboard directory"
     exit 1
 fi
 
@@ -81,7 +81,7 @@ cd ..
 print_status "Deploying API Admin Worker..."
 if [ -f "admin_api_complete.py" ]; then
     # Create a simple worker wrapper for the Python API
-    cat > workers/admin-api-public-worker.js << 'EOF'
+    cat > infrastructure/workers/admin-api-public-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
@@ -135,7 +135,7 @@ export default {
 EOF
 
     # Deploy the API worker
-    wrangler deploy workers/admin-api-public-worker.js --name bgapp-api --compatibility-date 2025-09-03
+    wrangler deploy infrastructure/workers/admin-api-public-worker.js --name bgapp-api --compatibility-date 2025-09-03
     
     print_success "API Admin deployed to: https://bgapp-api.majearcasa.workers.dev"
 else
@@ -144,13 +144,13 @@ fi
 
 # 3. Deploy STAC API Worker
 print_status "Deploying STAC API Worker..."
-if [ -f "workers/stac-api-worker.js" ]; then
-    wrangler deploy workers/stac-api-worker.js --name bgapp-stac --compatibility-date 2025-09-03
+if [ -f "infrastructure/workers/stac-api-worker.js" ]; then
+    wrangler deploy infrastructure/workers/stac-api-worker.js --name bgapp-stac --compatibility-date 2025-09-03
     print_success "STAC API deployed to: https://bgapp-stac.majearcasa.workers.dev"
 else
     print_warning "STAC API worker not found, creating basic one..."
     
-    cat > workers/stac-basic-worker.js << 'EOF'
+    cat > infrastructure/workers/stac-basic-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -195,7 +195,7 @@ export default {
 };
 EOF
     
-    wrangler deploy workers/stac-basic-worker.js --name bgapp-stac --compatibility-date 2025-09-03
+    wrangler deploy infrastructure/workers/stac-basic-worker.js --name bgapp-stac --compatibility-date 2025-09-03
     print_success "STAC API deployed to: https://bgapp-stac.majearcasa.workers.dev"
 fi
 
@@ -230,7 +230,7 @@ fi
 
 # 5. Deploy PyGeoAPI Worker
 print_status "Deploying PyGeoAPI Worker..."
-cat > workers/pygeoapi-worker.js << 'EOF'
+cat > infrastructure/workers/pygeoapi-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -269,12 +269,12 @@ export default {
 };
 EOF
 
-wrangler deploy workers/pygeoapi-worker.js --name bgapp-geoapi --compatibility-date 2025-09-03
+wrangler deploy infrastructure/workers/pygeoapi-worker.js --name bgapp-geoapi --compatibility-date 2025-09-03
 print_success "PyGeoAPI deployed to: https://bgapp-geoapi.majearcasa.workers.dev"
 
 # 6. Deploy STAC Browser
 print_status "Deploying STAC Browser..."
-cat > workers/stac-browser-worker.js << 'EOF'
+cat > infrastructure/workers/stac-browser-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -347,12 +347,12 @@ export default {
 };
 EOF
 
-wrangler deploy workers/stac-browser-worker.js --name bgapp-browser --compatibility-date 2025-09-03
+wrangler deploy infrastructure/workers/stac-browser-worker.js --name bgapp-browser --compatibility-date 2025-09-03
 print_success "STAC Browser deployed to: https://bgapp-browser.majearcasa.workers.dev"
 
 # 7. Deploy Keycloak (Authentication) Worker
 print_status "Deploying Authentication Worker..."
-cat > workers/keycloak-worker.js << 'EOF'
+cat > infrastructure/workers/keycloak-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -385,12 +385,12 @@ export default {
 };
 EOF
 
-wrangler deploy workers/keycloak-worker.js --name bgapp-auth --compatibility-date 2025-09-03
+wrangler deploy infrastructure/workers/keycloak-worker.js --name bgapp-auth --compatibility-date 2025-09-03
 print_success "Authentication service deployed to: https://bgapp-auth.majearcasa.workers.dev"
 
 # 8. Deploy Monitoring Worker
 print_status "Deploying Monitoring Worker..."
-cat > workers/monitoring-worker.js << 'EOF'
+cat > infrastructure/workers/monitoring-worker.js << 'EOF'
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -426,7 +426,7 @@ export default {
 };
 EOF
 
-wrangler deploy workers/monitoring-worker.js --name bgapp-monitor --compatibility-date 2025-09-03
+wrangler deploy infrastructure/workers/monitoring-worker.js --name bgapp-monitor --compatibility-date 2025-09-03
 print_success "Monitoring service deployed to: https://bgapp-monitor.majearcasa.workers.dev"
 
 # 9. Update the main workflow with new URLs

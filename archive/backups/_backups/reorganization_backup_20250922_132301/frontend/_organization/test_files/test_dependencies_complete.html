@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Teste Completo de Dependências</title>
+    
+    <!-- Incluir Leaflet CSS para teste completo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #2a2a2a;
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 8px;
+            border-left: 3px solid #666;
+            background: #333;
+        }
+        
+        .success {
+            border-left-color: #00ff00;
+            color: #00ff00;
+        }
+        
+        .error {
+            border-left-color: #ff4444;
+            color: #ff4444;
+        }
+        
+        .warning {
+            border-left-color: #ffaa00;
+            color: #ffaa00;
+        }
+        
+        .info {
+            border-left-color: #00aaff;
+            color: #00aaff;
+        }
+        
+        .log-output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #00aa00;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .test-map {
+            width: 300px;
+            height: 200px;
+            border: 2px solid #333;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 BGAPP - TESTE COMPLETO DE DEPENDÊNCIAS</h1>
+            <p>Sistema de Diagnóstico Avançado - Inclui Leaflet para teste real</p>
+            <div>
+                <button onclick="runAllTests()">🧪 Executar Todos os Testes</button>
+                <button onclick="testLeafletDirectly()">🗺️ Testar Leaflet Diretamente</button>
+                <button onclick="clearLog()">🗑️ Limpar Log</button>
+                <button onclick="exportReport()">📄 Exportar Relatório</button>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTests">0</div>
+                <div class="stat-label">Testes Executados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="passedTests">0</div>
+                <div class="stat-label">Sucessos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="failedTests">0</div>
+                <div class="stat-label">Falhas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="testTime">0ms</div>
+                <div class="stat-label">Tempo Total</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🗺️ TESTE DIRETO DO LEAFLET</h3>
+            <div id="testMap" class="test-map"></div>
+            <div id="leafletStatus">Aguardando teste...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 RESULTADOS DOS TESTES</h3>
+            <div id="testResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 LOG DETALHADO</h3>
+            <div class="log-output" id="logOutput"></div>
+        </div>
+    </div>
+
+    <!-- Incluir Leaflet JS para teste completo -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        let testResults = [];
+        let testStats = { total: 0, passed: 0, failed: 0, startTime: 0 };
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            
+            const logOutput = document.getElementById('logOutput');
+            logOutput.textContent += logEntry + '\n';
+            logOutput.scrollTop = logOutput.scrollHeight;
+            
+            console.log(logEntry);
+        }
+        
+        function addTestResult(testName, status, message, details = null) {
+            testResults.push({ testName, status, message, details, timestamp: new Date() });
+            
+            testStats.total++;
+            if (status === 'success') {
+                testStats.passed++;
+            } else {
+                testStats.failed++;
+            }
+            
+            updateStats();
+            updateResultsDisplay();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalTests').textContent = testStats.total;
+            document.getElementById('passedTests').textContent = testStats.passed;
+            document.getElementById('failedTests').textContent = testStats.failed;
+            
+            if (testStats.startTime > 0) {
+                const elapsed = Date.now() - testStats.startTime;
+                document.getElementById('testTime').textContent = elapsed + 'ms';
+            }
+        }
+        
+        function updateResultsDisplay() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `test-item ${result.status}`;
+                
+                const icon = result.status === 'success' ? '✅' : result.status === 'warning' ? '⚠️' : '❌';
+                div.innerHTML = `
+                    <strong>${icon} ${result.testName}</strong><br>
+                    ${result.message}
+                    ${result.details ? `<br><small>${result.details}</small>` : ''}
+                `;
+                
+                resultsDiv.appendChild(div);
+            });
+        }
+        
+        async function testLeafletDirectly() {
+            log('Testando Leaflet diretamente na página...', 'info');
+            
+            const statusDiv = document.getElementById('leafletStatus');
+            statusDiv.innerHTML = '<span style="color: #ffaa00;">Testando...</span>';
+            
+            // Verificar se Leaflet está carregado
+            if (typeof L !== 'undefined') {
+                statusDiv.innerHTML = '<span style="color: #00ff00;">✅ Leaflet carregado! Versão: ' + (L.version || 'desconhecida') + '</span>';
+                
+                try {
+                    // Tentar criar mapa de teste
+                    const testMapDiv = document.getElementById('testMap');
+                    testMapDiv.innerHTML = ''; // Limpar conteúdo anterior
+                    
+                    const map = L.map('testMap').setView([-12.5, 13.5], 6);
+                    
+                    // Adicionar tile layer
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    
+                    // Adicionar um marcador de teste
+                    L.marker([-12.5, 13.5]).addTo(map)
+                        .bindPopup('🧪 Mapa de teste funcionando!')
+                        .openPopup();
+                    
+                    // Adicionar polígono de teste (ZEE simplificada)
+                    const testPolygon = L.polygon([
+                        [-10, 12], [-10, 14], [-15, 14], [-15, 12]
+                    ], {
+                        color: '#00ff00',
+                        fillOpacity: 0.3
+                    }).addTo(map);
+                    
+                    testPolygon.bindPopup('🌊 Zona de teste');
+                    
+                    statusDiv.innerHTML += '<br><span style="color: #00ff00;">✅ Mapa criado com sucesso!</span>';
+                    statusDiv.innerHTML += '<br><span style="color: #00aaff;">ℹ️ Tile layer, marcador e polígono adicionados</span>';
+                    
+                    addTestResult('Leaflet Direto - Criação', 'success', 'Mapa criado com sucesso');
+                    addTestResult('Leaflet Direto - Funcionalidades', 'success', 'Tile layer, marcador e polígono funcionando');
+                    
+                    // Redimensionar mapa após um tempo
+                    setTimeout(() => {
+                        map.invalidateSize();
+                        log('Mapa redimensionado', 'info');
+                    }, 1000);
+                    
+                } catch (error) {
+                    statusDiv.innerHTML += '<br><span style="color: #ff4444;">❌ Erro ao criar mapa: ' + error.message + '</span>';
+                    addTestResult('Leaflet Direto - Erro', 'error', 'Erro ao criar mapa: ' + error.message);
+                }
+                
+            } else {
+                statusDiv.innerHTML = '<span style="color: #ff4444;">❌ Leaflet NÃO carregado!</span>';
+                addTestResult('Leaflet Direto - Carregamento', 'error', 'Objeto L não encontrado');
+                
+                // Tentar debug
+                const scripts = Array.from(document.querySelectorAll('script')).map(s => s.src).filter(s => s.includes('leaflet'));
+                statusDiv.innerHTML += '<br><span style="color: #ffaa00;">Scripts Leaflet encontrados: ' + scripts.length + '</span>';
+                
+                if (scripts.length > 0) {
+                    statusDiv.innerHTML += '<br><span style="color: #00aaff;">URLs: ' + scripts.join(', ') + '</span>';
+                }
+            }
+        }
+        
+        async function runAllTests() {
+            log('Iniciando bateria completa de testes...', 'info');
+            testStats.startTime = Date.now();
+            testResults = [];
+            testStats.total = testStats.passed = testStats.failed = 0;
+            
+            // Teste direto do Leaflet primeiro
+            await testLeafletDirectly();
+            
+            // Testes básicos do navegador
+            await testBrowserCapabilities();
+            
+            // Testes de dependências externas
+            await testExternalDependencies();
+            
+            // Testes de arquivos locais
+            await testLocalFiles();
+            
+            // Testes de APIs
+            await testAPIs();
+            
+            log('Todos os testes concluídos!', 'success');
+            
+            // Relatório final
+            const successRate = ((testStats.passed / testStats.total) * 100).toFixed(1);
+            log(`Relatório Final: ${testStats.passed}/${testStats.total} testes passou (${successRate}%)`, 'info');
+        }
+        
+        async function testBrowserCapabilities() {
+            log('Testando capacidades do navegador...', 'info');
+            
+            // Teste de JavaScript ES6
+            try {
+                const testArrow = () => 'OK';
+                const testTemplate = `Template literal works`;
+                addTestResult('JavaScript ES6', 'success', 'Arrow functions e template literals funcionando');
+            } catch (error) {
+                addTestResult('JavaScript ES6', 'error', 'Problemas com ES6: ' + error.message);
+            }
+            
+            // Teste de Fetch API
+            if (typeof fetch !== 'undefined') {
+                addTestResult('Fetch API', 'success', 'Fetch API disponível');
+            } else {
+                addTestResult('Fetch API', 'error', 'Fetch API não disponível - usar polyfill');
+            }
+            
+            // Teste de Local Storage
+            try {
+                localStorage.setItem('bgapp_test', 'test');
+                localStorage.removeItem('bgapp_test');
+                addTestResult('Local Storage', 'success', 'Local Storage funcionando');
+            } catch (error) {
+                addTestResult('Local Storage', 'error', 'Local Storage bloqueado: ' + error.message);
+            }
+            
+            // Teste de Console
+            if (typeof console !== 'undefined' && console.log) {
+                addTestResult('Console API', 'success', 'Console disponível para debug');
+            } else {
+                addTestResult('Console API', 'error', 'Console não disponível');
+            }
+        }
+        
+        async function testExternalDependencies() {
+            log('Testando dependências externas...', 'info');
+            
+            // Teste Leaflet CSS
+            const leafletCSS = document.querySelector('link[href*="leaflet"]');
+            if (leafletCSS) {
+                addTestResult('Leaflet CSS', 'success', 'Link CSS encontrado: ' + leafletCSS.href);
+            } else {
+                addTestResult('Leaflet CSS', 'error', 'Link CSS do Leaflet não encontrado');
+            }
+            
+            // Teste Chart.js
+            try {
+                const response = await fetch('https://cdn.jsdelivr.net/npm/chart.js', { method: 'HEAD' });
+                if (response.ok) {
+                    addTestResult('Chart.js CDN', 'success', 'Chart.js CDN acessível');
+                } else {
+                    addTestResult('Chart.js CDN', 'error', `Chart.js CDN retornou ${response.status}`);
+                }
+            } catch (error) {
+                addTestResult('Chart.js CDN', 'error', 'Erro ao acessar Chart.js: ' + error.message);
+            }
+        }
+        
+        async function testLocalFiles() {
+            log('Testando arquivos locais...', 'info');
+            
+            const localFiles = [
+                'assets/js/aguas_internas.js',
+                'assets/js/zee_angola_official.js',
+                'assets/js/coastlines_official.js',
+                'assets/js/eox-layers.js',
+                'copernicus_authenticated_angola.json'
+            ];
+            
+            for (const file of localFiles) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        addTestResult(`Arquivo Local: ${file}`, 'success', `Arquivo encontrado (${response.status})`);
+                    } else {
+                        addTestResult(`Arquivo Local: ${file}`, 'error', `Arquivo não encontrado (${response.status})`);
+                    }
+                } catch (error) {
+                    addTestResult(`Arquivo Local: ${file}`, 'error', `Erro ao acessar: ${error.message}`);
+                }
+            }
+        }
+        
+        async function testAPIs() {
+            log('Testando APIs e dados...', 'info');
+            
+            // Teste dados JSON do Copernicus
+            try {
+                const response = await fetch('copernicus_authenticated_angola.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.source && data.real_time_data) {
+                        addTestResult('Dados Copernicus', 'success', 
+                            `JSON válido com ${data.real_time_data.length} pontos de dados`);
+                        
+                        // Validar estrutura dos dados
+                        const firstPoint = data.real_time_data[0];
+                        if (firstPoint.sst && firstPoint.lat && firstPoint.lon) {
+                            addTestResult('Estrutura Dados', 'success', 'Campos obrigatórios presentes');
+                        } else {
+                            addTestResult('Estrutura Dados', 'error', 'Campos obrigatórios ausentes');
+                        }
+                    } else {
+                        addTestResult('Dados Copernicus', 'error', 'Estrutura JSON inválida');
+                    }
+                } else {
+                    addTestResult('Dados Copernicus', 'error', `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                addTestResult('Dados Copernicus', 'error', error.message);
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('logOutput').textContent = '';
+            log('Log limpo', 'info');
+        }
+        
+        function exportReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                stats: testStats,
+                results: testResults,
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                leafletVersion: typeof L !== 'undefined' ? L.version : 'não carregado'
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], 
+                { type: 'application/json' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bgapp_test_complete_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            log('Relatório completo exportado', 'success');
+        }
+        
+        // Auto-executar teste do Leaflet quando a página carrega
+        window.addEventListener('load', () => {
+            log('Página carregada, testando Leaflet...', 'info');
+            setTimeout(() => {
+                testLeafletDirectly();
+                log('Teste automático do Leaflet concluído', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

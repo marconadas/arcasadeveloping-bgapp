@@ -1,0 +1,435 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BGAPP QGIS APIs",
+    "description": "# BGAPP QGIS APIs\n\nAPIs completas para análises geoespaciais e ambientais de Angola.\n\n## Funcionalidades Principais\n\n- **Análises Espaciais**: Hotspots, conectividade, zonas buffer\n- **Análises Temporais**: Séries temporais, animações, estatísticas\n- **Cálculos de Biomassa**: Terrestre e marinha\n- **Análises de Migração**: Rastreamento de espécies\n- **Relatórios Automáticos**: Geração de PDFs e exportações\n- **Análise Multicritério (MCDA)**: Zonas sustentáveis\n- **Exportação de Mapas**: Mapas interativos e estáticos\n- **Monitorização**: Saúde do sistema e métricas\n- **Validação de Dados**: Qualidade automática\n\n## Autenticação\n\nA maioria dos endpoints requer autenticação via Bearer Token.\n\n```bash\ncurl -H \"Authorization: Bearer YOUR_TOKEN\" https://api.bgapp.com/qgis/endpoint\n```\n\n## Rate Limiting\n\n- **Limite**: 1000 requisições por hora por usuário\n- **Burst**: 100 requisições por minuto\n\n## Suporte\n\n- **Documentação**: https://docs.bgapp.com\n- **Status**: https://status.bgapp.com\n- **Suporte**: support@bgapp.com",
+    "version": "2.0.0",
+    "contact": {
+      "name": "BGAPP Team",
+      "email": "support@bgapp.com",
+      "url": "https://bgapp.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Servidor de desenvolvimento"
+    },
+    {
+      "url": "https://api.bgapp.com",
+      "description": "Servidor de produção"
+    }
+  ],
+  "paths": {
+    "/qgis/status": {
+      "get": {
+        "summary": "Status do Sistema QGIS",
+        "description": "Retorna o status geral dos serviços QGIS e informações do sistema",
+        "tags": [
+          "Status"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status obtido com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "status": "operational",
+                  "version": "2.0.0",
+                  "uptime": 99.8,
+                  "services": {
+                    "qgis_server": "healthy",
+                    "database": "healthy",
+                    "cache": "healthy"
+                  },
+                  "timestamp": "2024-12-01T10:00:00Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qgis/health/status": {
+      "get": {
+        "summary": "Health Check Detalhado",
+        "description": "Retorna métricas detalhadas de saúde do sistema",
+        "tags": [
+          "Health"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Métricas de saúde",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "overall_health": "healthy",
+                  "metrics": {
+                    "cpu_usage": 42.5,
+                    "memory_usage": 68.2,
+                    "disk_usage": 35.1,
+                    "response_time": 245
+                  },
+                  "services_status": {
+                    "postgresql": "healthy",
+                    "redis": "healthy",
+                    "qgis_server": "healthy"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/qgis/spatial/hotspots": {
+      "post": {
+        "summary": "Análise de Hotspots",
+        "description": "Identifica áreas de alta concentração (hotspots) baseado em dados pontuais",
+        "tags": [
+          "Análise Espacial"
+        ],
+        "parameters": [
+          {
+            "name": "point_data",
+            "in": "query",
+            "required": true,
+            "description": "Array de pontos com coordenadas e valores",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              {
+                "coordinates": [
+                  13.2317,
+                  -8.8383
+                ],
+                "biomass": 150.5
+              },
+              {
+                "coordinates": [
+                  13.4049,
+                  -12.5756
+                ],
+                "biomass": 200.3
+              }
+            ]
+          },
+          {
+            "name": "analysis_field",
+            "in": "query",
+            "required": true,
+            "description": "Campo a ser analisado para identificar hotspots",
+            "schema": {
+              "type": "string"
+            },
+            "example": "biomass"
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "required": false,
+            "description": "Método de análise",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kernel_density",
+                "grid_analysis",
+                "cluster"
+              ]
+            },
+            "example": "kernel_density"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hotspots identificados com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "hotspots": [
+                    {
+                      "coordinates": [
+                        13.2317,
+                        -8.8383
+                      ],
+                      "intensity": 0.85,
+                      "rank": 1
+                    }
+                  ],
+                  "method": "kernel_density",
+                  "total_hotspots": 5
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "point_data": {
+                    "type": "array",
+                    "description": "Array de pontos com coordenadas e valores",
+                    "example": [
+                      {
+                        "coordinates": [
+                          13.2317,
+                          -8.8383
+                        ],
+                        "biomass": 150.5
+                      },
+                      {
+                        "coordinates": [
+                          13.4049,
+                          -12.5756
+                        ],
+                        "biomass": 200.3
+                      }
+                    ],
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "analysis_field": {
+                    "type": "string",
+                    "description": "Campo a ser analisado para identificar hotspots",
+                    "example": "biomass"
+                  },
+                  "method": {
+                    "type": "string",
+                    "description": "Método de análise",
+                    "example": "kernel_density",
+                    "enum": [
+                      "kernel_density",
+                      "grid_analysis",
+                      "cluster"
+                    ]
+                  }
+                },
+                "required": [
+                  "point_data",
+                  "analysis_field"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qgis/spatial/connectivity-analysis": {
+      "post": {
+        "summary": "Análise de Conectividade",
+        "description": "Analisa a conectividade entre habitats considerando mobilidade das espécies",
+        "tags": [
+          "Análise Espacial"
+        ],
+        "parameters": [
+          {
+            "name": "habitats",
+            "in": "query",
+            "required": true,
+            "description": "Array de habitats com coordenadas e tipos",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              {
+                "type": "Point",
+                "coordinates": [
+                  13.2317,
+                  -8.8383
+                ],
+                "habitat_type": "coral_reef"
+              },
+              {
+                "type": "Point",
+                "coordinates": [
+                  13.4049,
+                  -12.5756
+                ],
+                "habitat_type": "seagrass"
+              }
+            ]
+          },
+          {
+            "name": "species_mobility",
+            "in": "query",
+            "required": true,
+            "description": "Mobilidade da espécie em quilômetros",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "example": 50.0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Análise de conectividade concluída",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "connectivity_matrix": [
+                    [
+                      1.0,
+                      0.8
+                    ],
+                    [
+                      0.8,
+                      1.0
+                    ]
+                  ],
+                  "connected_pairs": 1,
+                  "isolated_habitats": 0
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "habitats": {
+                    "type": "array",
+                    "description": "Array de habitats com coordenadas e tipos",
+                    "example": [
+                      {
+                        "type": "Point",
+                        "coordinates": [
+                          13.2317,
+                          -8.8383
+                        ],
+                        "habitat_type": "coral_reef"
+                      },
+                      {
+                        "type": "Point",
+                        "coordinates": [
+                          13.4049,
+                          -12.5756
+                        ],
+                        "habitat_type": "seagrass"
+                      }
+                    ],
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "species_mobility": {
+                    "type": "number",
+                    "description": "Mobilidade da espécie em quilômetros",
+                    "example": 50.0
+                  }
+                },
+                "required": [
+                  "habitats",
+                  "species_mobility"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qgis/spatial/buffer-zones": {
+      "post": {
+        "summary": "Criação de Zonas Buffer",
+        "description": "Cria zonas buffer ao redor de geometrias especificadas",
+        "tags": [
+          "Análise Espacial"
+        ],
+        "parameters": [
+          {
+            "name": "geometries",
+            "in": "query",
+            "required": true,
+            "description": "Array de geometrias para criar buffer",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              {
+                "type": "Point",
+                "coordinates": [
+                  13.2317,
+                  -8.8383
+                ]
+              },
+              {
+                "type": "Point",
+                "coordinates": [
+                  13.4049,
+                  -12.5756
+                ]
+              }
+            ]
+          },
+          {
+            "name": "buffer_distance",
+            "in": "query",
+            "required": true,
+            "description": "Distância do buffer em metros",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100000
+            },
+            "example": 5000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zonas buffer criadas com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "buffer_zones": [
+                    {
+                      "type": "Polygon",
+                      "coordinates": [
+                        [
+                          [
+                            

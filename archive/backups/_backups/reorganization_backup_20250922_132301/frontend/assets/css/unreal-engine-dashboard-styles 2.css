@@ -1,0 +1,591 @@
+/**
+ * 🎮 UNREAL ENGINE INSPIRED DASHBOARD STYLES - BGAPP
+ * Silicon Valley Tier CSS with Unreal Engine design patterns
+ * 
+ * Features:
+ * - Cinematic UI transitions
+ * - Advanced glass morphism
+ * - Performance-optimized animations
+ * - Responsive design system
+ * - Dark theme with neon accents
+ * - Blueprint-style grid system
+ */
+
+:root {
+    /* Unreal Engine Color Palette */
+    --unreal-dark: #0f0f0f;
+    --unreal-darker: #0a0a0a;
+    --unreal-blue: #00d4ff;
+    --unreal-cyan: #00ffff;
+    --unreal-green: #00ff88;
+    --unreal-orange: #ff8800;
+    --unreal-red: #ff4444;
+    --unreal-purple: #8844ff;
+    --unreal-gray: #2d2d2d;
+    --unreal-light-gray: #4a4a4a;
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(15, 15, 15, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    /* Animations */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-cinematic: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    /* Typography */
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    --font-ui: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --shadow-hard: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-neon: 0 0 20px var(--unreal-blue);
+}
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-ui);
+    background: linear-gradient(135deg, 
+        var(--unreal-darker) 0%, 
+        var(--unreal-dark) 50%, 
+        #1a1a2e 100%);
+    color: #000000 !important;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Força texto preto em todos os elementos */
+* {
+    color: #000000 !important;
+}
+
+/* Exceções para elementos específicos que precisam de cores especiais */
+.unreal-logo,
+.unreal-metric-value,
+#unreal-performance-hud,
+#data-info-panel,
+.unreal-modal-content {
+    color: #ffffff !important;
+}
+
+.unreal-nav-item {
+    color: #ffffff !important;
+}
+
+/* Unreal Engine Inspired Layout */
+.unreal-dashboard-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, 
+        rgba(0, 212, 255, 0.1) 0%, 
+        transparent 50%);
+    overflow: hidden;
+}
+
+/* Cinematic Header */
+.unreal-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    z-index: 1000;
+    transition: all var(--transition-smooth);
+}
+
+.unreal-logo {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--unreal-blue);
+    text-shadow: 0 0 10px var(--unreal-blue);
+    letter-spacing: 2px;
+}
+
+.unreal-nav {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.unreal-nav-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.unreal-nav-item:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--unreal-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-neon);
+}
+
+.unreal-nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left var(--transition-fast);
+}
+
+.unreal-nav-item:hover::before {
+    left: 100%;
+}
+
+/* Performance HUD */
+#unreal-performance-hud {
+    font-family: var(--font-mono) !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(15px) !important;
+    border: 1px solid var(--unreal-blue) !important;
+    border-radius: 8px !important;
+    box-shadow: var(--shadow-neon) !important;
+    transition: all var(--transition-smooth) !important;
+}
+
+#unreal-performance-hud:hover {
+    transform: scale(1.02);
+}
+
+/* Data Visualization Panels */
+.unreal-data-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    margin: var(--spacing-md);
+    box-shadow: var(--shadow-hard);
+    transition: all var(--transition-cinematic);
+    position: relative;
+    overflow: hidden;
+}
+
+.unreal-data-panel::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--unreal-blue), 
+        var(--unreal-cyan), 
+        var(--unreal-green), 
+        var(--unreal-blue));
+    background-size: 400% 400%;
+    animation: gradientShift 3s ease infinite;
+    border-radius: 12px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-smooth);
+}
+
+.unreal-data-panel:hover::before {
+    opacity: 0.3;
+}
+
+.unreal-data-panel:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Blueprint-style Grid */
+.unreal-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.3;
+    animation: gridPulse 4s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.1; }
+}
+
+/* 3D Visualization Container */
+#ocean-3d-visualization {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--unreal-darker);
+    border: 2px solid var(--unreal-blue);
+    box-shadow: 
+        var(--shadow-hard),
+        inset 0 0 30px rgba(0, 212, 255, 0.2);
+}
+
+#ocean-3d-visualization canvas {
+    border-radius: 10px;
+    transition: all var(--transition-smooth);
+}
+
+#ocean-3d-visualization:hover canvas {
+    transform: scale(1.01);
+}
+
+/* Controls and Buttons */
+.unreal-button {
+    background: linear-gradient(135deg, 
+        rgba(0, 212, 255, 0.2) 0%, 
+        rgba(0, 212, 255, 0.1) 100%);
+    border: 1px solid var(--unreal-blue);
+    border-radius: 6px;
+    color: #ffffff;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.unreal-button:hover {
+    background: linear-gradient(135deg, 
+        rgba(0, 212, 255, 0.4) 0%, 
+        rgba(0, 212, 255, 0.2) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.unreal-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 212, 255, 0.2);
+}
+
+.unreal-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    transition: left 0.5s;
+}
+
+.unreal-button:hover::before {
+    left: 100%;
+}
+
+/* Data Info Panel */
+#data-info-panel {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--unreal-cyan) !important;
+    border-radius: 12px !important;
+    box-shadow: 
+        var(--shadow-hard),
+        0 0 30px rgba(0, 255, 255, 0.3) !important;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#data-info-panel h4 {
+    color: var(--unreal-cyan);
+    text-shadow: 0 0 10px var(--unreal-cyan);
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-mono);
+}
+
+#data-info-panel button {
+    @extend .unreal-button;
+    margin-top: var(--spacing-md);
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .unreal-header {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .unreal-nav {
+        display: none;
+    }
+    
+    .unreal-data-panel {
+        margin: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    
+    #unreal-performance-hud {
+        font-size: 10px !important;
+        padding: var(--spacing-sm) !important;
+    }
+}
+
+/* Loading Animations */
+.unreal-loading {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+.unreal-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top: 3px solid var(--unreal-blue);
+    border-radius: 50%;
+    animation: unrealSpin 1s linear infinite;
+}
+
+.unreal-loading::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 28px;
+    height: 28px;
+    border: 2px solid transparent;
+    border-bottom: 2px solid var(--unreal-cyan);
+    border-radius: 50%;
+    animation: unrealSpin 0.7s linear infinite reverse;
+}
+
+@keyframes unrealSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Particle Effects */
+.unreal-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.unreal-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--unreal-blue);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 0 6px var(--unreal-blue);
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(50px);
+        opacity: 0;
+    }
+}
+
+/* Scientific Data Styles */
+.unreal-metric {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    transition: all var(--transition-fast);
+}
+
+.unreal-metric:hover {
+    background: rgba(0, 212, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.unreal-metric-value {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--unreal-cyan);
+    text-shadow: 0 0 10px var(--unreal-cyan);
+}
+
+.unreal-metric-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: var(--spacing-xs);
+}
+
+/* Charts and Graphs */
+.unreal-chart-container {
+    background: var(--glass-bg);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.unreal-chart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        var(--unreal-blue), 
+        var(--unreal-cyan), 
+        var(--unreal-green));
+    animation: chartGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes chartGlow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Advanced Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--unreal-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+        var(--unreal-blue), 
+        var(--unreal-cyan));
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+        var(--unreal-cyan), 
+        var(--unreal-green));
+}
+
+/* Selection Styles */
+::selection {
+    background: rgba(0, 212, 255, 0.3);
+    color: white;
+}
+
+::-moz-selection {
+    background: rgba(0, 212, 255, 0.3);
+    color: white;
+}
+
+/* Focus Styles */
+*:focus {
+    outline: 2px solid var(--unreal-blue);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .unreal-dashboard-container {
+        background: white;
+        color: black;
+    }
+    
+    .unreal-header,
+    #unreal-performance-hud,
+    .unreal-grid {
+        display: none;
+    }
+}

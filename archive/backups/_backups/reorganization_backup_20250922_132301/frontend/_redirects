@@ -1,0 +1,49 @@
+# BGAPP - Redirects para arcasadeveloping.org/BGAPP
+# Configuração para Cloudflare Pages
+
+# Redirect root para BGAPP
+/                        /BGAPP/                301
+
+# Redirect BGAPP sem trailing slash
+/BGAPP                   /BGAPP/                301
+
+# Admin redirects
+/admin                   /BGAPP/admin.html      301
+/admin/                  /BGAPP/admin.html      301
+/dashboard               /BGAPP/admin.html      301
+/dashboard/              /BGAPP/admin.html      301
+
+# BGAPP admin (clean URL)
+/BGAPP/admin             /BGAPP/admin.html      200
+/BGAPP/admin/            /BGAPP/admin.html      200
+
+# Enhanced Ocean System - Teste (DEVE VIR ANTES DO FALLBACK)
+/BGAPP/ocean-test        /BGAPP/test-enhanced-ocean-offline.html  200
+/BGAPP/enhanced-ocean    /BGAPP/test-enhanced-ocean-offline.html  200
+/ocean-test              /BGAPP/test-enhanced-ocean-offline.html  301
+/enhanced-ocean          /BGAPP/test-enhanced-ocean-offline.html  301
+
+# Páginas específicas do BGAPP
+/BGAPP/dashboard         /BGAPP/dashboard.html  200
+/BGAPP/mobile            /BGAPP/mobile.html     200
+/BGAPP/qgis              /BGAPP/qgis_dashboard.html  200
+/BGAPP/health            /BGAPP/health_dashboard.html  200
+
+
+# API redirects para worker
+/api/*                   https://bgapp-admin-api-worker.majearcasa.workers.dev/:splat  200
+
+# GFW API proxy redirects
+/gfw/*                   https://bgapp-admin-api-worker.majearcasa.workers.dev/gfw/:splat  200
+/4wings/*                https://bgapp-admin-api-worker.majearcasa.workers.dev/4wings/:splat  200
+
+# Assets e recursos estáticos (sem redirect)
+/BGAPP/assets/*          /BGAPP/assets/:splat   200
+/BGAPP/static/*          /BGAPP/static/:splat   200
+
+# Enhanced Ocean Demo - Subdiretório específico
+/BGAPP/enhanced-ocean-demo   /BGAPP/enhanced-ocean-demo/index.html  200
+/BGAPP/enhanced-ocean-demo/  /BGAPP/enhanced-ocean-demo/index.html  200
+
+# SPA Fallback REMOVIDO - Permite acesso direto a arquivos
+# /BGAPP/*                 /BGAPP/index.html      200

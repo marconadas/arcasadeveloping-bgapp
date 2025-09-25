@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BGAPP - Mapa CORRIGIDO</title>
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    /* CSS INLINE para evitar problemas de cache */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden; /* Evitar scrollbars */
+    }
+
+    /* Container principal */
+    body {
+      display: flex;
+      flex-direction: row;
+    }
+
+    /* Toolbar lateral */
+    #toolbar {
+      width: 300px;
+      min-width: 300px;
+      background: rgba(255,255,255,0.95);
+      padding: 15px;
+      overflow-y: auto;
+      border-right: 1px solid #ddd;
+      z-index: 1000;
+      position: relative; /* NÃO absolute */
+    }
+
+    /* Mapa ocupa o resto */
+    #map-container {
+      flex: 1;
+      position: relative;
+      height: 100vh;
+    }
+
+    #map {
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1 !important;
+      background: #e6f3ff !important; /* Azul claro para debug */
+    }
+
+    /* Estilos dos botões */
+    .btn {
+      padding: 8px 12px;
+      margin: 4px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      background: #3498db;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn:hover {
+      background: #2980b9;
+    }
+
+    .btn.active {
+      background: #e74c3c;
+    }
+
+    .btn.ocean { background: #16a085; }
+    .btn.meteo { background: #e67e22; }
+    .btn.control { background: #95a5a6; }
+    .btn.animate { background: #9b59b6; }
+
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+
+    .toolbar-section {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .toolbar-section h2 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #34495e;
+      font-weight: 600;
+    }
+
+    #app-title {
+      font-size: 16px;
+      color: #2c3e50;
+      margin: 0 0 15px 0;
+    }
+
+    input[type="date"] {
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      margin: 4px 0;
+      width: 100%;
+    }
+
+    #system-status {
+      font-size: 11px;
+      color: #27ae60;
+      font-weight: 500;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #27ae60;
+      margin-right: 6px;
+    }
+
+    /* Debug styles */
+    .debug-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      z-index: 2000;
+      max-width: 200px;
+    }
+
+    /* Garantir que elementos Leaflet sejam visíveis */
+    .leaflet-container {
+      background: #e6f3ff !important;
+    }
+
+    .leaflet-tile {
+      opacity: 1 !important;
+    }
+
+    .leaflet-tile-pane {
+      opacity: 1 !important;
+    }
+  </style>
+</head>
+<body>
+  <nav id="toolbar">
+    <h1 id="app-title">🌊 BGAPP - Mapa Corrigido</h1>
+
+    <div class="toolbar-section">
+      <h2>📅 Filtros</h2>
+      <label for="dateMin" style="font-size: 12px;">
+        Data mínima:
+        <input type="date" id="dateMin" value="2024-06-01">
+      </label>
+      <button id="apply" class="btn">🔍 Aplicar</button>
+    </div>
+
+    <div class="toolbar-section">
+      <h2>🌡️ Oceanográficas</h2>
+      <div class="btn-group">
+        <button id="btn-sst" class="btn ocean">🌡️ SST</button>
+        <button id="btn-salinity" class="btn ocean">🧂 Salinidade</button>
+        <button id="btn-chlorophyll" class="btn ocean">🌿 Clorofila</button>
+      </div>
+    </div>
+
+    <div class="toolbar-section">
+      <h2>💨 Vetoriais</h2>
+      <div class="btn-group">
+        <button id="btn-currents" class="btn meteo">🌊 Correntes</button>
+        <button id="btn-wind" class="btn meteo">💨 Vento</button>
+      </div>
+    </div>
+
+    <div class="toolbar-section">
+      <h2>⚙️ Controles</h2>
+      <div class="btn-group">
+        <button id="btn-clear" class="btn control">🗑️ Limpar</button>
+        <button id="btn-animate" class="btn animate">
+          <span id="animate-icon">▶️</span>
+          <span id="animate-text">Animar</span>
+        </button>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px; font-size: 11px;">
+      <span class="status-indicator"></span>
+      <span id="system-status">Carregando...</span>
+    </div>
+  </nav>
+  
+  <div id="map-container">
+    <div id="map"></div>
+    <div class="debug-info" id="debug-info">
+      Carregando diagnóstico...
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    console.log('🚀 BGAPP CORRIGIDO - Inicialização');
+    
+    let map;
+    let debugInfo = document.getElementById('debug-info');
+    
+    function updateDebug(message) {
+      debugInfo.innerHTML += message + '<br>';
+      console.log(message);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      updateDebug('✅ DOM Ready');
+      
+      try {
+        // Verificar elemento
+        const mapElement = document.getElementById('map');
+        if (!mapElement) {
+          updateDebug('❌ Elemento #map não encontrado!');
+          return;
+        }
+        
+        const rect = mapElement.getBoundingClientRect();
+        updateDebug(`📐 Map: ${rect.width}x${rect.height}`);
+        
+        if (rect.width === 0 || rect.height === 0) {
+          updateDebug('❌ Dimensões zero!');
+          return;
+        }
+
+        // Criar mapa
+        updateDebug('🗺️ Criando mapa...');
+        map = L.map('map', {
+          center: [-12.5, 13.5],
+          zoom: 6,
+          zoomControl: true,
+          attributionControl: true,
+          preferCanvas: false
+        });
+
+        updateDebug('✅ Mapa criado');
+
+        // Adicionar OpenStreetMap
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 19,
+          crossOrigin: true,
+          opacity: 1
+        });
+        
+        osmLayer.addTo(map);
+        updateDebug('✅ OSM adicionado');
+
+        // Eventos do layer
+        osmLayer.on('loading', () => updateDebug('🔄 Carregando tiles...'));
+        osmLayer.on('load', () => {
+          updateDebug('✅ Tiles carregadas!');
+          document.getElementById('system-status').textContent = 'Sistema Online - Mapa Funcionando';
+        });
+        osmLayer.on('tileerror', () => updateDebug('❌ Erro tile'));
+        osmLayer.on('tileload', () => updateDebug('✅ Tile OK'));
+
+        // Forçar invalidação
+        setTimeout(() => {
+          map.invalidateSize();
+          updateDebug('🔄 Tamanho invalidado');
+        }, 1000);
+
+        // Adicionar marcador de teste
+        setTimeout(() => {
+          const marker = L.marker([-12.5, 13.5]).addTo(map);
+          marker.bindPopup('🧪 Mapa Funcionando!');
+          updateDebug('📍 Marcador adicionado');
+        }, 2000);
+
+        // Status das tiles
+        setTimeout(() => {
+          const tiles = document.querySelectorAll('.leaflet-tile');
+          updateDebug(`📊 ${tiles.length} tiles`);
+          
+          if (tiles.length === 0) {
+            updateDebug('❌ SEM TILES!');
+            // Tentar recarregar
+            osmLayer.redraw();
+            updateDebug('🔄 Redraw forçado');
+          }
+        }, 3000);
+
+        // Configurar botões
+        setupButtons();
+
+      } catch (error) {
+        updateDebug(`❌ ERRO: ${error.message}`);
+        console.error('Erro completo:', error);
+      }
+    });
+
+    function setupButtons() {
+      const buttons = ['apply', 'btn-sst', 'btn-salinity', 'btn-chlorophyll', 'btn-currents', 'btn-wind', 'btn-clear', 'btn-animate'];
+      
+      buttons.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            if (id === 'btn-clear') {
+              document.querySelectorAll('.btn.active').forEach(b => b.classList.remove('active'));
+            } else if (id === 'btn-animate') {
+              e.target.classList.toggle('active');
+              const icon = document.getElementById('animate-icon');
+              const text = document.getElementById('animate-text');
+              if (e.target.classList.contains('active')) {
+                icon.textContent = '⏸️';
+                text.textContent = 'Pausar';
+              } else {
+                icon.textContent = '▶️';
+                text.textContent = 'Animar';
+              }
+            } else {
+              e.target.classList.toggle('active');
+            }
+            updateDebug(`🎯 ${id} clicado`);
+          });
+        }
+      });
+      
+      updateDebug('✅ Botões configurados');
+    }
+  </script>
+</body>
+</html>

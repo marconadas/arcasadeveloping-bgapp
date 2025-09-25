@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Advanced 3D Marine Visualization</title>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Advanced 3D Marine System -->
+    <link rel="stylesheet" href="infra/frontend/assets/css/advanced-3d-marine-styles.css">
+    <script src="infra/frontend/assets/js/advanced-3d-marine-visualization.js"></script>
+    <script src="infra/frontend/assets/js/marine-3d-integration.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #001122, #003366);
+            color: white;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        #ocean-3d-visualization {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #001122, #003366);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #28a745; }
+        .status-warning { background: #ffc107; }
+        .status-error { background: #dc3545; }
+        
+        .test-log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🌊 Advanced 3D Marine Visualization - Teste de Integração</h1>
+            <p>Verificação completa dos sistemas implementados</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Status dos Componentes</h3>
+            <div id="component-status">
+                <div><span class="status-indicator status-warning" id="status-threejs"></span> Three.js: Carregando...</div>
+                <div><span class="status-indicator status-warning" id="status-advanced3d"></span> Advanced 3D Engine: Carregando...</div>
+                <div><span class="status-indicator status-warning" id="status-integration"></span> Marine 3D Integration: Carregando...</div>
+                <div><span class="status-indicator status-warning" id="status-webgl"></span> WebGL 2.0: Verificando...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🌊 Visualização 3D</h3>
+            <div id="ocean-3d-visualization"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Controles de Teste</h3>
+            <button onclick="testDataUpdate()">📊 Testar Atualização de Dados</button>
+            <button onclick="testLayerToggle()">👁️ Testar Toggle de Camadas</button>
+            <button onclick="testQualityChange()">⚙️ Testar Mudança de Qualidade</button>
+            <button onclick="testResetCamera()">📷 Reset Câmera</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📝 Log de Teste</h3>
+            <div id="test-log" class="test-log"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Sistema de Log
+        const testLog = document.getElementById('test-log');
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            testLog.innerHTML += logEntry + '\n';
+            testLog.scrollTop = testLog.scrollHeight;
+            
+            if (type === 'error') {
+                console.error(logEntry);
+            } else {
+                console.log(logEntry);
+            }
+        }
+        
+        // Atualizar status dos componentes
+        function updateStatus(component, status) {
+            const indicator = document.getElementById(`status-${component}`);
+            if (indicator) {
+                indicator.className = `status-indicator status-${status}`;
+                const text = indicator.parentElement;
+                const parts = text.textContent.split(': ');
+                text.innerHTML = `<span class="status-indicator status-${status}" id="status-${component}"></span> ${parts[0]}: ${status === 'success' ? 'OK' : status === 'error' ? 'ERRO' : 'Carregando...'}`;
+            }
+        }
+        
+        // Variáveis globais para teste
+        let marine3DIntegration = null;
+        let advancedVisualization = null;
+        
+        // Inicialização dos testes
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Iniciando testes de integração...');
+            
+            // Verificar Three.js
+            setTimeout(() => {
+                if (typeof THREE !== 'undefined') {
+                    updateStatus('threejs', 'success');
+                    log('✅ Three.js carregado com sucesso');
+                } else {
+                    updateStatus('threejs', 'error');
+                    log('❌ Three.js não encontrado', 'error');
+                }
+            }, 500);
+            
+            // Verificar WebGL 2.0
+            setTimeout(() => {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl2');
+                if (gl) {
+                    updateStatus('webgl', 'success');
+                    log('✅ WebGL 2.0 suportado');
+                } else {
+                    updateStatus('webgl', 'error');
+                    log('❌ WebGL 2.0 não suportado', 'error');
+                }
+            }, 600);
+            
+            // Verificar Advanced 3D Engine
+            setTimeout(() => {
+                if (typeof AdvancedMarineVisualization !== 'undefined') {
+                    updateStatus('advanced3d', 'success');
+                    log('✅ Advanced Marine Visualization carregado');
+                } else {
+                    updateStatus('advanced3d', 'error');
+                    log('❌ Advanced Marine Visualization não encontrado', 'error');
+                }
+            }, 1000);
+            
+            // Verificar Marine 3D Integration
+            setTimeout(() => {
+                if (typeof Marine3DIntegration !== 'undefined') {
+                    updateStatus('integration', 'success');
+                    log('✅ Marine 3D Integration carregado');
+                    
+                    // Inicializar integração
+                    try {
+                        marine3DIntegration = new Marine3DIntegration();
+                        log('✅ Marine 3D Integration inicializado');
+                    } catch (error) {
+                        log(`❌ Erro ao inicializar Marine 3D Integration: ${error.message}`, 'error');
+                    }
+                } else {
+                    updateStatus('integration', 'error');
+                    log('❌ Marine 3D Integration não encontrado', 'error');
+                }
+            }, 1500);
+            
+            // Aguardar inicialização completa
+            setTimeout(() => {
+                if (marine3DIntegration && marine3DIntegration.advancedVisualization) {
+                    advancedVisualization = marine3DIntegration.advancedVisualization;
+                    log('✅ Sistema 3D completamente inicializado');
+                } else {
+                    log('⚠️ Sistema 3D parcialmente inicializado');
+                }
+            }, 3000);
+        });
+        
+        // Funções de teste
+        function testDataUpdate() {
+            if (!advancedVisualization) {
+                log('❌ Visualização 3D não disponível para teste de dados', 'error');
+                return;
+            }
+            
+            const testData = {
+                temperature: 25.5 + (Math.random() - 0.5) * 5,
+                salinity: 35.0 + (Math.random() - 0.5) * 2,
+                oxygen: 7.0 + (Math.random() - 0.5) * 2,
+                ph: 8.1 + (Math.random() - 0.5) * 0.5,
+                chlorophyll: 2.5 + (Math.random() - 0.5) * 1
+            };
+            
+            try {
+                advancedVisualization.updateRealTimeData(testData);
+                log(`✅ Dados atualizados: Temp=${testData.temperature.toFixed(1)}°C, Sal=${testData.salinity.toFixed(1)}`);
+            } catch (error) {
+                log(`❌ Erro ao atualizar dados: ${error.message}`, 'error');
+            }
+        }
+        
+        function testLayerToggle() {
+            if (!advancedVisualization) {
+                log('❌ Visualização 3D não disponível para teste de camadas', 'error');
+                return;
+            }
+            
+            const layers = ['ocean', 'species', 'particles'];
+            const randomLayer = layers[Math.floor(Math.random() * layers.length)];
+            const visible = Math.random() > 0.5;
+            
+            try {
+                advancedVisualization.setLayerVisibility(randomLayer, visible);
+                log(`✅ Camada ${randomLayer} ${visible ? 'ativada' : 'desativada'}`);
+            } catch (error) {
+                log(`❌ Erro ao alternar camada: ${error.message}`, 'error');
+            }
+        }
+        
+        function testQualityChange() {
+            if (!advancedVisualization) {
+                log('❌ Visualização 3D não disponível para teste de qualidade', 'error');
+                return;
+            }
+            
+            try {
+                advancedVisualization.toggleQuality();
+                log('✅ Qualidade alterada');
+            } catch (error) {
+                log(`❌ Erro ao alterar qualidade: ${error.message}`, 'error');
+            }
+        }
+        
+        function testResetCamera() {
+            if (!advancedVisualization) {
+                log('❌ Visualização 3D não disponível para reset da câmera', 'error');
+                return;
+            }
+            
+            try {
+                advancedVisualization.resetCamera();
+                log('✅ Câmera resetada');
+            } catch (error) {
+                log(`❌ Erro ao resetar câmera: ${error.message}`, 'error');
+            }
+        }
+        
+        // Capturar erros globais
+        window.addEventListener('error', function(event) {
+            log(`❌ Erro JavaScript: ${event.message} (${event.filename}:${event.lineno})`, 'error');
+        });
+        
+        window.addEventListener('unhandledrejection', function(event) {
+            log(`❌ Promise rejeitada: ${event.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>

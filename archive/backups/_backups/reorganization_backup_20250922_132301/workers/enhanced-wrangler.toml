@@ -1,0 +1,148 @@
+# 🚀 Enhanced BGAPP API Worker - MCP-Powered Production Configuration
+# Version: 2.0.0 - Production Enhanced with AI capabilities
+
+name = "bgapp-enhanced-api-worker"
+main = "enhanced-api-worker.js"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Production environment with MCP enhancements
+[env.production]
+name = "bgapp-enhanced-api-worker"
+
+# Enhanced environment variables with MCP configuration
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "2.0.0-mcp-enhanced"
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://bgapp-arcasadeveloping.pages.dev,https://arcasadeveloping.org,https://bgapp-frontend.pages.dev,https://bgapp-admin.pages.dev"
+RATE_LIMIT_REQUESTS = "2000"  # Increased for MCP processing
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "https://bgapp-frontend.pages.dev"
+
+# MCP Service Configuration
+MCP_ENABLED = "true"
+MCP_OSM_ENABLED = "true"
+MCP_FIRECRAWL_ENABLED = "true"
+MCP_GIS_ENABLED = "true"
+MCP_IGNITER_ENABLED = "true"
+MCP_CACHE_TTL = "300"  # 5 minutes cache for MCP responses
+MCP_TIMEOUT = "10000"  # 10 second timeout for MCP calls
+MCP_RETRY_ATTEMPTS = "3"
+
+# Performance optimization for MCP processing
+WORKER_CPU_LIMIT = "100ms"  # Increased for AI processing
+WORKER_MEMORY_LIMIT = "128MB"
+
+# Enhanced security settings
+CORS_MAX_AGE = "86400"
+SECURITY_HEADERS = "true"
+REQUEST_LOGGING = "true"
+
+# Geographic bounds for Angola EEZ (for MCP geographic processing)
+ANGOLA_EEZ_BOUNDS = "-18,-12,17.5,-4.2"
+ANGOLA_CENTER_LAT = "-12.5"
+ANGOLA_CENTER_LON = "13.5"
+
+# Note: Secrets should be set via wrangler CLI or Cloudflare dashboard
+# wrangler secret put GFW_API_TOKEN --env production
+# wrangler secret put ADMIN_ACCESS_KEY --env production
+# wrangler secret put MCP_API_KEYS --env production (JSON string with MCP service keys)
+
+# Enhanced KV Namespaces for MCP caching
+[[env.production.kv_namespaces]]
+binding = "BGAPP_MCP_CACHE"
+id = "bgapp_mcp_cache"
+preview_id = "bgapp_mcp_cache_preview"
+
+[[env.production.kv_namespaces]]
+binding = "BGAPP_GEO_CACHE"
+id = "bgapp_geo_cache"
+preview_id = "bgapp_geo_cache_preview"
+
+# Durable Objects for MCP state management (if needed in future)
+# [[env.production.durable_objects]]
+# name = "MCPStateManager"
+# class_name = "MCPStateManager"
+# script_name = "bgapp-enhanced-api-worker"
+
+# Enhanced Routes for production
+[[env.production.routes]]
+pattern = "api.bgapp.arcasadeveloping.org/*"
+custom_domain = true
+
+[[env.production.routes]]
+pattern = "bgapp-api-worker.majearcasa.workers.dev/*"
+custom_domain = false
+
+# Build configuration for enhanced worker
+[build]
+command = ""
+watch_dir = "workers"
+
+# Enhanced analytics and monitoring
+[observability]
+enabled = true
+head_sampling_rate = 1.0  # Sample all requests for MCP monitoring
+
+# Triggers for MCP cache refresh and maintenance
+[triggers]
+crons = [
+  "0 */6 * * *",    # MCP cache refresh every 6 hours
+  "0 0 * * *",      # Daily MCP service health check
+  "*/15 * * * *"    # MCP performance metrics every 15 minutes
+]
+
+# Development environment (for testing MCP integrations)
+[env.development]
+name = "bgapp-enhanced-api-worker-dev"
+
+[env.development.vars]
+NODE_ENV = "development"
+API_VERSION = "2.0.0-mcp-enhanced-dev"
+ENVIRONMENT = "development"
+ALLOWED_ORIGINS = "*"
+RATE_LIMIT_REQUESTS = "10000"
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "http://localhost:8085"
+
+# MCP Development Configuration
+MCP_ENABLED = "true"
+MCP_DEBUG = "true"
+MCP_CACHE_TTL = "60"  # Shorter cache for development
+MCP_TIMEOUT = "15000"
+MCP_RETRY_ATTEMPTS = "1"
+
+# Development KV Namespaces
+[[env.development.kv_namespaces]]
+binding = "BGAPP_MCP_CACHE"
+id = "bgapp_mcp_cache_dev"
+preview_id = "bgapp_mcp_cache_dev_preview"
+
+# Staging environment for MCP testing
+[env.staging]
+name = "bgapp-enhanced-api-worker-staging"
+
+[env.staging.vars]
+NODE_ENV = "staging"
+API_VERSION = "2.0.0-mcp-enhanced-staging"
+ENVIRONMENT = "staging"
+ALLOWED_ORIGINS = "https://bgapp-staging.pages.dev,https://staging.arcasadeveloping.org"
+RATE_LIMIT_REQUESTS = "1500"
+RATE_LIMIT_WINDOW = "3600"
+FRONTEND_BASE = "https://bgapp-staging.pages.dev"
+
+# MCP Staging Configuration
+MCP_ENABLED = "true"
+MCP_CACHE_TTL = "180"  # 3 minutes cache for staging
+MCP_TIMEOUT = "12000"
+MCP_RETRY_ATTEMPTS = "2"
+
+[[env.staging.kv_namespaces]]
+binding = "BGAPP_MCP_CACHE"
+id = "bgapp_mcp_cache_staging"
+preview_id = "bgapp_mcp_cache_staging_preview"
+
+# Performance and resource limits
+[limits]
+cpu_ms = 50  # Base limit, increased to 100ms in production vars

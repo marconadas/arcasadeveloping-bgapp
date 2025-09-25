@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- Favicon BGAPP -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#173c72">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGAPP - Teste Mapa Simples</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        #map {
+            height: 500px;
+            width: 100%;
+            border: 2px solid #333;
+        }
+        
+        .info {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f5e8;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>🗺️ BGAPP - Teste Mapa Simples</h1>
+        <p>Este é um teste básico para verificar se o OpenStreetMap carrega corretamente.</p>
+        <p><strong>Objetivo:</strong> Garantir que não há problemas de CSP ou configuração básica.</p>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="status" id="status">
+        ⏳ Carregando mapa...
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        console.log('🚀 Iniciando teste de mapa simples...');
+        
+        try {
+            // Criar mapa básico
+            const map = L.map('map').setView([-12.5, 13.5], 6);
+            
+            console.log('✅ Mapa Leaflet criado');
+            
+            // Adicionar OpenStreetMap
+            const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+            
+            osmLayer.addTo(map);
+            console.log('✅ Layer OpenStreetMap adicionado');
+            
+            // Adicionar ZEE Angola (coordenadas básicas)
+            const angolaZEE = [
+                [[-5.9, 11.7], [-5.9, 16.3], [-18.0, 16.3], [-18.0, 11.7], [-5.9, 11.7]]
+            ];
+            
+            L.polygon(angolaZEE, {
+                color: '#0066cc',
+                weight: 2,
+                fillOpacity: 0.2,
+                fillColor: '#0080ff'
+            }).addTo(map).bindPopup('🌊 ZEE Angola (Aproximada)');
+            
+            console.log('✅ ZEE Angola adicionada');
+            
+            // Verificar carregamento das tiles
+            let tileCount = 0;
+            
+            osmLayer.on('tileload', () => {
+                tileCount++;
+                console.log(`✅ Tile carregada: ${tileCount}`);
+                
+                if (tileCount >= 3) {
+                    document.getElementById('status').innerHTML = `
+                        <strong>✅ Sucesso!</strong><br>
+                        Mapa carregado com ${tileCount} tiles.<br>
+                        OpenStreetMap funcionando corretamente.
+                    `;
+                    document.getElementById('status').style.background = '#d4edda';
+                }
+            });
+            
+            osmLayer.on('tileerror', (e) => {
+                console.error('❌ Erro ao carregar tile:', e);
+                document.getElementById('status').innerHTML = `
+                    <strong>❌ Erro!</strong><br>
+                    Falha ao carregar tiles do OpenStreetMap.<br>
+                    Verifique conexão de internet e CSP.
+                `;
+                document.getElementById('status').style.background = '#f8d7da';
+            });
+            
+            // Timeout para verificar se tiles carregaram
+            setTimeout(() => {
+                if (tileCount === 0) {
+                    console.warn('⚠️ Nenhuma tile carregada após 10 segundos');
+                    document.getElementById('status').innerHTML = `
+                        <strong>⚠️ Aviso!</strong><br>
+                        Nenhuma tile carregada após 10 segundos.<br>
+                        Pode haver problema de conectividade ou CSP.
+                    `;
+                    document.getElementById('status').style.background = '#fff3cd';
+                }
+            }, 10000);
+            
+        } catch (error) {
+            console.error('❌ Erro crítico:', error);
+            document.getElementById('status').innerHTML = `
+                <strong>❌ Erro Crítico!</strong><br>
+                ${error.message}
+            `;
+            document.getElementById('status').style.background = '#f8d7da';
+        }
+    </script>
+</body>
+</html>

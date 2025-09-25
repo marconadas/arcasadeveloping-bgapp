@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 BGAPP - Teste Oceano Simples</title>
+    
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0c1445 0%, #1a237e 50%, #003d82 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00bcd4;
+            z-index: 1000;
+        }
+        
+        .status {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            min-width: 250px;
+        }
+        
+        .status-ok { color: #4caf50; }
+        .status-error { color: #f44336; }
+        .status-warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    
+    <div id="info">
+        <h3>🌊 Status do Sistema Oceânico</h3>
+        <div class="status">
+            <span>Three.js:</span>
+            <span id="threejs-status">Verificando...</span>
+        </div>
+        <div class="status">
+            <span>WebGL:</span>
+            <span id="webgl-status">Verificando...</span>
+        </div>
+        <div class="status">
+            <span>Shaders Enhanced:</span>
+            <span id="enhanced-status">Verificando...</span>
+        </div>
+        <div class="status">
+            <span>Sistema Seguro:</span>
+            <span id="safe-status">Verificando...</span>
+        </div>
+        <div class="status">
+            <span>FPS:</span>
+            <span id="fps-status">--</span>
+        </div>
+    </div>
+
+    <!-- Scripts Enhanced (com fallback) -->
+    <script>
+        // Função para carregar scripts com fallback
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => {
+                    console.warn(`⚠️ Falha ao carregar: ${src}`);
+                    resolve(); // Não rejeitar, apenas continuar
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Sistema de teste oceânico
+        class SimpleOceanTest {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.oceanMesh = null;
+                this.safeSystem = null;
+                
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+                this.currentFPS = 0;
+                
+                this.init();
+            }
+            
+            async init() {
+                console.log('🚀 Iniciando teste oceânico simples...');
+                
+                // Verificar Three.js
+                if (typeof THREE !== 'undefined') {
+                    this.updateStatus('threejs-status', 'OK', 'status-ok');
+                    console.log('✅ Three.js carregado');
+                } else {
+                    this.updateStatus('threejs-status', 'ERRO', 'status-error');
+                    console.error('❌ Three.js não encontrado');
+                    return;
+                }
+                
+                // Verificar WebGL
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+                if (gl) {
+                    this.updateStatus('webgl-status', 'OK', 'status-ok');
+                    console.log('✅ WebGL suportado');
+                } else {
+                    this.updateStatus('webgl-status', 'ERRO', 'status-error');
+                    console.error('❌ WebGL não suportado');
+                    return;
+                }
+                
+                // Tentar carregar scripts enhanced
+                try {
+                    await loadScript('infra/frontend/assets/js/enhanced-ocean-shaders-v1.js');
+                    await loadScript('infra/frontend/assets/js/safe-ocean-integration-v1.js');
+                    
+                    // Verificar se carregaram
+                    if (typeof EnhancedOceanShaders !== 'undefined') {
+                        this.updateStatus('enhanced-status', 'OK', 'status-ok');
+                        console.log('✅ Enhanced Shaders carregados');
+                    } else {
+                        this.updateStatus('enhanced-status', 'Fallback', 'status-warning');
+                        console.log('⚠️ Enhanced Shaders não disponíveis, usando fallback');
+                    }
+                    
+                    if (typeof SafeOceanIntegration !== 'undefined') {
+                        this.updateStatus('safe-status', 'OK', 'status-ok');
+                        console.log('✅ Safe Integration carregado');
+                    } else {
+                        this.updateStatus('safe-status', 'Fallback', 'status-warning');
+                        console.log('⚠️ Safe Integration não disponível, usando fallback');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar scripts enhanced:', error);
+                    this.updateStatus('enhanced-status', 'Fallback', 'status-warning');
+                    this.updateStatus('safe-status', 'Fallback', 'status-warning');
+                }
+                
+                // Inicializar Three.js
+                await this.initThreeJS();
+                
+                // Inicializar sistema oceânico
+                await this.initOceanSystem();
+                
+                // Criar oceano
+                this.createOcean();
+                
+                // Iniciar renderização
+                this.startRenderLoop();
+                
+                console.log('✅ Teste oceânico inicializado com sucesso!');
+            }
+            
+            async initThreeJS() {
+                // Cena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x001122);
+                
+                // Câmera
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(0, 10, 20);
+                
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x001122);
+                
+                document.getElementById('container').appendChild(this.renderer.domElement);
+                
+                // Iluminação
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(50, 50, 50);
+                this.scene.add(directionalLight);
+            }
+            
+            async initOceanSystem() {
+                if (typeof SafeOceanIntegration !== 'undefined') {
+                    try {
+                        this.safeSystem = new SafeOceanIntegration({
+                            enableEnhancedShaders: true,
+                            enableSafetyChecks: true,
+                            enableAutoRollback: true,
+                            minFPS: 20
+                        });
+                        
+                        // Aguardar inicialização
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        console.log('✅ Sistema oceânico seguro inicializado');
+                    } catch (error) {
+                        console.error('❌ Erro no sistema seguro:', error);
+                        this.safeSystem = null;
+                    }
+                }
+            }
+            
+            createOcean() {
+                const oceanGeometry = new THREE.PlaneGeometry(100, 100, 64, 64);
+                let oceanMaterial;
+                
+                if (this.safeSystem) {
+                    // Usar sistema seguro
+                    oceanMaterial = this.safeSystem.getOceanMaterial(this.scene, this.camera, this.renderer);
+                    console.log('🌊 Usando material oceânico avançado');
+                } else {
+                    // Fallback para material básico
+                    oceanMaterial = new THREE.MeshLambertMaterial({
+                        color: 0x006994,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                    console.log('🔄 Usando material oceânico básico');
+                }
+                
+                this.oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+                this.oceanMesh.rotation.x = -Math.PI / 2;
+                this.scene.add(this.oceanMesh);
+            }
+            
+            startRenderLoop() {
+                const animate = () => {
+                    requestAnimationFrame(animate);
+                    
+                    // Calcular FPS
+                    this.frameCount++;
+                    const currentTime = performance.now();
+                    if (currentTime - this.lastTime >= 1000) {
+                        this.currentFPS = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+                        this.updateStatus('fps-status', this.currentFPS, 
+                            this.currentFPS >= 30 ? 'status-ok' : 
+                            this.currentFPS >= 20 ? 'status-warning' : 'status-error');
+                        this.frameCount = 0;
+                        this.lastTime = currentTime;
+                    }
+                    
+                    // Atualizar uniforms se disponível
+                    if (this.oceanMesh && this.oceanMesh.material.uniforms) {
+                        this.oceanMesh.material.uniforms.time.value = currentTime * 0.001;
+                    }
+                    
+                    // Renderizar
+                    this.renderer.render(this.scene, this.camera);
+                };
+                
+                animate();
+            }
+            
+            updateStatus(elementId, text, className = '') {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = text;
+                    element.className = className;
+                }
+            }
+        }
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            new SimpleOceanTest();
+        });
+        
+        // Redimensionar
+        window.addEventListener('resize', () => {
+            if (window.oceanTest && window.oceanTest.camera && window.oceanTest.renderer) {
+                window.oceanTest.camera.aspect = window.innerWidth / window.innerHeight;
+                window.oceanTest.camera.updateProjectionMatrix();
+                window.oceanTest.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+    </script>
+</body>
+</html>

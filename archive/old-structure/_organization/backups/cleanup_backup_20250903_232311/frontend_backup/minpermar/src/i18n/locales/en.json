@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About MINPERMAR",
+    "fisheries": "Fisheries & Marine Resources",
+    "aquaculture": "Aquaculture",
+    "blueEconomy": "Blue Economy",
+    "services": "Citizen Services",
+    "education": "Education & Training",
+    "studies": "Studies & Reports",
+    "news": "News & Events",
+    "transparency": "Transparency",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Ministry of Fisheries and Marine Resources",
+    "subtitle": "Promoting sustainable development of Angola's marine resources",
+    "cta": "Explore Services",
+    "learnMore": "Learn More"
+  },
+  "about": {
+    "mission": "Mission",
+    "vision": "Vision",
+    "values": "Values",
+    "missionText": "To promote sustainable development of fisheries and marine resources, ensuring food security and economic growth in Angola.",
+    "visionText": "To be recognized as a ministry of excellence in marine resource management, contributing to the national blue economy.",
+    "valuesText": "Sustainability, Transparency, Innovation, Social Inclusion and Environmental Responsibility."
+  },
+  "services": {
+    "title": "Digital Services",
+    "licensing": "Fishing Licensing",
+    "certification": "Product Certification",
+    "consultation": "Technical Consultation",
+    "reporting": "Online Reporting"
+  },
+  "stats": {
+    "fishermenRegistered": "Registered Fishermen",
+    "aquacultureFarms": "Aquaculture Farms",
+    "protectedAreas": "Protected Areas",
+    "annualProduction": "Annual Production (tons)"
+  },
+  "footer": {
+    "description": "Ministry of Fisheries and Marine Resources of Angola - Promoting sustainable development of marine resources.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "address": "Luanda, Angola",
+    "phone": "+244 222 000 000",
+    "email": "info@minpermar.gov.ao"
+  },
+  "common": {
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "download": "Download",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error loading data"
+  }
+}

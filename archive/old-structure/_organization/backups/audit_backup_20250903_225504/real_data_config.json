@@ -1,0 +1,22 @@
+{
+  "copernicus": {
+    "username": "YOUR_COPERNICUS_USERNAME",
+    "password": "YOUR_COPERNICUS_PASSWORD",
+    "datasets": {
+      "chlorophyll_a": "cmems_obs-oc_glo_bgc-plankton_my_l3-multi-4km_P1D",
+      "sea_surface_temperature": "cmems_obs-sst_glo_phy_my_l4-gapfree-rep_P1D"
+    }
+  },
+  "modis": {
+    "base_url": "https://modis.gsfc.nasa.gov/data/",
+    "products": {
+      "ndvi": "MOD13A3",
+      "lst": "MOD11A2"
+    }
+  },
+  "movebank": {
+    "username": "YOUR_MOVEBANK_USERNAME",
+    "password": "YOUR_MOVEBANK_PASSWORD",
+    "base_url": "https://www.movebank.org/movebank/service/direct-read"
+  }
+}

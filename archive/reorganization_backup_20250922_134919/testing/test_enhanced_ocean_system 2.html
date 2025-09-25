@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 BGAPP - Teste Enhanced Ocean System</title>
+    
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    
+    <!-- Enhanced Ocean Shaders -->
+    <script src="infra/frontend/assets/js/enhanced-ocean-shaders-v1.js"></script>
+    <script src="infra/frontend/assets/js/safe-ocean-integration-v1.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c1445 0%, #1a237e 50%, #003d82 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        #test-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #status-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00bcd4;
+            min-width: 300px;
+            z-index: 1000;
+        }
+        
+        .status-item {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-value {
+            color: #00bcd4;
+            font-weight: bold;
+        }
+        
+        .status-good { color: #4caf50; }
+        .status-warning { color: #ff9800; }
+        .status-error { color: #f44336; }
+        
+        #controls-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00bcd4;
+            z-index: 1000;
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #00bcd4, #2196f3);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+        }
+        
+        .control-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #log-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 10px;
+            border: 2px solid #00bcd4;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .log-success { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .log-warning { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+        .log-error { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .log-info { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+    </style>
+</head>
+<body>
+    <div id="test-container"></div>
+    
+    <div id="status-panel">
+        <h3>🔍 Status do Sistema</h3>
+        <div class="status-item">
+            <span>Modo:</span>
+            <span id="status-mode" class="status-value">Inicializando...</span>
+        </div>
+        <div class="status-item">
+            <span>Saúde:</span>
+            <span id="status-health" class="status-value">Verificando...</span>
+        </div>
+        <div class="status-item">
+            <span>FPS:</span>
+            <span id="status-fps" class="status-value">--</span>
+        </div>
+        <div class="status-item">
+            <span>Erros:</span>
+            <span id="status-errors" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+            <span>Uptime:</span>
+            <span id="status-uptime" class="status-value">0s</span>
+        </div>
+    </div>
+    
+    <div id="controls-panel">
+        <h3>🎮 Controles</h3>
+        <button class="control-button" onclick="testSystem()">🧪 Teste Completo</button>
+        <button class="control-button" onclick="forceRollback()">🔄 Forçar Rollback</button>
+        <button class="control-button" onclick="toggleQuality()">⚙️ Alterar Qualidade</button>
+        <button class="control-button" onclick="clearLogs()">🧹 Limpar Logs</button>
+        <button class="control-button" onclick="performSanityCheck()">✅ Check Sanidade</button>
+    </div>
+    
+    <div id="log-panel">
+        <div id="log-content"></div>
+    </div>
+
+    <script>
+        // Sistema de teste para Enhanced Ocean System
+        class EnhancedOceanSystemTest {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.oceanMesh = null;
+                this.safeIntegration = null;
+                
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+                this.currentFPS = 0;
+                
+                this.init();
+            }
+            
+            async init() {
+                this.log('🚀 Inicializando teste do Enhanced Ocean System...', 'info');
+                
+                try {
+                    // Inicializar Three.js
+                    await this.initThreeJS();
+                    
+                    // Inicializar sistema oceânico seguro
+                    await this.initSafeOceanSystem();
+                    
+                    // Criar oceano de teste
+                    this.createTestOcean();
+                    
+                    // Iniciar loop de renderização
+                    this.startRenderLoop();
+                    
+                    // Iniciar monitoramento
+                    this.startStatusMonitoring();
+                    
+                    this.log('✅ Sistema inicializado com sucesso!', 'success');
+                    
+                } catch (error) {
+                    this.log(`❌ Erro na inicialização: ${error.message}`, 'error');
+                }
+            }
+            
+            async initThreeJS() {
+                this.log('🎨 Inicializando Three.js...', 'info');
+                
+                // Cena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x001122);
+                
+                // Câmera
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(0, 10, 20);
+                
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x001122);
+                
+                document.getElementById('test-container').appendChild(this.renderer.domElement);
+                
+                // Iluminação
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(50, 50, 50);
+                this.scene.add(directionalLight);
+                
+                this.log('✅ Three.js inicializado', 'success');
+            }
+            
+            async initSafeOceanSystem() {
+                this.log('🔒 Inicializando Safe Ocean Integration...', 'info');
+                
+                this.safeIntegration = new SafeOceanIntegration({
+                    enableEnhancedShaders: true,
+                    enableSafetyChecks: true,
+                    enablePerformanceMonitoring: true,
+                    enableAutoRollback: true,
+                    maxErrorCount: 3,
+                    minFPS: 20 // Mais tolerante para teste
+                });
+                
+                // Aguardar inicialização
+                let attempts = 0;
+                while (!this.safeIntegration.currentSystem && attempts < 50) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                if (!this.safeIntegration.currentSystem) {
+                    throw new Error('Timeout na inicialização do Safe Ocean Integration');
+                }
+                
+                this.log('✅ Safe Ocean Integration inicializado', 'success');
+            }
+            
+            createTestOcean() {
+                this.log('🌊 Criando oceano de teste...', 'info');
+                
+                try {
+                    // Geometria do oceano
+                    const oceanGeometry = new THREE.PlaneGeometry(100, 100, 128, 128);
+                    
+                    // Material oceânico usando sistema seguro
+                    const oceanMaterial = this.safeIntegration.getOceanMaterial(
+                        this.scene,
+                        this.camera,
+                        this.renderer
+                    );
+                    
+                    // Mesh do oceano
+                    this.oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+                    this.oceanMesh.rotation.x = -Math.PI / 2;
+                    this.scene.add(this.oceanMesh);
+                    
+                    this.log('✅ Oceano de teste criado', 'success');
+                    
+                } catch (error) {
+                    this.log(`❌ Erro ao criar oceano: ${error.message}`, 'error');
+                }
+            }
+            
+            startRenderLoop() {
+                const animate = () => {
+                    requestAnimationFrame(animate);
+                    
+                    // Calcular FPS
+                    this.frameCount++;
+                    const currentTime = performance.now();
+                    if (currentTime - this.lastTime >= 1000) {
+                        this.currentFPS = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+                        this.frameCount = 0;
+                        this.lastTime = currentTime;
+                    }
+                    
+                    // Atualizar uniforms se usando shaders enhanced
+                    if (this.oceanMesh && this.oceanMesh.material.uniforms) {
+                        this.oceanMesh.material.uniforms.time.value = currentTime * 0.001;
+                    }
+                    
+                    // Renderizar
+                    this.renderer.render(this.scene, this.camera);
+                };
+                
+                animate();
+                this.log('🎬 Loop de renderização iniciado', 'success');
+            }
+            
+            startStatusMonitoring() {
+                setInterval(() => {
+                    this.updateStatusPanel();
+                }, 1000);
+                
+                this.log('📊 Monitoramento de status iniciado', 'success');
+            }
+            
+            updateStatusPanel() {
+                if (!this.safeIntegration) return;
+                
+                const status = this.safeIntegration.getStatus();
+                
+                // Atualizar elementos do painel
+                document.getElementById('status-mode').textContent = status.mode;
+                document.getElementById('status-mode').className = 
+                    status.mode === 'Enhanced' ? 'status-value status-good' : 'status-value status-warning';
+                
+                document.getElementById('status-health').textContent = status.isHealthy ? 'Saudável' : 'Problemas';
+                document.getElementById('status-health').className = 
+                    status.isHealthy ? 'status-value status-good' : 'status-value status-error';
+                
+                document.getElementById('status-fps').textContent = this.currentFPS;
+                document.getElementById('status-fps').className = 
+                    this.currentFPS >= 30 ? 'status-value status-good' : 
+                    this.currentFPS >= 20 ? 'status-value status-warning' : 'status-value status-error';
+                
+                document.getElementById('status-errors').textContent = status.errorCount;
+                document.getElementById('status-errors').className = 
+                    status.errorCount === 0 ? 'status-value status-good' : 'status-value status-error';
+                
+                document.getElementById('status-uptime').textContent = `${status.uptime}s`;
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                const logContent = document.getElementById('log-content');
+                logContent.appendChild(logEntry);
+                logContent.scrollTop = logContent.scrollHeight;
+                
+                // Console também
+                console.log(message);
+            }
+        }
+        
+        // Funções de controle
+        let testSystem;
+        
+        function testSystem() {
+            testSystem.log('🧪 Executando teste completo do sistema...', 'info');
+            
+            if (testSystem.safeIntegration) {
+                const sanityResult = testSystem.safeIntegration.performSanityCheck();
+                testSystem.log(`Resultado do teste: ${sanityResult ? 'PASSOU' : 'FALHOU'}`, 
+                    sanityResult ? 'success' : 'error');
+            }
+        }
+        
+        function forceRollback() {
+            testSystem.log('🔄 Forçando rollback para modo seguro...', 'warning');
+            
+            if (testSystem.safeIntegration) {
+                testSystem.safeIntegration.rollbackToSafeMode();
+            }
+        }
+        
+        function toggleQuality() {
+            testSystem.log('⚙️ Alternando qualidade do sistema...', 'info');
+            // Implementar se necessário
+        }
+        
+        function clearLogs() {
+            document.getElementById('log-content').innerHTML = '';
+        }
+        
+        function performSanityCheck() {
+            testSystem.log('✅ Executando verificação de sanidade...', 'info');
+            
+            if (testSystem.safeIntegration) {
+                const result = testSystem.safeIntegration.performSanityCheck();
+                testSystem.log(`Verificação de sanidade: ${result ? 'OK' : 'PROBLEMAS DETECTADOS'}`, 
+                    result ? 'success' : 'warning');
+            }
+        }
+        
+        // Inicializar teste quando página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            testSystem = new EnhancedOceanSystemTest();
+        });
+        
+        // Cleanup ao fechar
+        window.addEventListener('beforeunload', () => {
+            if (testSystem && testSystem.safeIntegration) {
+                testSystem.safeIntegration.dispose();
+            }
+        });
+        
+        // Redimensionar canvas
+        window.addEventListener('resize', () => {
+            if (testSystem && testSystem.camera && testSystem.renderer) {
+                testSystem.camera.aspect = window.innerWidth / window.innerHeight;
+                testSystem.camera.updateProjectionMatrix();
+                testSystem.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+    </script>
+</body>
+</html>

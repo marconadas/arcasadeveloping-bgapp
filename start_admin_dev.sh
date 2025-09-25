@@ -11,7 +11,7 @@ pkill -f "python.*http.server" 2>/dev/null || true
 pkill -f "ngrok" 2>/dev/null || true
 
 # Vai para o diretório do frontend
-cd infra/frontend
+cd apps/frontend
 
 # Inicia servidor HTTP em background
 echo "📡 Iniciando servidor HTTP na porta 8080..."

@@ -1,0 +1,23 @@
+angola_datasets:
+  biogeochemistry: GLOBAL_ANALYSISFORECAST_BGC_001_028
+  physics: GLOBAL_ANALYSISFORECAST_PHY_001_024
+  waves: GLOBAL_ANALYSISFORECAST_WAV_001_027
+authentication:
+  identity_url: https://identity.dataspace.copernicus.eu
+  service_url: https://my.cmems-du.eu/motu-web/Motu
+  username: majearcasa@gmail.com
+auto_processing:
+  daily_update_time: 06:00
+  enabled: true
+  retention_days: 30
+  variables_priority:
+  - thetao
+  - so
+  - chl
+  - uo
+  - vo
+spatial_bounds:
+  east: 17.5
+  north: -4.2
+  south: -18.2
+  west: 8.5

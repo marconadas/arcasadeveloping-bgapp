@@ -1,0 +1,34 @@
+# BGAPP - Redirects para arcasadeveloping.org/BGAPP
+# Configuração para Cloudflare Pages
+
+# Redirect root para BGAPP
+/                        /BGAPP/                301
+
+# Redirect BGAPP sem trailing slash
+/BGAPP                   /BGAPP/                301
+
+# Admin redirects
+/admin                   /BGAPP/admin.html      301
+/admin/                  /BGAPP/admin.html      301
+/dashboard               /BGAPP/admin.html      301
+/dashboard/              /BGAPP/admin.html      301
+
+# BGAPP admin (clean URL)
+/BGAPP/admin             /BGAPP/admin.html      200
+/BGAPP/admin/            /BGAPP/admin.html      200
+
+# Páginas específicas do BGAPP
+/BGAPP/dashboard         /BGAPP/dashboard.html  200
+/BGAPP/mobile            /BGAPP/mobile.html     200
+/BGAPP/qgis              /BGAPP/qgis_dashboard.html  200
+/BGAPP/health            /BGAPP/health_dashboard.html  200
+
+# API redirects para worker
+/api/*                   https://bgapp-api-worker.majearcasa.workers.dev/:splat  200
+
+# Assets e recursos estáticos (sem redirect)
+/BGAPP/assets/*          /BGAPP/assets/:splat   200
+/BGAPP/static/*          /BGAPP/static/:splat   200
+
+# Fallback para SPA
+/BGAPP/*                 /BGAPP/index.html      200

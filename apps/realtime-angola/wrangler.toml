@@ -1,0 +1,23 @@
+# Wrangler configuration for BGAPP Realtime Angola
+name = "bgapp-realtime"
+compatibility_date = "2024-09-04"
+pages_build_output_dir = "out"
+
+[env.production]
+name = "bgapp-realtime"
+
+[env.production.vars]
+NODE_ENV = "production"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "production"
+FRONTEND_BASE = "https://bgapp-realtime.pages.dev"
+ALLOWED_ORIGINS = "https://bgapp-realtime.pages.dev,https://bgapp-frontend.pages.dev,https://arcasadeveloping.org"
+
+[env.preview]
+name = "bgapp-realtime-preview"
+
+[env.preview.vars]
+NODE_ENV = "development"
+API_VERSION = "1.2.0"
+ENVIRONMENT = "preview"
+FRONTEND_BASE = "https://bgapp-realtime.pages.dev"

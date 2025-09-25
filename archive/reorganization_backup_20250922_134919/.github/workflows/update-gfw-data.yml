@@ -1,0 +1,53 @@
+name: Update GFW Data Cache
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-gfw-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Fetch GFW Data
+      env:
+        GFW_TOKEN: ${{ secrets.GFW_API_TOKEN }}
+      run: |
+        # Create data directory if it doesn't exist
+        mkdir -p infra/frontend/data
+        
+        # Fetch vessel presence data for Angola EEZ
+        END_DATE=$(date +%Y-%m-%d)
+        START_DATE=$(date -d "1 day ago" +%Y-%m-%d)
+        
+        # Make the API call
+        curl -X GET "https://api.globalfishingwatch.org/v3/4wings/aggregate" \
+          -H "Authorization: Bearer $GFW_TOKEN" \
+          -H "Accept: application/json" \
+          -G \
+          --data-urlencode "dataset=public-global-fishing-activity:v20231026" \
+          --data-urlencode "start-date=$START_DATE" \
+          --data-urlencode "end-date=$END_DATE" \
+          --data-urlencode "bbox=-12,-18,17.5,-4.2" \
+          --data-urlencode "format=json" \
+          -o infra/frontend/data/gfw-angola-vessels.json || echo '{"error": "Failed to fetch data"}' > infra/frontend/data/gfw-angola-vessels.json
+        
+        # Add metadata
+        echo "{\"last_updated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"data\": $(cat infra/frontend/data/gfw-angola-vessels.json)}" > infra/frontend/data/gfw-angola-vessels-cache.json
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add infra/frontend/data/gfw-angola-vessels-cache.json || true
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update GFW vessel data cache [skip ci]" && git push)

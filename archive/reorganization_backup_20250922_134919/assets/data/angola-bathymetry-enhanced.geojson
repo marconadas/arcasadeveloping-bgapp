@@ -1,0 +1,68 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "depth": -50,
+        "zone": "shallow",
+        "name": "Plataforma Continental Angola",
+        "color": [0, 150, 255, 100]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [8.5, -6.02],
+            [8.5, -17.266],
+            [12.0, -17.266],
+            [12.0, -6.02],
+            [8.5, -6.02]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "depth": -200,
+        "zone": "continental_slope",
+        "name": "Talude Continental Angola",
+        "color": [0, 100, 200, 120]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [12.0, -6.02],
+            [12.0, -17.266],
+            [15.0, -17.266],
+            [15.0, -6.02],
+            [12.0, -6.02]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "depth": -1000,
+        "zone": "deep_ocean",
+        "name": "Oceano Profundo Angola",
+        "color": [0, 50, 150, 80]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [15.0, -6.02],
+            [15.0, -17.266],
+            [17.5, -17.266],
+            [17.5, -6.02],
+            [15.0, -6.02]
+          ]
+        ]
+      }
+    }
+  ]
+}

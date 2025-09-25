@@ -1,0 +1,149 @@
+{
+  "company": {
+    "name": "MareDatum Consultoria e Gestão de Projectos Unipessoal LDA",
+    "email": "info@maredatum.pt",
+    "website": "https://maredatum.pt",
+    "country": "Portugal",
+    "project": "BGAPP - Biodiversity and Geographic Analysis Platform for Angola"
+  },
+  "project_details": {
+    "name": "BGAPP Angola",
+    "description": "Marine biodiversity monitoring platform for Angolan territorial waters",
+    "purpose": "Non-commercial government monitoring and conservation",
+    "region": "Angola (Latitude: -18° to -5°, Longitude: 11° to 14°)",
+    "use_case": "Real-time monitoring of fishing activities in Angolan territorial waters for biodiversity protection and sustainable fishing management",
+    "stakeholders": [
+      "Angolan Government - Ministry of Environment",
+      "Marine Conservation Organizations",
+      "Fisheries Management Authorities"
+    ]
+  },
+  "technical_details": {
+    "platform": "Cloudflare Workers + Next.js",
+    "deployment": "https://bgapp-admin.pages.dev",
+    "api_proxy": "https://bgapp-gfw-proxy.majearcasa.workers.dev",
+    "current_token_scope": "Limited public datasets only",
+    "integration_method": "REST API via proxy worker"
+  },
+  "datasets_requested": {
+    "essential_priority_high": {
+      "public-global-vessels:v3.0": {
+        "name": "Global Vessels Dataset",
+        "description": "Basic vessel information including position, type, and flag",
+        "justification": "Core vessel tracking for Angolan waters",
+        "status": "requested",
+        "current_access": "limited"
+      },
+      "public-global-vessel-identity:v3.0": {
+        "name": "Vessel Identity Dataset",
+        "description": "Complete vessel identity with IMO, callsign, and registry data",
+        "justification": "Vessel identification and compliance monitoring",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-fishing-effort:v3.0": {
+        "name": "Fishing Effort Dataset",
+        "description": "Fishing activity and effort data per location",
+        "justification": "Monitor fishing pressure in Angolan marine protected areas",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-carrier-vessels:v3.0": {
+        "name": "Carrier Vessels Dataset",
+        "description": "Transport and supply vessels data",
+        "justification": "Track support vessels and supply chains",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-transshipment:v3.0": {
+        "name": "Transshipment Dataset",
+        "description": "At-sea transfer activities between vessels",
+        "justification": "Detect illegal transshipment activities in Angolan waters",
+        "status": "requested",
+        "current_access": "none"
+      }
+    },
+    "advanced_priority_medium": {
+      "public-global-encounters:v3.0": {
+        "name": "Vessel Encounters Dataset",
+        "description": "Meetings and interactions between vessels at sea",
+        "justification": "Identify suspicious vessel meetings and potential IUU activities",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-loitering:v3.0": {
+        "name": "Loitering Events Dataset",
+        "description": "Vessels remaining stationary for extended periods",
+        "justification": "Detect potential unauthorized fishing or waiting activities",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-port-visits:v3.0": {
+        "name": "Port Visits Dataset",
+        "description": "Vessel port arrivals and departures",
+        "justification": "Monitor traffic at Angolan ports (Luanda, Benguela, Lobito)",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-sar-detections:v3.0": {
+        "name": "SAR Detections Dataset",
+        "description": "Synthetic Aperture Radar vessel detections",
+        "justification": "Detect dark vessels not broadcasting AIS in Angolan waters",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-viirs-detections:v3.0": {
+        "name": "VIIRS Night Fishing Dataset",
+        "description": "Night fishing activity detected by satellite lights",
+        "justification": "Monitor night fishing activities and potential IUU fishing",
+        "status": "requested",
+        "current_access": "none"
+      }
+    },
+    "compliance_priority_high": {
+      "public-global-vessel-authorizations:v3.0": {
+        "name": "Vessel Authorizations Dataset",
+        "description": "Fishing licenses and permits by jurisdiction",
+        "justification": "Verify fishing vessel authorization status in Angolan waters",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-rfmo-authorizations:v3.0": {
+        "name": "RFMO Authorizations Dataset",
+        "description": "Regional Fisheries Management Organization permits",
+        "justification": "Check ICCAT and other RFMO compliance for vessels in region",
+        "status": "requested",
+        "current_access": "none"
+      },
+      "public-global-compliance-indicators:v3.0": {
+        "name": "Compliance Indicators Dataset",
+        "description": "Vessel compliance scores and risk indicators",
+        "justification": "Risk assessment for vessels operating in Angolan waters",
+        "status": "requested",
+        "current_access": "none"
+      }
+    }
+  },
+  "access_request": {
+    "date_submitted": null,
+    "status": "pending_submission",
+    "contact_person": "Marco Nadas",
+    "contact_email": "info@maredatum.pt",
+    "follow_up_required": true,
+    "expected_response_time": "2-4 weeks",
+    "fallback_plan": "Use available public datasets with limited functionality"
+  },
+  "implementation_plan": {
+    "phase_1": "Submit formal access request to GFW",
+    "phase_2": "Implement Slack automation for status tracking",
+    "phase_3": "Create webhook worker for approval notifications",
+    "phase_4": "Update proxy worker with new dataset endpoints",
+    "phase_5": "Enable advanced filtering features as datasets become available"
+  },
+  "monitoring": {
+    "check_frequency": "weekly",
+    "notification_channels": ["slack", "email"],
+    "auto_retry_failed_requests": true,
+    "dashboard_url": "https://bgapp-admin.pages.dev/gfw-permissions"
+  }
+}

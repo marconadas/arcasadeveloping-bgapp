@@ -36,7 +36,7 @@ log_deploy() {
 
 # Configuration
 PROJECT_ROOT="/Users/marconadas/Documents/CODE/MareDatum_DevOps/arcasadeveloping-bgapp"
-FRONTEND_DIR="$PROJECT_ROOT/infra/frontend"
+FRONTEND_DIR="$PROJECT_ROOT/apps/frontend"
 DEPLOY_DIR="$PROJECT_ROOT/deploy_temp"
 LOG_FILE="$PROJECT_ROOT/logs/frontend-deploy-$(date +%Y%m%d-%H%M%S).log"
 
@@ -124,10 +124,10 @@ log_success "Index redirect created"
 
 # Verify the updated file has our fixes
 log_info "Verifying updated file contains our fixes..."
-if grep -q "Try API endpoint first" "$DEPLOY_DIR/realtime_angola.html"; then
-    log_success "✅ API endpoint fix detected in file"
+if grep -q "nova API oficial Copernicus" "$DEPLOY_DIR/realtime_angola.html"; then
+    log_success "✅ Nova API oficial Copernicus detectada no arquivo"
 else
-    log_error "❌ API endpoint fix not found - file may not be updated"
+    log_error "❌ Nova API oficial não encontrada - arquivo pode não estar atualizado"
     exit 1
 fi
 

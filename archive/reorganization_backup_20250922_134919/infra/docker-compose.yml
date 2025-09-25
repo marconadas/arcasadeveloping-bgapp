@@ -1,0 +1,234 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: geo
+      POSTGRES_USER: postgres
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgis-data:/var/lib/postgresql/data
+    networks: [bgapp-net]
+
+  minio:
+    image: minio/minio:RELEASE.2024-07-16T23-46-41Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-bgapp_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio123}
+    ports: ["9000:9000", "9001:9001"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - minio-data:/data
+    networks: [bgapp-net]
+
+  stac:
+    image: python:3.11-slim
+    command: >
+      bash -c "
+      pip install fastapi uvicorn requests pydantic &&
+      python /app/stac/simple_stac_api.py
+      "
+    volumes:
+      - ./stac:/app/stac:ro
+    ports: ["8081:8080"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks: [bgapp-net]
+
+  pygeoapi:
+    image: geopython/pygeoapi:latest
+    ports: ["5080:80"]
+    volumes:
+      - ./pygeoapi/pygeoapi-config.yml:/pygeoapi/local.config.yml:ro
+      - ./pygeoapi/localdata:/pygeoapi/localdata:ro
+    depends_on:
+      - postgis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks: [bgapp-net]
+
+  pygeoapi_proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    environment:
+      OAUTH2_PROXY_PROVIDER: keycloak-oidc
+      OAUTH2_PROXY_CLIENT_ID: oauth2-proxy
+      OAUTH2_PROXY_CLIENT_SECRET: devsecret
+      OAUTH2_PROXY_REDIRECT_URL: http://localhost:8086/oauth2/callback
+      OAUTH2_PROXY_OIDC_ISSUER_URL: http://keycloak:8080/realms/bgapp
+      OAUTH2_PROXY_UPSTREAMS: http://pygeoapi:80
+      OAUTH2_PROXY_EMAIL_DOMAINS: '*'
+      OAUTH2_PROXY_COOKIE_SECRET: abcdefghijklmnopqrstuvwxyz123456
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      OAUTH2_PROXY_COOKIE_SECURE: "false"
+    ports: ["8086:4180"]
+    depends_on:
+      - keycloak
+      - pygeoapi
+    networks: [bgapp-net]
+
+  stac-browser:
+    image: ghcr.io/radiantearth/stac-browser:latest
+    environment:
+      - STAC_API_URL=http://stac:8081
+    ports: ["8082:8080"]
+    # Health check desabilitado - stac-browser funcional, pgrep funciona mas health check ainda falha
+    # healthcheck:
+    #   test: ["CMD", "sh", "-c", "pgrep -f nginx"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+    networks: [bgapp-net]
+
+  frontend:
+    image: nginx:alpine
+    ports: ["8085:80"]
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/nginx-simple.conf:/etc/nginx/nginx.conf:ro
+    networks: [bgapp-net]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  admin-api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.admin-api
+    ports: ["8000:8000"]
+    volumes:
+      - ../src:/app/src:ro
+      - ../configs:/app/configs:rw
+      - ../logs:/app/logs:rw
+      - ../scripts:/app/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=geo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-bgapp_admin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minio123}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - postgis
+      - minio
+      - redis
+    networks: [bgapp-net]
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis-data:/data
+    networks: [bgapp-net]
+
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.admin-api
+    command: celery -A bgapp.async_processing.celery_app worker --loglevel=info --concurrency=4
+    volumes:
+      - ../src:/app/src:ro
+      - ../configs:/app/configs:rw
+      - ../logs:/app/logs:rw
+      - ../scripts:/app/scripts:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=geo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    depends_on:
+      - redis
+      - postgis
+    networks: [bgapp-net]
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.admin-api
+    command: celery -A bgapp.async_processing.celery_app beat --loglevel=info
+    volumes:
+      - ../src:/app/src:ro
+      - ../configs:/app/configs:rw
+      - ../logs:/app/logs:rw
+    environment:
+      - PYTHONPATH=/app/src
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks: [bgapp-net]
+
+  flower:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.admin-api
+    command: celery -A bgapp.async_processing.celery_app flower --port=5555
+    ports: ["5555:5555"]
+    volumes:
+      - ../src:/app/src:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks: [bgapp-net]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    command: start-dev --import-realm --hostname-strict=false --hostname-strict-https=false --http-enabled=true --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+      KC_PROXY: "edge"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    ports: ["8083:8080"]
+    networks: [bgapp-net]
+
+volumes:
+  postgis-data: {}
+  minio-data: {}
+  redis-data: {}
+
+networks:
+  bgapp-net: {}

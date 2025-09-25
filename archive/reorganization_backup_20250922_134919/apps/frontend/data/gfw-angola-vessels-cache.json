@@ -1,0 +1,68 @@
+{
+  "last_updated": "2025-09-16T17:34:09Z",
+  "data": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [12.5, -10.5]
+        },
+        "properties": {
+          "vessel_count": 15,
+          "hours": 180.5,
+          "grid_id": "1"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [11.8, -11.2]
+        },
+        "properties": {
+          "vessel_count": 12,
+          "hours": 144.2,
+          "grid_id": "2"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [13.2, -9.8]
+        },
+        "properties": {
+          "vessel_count": 8,
+          "hours": 96.7,
+          "grid_id": "3"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [12.0, -12.5]
+        },
+        "properties": {
+          "vessel_count": 10,
+          "hours": 120.0,
+          "grid_id": "4"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [14.0, -8.5]
+        },
+        "properties": {
+          "vessel_count": 7,
+          "hours": 84.3,
+          "grid_id": "5"
+        }
+      }
+    ]
+  }
+}
