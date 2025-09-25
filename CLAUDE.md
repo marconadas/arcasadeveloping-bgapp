@@ -26,6 +26,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BGAPP (Biodiversity and Geographic Analysis Platform) is a comprehensive scientific platform for oceanographic analysis and marine biodiversity monitoring in Angola's Exclusive Economic Zone. The project consists of multiple applications deployed on Cloudflare infrastructure with advanced WebGL visualizations, machine learning models, and real-time oceanographic data integration.
 
+### 👥 Team & Governance
+**Organization**: MareDatum Consultoria e Gestão de Projectos Unipessoal LDA
+- **Director Geral**: Sr. Paulo Fernandes
+- **Co-Diretor**: Eng. Leite (same permissions as Director)
+- **Technical Lead**: Marcos Santos (marconadas)
+- **Software Engineer**: Ludmilson Francisco (luddera)
+- **Communications**: Luis Santos
+
+📋 **For detailed team responsibilities, escalation procedures, and governance structure, see [STAKEHOLDERS.md](./STAKEHOLDERS.md)**
+
 ## 🎯 PROJECT STRUCTURE STATUS (December 2025)
 
 **Current Status**: Successfully reorganized to focused structure with main applications centralized.
