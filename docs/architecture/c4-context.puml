@@ -1,0 +1,37 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram for BGAPP - Angola Marine Platform
+
+' External actors
+Person(gov_angola, "Governo Angola", "Ministérios e agências governamentais responsáveis pela gestão marinha")
+Person(scientists, "Cientistas Marinhos", "Investigadores e especialistas em oceanografia e biodiversidade marinha")
+Person(administrators, "Administradores", "Gestores de sistema e operadores técnicos da plataforma")
+Person(public, "Público Geral", "Cidadãos interessados em dados marinhos e ambientais")
+
+' Main system
+System(bgapp, "BGAPP Platform", "Plataforma científica para análise e monitoramento da biodiversidade marinha na ZEE de Angola")
+
+' External systems
+System_Ext(copernicus, "Copernicus Marine Service", "Serviço europeu de dados oceanográficos em tempo real (temperatura, clorofila, salinidade)")
+System_Ext(gfw, "Global Fishing Watch", "Sistema global de rastreamento de embarcações pesqueiras e atividade marítima")
+System_Ext(eox_stac, "EOX STAC API", "Catálogo geoespacial de dados satelitários e produtos de observação da Terra")
+System_Ext(gebco, "GEBCO Bathymetry", "Base de dados global de batimetria e topografia do fundo marinho")
+
+' Relationships - Users to System
+Rel(gov_angola, bgapp, "Acessa dashboards de monitoramento", "HTTPS")
+Rel(scientists, bgapp, "Analisa dados oceanográficos", "HTTPS")
+Rel(administrators, bgapp, "Gere sistema e configurações", "HTTPS")
+Rel(public, bgapp, "Consulta dados marinhos públicos", "HTTPS")
+
+' Relationships - System to External Systems
+Rel(bgapp, copernicus, "Obtém dados oceanográficos", "REST API / WMS")
+Rel(bgapp, gfw, "Consulta dados de embarcações", "REST API")
+Rel(bgapp, eox_stac, "Acessa catálogo geoespacial", "STAC API")
+Rel(bgapp, gebco, "Obtém dados de batimetria", "WMS / REST API")
+
+SHOW_LEGEND()
+
+@enduml

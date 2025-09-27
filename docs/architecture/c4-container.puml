@@ -1,0 +1,72 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for BGAPP - Angola Marine Platform
+
+' External actors
+Person(gov_angola, "Governo Angola", "Utilizadores governamentais")
+Person(scientists, "Cientistas", "Investigadores marinhos")
+Person(administrators, "Administradores", "Gestores de sistema")
+
+' BGAPP System boundary
+System_Boundary(bgapp, "BGAPP Platform") {
+    ' Frontend Containers
+    Container(frontend, "Static Frontend", "HTML5, CSS3, JavaScript, deck.gl", "Interface pública científica com visualizações WebGL 3D")
+    Container(admin_dashboard, "Admin Dashboard", "Next.js 14, React 18, Radix UI", "Dashboard administrativo para gestão de dados e configurações")
+    Container(realtime_angola, "Realtime Angola", "Next.js 14, deck.gl, TensorFlow.js", "Aplicação especializada para monitoramento em tempo real da ZEE Angola")
+
+    ' Backend API Containers
+    Container(api_worker, "API Worker", "Cloudflare Workers, JavaScript", "API REST principal para dados oceanográficos e integração de serviços")
+    Container(gfw_proxy, "GFW Proxy Worker", "Cloudflare Workers", "Proxy para integração com Global Fishing Watch API")
+    Container(copernicus_worker, "Copernicus Worker", "Cloudflare Workers", "Integração e cache de dados do Copernicus Marine Service")
+    Container(stac_worker, "STAC API Worker", "Cloudflare Workers", "Catálogo STAC para descoberta de dados geoespaciais")
+
+    ' Data Storage Containers
+    ContainerDb(d1_database, "D1 Database", "SQLite, Cloudflare D1", "Base de dados principal para embarcações, dados marinhos e configurações")
+    ContainerDb(kv_cache, "KV Cache", "Cloudflare KV", "Cache distribuído para dados oceanográficos e otimização de performance")
+
+    ' Development Containers (optional)
+    Container(python_api, "Python ML API", "FastAPI, TensorFlow, scikit-learn", "APIs de machine learning para desenvolvimento e treino de modelos")
+}
+
+' External Systems
+System_Ext(copernicus, "Copernicus Marine Service", "Dados oceanográficos")
+System_Ext(gfw, "Global Fishing Watch", "Rastreamento embarcações")
+System_Ext(eox_stac, "EOX STAC API", "Catálogo geoespacial")
+System_Ext(gebco, "GEBCO Bathymetry", "Dados batimetria")
+
+' User Relationships
+Rel(gov_angola, admin_dashboard, "Acessa dashboards", "HTTPS")
+Rel(gov_angola, realtime_angola, "Monitoriza ZEE Angola", "HTTPS")
+Rel(scientists, frontend, "Analisa dados científicos", "HTTPS")
+Rel(scientists, realtime_angola, "Visualiza dados em tempo real", "HTTPS")
+Rel(administrators, admin_dashboard, "Gere configurações", "HTTPS")
+
+' Frontend to Backend Relationships
+Rel(frontend, api_worker, "Obtém dados oceanográficos", "REST API")
+Rel(admin_dashboard, api_worker, "CRUD operations", "REST API")
+Rel(realtime_angola, api_worker, "Dados tempo real", "REST API")
+Rel(realtime_angola, gfw_proxy, "Dados embarcações", "REST API")
+
+' Backend Worker Relationships
+Rel(api_worker, d1_database, "Lê/escreve dados", "SQL")
+Rel(api_worker, kv_cache, "Cache dados", "Key-Value")
+Rel(gfw_proxy, d1_database, "Armazena dados embarcações", "SQL")
+Rel(copernicus_worker, kv_cache, "Cache dados oceanográficos", "Key-Value")
+Rel(stac_worker, d1_database, "Catálogo metadados", "SQL")
+
+' External System Relationships
+Rel(copernicus_worker, copernicus, "Fetches oceanographic data", "REST API / WMS")
+Rel(gfw_proxy, gfw, "Fetches vessel data", "REST API")
+Rel(stac_worker, eox_stac, "Queries geospatial catalog", "STAC API")
+Rel(api_worker, gebco, "Fetches bathymetry", "WMS")
+
+' Development Relationships
+Rel(python_api, d1_database, "Model training data", "SQL")
+Rel_Back(realtime_angola, python_api, "ML predictions", "REST API")
+
+SHOW_LEGEND()
+
+@enduml
