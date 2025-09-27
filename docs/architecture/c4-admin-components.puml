@@ -1,0 +1,102 @@
+@startuml C4_AdminComponents
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram for Admin Dashboard - BGAPP
+
+' External users
+Person(administrators, "Administradores", "Gestores de sistema")
+Person(gov_angola, "Governo Angola", "Utilizadores governamentais")
+
+' Admin Dashboard Container boundary
+Container_Boundary(admin_dashboard, "Admin Dashboard - Next.js 14") {
+
+    ' Authentication & Security Components
+    Component(auth_system, "Authentication System", "NextAuth.js, JWT", "Gestão de autenticação e autorização de utilizadores")
+    Component(rbac, "Role-Based Access Control", "React Context, Custom Hooks", "Controlo de acesso baseado em funções")
+    Component(session_manager, "Session Manager", "Next.js API Routes", "Gestão de sessões e tokens de utilizador")
+
+    ' UI Framework Components
+    Component(ui_system, "UI Component System", "Radix UI, Tailwind CSS", "Sistema de componentes reutilizáveis e acessíveis")
+    Component(theme_provider, "Theme Provider", "next-themes, CSS Variables", "Gestão de temas claro/escuro e personalização")
+    Component(layout_system, "Layout System", "Next.js Layout, Framer Motion", "Layouts responsivos e animações")
+
+    ' Data Visualization Components
+    Component(chart_components, "Chart Components", "Chart.js, Recharts", "Componentes para gráficos e visualizações de dados")
+    Component(map_components, "Map Components", "Leaflet, React-Leaflet", "Componentes de mapas e visualização geoespacial")
+    Component(data_tables, "Data Tables", "TanStack Table, Custom Components", "Tabelas avançadas para gestão de dados")
+
+    ' Data Management Components
+    Component(api_client, "API Client", "Axios, TanStack Query", "Cliente HTTP para comunicação com APIs backend")
+    Component(state_management, "State Management", "React Context, Zustand", "Gestão de estado global da aplicação")
+    Component(data_cache, "Data Cache", "TanStack Query Cache", "Cache de dados para otimização de performance")
+
+    ' Business Logic Components
+    Component(vessel_manager, "Vessel Manager", "React Components, Custom Hooks", "Gestão de dados de embarcações")
+    Component(ocean_data_manager, "Ocean Data Manager", "React Components", "Gestão de dados oceanográficos")
+    Component(user_manager, "User Manager", "React Components", "Gestão de utilizadores e permissões")
+    Component(config_manager, "Config Manager", "React Components", "Gestão de configurações do sistema")
+
+    ' API Route Components
+    Component(admin_api_routes, "Admin API Routes", "Next.js API Routes", "Endpoints API específicos do dashboard administrativo")
+    Component(data_validation, "Data Validation", "Zod, Custom Validators", "Validação de dados de entrada e saída")
+    Component(middleware, "Middleware", "Next.js Middleware", "Autenticação, logging e processamento de requests")
+
+    ' Integration Components
+    Component(worker_integration, "Worker Integration", "HTTP Client, WebSocket", "Integração com Cloudflare Workers")
+    Component(database_integration, "Database Integration", "Prisma-like, SQL", "Integração com D1 Database")
+}
+
+' External systems
+System_Ext(api_worker, "API Worker", "Cloudflare Workers")
+System_Ext(d1_database, "D1 Database", "SQLite Database")
+System_Ext(kv_cache, "KV Cache", "Cloudflare KV")
+
+' User interactions
+Rel(administrators, ui_system, "Interage com interface", "HTTPS")
+Rel(gov_angola, ui_system, "Acessa dashboards", "HTTPS")
+
+' Authentication flow
+Rel(ui_system, auth_system, "Valida credenciais")
+Rel(auth_system, rbac, "Verifica permissões")
+Rel(auth_system, session_manager, "Gere sessões")
+
+' UI Component relationships
+Rel(ui_system, theme_provider, "Aplica temas")
+Rel(ui_system, layout_system, "Renderiza layouts")
+Rel(ui_system, chart_components, "Exibe gráficos")
+Rel(ui_system, map_components, "Exibe mapas")
+Rel(ui_system, data_tables, "Exibe tabelas")
+
+' Data flow
+Rel(chart_components, api_client, "Solicita dados")
+Rel(map_components, api_client, "Solicita dados geoespaciais")
+Rel(data_tables, api_client, "Solicita dados tabulares")
+
+Rel(api_client, state_management, "Atualiza estado")
+Rel(api_client, data_cache, "Cache respostas")
+
+' Business logic
+Rel(vessel_manager, api_client, "Gere dados embarcações")
+Rel(ocean_data_manager, api_client, "Gere dados oceanográficos")
+Rel(user_manager, api_client, "Gere utilizadores")
+Rel(config_manager, api_client, "Gere configurações")
+
+' API integration
+Rel(api_client, admin_api_routes, "Chama endpoints")
+Rel(admin_api_routes, data_validation, "Valida dados")
+Rel(admin_api_routes, worker_integration, "Comunica com workers")
+Rel(worker_integration, api_worker, "REST API calls", "HTTPS")
+
+' Data persistence
+Rel(database_integration, d1_database, "Operações SQL", "SQLite")
+Rel(worker_integration, kv_cache, "Cache operations", "Key-Value")
+
+' Middleware
+Rel_Back(middleware, auth_system, "Valida tokens")
+Rel(admin_api_routes, middleware, "Processa requests")
+
+SHOW_LEGEND()
+
+@enduml

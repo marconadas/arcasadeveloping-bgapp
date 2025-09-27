@@ -1,0 +1,125 @@
+@startuml C4_RealtimeComponents
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram for Realtime Angola - BGAPP
+
+' External users
+Person(scientists, "Cientistas Marinhos", "Investigadores especialistas")
+Person(gov_angola, "Governo Angola", "Monitorização ZEE Angola")
+
+' Realtime Angola Container boundary
+Container_Boundary(realtime_angola, "Realtime Angola - Next.js 14") {
+
+    ' Core Visualization Engine
+    Component(deckgl_engine, "deck.gl Visualization Engine", "deck.gl 9.1.14, WebGL", "Motor de renderização WebGL para visualizações marinhas avançadas")
+    Component(layer_manager, "Layer Manager", "deck.gl Layers, React", "Gestão de camadas de dados (embarcações, temperatura, clorofila)")
+    Component(viewport_controller, "Viewport Controller", "deck.gl Controllers", "Controlo de navegação e zoom no mapa 3D")
+
+    ' Machine Learning Components
+    Component(ml_engine, "ML Engine", "TensorFlow.js 4.22.0", "Motor de machine learning para análise preditiva marinha")
+    Component(vessel_classifier, "Vessel Classifier", "TensorFlow.js Models", "Classificação de tipos de embarcações e comportamentos")
+    Component(anomaly_detector, "Anomaly Detector", "Custom ML Models", "Deteção de anomalias em padrões de pesca")
+    Component(prediction_service, "Prediction Service", "React Hooks, ML Models", "Serviço de predições oceanográficas e de atividade pesqueira")
+
+    ' Real-time Data Processing
+    Component(data_stream_processor, "Data Stream Processor", "WebSocket, SSE", "Processamento de streams de dados em tempo real")
+    Component(vessel_tracker, "Vessel Tracker", "Real-time Updates, WebSocket", "Rastreamento em tempo real de embarcações na ZEE Angola")
+    Component(ocean_monitor, "Ocean Monitor", "Copernicus Integration, WebSocket", "Monitorização de parâmetros oceanográficos")
+
+    ' Geospatial Analysis
+    Component(geospatial_engine, "Geospatial Engine", "Turf.js 7.2.0", "Motor de análise geoespacial avançada")
+    Component(clustering_service, "Clustering Service", "Leaflet.markercluster", "Agrupamento inteligente de embarcações e eventos")
+    Component(heatmap_generator, "Heatmap Generator", "Leaflet.heat, Custom Algorithms", "Geração de heatmaps de atividade e dados ambientais")
+    Component(zee_boundary_manager, "ZEE Boundary Manager", "GeoJSON, Polygon Analysis", "Gestão e validação de fronteiras da ZEE Angola")
+
+    ' Mapping and Visualization
+    Component(leaflet_integration, "Leaflet Integration", "Leaflet 1.9.4, React-Leaflet", "Integração com sistema de mapas base")
+    Component(choropleth_renderer, "Choropleth Renderer", "D3.js, Custom Shaders", "Renderização de mapas coropléticos para dados oceanográficos")
+    Component(animation_controller, "Animation Controller", "Framer Motion, Custom Animations", "Controlo de animações temporais e transições")
+
+    ' State Management
+    Component(global_state, "Global State Manager", "Zustand 5.0.8", "Gestão de estado global da aplicação")
+    Component(realtime_state, "Real-time State", "WebSocket State, Reactive Updates", "Estado reativo para dados em tempo real")
+    Component(map_state, "Map State Manager", "Viewport, Layers, Filters", "Gestão de estado específico do mapa")
+
+    ' Data Integration
+    Component(api_client, "API Client", "Axios, SWR", "Cliente para comunicação com APIs backend")
+    Component(cache_manager, "Cache Manager", "SWR Cache, Local Storage", "Gestão de cache de dados para performance")
+    Component(data_transformer, "Data Transformer", "Custom Transformers", "Transformação de dados para formatos de visualização")
+
+    ' UI Components
+    Component(control_panel, "Control Panel", "React Components, Tailwind", "Painel de controlo para filtros e configurações")
+    Component(info_panels, "Info Panels", "React Components, Animations", "Painéis informativos sobre embarcações e dados")
+    Component(time_slider, "Time Slider", "Custom Component", "Controlo temporal para navegação histórica")
+    Component(legend_system, "Legend System", "Dynamic Components", "Sistema de legendas dinâmicas para camadas")
+
+    ' Performance Optimization
+    Component(webgl_optimizer, "WebGL Optimizer", "deck.gl Performance", "Otimização de performance para renderização WebGL")
+    Component(data_sampler, "Data Sampler", "LOD, Clustering", "Amostragem inteligente de dados para performance")
+}
+
+' External systems
+System_Ext(api_worker, "API Worker", "Cloudflare Workers")
+System_Ext(gfw_proxy, "GFW Proxy Worker", "Global Fishing Watch")
+System_Ext(copernicus_worker, "Copernicus Worker", "Oceanographic Data")
+
+' User interactions
+Rel(scientists, control_panel, "Configura análises", "HTTPS")
+Rel(gov_angola, info_panels, "Monitoriza ZEE", "HTTPS")
+
+' Core visualization flow
+Rel(deckgl_engine, layer_manager, "Gere camadas")
+Rel(deckgl_engine, viewport_controller, "Controla viewport")
+Rel(layer_manager, webgl_optimizer, "Otimiza renderização")
+
+' Machine learning pipeline
+Rel(ml_engine, vessel_classifier, "Classifica embarcações")
+Rel(ml_engine, anomaly_detector, "Deteta anomalias")
+Rel(prediction_service, ml_engine, "Solicita predições")
+
+' Real-time data processing
+Rel(data_stream_processor, vessel_tracker, "Processa dados embarcações")
+Rel(data_stream_processor, ocean_monitor, "Processa dados oceanográficos")
+Rel(vessel_tracker, realtime_state, "Atualiza estado")
+Rel(ocean_monitor, realtime_state, "Atualiza dados ambientais")
+
+' Geospatial analysis
+Rel(geospatial_engine, clustering_service, "Analisa clusters")
+Rel(geospatial_engine, heatmap_generator, "Gera heatmaps")
+Rel(zee_boundary_manager, geospatial_engine, "Valida fronteiras")
+
+' Mapping integration
+Rel(deckgl_engine, leaflet_integration, "Integra mapas base")
+Rel(choropleth_renderer, deckgl_engine, "Renderiza coropléticos")
+Rel(animation_controller, deckgl_engine, "Controla animações")
+
+' State management
+Rel(global_state, realtime_state, "Sincroniza estado")
+Rel(map_state, global_state, "Gere estado mapa")
+Rel(realtime_state, layer_manager, "Atualiza camadas")
+
+' Data flow
+Rel(api_client, data_transformer, "Transforma dados")
+Rel(data_transformer, cache_manager, "Cache dados processados")
+Rel(cache_manager, global_state, "Fornece dados")
+
+' UI interactions
+Rel(control_panel, map_state, "Atualiza configurações")
+Rel(info_panels, global_state, "Exibe informações")
+Rel(time_slider, data_stream_processor, "Controla temporal")
+Rel(legend_system, layer_manager, "Sincroniza legendas")
+
+' Performance optimization
+Rel(data_sampler, layer_manager, "Otimiza dados")
+Rel(webgl_optimizer, data_sampler, "Controla LOD")
+
+' External API integration
+Rel(api_client, api_worker, "Dados gerais", "REST API")
+Rel(vessel_tracker, gfw_proxy, "Dados embarcações", "WebSocket/REST")
+Rel(ocean_monitor, copernicus_worker, "Dados oceanográficos", "WebSocket/REST")
+
+SHOW_LEGEND()
+
+@enduml
