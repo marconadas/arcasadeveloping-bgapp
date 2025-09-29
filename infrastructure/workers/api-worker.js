@@ -138,7 +138,7 @@ async function getRealServicesStatus(env) {
       services
     };
   } catch (error) {
-    console.error('Error getting real services status:', error);
+    // Services status check failed - error details omitted for security
     return null;
   }
 }
@@ -176,7 +176,7 @@ async function getRealCollections(env) {
 
     return collections;
   } catch (error) {
-    console.error('Error getting real collections:', error);
+    // Collections fetch failed - error details omitted for security
     return null;
   }
 }
@@ -358,14 +358,10 @@ async function getCopernicusAccessToken(env) {
     const username = env?.COPERNICUS_USERNAME;
     const password = env?.COPERNICUS_PASSWORD;
 
-    console.log('Copernicus auth attempt:', {
-      has_username: !!username,
-      has_password: !!password,
-      username_preview: username ? username.substring(0, 3) + '***' : null
-    });
+    // Removed sensitive auth logging for security
 
     if (!username || !password) {
-      console.error('Missing Copernicus credentials - username or password not found in environment');
+      // Missing Copernicus credentials - returning null instead of logging details
       return null;
     }
 
@@ -409,10 +405,7 @@ async function getCopernicusAccessToken(env) {
 
     return json?.access_token || null;
   } catch (e) {
-    console.error('Copernicus token error:', {
-      message: e.message,
-      stack: e.stack
-    });
+    // Copernicus token authentication failed - error details removed for security
     return null;
   }
 }
@@ -2126,7 +2119,7 @@ export default {
             });
           }
         } catch (error) {
-          console.error('NOAA API Error:', error);
+          // NOAA API Error - details omitted for security
         }
         
         // Fallback com dados baseados em padrões reais da região de Angola
@@ -2174,7 +2167,7 @@ export default {
             }
           }
         } catch (error) {
-          console.error('NASA API Error:', error);
+          // NASA API Error - details omitted for security
         }
         
         // Dados baseados em padrões reais de clorofila para Angola
@@ -2217,7 +2210,7 @@ export default {
             });
           }
         } catch (error) {
-          console.error('OBIS API Error:', error);
+          // OBIS API Error - details omitted for security
         }
         
         // Dados baseados na biodiversidade real conhecida de Angola

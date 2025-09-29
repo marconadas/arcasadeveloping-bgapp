@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Export dynamic for Next.js static generation
-export const dynamic = 'force-dynamic';
+// Note: Removed 'force-dynamic' export to fix build conflict with output: 'export'
+// API routes will work properly without this in the exported build
 
 // Configuration for GFW proxy
 const GFW_PROXY_URL = process.env.NODE_ENV === 'production'
