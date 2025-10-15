@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { RealtimeProvider, useRealtime } from '@/providers/RealtimeProvider';
 import { ThemeProvider, useTheme } from '@/providers/ThemeProvider';
-import { Wifi, Ship, Thermometer, Droplets, Menu, X, ChevronLeft } from 'lucide-react';
+import { Wifi, Thermometer, Droplets, Menu, X, ChevronLeft } from 'lucide-react';
 import { formatTemperature, formatChlorophyll, formatTimestamp } from '@/lib/utils';
 import { getThemeStyles } from '@/lib/theme-utils';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { LayersPanel } from '@/components/map/LayersPanel';
+import { UnifiedControlPanel } from '@/components/map/UnifiedControlPanel';
+import { MobileLayersPanel } from '@/components/map/MobileLayersPanel';
+import { isMobileDevice } from '@/utils/mapPerformance';
 
 // Dynamic import para evitar problemas de SSR com Leaflet
 const RealTimeMap = dynamic(
@@ -40,12 +42,94 @@ function MainDashboard() {
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mlData, setMlData] = useState<any[]>([]);
+  const [activeMLModels, setActiveMLModels] = useState<string[]>(['biodiversityHotspots', 'conservationPriority']);
+  const [mlMinConfidence, setMlMinConfidence] = useState(0.7);
+  const [showMLPanel, setShowMLPanel] = useState(true);
   const isConnected = !error && lastUpdate !== null;
 
+  // Detect mobile device
   useEffect(() => {
-    const interval = setInterval(() => refreshData(), 30000);
-    return () => clearInterval(interval);
+    setIsMobile(isMobileDevice());
+
+    const handleResize = () => {
+      setIsMobile(isMobileDevice());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Use ref to avoid recreating interval when refreshData changes
+  const refreshDataRef = useRef(refreshData);
+  useEffect(() => {
+    refreshDataRef.current = refreshData;
   }, [refreshData]);
+
+  useEffect(() => {
+    const interval = setInterval(() => refreshDataRef.current(), 30000);
+    return () => clearInterval(interval);
+  }, []); // Empty deps - interval only created once
+
+  // Fetch ML predictions
+  useEffect(() => {
+    const fetchMLPredictions = async () => {
+      try {
+        // Angola EEZ bounding box with geographic bounds filtering
+        const params = new URLSearchParams({
+          limit: '2000',
+          minLat: '-18.02',
+          maxLat: '-5.55',
+          minLon: '8.9',
+          maxLon: '13.35',
+          _t: Date.now().toString() // Cache-busting timestamp
+        });
+
+        console.log('🔵 [ML PREDICTIONS FIX] Fetching with geographic bounds from /api/realtime/ml-predictions');
+        const response = await fetch(`/api/realtime/ml-predictions?${params.toString()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        const result = await response.json();
+        if (result.success && result.data) {
+          setMlData(result.data);
+          console.log('✅ [ML PREDICTIONS FIX] Successfully loaded from D1:', result.data.length, 'predictions');
+        } else if (result.predictions) {
+          setMlData(result.predictions);
+          console.log('✅ [ML PREDICTIONS FIX] Loaded from D1:', result.predictions.length, 'predictions');
+        }
+      } catch (error) {
+        console.error('❌ [ML PREDICTIONS FIX] Failed to fetch ML predictions:', error);
+      }
+    };
+
+    fetchMLPredictions();
+    const mlInterval = setInterval(fetchMLPredictions, 60000); // Update every minute
+    return () => clearInterval(mlInterval);
+  }, []);
+
+  // Filter ML data based on active models and confidence
+  const filteredMLData = mlData.filter(prediction =>
+    activeMLModels.includes(prediction.prediction_type) &&
+    (prediction.confidence || 0) >= mlMinConfidence
+  );
+
+  // Callbacks for ML model selector
+  const handleModelToggle = (modelType: string, active: boolean) => {
+    setActiveMLModels(prev =>
+      active
+        ? [...prev, modelType]
+        : prev.filter(t => t !== modelType)
+    );
+  };
+
+  const handleConfidenceFilter = (minConfidence: number) => {
+    setMlMinConfidence(minConfidence);
+  };
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -55,13 +139,14 @@ function MainDashboard() {
           key="realtime-map"
           vessels={vessels}
           chloroplethData={chloroplethData}
+          mlPredictions={filteredMLData}
           className="w-full h-full"
         />
       </div>
 
-      {/* Top Header Bar */}
-      <div className="absolute top-0 left-0 right-0 z-[1001]">
-        <div className={`${styles.cardBackground} border-b ${theme === 'light' ? 'border-gray-200/50' : 'border-slate-700/50'} shadow-lg`}>
+      {/* Top Header Bar - Lowered z-index to allow map interaction */}
+      <div className="absolute top-0 left-0 right-0 z-[500] pointer-events-none">
+        <div className={`${styles.cardBackground} border-b ${theme === 'light' ? 'border-gray-200/50' : 'border-slate-700/50'} shadow-lg pointer-events-auto`}>
           <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               <button
@@ -91,7 +176,7 @@ function MainDashboard() {
       </div>
 
       {/* Floating Stats Cards - Bottom Left */}
-      <div className="absolute bottom-16 sm:bottom-20 left-2 sm:left-3 md:left-6 z-[1001] space-y-2 sm:space-y-3 max-w-[280px] xs:max-w-xs md:max-w-sm">
+      <div className="absolute bottom-16 sm:bottom-20 left-2 sm:left-3 md:left-6 z-[501] space-y-2 sm:space-y-3 max-w-[280px] xs:max-w-xs md:max-w-sm">
         {/* Connection Status Card */}
         <div className={`${styles.cardBackground} ${styles.cardBorder} rounded-lg sm:rounded-xl p-2.5 sm:p-3 md:p-4`}>
           <div className="flex items-center gap-2 sm:gap-2 md:gap-3">
@@ -166,82 +251,27 @@ function MainDashboard() {
           </div>
         )}
 
-        {/* Vessel Count Card */}
-        <div className={`${styles.cardBackground} ${styles.cardBorder} rounded-lg sm:rounded-xl p-2.5 sm:p-3 md:p-4`}>
-          <div className="flex items-center gap-2 sm:gap-2 md:gap-3">
-            <div className="p-1.5 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg bg-blue-100 flex-shrink-0">
-              <Ship className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-blue-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className={`text-xs sm:text-xs md:text-sm ${styles.secondaryText} font-medium`}>Embarcações Ativas</div>
-              <div className={`text-lg sm:text-xl md:text-2xl font-bold ${styles.primaryText}`}>{vessels.length}</div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Draggable Layer Controls Panel */}
-      <LayersPanel
-        activeLayers={activeLayers}
-        toggleLayer={toggleLayer}
-        theme={theme}
-      />
+      {/* Unified Control Panel for desktop, Mobile panel for mobile */}
+      {isMobile ? (
+        <MobileLayersPanel
+          activeLayers={activeLayers}
+          toggleLayer={toggleLayer}
+          theme={theme}
+        />
+      ) : (
+        <UnifiedControlPanel
+          activeLayers={activeLayers}
+          toggleLayer={toggleLayer}
+          onModelToggle={handleModelToggle}
+          onConfidenceFilter={handleConfidenceFilter}
+          mlData={filteredMLData}
+          showMLStats={true}
+          theme={theme}
+        />
+      )}
 
-      {/* Sidebar for Advanced Controls */}
-      <div className={`absolute top-0 left-0 h-full z-[1002] transition-transform duration-300 ${
-        showSidebar ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className={`h-full w-64 sm:w-72 md:w-80 ${styles.sidebarBackground} shadow-2xl ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}`}>
-          <div className="p-4 sm:p-6">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className={`text-base sm:text-lg font-bold ${styles.primaryText}`}>Controles Avançados</h2>
-              <button
-                onClick={() => setShowSidebar(false)}
-                className={`p-1.5 sm:p-2 rounded-lg ${styles.buttonHover} transition-colors`}
-              >
-                <ChevronLeft className={`w-4 h-4 sm:w-5 sm:h-5 ${styles.secondaryText}`} />
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              {/* Data Sources */}
-              <div>
-                <h3 className={`text-sm font-semibold ${styles.primaryText} mb-3`}>Fontes de Dados</h3>
-                <div className="space-y-2">
-                  <div className={`flex items-center justify-between p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-slate-800 border border-slate-700'}`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>Global Fishing Watch</span>
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                  </div>
-                  <div className={`flex items-center justify-between p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-slate-800 border border-slate-700'}`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>Copernicus Marine</span>
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                  </div>
-                  <div className={`flex items-center justify-between p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-slate-800 border border-slate-700'}`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>ML Predictions</span>
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Visualization Options */}
-              <div>
-                <h3 className={`text-sm font-semibold ${styles.primaryText} mb-3`}>Visualização</h3>
-                <div className="space-y-2">
-                  <button className={`w-full text-left p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200 hover:bg-gray-100' : 'bg-slate-800 border border-slate-700 hover:bg-slate-700'} transition-colors`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>Modo 3D Ocean</span>
-                  </button>
-                  <button className={`w-full text-left p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200 hover:bg-gray-100' : 'bg-slate-800 border border-slate-700 hover:bg-slate-700'} transition-colors`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>Animação de Vento</span>
-                  </button>
-                  <button className={`w-full text-left p-3 rounded-lg ${theme === 'light' ? 'bg-gray-50 border border-gray-200 hover:bg-gray-100' : 'bg-slate-800 border border-slate-700 hover:bg-slate-700'} transition-colors`}>
-                    <span className={`text-sm ${styles.primaryText} font-medium`}>Batimetria</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Error Notification */}
       {error && (
