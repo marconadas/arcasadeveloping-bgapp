@@ -2,595 +2,634 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🎯 MISSION CRITICAL: December 2025 Client Presentation
-
-**PRIMARY OBJECTIVE**: Prepare BGAPP and realtime-angola-nextjs for a major client presentation in December 2025. This is the top priority for all development work.
-
-### Mission Goals:
-1. **Production-Ready Platform**: Ensure both BGAPP main platform and realtime-angola-nextjs are fully functional and polished
-2. **Performance Optimization**: All visualizations, APIs, and data integrations must perform flawlessly
-3. **Client Demonstration**: Platform must showcase Angola's marine biodiversity monitoring capabilities effectively
-4. **Professional Polish**: UI/UX must be client-presentation ready with seamless user experience
-
-### December Presentation Requirements:
-- **Real-time Data Visualization**: Live oceanographic data from Copernicus and GFW
-- **Interactive Maps**: Smooth deck.gl visualizations with vessel tracking and marine data layers
-- **Admin Dashboard**: Fully functional Next.js admin interface for data management
-- **ML Capabilities**: Demonstrate machine learning models for marine analysis
-- **Performance**: Sub-2 second load times, responsive interactions
-- **Mobile Compatibility**: Works seamlessly across desktop, tablet, and mobile devices
-
-**⚠️ CRITICAL**: Every change and improvement should be evaluated against these December presentation goals.
-
 ## Project Overview
 
-BGAPP (Biodiversity and Geographic Analysis Platform) is a comprehensive scientific platform for oceanographic analysis and marine biodiversity monitoring in Angola's Exclusive Economic Zone. The project consists of multiple applications deployed on Cloudflare infrastructure with advanced WebGL visualizations, machine learning models, and real-time oceanographic data integration.
+BGAPP (Biodiversity and Geographic Analysis Platform) is a comprehensive scientific platform for oceanographic analysis and marine biodiversity monitoring in Angola's Exclusive Economic Zone. The project consists of multiple Next.js applications deployed on Cloudflare infrastructure with advanced WebGL visualizations, machine learning models, and real-time oceanographic data integration.
 
-### 👥 Team & Governance
+**Mission Critical**: December 2025 presentation to the Government of Angola
 **Organization**: MareDatum Consultoria e Gestão de Projectos Unipessoal LDA
-- **Director Geral**: Sr. Paulo Fernandes
-- **Co-Diretor**: Eng. Leite (same permissions as Director)
-- **Technical Lead**: Marcos Santos (marconadas)
-- **Software Engineer**: Ludmilson Francisco (luddera)
-- **Communications**: Luis Santos
+**Status**: Production-ready with 85% confidence level
+**Key Personnel**: Paulo Fernandes (Director), Marcos Santos (Tech Lead), Ludmilson Francisco (Software Engineer)
 
-📋 **For detailed team responsibilities, escalation procedures, and governance structure, see [STAKEHOLDERS.md](./STAKEHOLDERS.md)**
+### Critical Context
+- **Government Presentation**: December 2025 - Must demonstrate real-time marine monitoring capabilities
+- **Current Focus**: Performance optimization for Admin Dashboard and Realtime Angola apps
+- **Infrastructure**: All deployed on Cloudflare (Pages for frontends, Workers for APIs, D1 for database)
+- **Data Sources**: NASA EarthData, Global Fishing Watch, Copernicus Marine Service
+- **Angola EEZ Coverage**: Two separate polygons (source: D1 `eez_boundaries` table)
+  - **Continental Angola**: -17.29° to -5.36° latitude, 8.30° to 13.84° longitude
+  - **Cabinda (exclave)**: ~-5.8° to -4.3° latitude, ~12.0° to 13.5° longitude
+  - **Combined bounds**: -17.29° to -4.3° latitude, 8.30° to 13.84° longitude
 
-## 🎯 PROJECT STRUCTURE STATUS (December 2025)
+## High-Level Architecture
 
-**Current Status**: Successfully reorganized to focused structure with main applications centralized.
-
-### 📁 Current Directory Structure:
+### Application Stack
 ```
-bgapp/
-├── apps/                    # 🎯 All Applications Centralized
-│   ├── admin-dashboard/     # Next.js 14 admin interface (primary focus)
-│   ├── frontend/           # Main static frontend (deck.gl visualizations)
-│   ├── realtime-angola/    # Real-time monitoring Next.js app (mission-critical)
-│   └── mapa-enterprise/    # Enterprise mapping features
-│
-├── infrastructure/         # 🏗️ Infrastructure & Deployment
-│   ├── workers/           # Cloudflare Workers (production APIs)
-│   ├── configs/           # Configuration files
-│   └── deploy/            # Deployment scripts
-│
-├── archive/              # 📦 Backups & Legacy Files (post-cleanup)
-├── docs/                 # 📚 Main Documentation
-├── documentation/        # Additional Documentation
-└── backup/               # Current backups
+Client Layer:
+├── apps/admin-dashboard/    → Next.js 14 admin interface (Radix UI)
+├── apps/realtime-angola/    → Real-time visualization (deck.gl 9.1.14)
+└── apps/frontend/          → Static scientific dashboard (WebGL)
+     ↓
+API Layer:
+├── infrastructure/workers/  → Cloudflare Workers (15+ specialized APIs)
+│   ├── api-worker.js       → Main API (25+ endpoints)
+│   ├── gfw-proxy.js        → Global Fishing Watch integration
+│   ├── nasa-earthdata-proxy.js → NASA satellite data
+│   └── copernicus-webhook.js   → Copernicus marine data
+     ↓
+Data Layer:
+├── Cloudflare D1           → Production SQLite database
+├── Cloudflare KV           → Caching layer (24hr TTL)
+└── External APIs           → GFW, NASA, Copernicus integrations
 ```
 
-## Key Architecture Components
+### Data Flow Architecture
+1. **Real-time Pipeline**: External APIs → Workers → KV Cache → Frontend Visualization
+2. **Admin Operations**: Dashboard → API Routes → Workers → D1 Database
+3. **ML Processing**: Raw Data → Python Services → Model Predictions → API Endpoints
 
-### Multi-Application Structure (✅ REORGANIZED & VERIFIED)
-- **Frontend (Static)**: `/apps/frontend/` - Main public interface with deck.gl visualizations
-- **Admin Dashboard**: `/apps/admin-dashboard/` - Next.js 14 administrative interface
-- **Realtime Angola**: `/apps/realtime-angola/` - Specialized Next.js app for real-time data
-- **Backend Workers**: `/infrastructure/workers/` - Cloudflare Workers organized by category
-- **Python Services**: `/src/bgapp/` - Consolidated Python code with shared utilities
+## Prerequisites
 
-### 🔗 Key Application Details
-- **Admin Dashboard**: Next.js 14 with Radix UI, primary admin interface
-- **Realtime Angola**: Next.js app with deck.gl for real-time marine data visualization
-- **Frontend**: Static frontend with WebGL visualizations and scientific dashboards
-- **Infrastructure Workers**: Cloudflare Workers for production APIs and data processing
-
-### Data Integration Stack
-- **Copernicus Marine Service**: Real-time oceanographic data
-- **Global Fishing Watch (GFW)**: Vessel tracking and fishing data
-- **STAC API**: Spatial Temporal Asset Catalog for geospatial data management
-- **PostgreSQL + PostGIS**: Geospatial database (development)
-- **Cloudflare D1**: Production database
-- **Cloudflare KV**: Caching layer
-
-### Deployment Architecture
-All applications deploy to Cloudflare:
-- **Pages**: Frontend hosting with edge optimization
-- **Workers**: Serverless API endpoints with global distribution
-- **D1**: SQLite-compatible database
-- **KV**: Key-value store for caching
-
-## Development Commands
-
-### Root Project Commands
+### Initial Setup
 ```bash
-# Start main frontend development server
-npm run dev                    # Port 8080 (apps/frontend/) - main interface
-npm run start                  # Port 8000 (apps/frontend/) - production mode
+# 1. Install Node.js (required: >=18.0.0)
+node --version  # Should be 18.x or higher
 
-# Start applications
-npm run dev:admin             # Port 3000 (apps/admin-dashboard/)
-npm run dev:realtime          # Port 3000 (apps/realtime-angola/)
+# 2. Authenticate with Cloudflare (required for all deployments)
+wrangler login  # Opens browser for OAuth authentication
+wrangler whoami # Verify authentication
 
-# Build and optimize assets
-npm run build                 # Build all applications
-npm run optimize              # Optimize assets using src/scripts/
-
-# Deploy to production
-npm run deploy                # Deploy apps/frontend/ to Cloudflare Pages
-npm run deploy:admin          # Deploy admin dashboard
-npm run deploy:realtime       # Deploy realtime app
-
-# Code quality
-npm run lint                  # ESLint for apps/frontend/ JavaScript
-npm run format               # Prettier for apps/frontend/ assets
-npm run test                 # Test runner (configured)
+# 3. Install dependencies
+npm install
+cd apps/admin-dashboard && npm install
+cd apps/realtime-angola && npm install
 ```
 
-### Admin Dashboard Commands (`apps/admin-dashboard/`)
+### Environment Authentication
+All deployment commands require Cloudflare authentication. If you see errors like "Not authenticated":
 ```bash
-# Development servers on different ports
-npm run dev                   # Port 3000 (default)
-npm run dev:3002             # Port 3002 (alternative)
-npm run dev:4000             # Port 4000 (alternative)
-npm run dev:8080             # Port 8080 (alternative)
-npm run dev:simple           # Simple server fallback
-
-# Build and deployment
-npm run build                # Next.js production build
-npm run start                # Production server (Port 3000)
-npm run start:3002           # Production server (Port 3002)
-npm run start:4000           # Production server (Port 4000)
-npm run deploy               # Quick deploy to Cloudflare Pages
-npm run deploy:watch         # Deploy with file watching
-npm run dev:deploy           # Development and deploy workflow
-
-# Code quality and validation
-npm run type-check           # TypeScript validation
-npm run lint                 # ESLint checks
-
-# Testing workflows
-npm run test:local           # Local development test
-npm run test:prod            # Production build + deploy test
+wrangler logout  # Clear existing auth
+wrangler login   # Re-authenticate
 ```
 
-### Cloudflare Workers Commands (`infrastructure/workers/`)
+## Essential Commands
+
+### Development
 ```bash
-# Deploy workers
-wrangler deploy              # Deploy to production
-wrangler dev                 # Local development
+# Quick start for each application
+npm run dev:admin          # Admin dashboard on :3000
+npm run dev:realtime       # Realtime Angola on :3000
+npm run dev                # Main frontend on :8080
 
-# Manage secrets
-wrangler secret put GFW_API_TOKEN
-wrangler secret put ADMIN_ACCESS_KEY
-wrangler secret list
+# Alternative ports to avoid conflicts (when port 3000 is busy)
+PORT=3002 npm run dev:admin       # Admin on :3002
+PORT=3002 npm run dev:realtime    # Realtime on :3002
+PORT=4000 npm run dev              # Frontend on :4000
 
-# Database operations
-wrangler d1 execute bgapp-data --command "SELECT * FROM vessels;"
-wrangler kv:namespace list
+# Worker development (run from project root)
+wrangler dev infrastructure/workers/api-worker.js --port 8787 --local
+wrangler dev infrastructure/workers/bgapp-api-worker.js --local
+wrangler dev infrastructure/workers/nasa-earthdata-proxy.js --local
+
+# Build commands
+npm run build              # Build main frontend with optimization
+npm run optimize           # Optimize assets before build
+cd apps/admin-dashboard && npm run build
+cd apps/realtime-angola && npm run build:prod  # Production build with static export
+
+# Testing & Validation
+npm run lint               # Run ESLint across all apps
+npm run format             # Format code with Prettier
+cd apps/admin-dashboard && npm run test:local
+cd apps/realtime-angola && npm run dev
 ```
 
-### Python Development (`src/bgapp/`)
+### Deployment
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-pip install -r requirements-admin.txt  # Admin-specific deps
-pip install -r requirements-stac.txt   # STAC integration deps
+# Deploy individual apps
+npm run deploy:admin       # Deploy admin to bgapp-admin.pages.dev
+npm run deploy:realtime    # Deploy realtime to bgapp-realtime.pages.dev
+npm run deploy:workers     # Deploy all workers to production
 
-# Start local API server
-python -m src.bgapp.api.ml_endpoints           # Port 8000
-python -m src.bgapp.api.ml_retention_endpoints # ML-specific APIs
+# Deploy everything
+npm run deploy:all
+
+# Worker-specific deployment
+wrangler deploy infrastructure/workers/api-worker.js --env production
 ```
 
-## Technology Stack Integration
-
-### Frontend Technologies
-- **deck.gl 9.1.14**: WebGL visualizations for marine data
-- **Three.js**: 3D graphics and Unreal Engine integration
-- **Mapbox GL**: Base mapping layer
-- **D3.js**: Data visualizations and charts
-- **Chart.js/Plotly.js**: Scientific plotting
-
-### Backend Technologies
-- **Cloudflare Workers**: Primary production API layer
-- **Next.js API Routes**: Admin dashboard endpoints
-- **FastAPI (Python)**: Local development and ML processing
-- **PostgreSQL + PostGIS**: Geospatial data (development)
-- **Cloudflare D1 + KV**: Production data layer
-
-### UI Framework (Admin Dashboard)
-- **Next.js 14**: React framework with App Router
-- **Radix UI**: Headless component primitives
-- **Tailwind CSS**: Utility-first styling
-- **Framer Motion**: Animations
-- **Lucide React**: Icon system
-
-## Key Environment Configuration
-
-### Required Environment Variables
+### Database Operations
 ```bash
-# Production (set via wrangler secret put)
-GFW_API_TOKEN                 # Global Fishing Watch API access
-ADMIN_ACCESS_KEY              # Admin authentication
-COPERNICUS_USERNAME           # Copernicus Marine Service
-COPERNICUS_PASSWORD
-
-# Development (.env files)
-NODE_ENV=development
-API_VERSION=1.2.0
-FRONTEND_BASE=http://localhost:8080
-```
-
-### Cloudflare Bindings
-- **BGAPP_KV**: Key-value cache namespace
-- **BGAPP_DATA**: D1 database binding
-- Production and development environments use same bindings
-
-## 🚀 December Mission Development Workflow
-
-### Mission-Critical Development Priorities (in order):
-1. **Performance First**: Every change must improve or maintain performance metrics
-2. **User Experience**: Smooth, professional interactions for client demonstration
-3. **Data Reliability**: Real-time data must be accurate and consistently available
-4. **Visual Polish**: Professional-grade visualizations and UI components
-5. **Mobile Responsiveness**: Perfect experience across all device types
-
-### Feature Development (Mission-Focused)
-
-**🎯 DEVELOPMENT FOCUS AREAS**:
-
-#### Primary Development Areas (December Mission Focus):
-1. **Admin Dashboard**: Work in `apps/admin-dashboard/src/components/` for client demo workflows
-2. **Realtime Visualizations**: Develop in `apps/realtime-angola/src/` for real-time data display
-3. **Production APIs**: Add to `infrastructure/workers/` for production deployment
-4. **Frontend**: Enhance `apps/frontend/` for main platform features
-
-#### Key File Locations:
-- **API Workers**: `infrastructure/workers/api-worker.js`, `gfw-proxy.js`
-- **Admin Components**: `apps/admin-dashboard/src/components/`
-- **Realtime Features**: `apps/realtime-angola/src/`
-- **Frontend Assets**: `apps/frontend/assets/`
-- **Configuration**: Root `wrangler.toml`, individual app configs
-
-### Testing Strategy (December-Ready)
-- **Admin Dashboard**: `npm run test:local` and `npm run test:prod` - validate demo scenarios
-- **API Workers**: Test via Wrangler dev environment - stress test for presentation
-- **Integration**: Use test scripts in `/tests/` directory - verify all integrations work
-- **Production**: Monitor via Cloudflare Analytics - ensure sub-2s performance
-- **Client Demo**: Test complete user journeys from Angola marine data perspective
-
-### Deployment Process (Production-Ready)
-1. **Development**: Use `npm run dev` commands for local testing - validate against mission goals
-2. **Staging**: Deploy to development workers with `wrangler dev` - performance benchmark
-3. **Production**: Deploy via `npm run deploy` commands - zero-downtime deployments only
-4. **Verification**: Check deployed URLs and functionality - client-ready validation
-5. **Performance Monitoring**: Continuous monitoring for December readiness
-
-## Data Flow Architecture
-
-### Real-time Data Pipeline
-1. **Copernicus API** → **Cloudflare Workers** → **KV Cache** → **Frontend**
-2. **GFW API** → **Worker Processing** → **D1 Storage** → **Admin Dashboard**
-3. **User Interactions** → **Next.js API Routes** → **Worker APIs** → **Database**
-
-### Visualization Data Flow
-1. **Raw Data Sources** → **Python Processing** → **STAC Catalog** → **Frontend Rendering**
-2. **Real-time Streams** → **WebSocket/SSE** → **deck.gl Layers** → **Interactive Maps**
-
-## Security Considerations
-
-### API Security
-- All production API keys stored as Cloudflare secrets
-- CORS configuration in worker environment variables
-- Rate limiting configured per environment (1000 req/hour production)
-
-### Authentication Flow
-- Admin dashboard uses token-based authentication
-- GFW integration requires proper API token management
-- Copernicus credentials managed via environment secrets
-
-## Performance Optimization
-
-### Frontend Optimization
-- **Asset bundling**: Webpack configuration for optimal loading
-- **CDN delivery**: Cloudflare Pages global distribution
-- **Caching strategy**: KV store for API responses and processed data
-- **WebGL optimization**: deck.gl layer management for large datasets
-
-### Backend Optimization
-- **Worker edge computing**: Global deployment for low latency
-- **Database optimization**: D1 queries optimized for geospatial operations
-- **Cache management**: KV TTL settings based on data update frequencies
-
-## Troubleshooting Common Issues
-
-### Development Environment
-- **Port conflicts**: Use alternative port commands (`dev:3002`, `dev:4000`)
-- **Dependency issues**: Separate requirements files for different components
-- **CORS issues**: Check `ALLOWED_ORIGINS` in worker configuration
-
-### Production Deployment
-- **Build failures**: Verify TypeScript compilation with `npm run type-check`
-- **API errors**: Check Cloudflare Worker logs and secret configuration
-- **Data issues**: Verify D1 database schema and KV namespace bindings
-
-### Integration Issues
-- **GFW API**: Verify token validity and rate limiting
-- **Copernicus**: Check authentication and subscription status
-- **STAC**: Validate catalog endpoints and data formatting
-
-## Machine Learning Integration
-
-### Model Development
-- Models developed in `/src/bgapp/ml/` using TensorFlow/scikit-learn
-- Training data processed via Python pipelines
-- Model deployment via FastAPI endpoints for development
-- Production models integrated into Cloudflare Workers where possible
-
-### Data Processing
-- Geospatial processing with PostGIS for complex operations
-- Real-time processing in Workers for simple transformations
-- Batch processing via Python scripts for model training
-
-## Additional Development Commands
-
-### Playwright Testing
-```bash
-# Run Playwright tests (requires .playwright-mcp setup)
-npx playwright test
-npx @playwright/mcp analyze
-npx @browsermcp/mcp@latest screenshot
-```
-
-### Realtime Angola Next.js App (`apps/realtime-angola/`)
-```bash
-# Development and build commands
-npm run dev                   # Port 3000 (Next.js development)
-npm run build                # Standard Next.js build
-npm run build:prod           # Production build with configuration
-npm run start                # Production server
-npm run lint                 # ESLint validation
-npm run deploy               # Build and deploy to Cloudflare Pages
-
-# Testing visualization layers
-node test-temperature-fix-simple.js
-node test-chlorophyll-improved.js
-node test-vessel-clustering.js
-```
-
-### Python ML Development
-```bash
-# Additional API endpoints
-python -m src.bgapp.api.ml_endpoints           # Main ML API (Port 8000)
-python -m src.bgapp.api.ml_retention_endpoints # ML retention APIs
-
-# Model and data processing
-python src/bgapp/ml/train_models.py            # Train ML models
-python src/bgapp/cartography/process_data.py   # Process cartographic data
-```
-
-## Database Schema Management
-
-### D1 Database Operations
-```bash
-# Schema management
-wrangler d1 execute bgapp-data --file=workers/schema.sql
-wrangler d1 execute bgapp-data --command="CREATE TABLE IF NOT EXISTS vessels..."
-
-# Data queries
-wrangler d1 execute bgapp-data --command="SELECT COUNT(*) FROM vessels;"
-wrangler d1 execute bgapp-data --command="SELECT * FROM marine_data LIMIT 10;"
-
-# Backup and migration
+# D1 Database commands
+wrangler d1 execute bgapp-data --command "SELECT * FROM vessel_data;"
+wrangler d1 execute bgapp-data --file infrastructure/workers/schema-enhanced.sql
+wrangler d1 execute bgapp-data --remote --command "SELECT COUNT(*) FROM sst_data;"
 wrangler d1 backup create bgapp-data
-wrangler d1 export bgapp-data --output=backup.sql
+wrangler d1 list
+
+# KV Namespace operations
+wrangler kv:namespace list
+wrangler kv:key list --namespace-id=<id>
+
+# Quick database status check
+wrangler d1 execute bgapp-data --remote --command "SELECT
+  (SELECT COUNT(*) FROM vessel_data) as vessels,
+  (SELECT COUNT(*) FROM sst_data) as sst,
+  (SELECT COUNT(*) FROM ocean_color_data) as ocean_color,
+  (SELECT COUNT(*) FROM ml_predictions) as ml_predictions;"
 ```
 
-## Integration-Specific Configuration
-
-### Global Fishing Watch (GFW) Integration
-- **API Endpoints**: `/api/gfw/*` routes in workers
-- **Token Management**: Set via `wrangler secret put GFW_API_TOKEN`
-- **Data Processing**: GFW cache stored in D1 database `gfw_cache` table
-- **Rate Limiting**: 1000 requests/hour in production
-
-### Copernicus Marine Service Integration
-- **Authentication**: Username/password stored as secrets
-- **Data Types**: Temperature, chlorophyll, salinity data
-- **Processing**: Real-time data streams processed in workers
-- **Caching**: 24-hour TTL in KV store for oceanographic data
-
-### STAC (Spatial Temporal Asset Catalog)
-- **Catalog Management**: `/src/bgapp/stac/` for catalog operations
-- **Asset Processing**: Geospatial assets indexed in PostgreSQL
-- **Integration**: STAC browser worker for data discovery
-
-## Project Structure Understanding
-
-### Current Directory Overview
-
-The project has been successfully reorganized with the main applications centralized in the `apps/` directory. The current structure focuses on three main areas for development:
-
-### Active Development Areas
-```
-├── apps/                       # 🎯 MAIN APPLICATIONS
-│   ├── admin-dashboard/        # Next.js 14 admin interface (primary)
-│   ├── realtime-angola/        # Next.js real-time visualization app (mission-critical)
-│   ├── frontend/              # Static frontend with WebGL visualizations
-│   └── mapa-enterprise/        # Enterprise mapping features
-│
-├── infrastructure/            # 🏗️ PRODUCTION INFRASTRUCTURE
-│   ├── workers/               # Cloudflare Workers (API layer)
-│   ├── configs/               # Configuration files
-│   └── deploy/                # Deployment scripts
-│
-├── archive/                   # 📦 ARCHIVED FILES
-├── docs/                      # 📚 DOCUMENTATION
-└── documentation/             # Additional docs and guides
-```
-
-### Navigation Strategy for Development
-
-#### For Frontend Work:
-1. **Primary**: `admin-dashboard/` or `realtime-angola-nextjs/`
-2. **Main Frontend**: `apps/frontend/` (consolidated structure)
-
-#### For Backend/API Work:
-1. **Production APIs**: `workers/`
-2. **Python Development**: `src/bgapp/`
-3. **Configuration**: `configs/` or `config/`
-
-#### For Scripts/Tools:
-1. **Build Scripts**: `scripts/` or `src/scripts/`
-2. **Utilities**: `utils/`
-3. **Testing**: `testing/` or `tests/`
-
-### Package.json Hierarchy
-- **Root** (`./package.json`): Main build, deploy, and development commands
-- **Admin Dashboard** (`admin-dashboard/package.json`): Next.js 14 with Radix UI components
-- **Realtime Angola** (`realtime-angola-nextjs/package.json`): Next.js with deck.gl visualization
-- **BGAPP Workflow** (`bgapp-workflow/package.json`): Workflow automation tools
-
-### Directory Cleanup Recommendations
-
-There is an existing `REORGANIZATION_PLAN.md` that proposes consolidating this structure. Key recommendations:
-
-1. **Immediate Focus**: Work primarily in `admin-dashboard/`, `realtime-angola-nextjs/`, and `workers/`
-2. **Archive Candidates**: Move `deploy_arcasadeveloping/`, `copernicus-official/`, legacy configs to `archive/`
-3. **Consolidation Needed**: Merge duplicate directories (`config/` + `configs/`, `scripts/` + `src/scripts/`)
-4. **December Mission**: Focus on the 3-4 core directories that serve the presentation goals
-
-## Key File Locations
-
-### Critical Configuration Files
-- `wrangler.toml`: Main Cloudflare Pages configuration
-- `infrastructure/workers/*.toml`: Worker-specific configurations
-- `apps/admin-dashboard/next.config.js`: Next.js admin configuration
-- `apps/admin-dashboard/tailwind.config.js`: Admin Tailwind CSS configuration
-- `apps/realtime-angola/next.config.mjs`: Realtime app configuration
-- `apps/frontend/_headers`: Static frontend headers and security
-
-### API Implementation
-- `infrastructure/workers/api-worker.js`: Main production API worker
-- `infrastructure/workers/admin-api-worker.js`: Admin dashboard API worker
-- `infrastructure/workers/gfw-proxy.js`: Global Fishing Watch integration
-- `infrastructure/workers/copernicus-webhook.js`: Copernicus data integration
-- Local Python APIs available for development (not in production)
-
-### Frontend Applications
-- `apps/admin-dashboard/`: Next.js 14 admin interface with Radix UI components
-- `apps/realtime-angola/`: Next.js real-time visualization app with deck.gl
-- `apps/frontend/`: Static frontend with WebGL visualizations and scientific dashboards
-- `apps/mapa-enterprise/`: Enterprise mapping features
-
-## 📋 December Mission Checklist
-
-### Phase 1: Foundation (Immediate Priority)
-- [ ] **Performance Audit**: Benchmark current load times and optimize to sub-2s
-- [ ] **Mobile Optimization**: Ensure responsive design works perfectly on all devices
-- [ ] **Data Integration**: Verify Copernicus and GFW APIs are reliable and fast
-- [ ] **Error Handling**: Implement graceful fallbacks for all external dependencies
-
-### Phase 2: User Experience (High Priority)
-- [ ] **Navigation Flow**: Streamline user journeys for intuitive marine data exploration
-- [ ] **Visual Polish**: Enhance deck.gl visualizations for professional presentation
-- [ ] **Loading States**: Add elegant loading animations and progress indicators
-- [ ] **Accessibility**: Ensure platform meets accessibility standards
-
-### Phase 3: Demo Scenarios (Medium Priority)
-- [ ] **Angola EEZ Focus**: Highlight Angola-specific marine data and boundaries
-- [ ] **Vessel Tracking**: Showcase real-time vessel monitoring capabilities
-- [ ] **Environmental Data**: Demonstrate temperature, chlorophyll, and marine health indicators
-- [ ] **ML Insights**: Present predictive models and marine analysis features
-
-### Phase 4: Final Polish (Before December)
-- [ ] **Performance Testing**: Load testing under demo conditions
-- [ ] **Content Preparation**: Prepare demo data and scenarios
-- [ ] **Documentation**: Create client-facing documentation and guides
-- [ ] **Backup Plans**: Prepare offline demos and fallback presentations
-
-## 🎯 Success Metrics for December
-
-### Technical Metrics:
-- **Load Time**: < 2 seconds for initial page load
-- **Interaction Response**: < 100ms for map interactions
-- **Uptime**: 99.9% availability during presentation period
-- **Mobile Performance**: Perfect rendering on tablets and smartphones
-
-### Business Metrics:
-- **User Journey Completion**: Seamless flow through all demo scenarios
-- **Visual Impact**: Professional-grade visualizations that impress clients
-- **Data Accuracy**: Real-time data reflects actual marine conditions
-- **Demonstration Success**: Platform effectively showcases Angola marine capabilities
-
-**Remember**: Every development decision should advance these December presentation goals. When in doubt, prioritize client demonstration value and platform reliability.
-
-## 🗂️ Dealing with the Complex Directory Structure
-
-### Quick Navigation Commands
-
+### Secret Management
 ```bash
-# Find files across the complex structure
-find . -name "*.js" -path "*/components/*" | grep -v node_modules
-find . -name "package.json" | head -5
-find . -name "*config*" -type f | head -10
-
-# Check directory sizes to prioritize work
-du -sh ./* | sort -hr | head -10
-
-# Find the active development areas
-ls -la admin-dashboard/src/
-ls -la realtime-angola-nextjs/src/
-ls -la workers/
-ls -la src/bgapp/
+# Production secrets (required)
+wrangler secret put GFW_API_TOKEN
+wrangler secret put NASA_EARTHDATA_TOKEN
+wrangler secret put ADMIN_ACCESS_KEY
+wrangler secret put COPERNICUS_USERNAME
+wrangler secret put COPERNICUS_PASSWORD
 ```
 
-### Directory Prioritization for December Mission
+## Code Architecture Insights
 
-#### 🎯 HIGH PRIORITY (Work Here Daily):
-- `admin-dashboard/` (1.3GB) - Main admin interface
-- `realtime-angola-nextjs/` (1.3GB) - Real-time visualization
-- `workers/` (488KB) - Production APIs
+### Worker Pattern (infrastructure/workers/)
+All workers follow a consistent pattern with request routing, CORS handling, and error management:
+```javascript
+// Standard worker structure:
+export default {
+  async fetch(request, env, ctx) {
+    // CORS headers
+    // Route matching via URL pathname
+    // Environment variable access (env.BINDING_NAME)
+    // KV cache checks (env.BGAPP_KV)
+    // D1 database queries (env.BGAPP_DATA)
+    // Response with proper headers
+  }
+}
+```
 
-#### 🔄 MEDIUM PRIORITY (Reference/Update):
-- `src/bgapp/` (4.3MB) - Python ML services
-- `apps/frontend/` (27MB) - Main frontend
-- `configs/` (3MB) - Configuration files
+### Next.js Apps Configuration
+Both Next.js apps require careful configuration management:
 
-#### ⚠️ LOW PRIORITY (Avoid Unless Necessary):
-- `archive/` (120MB) - Historical files
-- `deploy_arcasadeveloping/` (2.2MB) - Old deployment
-- `[30+ other directories]` - Various legacy/duplicate content
+**Admin Dashboard** (`apps/admin-dashboard/`):
+- `next.config.js`: Production config with `output: 'export'` for Cloudflare Pages
+- **API Routes Constraint**: Next.js API routes are **completely disabled** due to static export requirement
+- **Workaround Pattern**: All backend logic MUST be in Cloudflare Workers (never in `pages/api/`)
+- Uses port 3000 by default, with alternatives at 3002, 4000, 8080
+- Build: `npm run build` creates static `out/` directory
 
-### Emergency Navigation Tips
+**Realtime Angola** (`apps/realtime-angola/`):
+- `next.config.mjs`: Development config (commented out static export)
+- `next.config.prod.mjs`: Production config with `output: 'export'`
+- Build production: `npm run build:prod` performs these steps:
+  1. Copies `next.config.prod.mjs` → `next.config.mjs`
+  2. Runs `next build` with static export enabled
+  3. Creates `out/` directory ready for Cloudflare Pages
+- Development: `npm run dev` uses dev config (allows hot reload)
 
+**Critical Architecture Constraints**:
+- Admin dashboard has `output: 'export'` **permanently enabled** (no API routes possible)
+- Realtime Angola **swaps configs** during build process via npm script
+- Both apps have TypeScript and ESLint errors temporarily ignored for urgent deployments
+- **Never create** `pages/api/*` files in Admin Dashboard - they will not work
+- **Always use** Cloudflare Workers at `infrastructure/workers/` for backend logic
+
+### deck.gl Visualization Layers (apps/realtime-angola/src/components/map/)
+Each data layer follows a consistent component pattern:
+- Props: `data`, `visible`, `opacity`, `colorScale`
+- Returns: deck.gl layer instance with WebGL optimizations
+- Performance: Use clustering for >1000 points, implement viewport culling
+
+### Database Schema (Enhanced)
+The D1 database uses an enhanced schema with these core tables:
+- `vessel_data`: AIS vessel tracking with enhanced fields
+- `sst_data`, `ocean_color_data`, `salinity_data`: NASA/Copernicus oceanographic data
+- `ml_predictions`: Machine learning model outputs
+- `eez_boundaries`: Angola EEZ boundary definitions
+- `fishing_events`, `marine_data`: Aggregated marine activity
+
+### API Endpoints Structure
+Main API worker endpoints follow RESTful patterns:
+- `/api/vessels/*` - Vessel tracking and AIS data
+- `/api/nasa/*` - NASA Earth Data (ocean color, SST, vessel lights, salinity)
+- `/api/gfw/*` - Global Fishing Watch data (vessel presence, fishing activity)
+- `/api/ml/*` - Machine learning predictions
+- `/api/realtime/*` - Real-time data aggregations
+- `/api/dashboard/overview` - Dashboard statistics
+- `/api/environmental/*` - Combined oceanographic data
+- `/api/database/*` - Direct D1 database queries
+- `/admin-dashboard/system-health` - System health metrics
+- `/health` - Basic health check endpoint
+
+### Worker Files Architecture
+Key workers in `infrastructure/workers/`:
+- `api-worker.js` (114KB): Main API with 25+ endpoints
+- `bgapp-api-worker.js` (8KB): Simplified D1-focused API
+- `nasa-earthdata-proxy.js`: NASA data proxy with caching
+- `gfw-proxy.js`: Global Fishing Watch integration
+- `copernicus-webhook.js`: Copernicus data webhook handler
+
+Each worker includes CORS handling, KV caching, and D1 database bindings.
+
+## Performance Optimization Patterns
+
+### KV Caching Strategy
+```javascript
+// Standard caching pattern used across workers:
+const cacheKey = `${endpoint}_${lat}_${lon}`;
+const cached = await env.BGAPP_KV.get(cacheKey);
+if (cached) return new Response(cached, { headers: { 'X-Cache': 'HIT' }});
+// ... fetch fresh data ...
+await env.BGAPP_KV.put(cacheKey, JSON.stringify(data), { expirationTtl: 86400 });
+```
+
+### deck.gl Performance
+- Layer updates use `updateTriggers` to prevent unnecessary re-renders
+- Large datasets use `DataFilterExtension` for GPU-based filtering
+- Implement `getPosition` accessor functions for efficient data transformation
+
+### Database Query Optimization
+- Use indexed columns for geospatial queries (latitude, longitude)
+- Implement pagination for large result sets
+- Batch inserts for data population scripts
+
+## Testing Strategy
+
+### Playwright E2E Testing
+The project uses Playwright for end-to-end testing with visual regression:
 ```bash
-# When lost in the structure, use these commands:
+# Install Playwright browsers (first time only)
+cd apps/realtime-angola
+npx playwright install
 
-# Find where package.json files are (indicates active projects)
-find . -maxdepth 2 -name "package.json"
+# Run Playwright tests
+npx playwright test
 
-# Find the main entry points
-find . -name "index.html" -o -name "index.js" -o -name "index.ts" | grep -v node_modules
+# Run with UI for debugging
+npx playwright test --ui
 
-# Find configuration files quickly
-find . -name "*wrangler*" -o -name "*next.config*" -o -name "*tailwind*" | head -10
-
-# Identify the largest/most active directories
-du -sh ./* | sort -hr | head -15
+# View test report
+npx playwright show-report
 ```
 
-### Recommended Cleanup Strategy (Post-December)
+**Test Screenshots**: All Playwright test screenshots are saved to `.playwright-mcp/` directory for visual verification.
 
-After the December presentation, consider implementing the `REORGANIZATION_PLAN.md`:
+### Local Development Testing
+```bash
+# Test each app independently
+cd apps/admin-dashboard && npm run test:local
+cd apps/realtime-angola && npm run dev
 
-1. **Consolidate**: Merge duplicate directories (`config/` + `configs/`, `scripts/` + `src/scripts/`)
-2. **Archive**: Move `deploy_arcasadeveloping/`, `copernicus-official/`, legacy configs to `archive/`
-3. **Simplify**: Reduce 42 directories to ~15 core directories
-4. **Focus**: Maintain only `admin-dashboard/`, `realtime-angola-nextjs/`, `workers/`, `src/`, `docs/`, `archive/`
+# Test worker endpoints
+curl http://localhost:8787/api/health
+curl "http://localhost:8787/api/nasa/sst?lat=-12.5&lon=13.2"
 
-### Working Effectively Despite Complexity
+# Test Python FastAPI backend (development only)
+python -m src.bgapp.api.ml_endpoints  # Runs on :8000
+```
 
-#### Do:
-- ✅ Use the search commands above to find files quickly
-- ✅ Focus on the 3-4 main directories for December mission
-- ✅ Use absolute paths in scripts to avoid confusion
-- ✅ Document any new important file locations
+### Production Health Checks
+```bash
+# Verify all services
+curl -I https://bgapp-admin.pages.dev
+curl -I https://bgapp-realtime.pages.dev
+curl https://bgapp-api-worker.majearcasa.workers.dev/health
 
-#### Don't:
-- ❌ Get overwhelmed by the 42 directories
-- ❌ Try to understand every directory's purpose
-- ❌ Create new top-level directories
-- ❌ Work in legacy/duplicate directories unless absolutely necessary
+# Monitor worker logs
+wrangler tail api-worker --format=pretty
+wrangler tail nasa-earthdata-proxy --format=pretty
+wrangler tail bgapp-api-worker --format=pretty
 
-**Bottom Line**: The project works despite the complex structure. Focus on the mission-critical directories and treat the rest as historical/backup content.
+# Use monitoring script
+.claude/monitor-apis.sh  # Automated health check for all services
+```
+
+## Integration Points
+
+### External API Integrations
+1. **Global Fishing Watch (GFW)**: Vessel tracking, fishing activity detection
+   - Rate limit: 1000 req/hour
+   - Token: `GFW_API_TOKEN` secret
+
+2. **NASA EarthData**: Ocean color, SST, vessel lights
+   - Proxy: nasa-earthdata-proxy.js
+   - Fallback: Pattern-based synthetic data
+
+3. **Copernicus Marine Service**: Real-time oceanographic data
+   - Auth: Username/password secrets
+   - Cache: 24-hour TTL in KV
+
+### Environment Variables
+Required production secrets:
+- `GFW_API_TOKEN`: Global Fishing Watch API access
+- `NASA_EARTHDATA_TOKEN`: NASA data access
+- `ADMIN_ACCESS_KEY`: Admin authentication
+- `COPERNICUS_USERNAME/PASSWORD`: Marine data access
+
+Worker environment bindings:
+- `BGAPP_KV`: KV namespace for caching
+- `BGAPP_DATA`: D1 database instance
+- `ALLOWED_ORIGINS`: CORS allowed origins list
+
+## Common Development Patterns
+
+### Adding New API Endpoints
+1. Add route handler in `infrastructure/workers/api-worker.js`
+2. Implement caching with KV namespace
+3. Add fallback data for resilience
+4. Update CORS if new origin needed
+
+### Creating New Visualization Layers
+1. Create component in `apps/realtime-angola/src/components/map/`
+2. Follow existing layer patterns (see TemperatureHeatmapLayer.tsx)
+3. Add to LayersPanel.tsx for UI control
+4. Optimize for mobile viewports
+
+### Database Schema Changes
+1. Create migration SQL in `infrastructure/workers/`
+2. Apply with `wrangler d1 execute bgapp-data --file=migration.sql`
+3. Update corresponding worker queries
+4. Test data population scripts
+
+## Production URLs
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Admin Dashboard | bgapp-admin.pages.dev | Administrative interface |
+| Realtime Angola | bgapp-realtime.pages.dev | Real-time monitoring |
+| Frontend | bgapp-frontend.pages.dev | Main platform |
+| API Worker | bgapp-api-worker.majearcasa.workers.dev | Primary API |
+| NASA Proxy | nasa-earthdata-proxy.majearcasa.workers.dev | NASA data proxy |
+
+## Python Development Setup
+
+### Installation
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Key Python packages:
+# - fastapi & uvicorn: API framework
+# - pandas & numpy: Data processing
+# - tensorflow & scikit-learn: Machine learning
+# - psycopg2 & sqlalchemy: Database access
+```
+
+### Data Population Workers
+The project includes specialized workers for populating D1 database:
+- `populate-enhanced-tables.js`: General data population
+- `populate-ml-predictions.js`: ML model predictions
+- `populate-fishing-events.js`: Fishing activity data
+- `populate-marine-data.js`: Marine environmental data
+- `populate-eez-boundaries.js`: EEZ boundary definitions
+- `nasa-data-populator.js`: NASA Earth data integration
+
+Deploy with: `wrangler deploy infrastructure/workers/<worker-name>.js --config <worker-name>.toml`
+
+## Troubleshooting
+
+### Port Conflicts
+```bash
+# Check what's using port 3000
+lsof -i :3000
+# Use alternative ports
+PORT=3002 npm run dev:admin
+PORT=4000 npm run dev:realtime
+```
+
+### Worker Size Limits
+Workers have 1MB limit. If you hit this:
+- Split large workers into multiple files
+- Remove unused code and dependencies
+- Use dynamic imports for large libraries
+
+### API Routes Not Working
+- Admin Dashboard: API routes never work (static export always enabled)
+- Realtime Angola: Check if `next.config.mjs` has correct configuration
+- Solution: Use Cloudflare Workers for all API functionality
+
+### D1 Database Issues
+```bash
+# Verify database binding
+wrangler d1 list
+# Expected: bgapp-data with ID 46ed7435-1b25-498d-b832-7bef98061df3
+# Test connection
+wrangler d1 execute bgapp-data --remote --command "SELECT 1;"
+```
+
+### CORS Errors
+Update `ALLOWED_ORIGINS` in worker environment variables:
+```bash
+wrangler secret put ALLOWED_ORIGINS --name api-worker
+# Enter: https://bgapp-admin.pages.dev,https://bgapp-realtime.pages.dev
+```
+
+### TypeScript/ESLint Errors
+Both Next.js apps have errors temporarily ignored. To check actual errors:
+```bash
+# Remove ignoreDuringBuilds from next.config
+cd apps/admin-dashboard && npx tsc --noEmit
+cd apps/realtime-angola && npx tsc --noEmit
+```
+
+## Documentation Resources
+
+### Architecture Documentation
+The project includes comprehensive C4 architecture diagrams located in `docs/architecture/`:
+- `c4-context.puml`: System context diagram showing BGAPP in the Angola marine ecosystem
+- `c4-container.puml`: Technical architecture with all frontend apps, workers, and data stores
+- `c4-admin-components.puml`: Admin Dashboard internal components
+- `c4-realtime-components.puml`: Realtime Angola specialized components
+- `data-flow.md`: Mermaid diagrams showing real-time data pipelines
+
+View PlantUML diagrams:
+```bash
+# Install PlantUML
+brew install plantuml
+
+# Generate SVG diagrams (recommended for presentations)
+plantuml -tsvg docs/architecture/*.puml
+```
+
+### Team Structure & Responsibilities
+See `STAKEHOLDERS.md` for complete organizational structure:
+- **Executive**: Paulo Fernandes (Director), Eng. Leite (Co-Director)
+- **Technical Lead**: Marcos Santos - Architecture, ML, Performance, DevOps
+- **Software Engineer**: Ludmilson Francisco - Features, APIs, Admin Dashboard
+- **Communication**: Luis Santos - Documentation, presentations, stakeholder coordination
+
+RACI Matrix defines clear responsibilities for each domain (Frontend, Admin, Realtime, Workers, ML).
+
+### Technical Inventory
+See `INVENTORY_APPS.md` for detailed app specifications:
+- Bundle sizes: Frontend (27MB), Admin (891MB dev), Realtime (1.3GB dev)
+- Performance targets: All apps < 2s load time
+- Current status: Frontend (1.8s ✅), Admin (2.3s 🔄), Realtime (2.1s 🔄)
+- December 2025 readiness: 85% confidence with planned optimizations
+
+### API Monitoring
+The `.claude/` directory contains monitoring tools and guides:
+- `.claude/monitor-apis.sh`: Automated health checks for all services
+- `.claude/API_MONITORING_GUIDE.md`: Comprehensive monitoring setup
+- `.claude/MONITORING_QUICKSTART.md`: Quick start for API monitoring
+
+Run health checks:
+```bash
+bash .claude/monitor-apis.sh
+```
+
+**Prerequisites for monitoring script**:
+- `curl`: HTTP requests (pre-installed on macOS/Linux)
+- `jq`: JSON parsing (install: `brew install jq` or `apt-get install jq`)
+- Internet connectivity to reach production URLs
+
+## Security Best Practices
+
+### Recent Security Fixes (October 2025)
+The project recently addressed critical security issues. Always follow these practices:
+
+1. **API Token Management**:
+   - Never commit secrets to repository
+   - Use Wrangler secrets: `wrangler secret put SECRET_NAME`
+   - Rotate tokens every 90 days
+   - Verify secrets: `wrangler secret list --name worker-name`
+
+2. **CORS Configuration**:
+   - Keep `ALLOWED_ORIGINS` strict and minimal
+   - Never use wildcard `*` in production
+   - Test CORS changes locally before deploying
+
+3. **Build Validation**:
+   - Always run `npm run build` before deploying
+   - Check TypeScript errors: `npm run type-check`
+   - Run linting: `npm run lint`
+   - Verify no hardcoded secrets in build output
+
+4. **Worker Security**:
+   - Validate all user inputs in worker endpoints
+   - Implement rate limiting for public endpoints
+   - Use environment bindings instead of hardcoded values
+   - Monitor worker logs for suspicious activity
+
+## Performance Targets (December 2025)
+
+Critical metrics for government presentation:
+
+| Metric | Target | Current | Priority |
+|--------|--------|---------|----------|
+| Frontend Load Time | < 2.0s | 1.8s ✅ | Maintain |
+| Admin Dashboard Load | < 2.0s | 2.3s 🔄 | **High** |
+| Realtime Angola Load | < 2.0s | 2.1s 🔄 | **Critical** |
+| API Response Time | < 100ms | 95ms ✅ | Maintain |
+| Map Interactions | < 100ms | 85ms ✅ | Maintain |
+| WebSocket Latency | < 50ms | 45ms ✅ | Maintain |
+| ML Model Accuracy | > 95% | 95%+ ✅ | Maintain |
+
+**Focus Areas for Optimization**:
+1. Admin Dashboard bundle size reduction (high priority)
+2. Realtime Angola WebGL optimizations (critical)
+3. Mobile responsive performance (medium)
+4. Offline demo capabilities (backup plan)
+
+## Quick Reference Workflows
+
+### Starting Fresh Development
+```bash
+# 1. Authenticate with Cloudflare (first time only)
+wrangler login
+wrangler whoami  # Verify authentication
+
+# 2. Install dependencies (if needed)
+npm install
+cd apps/admin-dashboard && npm install
+cd apps/realtime-angola && npm install
+
+# 3. Start the app you're working on
+npm run dev:admin      # Admin Dashboard
+npm run dev:realtime   # Realtime Angola
+npm run dev            # Main Frontend
+
+# 4. Start relevant workers (optional, for backend testing)
+wrangler dev infrastructure/workers/api-worker.js --local
+```
+
+### Checking Data Status
+```bash
+# Quick database health check
+wrangler d1 execute bgapp-data --remote --command "
+SELECT
+  'vessel_data' as table_name, COUNT(*) as count FROM vessel_data
+UNION ALL SELECT 'sst_data', COUNT(*) FROM sst_data
+UNION ALL SELECT 'ocean_color_data', COUNT(*) FROM ocean_color_data
+UNION ALL SELECT 'ml_predictions', COUNT(*) FROM ml_predictions
+ORDER BY count DESC;"
+
+# Check API health
+bash .claude/monitor-apis.sh
+```
+
+### Emergency Deployment
+```bash
+# When you need to deploy quickly (skips tests)
+npm run deploy:all
+
+# Individual emergency deploys
+wrangler pages deploy apps/admin-dashboard/out --project-name bgapp-admin --commit-dirty=true
+wrangler pages deploy apps/realtime-angola/out --project-name bgapp-realtime --commit-dirty=true
+wrangler deploy infrastructure/workers/api-worker.js --env production
+```
+
+### Debugging Production Issues
+```bash
+# View live logs
+wrangler tail api-worker --format=pretty
+wrangler tail bgapp-api-worker --format=pretty
+
+# Check specific endpoint
+curl -I https://bgapp-api-worker.majearcasa.workers.dev/health
+curl "https://bgapp-api-worker.majearcasa.workers.dev/api/dashboard/overview"
+
+# Test with authentication
+curl -H "X-Admin-Key: $ADMIN_ACCESS_KEY" \
+  https://bgapp-api-worker.majearcasa.workers.dev/admin-dashboard/system-health
+```
+
+## Key Architectural Decisions
+
+### Why Cloudflare Workers Instead of Next.js API Routes?
+The project architecture uses Cloudflare Workers exclusively for backend logic due to:
+1. **Static Export Requirement**: Both Next.js apps use `output: 'export'` for Cloudflare Pages deployment
+2. **API Routes Incompatibility**: Static export disables Next.js API routes (`pages/api/*`)
+3. **Serverless Benefits**: Workers provide global edge deployment, automatic scaling, and 0ms cold starts
+4. **Cost Efficiency**: Workers are more cost-effective than maintaining separate backend infrastructure
+
+**Pattern to Follow**:
+- ❌ Never create `apps/*/pages/api/*` files
+- ✅ Always create backend logic in `infrastructure/workers/*.js`
+- ✅ Frontend calls workers via fetch: `fetch('https://worker-name.workers.dev/endpoint')`
+
+### Realtime Angola Config Swap Mechanism
+The Realtime Angola app requires different configs for dev vs production:
+
+**Development** (`next.config.mjs`):
+- No static export (`output: 'export'` commented out)
+- Enables hot module replacement
+- Allows dynamic features during development
+
+**Production** (`next.config.prod.mjs`):
+- Enables static export (`output: 'export'`)
+- Disables dynamic features incompatible with static hosting
+- Optimized for Cloudflare Pages deployment
+
+**Build Process**:
+```bash
+npm run build:prod
+# Executes: cp next.config.prod.mjs next.config.mjs && next build
+# Result: Overwrites dev config with prod config, then builds
+```
+
+**Important**: After production build, `next.config.mjs` contains production settings. To return to development:
+```bash
+cd apps/realtime-angola
+git checkout next.config.mjs  # Restore dev config
+npm run dev
+```
