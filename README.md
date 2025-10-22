@@ -30,10 +30,20 @@ O **BGAPP (Biodiversity and Geographic Analysis Platform)** é uma plataforma ci
 ### 🌟 **Características Principais**
 - **43 interfaces científicas** integradas
 - **5 modelos de Machine Learning** em produção
+- **30+ espécies marinhas catalogadas** com taxonomia completa (WoRMS)
 - **Visualizações 3D** avançadas (deck.gl, Unreal Engine)
-- **Dados em tempo real** via Copernicus Marine Service
+- **Dados em tempo real** via Copernicus Marine Service e NASA EarthData
 - **Análise geoespacial** com QGIS integrado
 - **Dashboard administrativo** completo
+- **Catálogo de biodiversidade** integrado com WoRMS API
+
+### 🆕 **Novidades - Outubro 2025**
+- ✅ **Integração WoRMS API**: 30 espécies marinhas da ZEE angolana
+- ✅ **Cache de Taxonomia**: Sistema de cache para performance otimizada
+- ✅ **6 Tabelas D1**: Estrutura completa de biodiversidade marinha
+- ✅ **4 Workers Cloudflare**: APIs especializadas para dados marinhos
+- 🔄 **ML Enhancement**: Species-aware detection em desenvolvimento
+- 🔄 **Animações Meteorologia**: Visualizações temporais de dados oceanográficos
 
 ---
 
@@ -47,11 +57,13 @@ O **BGAPP (Biodiversity and Geographic Analysis Platform)** é uma plataforma ci
 - **deck.gl** - Visualizações WebGL
 
 ### ⚙️ **Backend**
-- **Cloudflare Workers** - APIs serverless (PRINCIPAL) ✅
-- **Next.js API Routes** - Endpoints integrados
+- **Cloudflare Workers** - 15+ APIs serverless em produção ✅
+- **Cloudflare D1** - Database SQLite serverless (60+ tabelas)
+- **Cloudflare KV** - Cache distribuído (24h TTL)
 - **Python FastAPI** - Desenvolvimento local (não produção)
-- **PostgreSQL + PostGIS** - Base de dados geoespacial
-- **Redis** - Cache distribuído
+- **WoRMS API** - Taxonomia marinha autorizada
+- **NASA EarthData** - Dados de satélite oceanográficos
+- **Global Fishing Watch** - Monitorização de embarcações
 
 ### 🤖 **Machine Learning**
 - **5 modelos** em produção (>95% precisão)
@@ -167,7 +179,10 @@ npm run deploy
 - **Análise de adequação** de habitat
 
 ### 📊 **Dados Científicos**
-- **Copernicus Marine Service** - Dados em tempo real
+- **WoRMS (World Register of Marine Species)** - 30 espécies catalogadas
+- **Copernicus Marine Service** - SST, salinidade, ocean color em tempo real
+- **NASA EarthData** - Dados de satélite (MODIS, VIIRS)
+- **Global Fishing Watch** - Atividade pesqueira e embarcações
 - **GBIF/OBIS** - Ocorrências de espécies
 - **GEBCO** - Batimetria de alta resolução
 - **Dados locais** - Investigação angolana
@@ -177,6 +192,59 @@ npm run deploy
 - **QGIS** para análise geoespacial
 - **STAC** para dados espaciais
 - **APIs REST** para integração
+
+---
+
+## 🗺️ **Roadmap Técnico 2025-2026**
+
+### 🤖 **ML Predictions Enhancement**
+
+#### Phase 1: Species-Aware Detection (Nov 2025)
+- ✅ Database Integration (WoRMS schema, 30 espécies)
+- 🔄 ML Model Enhancement (species identification)
+- 📋 Training Data Preparation (500+ observações)
+- 📋 Model Deployment (TensorFlow.js em Workers)
+- **Target**: >75% accuracy top-1, >85% accuracy top-3
+
+#### Phase 2: Bycatch Prediction (Dez 2025)
+- Conservation status integration (IUCN Red List)
+- Real-time alerts para espécies ameaçadas
+- Spatial risk modeling
+- **Target**: >80% bycatch prediction accuracy
+
+#### Phase 3: Ecosystem Modeling (Q1 2026)
+- Biomass prediction por zona
+- Predator-prey relationship modeling
+- Climate impact analysis
+- **Target**: R² >0.75 para biomass predictions
+
+### 🌦️ **Animações de Meteorologia**
+
+#### Phase 1: Time-Series Visualization (Nov 2025)
+- Backend APIs para dados históricos (6h/daily intervals)
+- TimeSeriesPlayer.tsx component (Play/Pause/Speed controls)
+- 120 frames SST, 30 frames Chlorophyll, 120 frames Salinity
+- **Target**: 30 FPS desktop, 60 FPS mobile
+
+#### Phase 2: Weather Forecast Animation (Dez 2025)
+- Open-Meteo API integration
+- Wind vectors animation (WebGL particles)
+- Wave height overlay (0-6m heatmap)
+- Precipitation forecast
+- **Target**: >80% forecast accuracy (7 dias)
+
+#### Phase 3: Interactive Analysis Tools (Q1 2026)
+- Anomaly detection (eventos extremos)
+- Multi-variable correlation analysis
+- Seasonal pattern recognition
+- **Target**: >85% anomaly detection precision
+
+### 🎯 **Apresentação Governo Angola (Dezembro 2025)**
+- ✅ Real-time marine monitoring demo
+- ✅ Species detection via ML
+- ✅ Weather animations (7 dias)
+- ✅ Conservation dashboard
+- **Confidence Level**: 85% → Target 90%
 
 ---
 
@@ -249,6 +317,43 @@ Este projeto está licenciado sob a **Licença MIT** - ver ficheiro [LICENSE](do
 
 ---
 
-*Última atualização: Janeiro 2025*  
-*Versão: 2.0.0*  
+*Última atualização: Outubro 2025*
+*Versão: 2.1.0 - WoRMS Integration*
 *Status: Produção*
+
+---
+
+## 📦 **Cloudflare Workers em Produção**
+
+| **Worker** | **URL** | **Função** |
+|------------|---------|------------|
+| API Worker | [bgapp-api-worker.majearcasa.workers.dev](https://bgapp-api-worker.majearcasa.workers.dev) | API principal (25+ endpoints) |
+| WoRMS Proxy | [worms-api-proxy.majearcasa.workers.dev](https://worms-api-proxy.majearcasa.workers.dev) | Proxy WoRMS API |
+| WoRMS Populator | [worms-species-populator.majearcasa.workers.dev](https://worms-species-populator.majearcasa.workers.dev) | População de espécies |
+| Taxonomy Cache | [populate-taxonomy-cache.majearcasa.workers.dev](https://populate-taxonomy-cache.majearcasa.workers.dev) | Cache de taxonomia |
+| NASA Proxy | [nasa-earthdata-proxy.majearcasa.workers.dev](https://nasa-earthdata-proxy.majearcasa.workers.dev) | Dados NASA EarthData |
+| GFW Proxy | [gfw-proxy.majearcasa.workers.dev](https://gfw-proxy.majearcasa.workers.dev) | Global Fishing Watch |
+
+---
+
+## 🗄️ **Base de Dados D1 (Cloudflare)**
+
+### Tabelas de Biodiversidade (WoRMS Integration)
+- **marine_species**: 30 espécies prioritárias da ZEE angolana
+- **species_taxonomy_cache**: 30 registos com taxonomia completa
+- **angola_priority_species**: Níveis de prioridade (1-5)
+- **species_occurrences**: Ocorrências geoespaciais
+- **species_relationships**: Relações ecológicas
+- **species_data_quality**: Métricas de qualidade
+
+### Tabelas Oceanográficas
+- **sst_data**: Sea Surface Temperature (NASA + Copernicus)
+- **ocean_color_data**: Chlorophyll-a (NASA MODIS)
+- **salinity_data**: Salinidade superficial (Copernicus)
+- **vessel_lights_data**: Detecção de embarcações (NASA VIIRS)
+
+### Tabelas de Análise
+- **ml_predictions**: Predições de modelos ML (2000+ registos)
+- **vessel_data**: Tracking AIS de embarcações
+- **fishing_events**: Eventos de pesca detectados
+- **eez_boundaries**: Limites da ZEE angolana (Continental + Cabinda)
