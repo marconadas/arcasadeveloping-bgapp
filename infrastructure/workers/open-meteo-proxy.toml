@@ -1,0 +1,93 @@
+# Open-Meteo Weather API Proxy Worker Configuration
+# Fetches real-time meteorological data for Angola EEZ maritime monitoring
+# Free API with no authentication required (10,000 requests/day limit)
+
+name = "open-meteo-proxy"
+main = "open-meteo-proxy.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker settings optimized for API proxy
+workers_dev = true
+logpush = false
+
+# Resource limits disabled for Free plan
+# limits = { cpu_ms = 50 }
+
+# D1 Database binding - stores weather data for fallback and offline capability
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# KV Namespace binding - caches weather data to reduce API calls
+[[kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+# Routes disabled - workers_dev provides default route
+# [[routes]]
+# pattern = "open-meteo-proxy.majearcasa.workers.dev/*"
+# zone_name = "majearcasa.workers.dev"
+
+# Environment variables
+[vars]
+# API Configuration
+OPEN_METEO_API = "https://api.open-meteo.com/v1/forecast"
+OPEN_METEO_MARINE_API = "https://marine-api.open-meteo.com/v1/marine"
+
+# Rate limiting (10,000 requests per day = ~416 per hour)
+MAX_REQUESTS_PER_HOUR = "400"
+RATE_LIMIT_WARNING = "380"
+
+# Cache TTLs (in seconds)
+CACHE_TTL_CURRENT = "21600"     # 6 hours for current weather
+CACHE_TTL_FORECAST = "86400"    # 24 hours for forecast
+CACHE_TTL_GRID = "43200"        # 12 hours for grid summaries
+
+# Angola EEZ Boundaries (for validation)
+ANGOLA_MIN_LAT = "-17.29"
+ANGOLA_MAX_LAT = "-4.3"
+ANGOLA_MIN_LON = "8.30"
+ANGOLA_MAX_LON = "13.84"
+ANGOLA_CENTER_LAT = "-12.5"
+ANGOLA_CENTER_LON = "13.0"
+
+# Quality flags
+QUALITY_HIGH = "2"
+QUALITY_MEDIUM = "1"
+QUALITY_LOW = "0"
+
+# Logging and monitoring
+[observability]
+enabled = true
+head_sampling_rate = 0.01
+
+# Production environment configuration
+[env.production]
+name = "open-meteo-proxy"
+workers_dev = true
+
+# [[env.production.routes]]
+# pattern = "open-meteo-proxy.majearcasa.workers.dev/*"
+# zone_name = "majearcasa.workers.dev"
+
+# Development environment configuration
+[env.development]
+name = "open-meteo-proxy-dev"
+workers_dev = true
+
+# Staging environment configuration
+[env.staging]
+name = "open-meteo-proxy-staging"
+workers_dev = true
+
+# Triggers (optional - for scheduled data updates)
+[triggers]
+# Cron trigger to pre-cache weather data for Angola EEZ
+# Runs every 6 hours to ensure fresh data availability
+crons = ["0 */6 * * *"]
+
+# Analytics disabled - Analytics Engine not enabled on account
+# [[analytics_engine_datasets]]
+# binding = "WEATHER_ANALYTICS"

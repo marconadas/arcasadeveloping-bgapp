@@ -3,15 +3,19 @@
 import { useState, useRef, useEffect } from 'react';
 import {
   Layers,
-  Ship,
   Thermometer,
   Droplets,
-  Wind,
-  Waves,
-  Activity,
   Move,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Eye,
+  Palette,
+  Lightbulb,
+  Brain,
+  Waves,
+  Ship,
+  CloudRain,
+  Wind
 } from 'lucide-react';
 
 interface LayersPanelProps {
@@ -21,13 +25,18 @@ interface LayersPanelProps {
 }
 
 const layers = [
-  { id: 'vessels', label: 'Embarcações', icon: Ship },
-  { id: 'temperature', label: 'Temperatura', icon: Thermometer },
+  { id: 'temperature', label: 'Temperatura SST', icon: Thermometer },
   { id: 'chloropleth', label: 'Clorofila', icon: Droplets },
-  { id: 'sst', label: 'SST', icon: Thermometer },
-  { id: 'currents', label: 'Correntes', icon: Wind },
-  { id: 'waves', label: 'Ondas', icon: Waves },
-  { id: 'salinity', label: 'Salinidade', icon: Activity }
+  { id: 'salinity', label: 'Salinidade', icon: Waves },
+  { id: 'vessels', label: 'Embarcações', icon: Ship },
+  { id: 'ml-predictions', label: 'Previsões ML', icon: Brain },
+  // NASA Earth Data Layers
+  { id: 'nasa-ocean-color', label: 'NASA Cor do Oceano', icon: Palette },
+  { id: 'nasa-sst', label: 'NASA SST', icon: Thermometer },
+  { id: 'nasa-vessel-lights', label: 'NASA Luzes de Embarcações', icon: Lightbulb },
+  // Weather Layers (Open-Meteo)
+  { id: 'weather', label: 'Meteorologia', icon: CloudRain },
+  { id: 'weather-wind', label: 'Vetores de Vento', icon: Wind }
 ];
 
 export function LayersPanel({ activeLayers, toggleLayer, theme }: LayersPanelProps) {
@@ -115,7 +124,7 @@ export function LayersPanel({ activeLayers, toggleLayer, theme }: LayersPanelPro
   return (
     <div
       ref={panelRef}
-      className={`fixed ${bgClass} backdrop-blur-sm rounded-lg shadow-lg border z-[1001] ${
+      className={`fixed ${bgClass} backdrop-blur-sm rounded-lg shadow-lg border z-[501] ${
         isDragging ? 'cursor-grabbing shadow-2xl scale-105' : ''
       } transition-shadow transition-transform`}
       style={{

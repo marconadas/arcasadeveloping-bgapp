@@ -1,0 +1,20 @@
+name = "copernicus-data-populator"
+main = "copernicus-data-populator.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# Copernicus credentials (set via secrets)
+# wrangler secret put COPERNICUS_USERNAME
+# wrangler secret put COPERNICUS_PASSWORD
+
+[env.production]
+name = "copernicus-data-populator"
+
+[env.development]
+name = "copernicus-data-populator-dev"
+

@@ -411,13 +411,13 @@ Timeline: < 15 minutos
 
 ## 🎯 **ROADMAP DEZEMBRO 2025**
 
-### **📅 Novembro 2025 - Final Sprint**
+### **📅 Outubro 2025 - Final Sprint**
 - **Semana 1**: Testing intensivo e bug fixes
 - **Semana 2**: Performance tuning e otimização
 - **Semana 3**: Preparação de apresentação e demos
 - **Semana 4**: Rehearsal completo e contingência
 
-### **📅 Dezembro 2025 - Apresentação**
+### **📅 Novembroc 2025 - Apresentação**
 - **Dia 1-5**: Setup e testes finais
 - **Dia 6-10**: Apresentação ao governo
 - **Dia 11-15**: Feedback e ajustes

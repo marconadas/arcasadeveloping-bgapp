@@ -1,0 +1,9 @@
+name = "populate-taxonomy-cache"
+main = "populate-taxonomy-cache.js"
+compatibility_date = "2024-01-01"
+account_id = "b4824e9393a0448cbc14367facb73053"
+
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"

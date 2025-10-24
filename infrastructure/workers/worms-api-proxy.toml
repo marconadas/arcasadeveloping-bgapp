@@ -1,0 +1,26 @@
+name = "worms-api-proxy"
+main = "worms-api-proxy.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker configuration
+workers_dev = true
+route = ""
+
+# Account configuration
+account_id = "b4824e9393a0448cbc14367facb73053"
+
+# KV Namespace binding for caching
+[[kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+# Environment variables
+[vars]
+WORMS_API_BASE = "https://www.marinespecies.org/rest"
+CACHE_TTL = "86400"
+RATE_LIMIT_PER_MINUTE = "60"
+
+# Observability
+[observability]
+enabled = true

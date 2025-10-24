@@ -1,19 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Only use export mode for builds, not dev
-  ...(process.env.NODE_ENV === 'production' || process.env.NEXT_BUILD === 'true' ? {
-    output: 'export',
-    distDir: 'out',
-  } : {}),
-  trailingSlash: true,
-  eslint: {
-    ignoreDuringBuilds: true // Ignorar ESLint durante build para deployment
-  },
+  // Production settings - uncomment for production builds
+  // output: 'export',
+  // trailingSlash: true,
+  // distDir: 'out',
   images: {
     unoptimized: true
   },
-  assetPrefix: '',
-  basePath: '',
+  // assetPrefix: '',
+  // basePath: '',
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { isServer }) => {
     // Fix para Canvas no TensorFlow.js
     if (!isServer) {

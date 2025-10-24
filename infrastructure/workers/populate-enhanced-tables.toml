@@ -1,0 +1,17 @@
+name = "populate-enhanced-tables"
+main = "populate-enhanced-tables.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# Secrets (set via wrangler secret put)
+# - GFW_API_TOKEN: Global Fishing Watch API token
+# - COPERNICUS_USERNAME: Copernicus Marine Service username
+# - COPERNICUS_PASSWORD: Copernicus Marine Service password
+
+[env.production]
+name = "populate-enhanced-tables"

@@ -1,0 +1,27 @@
+name = "worms-species-populator"
+main = "worms-species-populator.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker configuration
+workers_dev = true
+route = ""
+
+# Account configuration
+account_id = "b4824e9393a0448cbc14367facb73053"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# Environment variables
+[vars]
+WORMS_API_BASE = "https://www.marinespecies.org/rest"
+BATCH_SIZE = "10"
+REQUEST_DELAY = "200"
+
+# Observability
+[observability]
+enabled = true

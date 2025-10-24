@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Note: Removed 'force-dynamic' export to fix build conflict with output: 'export'
-// API routes will work properly without this in the exported build
+// Commented out for production build with output: 'export'
+// export const dynamic = 'force-dynamic';
 
 // Configuration for GFW proxy
 const GFW_PROXY_URL = process.env.NODE_ENV === 'production'
@@ -12,7 +12,7 @@ const API_WORKER_URL = process.env.NODE_ENV === 'production'
   ? 'https://bgapp-api-worker.majearcasa.workers.dev'
   : 'https://bgapp-admin-api-worker.majearcasa.workers.dev';
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     // Try to get real vessel data from GFW via proxy
     const response = await fetch(`${GFW_PROXY_URL}/api/gfw/vessel-presence`, {

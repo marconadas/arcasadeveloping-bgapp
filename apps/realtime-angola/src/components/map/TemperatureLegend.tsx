@@ -86,13 +86,13 @@ export function TemperatureLegend({
   if (!visible || !isInitialized) return null;
 
   const temperatureStops = [
-    { temp: 18, color: '#0000FF', label: 'Very Cold' },
-    { temp: 20, color: '#00FFFF', label: 'Cold' },
-    { temp: 22, color: '#00FF00', label: 'Cool' },
-    { temp: 24, color: '#FFFF00', label: 'Moderate' },
-    { temp: 26, color: '#FFA500', label: 'Warm' },
-    { temp: 28, color: '#FF6600', label: 'Hot' },
-    { temp: 30, color: '#FF0000', label: 'Very Hot' }
+    { temp: 18, color: '#0D0887', label: 'Very Cold' },
+    { temp: 20, color: '#6A00A8', label: 'Cold' },
+    { temp: 22, color: '#B12A90', label: 'Cool' },
+    { temp: 24, color: '#E16462', label: 'Moderate' },
+    { temp: 26, color: '#F1844B', label: 'Warm' },
+    { temp: 28, color: '#FCA636', label: 'Hot' },
+    { temp: 30, color: '#F0F921', label: 'Very Hot' }
   ];
 
   return (

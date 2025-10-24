@@ -51,11 +51,27 @@ export function isWithinAngolaBounds(lat: number, lng: number): boolean {
   return lat >= -18.0 && lat <= -4.0 && lng >= 11.0 && lng <= 24.0;
 }
 
-export function formatTimestamp(date: Date): string {
-  return new Intl.DateTimeFormat('pt-PT', {
-    dateStyle: 'short',
-    timeStyle: 'medium'
-  }).format(date);
+export function formatTimestamp(date: Date | string | number | null | undefined): string {
+  if (!date) {
+    return 'N/A';
+  }
+
+  try {
+    const dateObj = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
+
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return 'N/A';
+    }
+
+    return new Intl.DateTimeFormat('pt-PT', {
+      dateStyle: 'short',
+      timeStyle: 'medium'
+    }).format(dateObj);
+  } catch (error) {
+    console.error('[formatTimestamp] Error formatting date:', error, 'date:', date);
+    return 'N/A';
+  }
 }
 
 export function debounce<T extends (...args: unknown[]) => unknown>(
