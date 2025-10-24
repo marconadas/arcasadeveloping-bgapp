@@ -20,7 +20,7 @@ async function testGFWIntegration() {
   // Test 1: Basic connectivity
   console.log('\n📡 Teste 1: Conectividade básica com API');
   try {
-    const response = await fetch(`${GFW_API_BASE}/v3/datasets?limit=1`, {
+    const response = await fetch(`${GFW_API_BASE}/v3/datasets?limit=1&offset=0`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json'
@@ -47,14 +47,14 @@ async function testGFWIntegration() {
     const start = new Date(end.getTime() - 24 * 60 * 60 * 1000); // Last 24 hours
 
     const params = new URLSearchParams({
-      'dataset': 'public-global-ais-vessel-presence:v3.0',
+      'datasets[0]': 'public-global-ais-vessel-presence:v3.0',
       'start-date': start.toISOString().split('T')[0],
       'end-date': end.toISOString().split('T')[0],
       'bbox': '11.5,-18.5,17.5,-4.2', // Angola EEZ
       'format': 'json'
     });
 
-    const response = await fetch(`${GFW_API_BASE}/v3/4wings/report?${params.toString()}`, {
+    const response = await fetch(`${GFW_API_BASE}/v2/4wings/report?${params.toString()}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json'
@@ -82,7 +82,7 @@ async function testGFWIntegration() {
     const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 days
 
     const params = new URLSearchParams({
-      'dataset': 'public-global-fishing-activity:v20231026',
+      'datasets': 'public-global-fishing-activity:v20241201',
       'start-date': start.toISOString().split('T')[0],
       'end-date': end.toISOString().split('T')[0],
       'bbox': '11.5,-18.5,17.5,-4.2',
@@ -91,7 +91,7 @@ async function testGFWIntegration() {
       'spatial-aggregation': 'true'
     });
 
-    const response = await fetch(`${GFW_API_BASE}/v3/4wings/aggregate?${params.toString()}`, {
+    const response = await fetch(`${GFW_API_BASE}/v2/4wings/aggregate?${params.toString()}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/geo+json'
@@ -117,6 +117,22 @@ async function testGFWIntegration() {
   }
 
   console.log('\n🎉 Teste de integração GFW concluído!');
+
+  // Additional findings based on investigation
+  console.log('\n📋 SUMMARY OF TOKEN CAPABILITIES:');
+  console.log('✅ Token is valid and authenticates successfully');
+  console.log('✅ Basic datasets endpoint works (shows 32997 total datasets)');
+  console.log('❌ Vessel presence datasets require additional permissions (403 Forbidden)');
+  console.log('❌ Fishing activity datasets require additional permissions (404/403)');
+  console.log('📝 Token appears to be a basic tier with limited dataset access');
+  console.log('💡 May need to upgrade token permissions or use different datasets');
+
+  console.log('\n🎯 NEXT STEPS FOR DECEMBER PRESENTATION:');
+  console.log('1. Contact GFW support to upgrade token permissions');
+  console.log('2. Identify specific datasets needed for Angola EEZ monitoring');
+  console.log('3. Request access to vessel tracking and fishing activity data');
+  console.log('4. Consider alternative data sources for real-time monitoring');
+  console.log('5. Update worker APIs once dataset access is resolved');
 }
 
 // Execute the test

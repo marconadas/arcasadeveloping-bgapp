@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchOceanographicDataWithRetry } from '@/services/oceanographicDataService';
+import {
+  transformSSTData,
+  transformChlorophyllData,
+  transformSalinityData,
+  transformVesselLightsData,
+  transformMLPredictionData,
+  filterByQuality,
+  filterByRecency,
+  calculateStatistics
+} from '@/services/dataTransformers';
 
-// Note: Removed 'force-dynamic' export to fix build conflict with output: 'export'
-// API routes will work properly without this in the exported build
+// Commented out for production build with output: 'export'
+// export const dynamic = 'force-dynamic';
 
 // TypeScript interfaces for better type safety
 interface TemperaturePoint {
@@ -10,114 +21,103 @@ interface TemperaturePoint {
   temperature: number;
 }
 
-interface ChlorophyllPoint {
-  lat: number;
-  lon: number;
-  chlorophyll: number;
-}
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const layer = searchParams.get('layer') || 'all';
 
-    // Generate temperature grid data for heatmap visualization with improved interpolation
+    // Fetch real SST data from bgapp-api-worker
     if (layer === 'temperature' || layer === 'all') {
-      const temperatureData = [];
-      const latStep = 0.05; // Higher resolution for smoother gradients
-      const lonStep = 0.05;
+      try {
+        const apiData = await fetchOceanographicDataWithRetry({
+          type: 'sst',
+          limit: 5000,
+          minLat: -18.02,
+          maxLat: -5.55,
+          minLon: 8.9,
+          maxLon: 13.35
+        });
 
-      // Angola EEZ boundaries for clipping
-      const angolaEEZ = {
-        minLat: -18.02,
-        maxLat: -5.55,
-        minLon: 8.9,
-        maxLon: 13.35
-      };
+        const temperatureData = transformSSTData(apiData.sst);
+        const stats = calculateStatistics(temperatureData);
 
-      // Generate base temperature field
-      for (let lat = angolaEEZ.minLat; lat <= angolaEEZ.maxLat; lat += latStep) {
-        for (let lon = angolaEEZ.minLon; lon <= angolaEEZ.maxLon; lon += lonStep) {
-          // Only include points within Angola EEZ
-          if (isPointInAngolaEEZ(lat, lon)) {
-            // Realistic temperature distribution based on oceanographic patterns
-            const distanceFromCoast = Math.min(Math.abs(lon - 12.5), 2);
-            const latitudeFactor = (lat + 11.5) / 12.5; // North is warmer
-            const seasonalFactor = Math.sin(new Date().getMonth() / 12 * 2 * Math.PI) * 0.5; // Seasonal variation
+        // Convert to backward-compatible format {lat, lon, temperature}
+        const formattedData = temperatureData.map(point => ({
+          lat: point.lat,
+          lon: point.lon,
+          temperature: point.value
+        }));
 
-            // Base temperature field with realistic gradients
-            let baseTemp = 23 + (latitudeFactor * 4); // 23-27°C base range
-
-            // Benguela Current influence (cooler water from south)
-            const benguelaEffect = Math.max(0, 1 - (lat + 16) / 3) * 2;
-            baseTemp -= benguelaEffect;
-
-            // Coastal upwelling effect
-            if (distanceFromCoast < 0.5) {
-              baseTemp -= 2 * (1 - distanceFromCoast / 0.5); // Strong cooling near coast
-            } else if (distanceFromCoast < 1) {
-              baseTemp -= 0.8 * (1 - (distanceFromCoast - 0.5) / 0.5); // Moderate cooling
-            }
-
-            // Add realistic oceanic patterns
-            const eddyEffect = Math.sin(lat * 0.5) * Math.cos(lon * 0.8) * 0.4;
-            const frontalEffect = Math.sin((lat + 12) * 2) * 0.3;
-            const mixingEffect = (Math.random() - 0.5) * 0.4; // Small random variation
-
-            const temperature = Math.max(18, Math.min(30,
-              baseTemp + eddyEffect + frontalEffect + seasonalFactor + mixingEffect
-            ));
-
-            temperatureData.push({
-              lat: Math.round(lat * 100) / 100,
-              lon: Math.round(lon * 100) / 100,
-              temperature: Math.round(temperature * 100) / 100 // Round to 2 decimals
-            });
-          }
-        }
+        return NextResponse.json({
+          temperature: formattedData,
+          metadata: {
+            minTemp: stats.min,
+            maxTemp: stats.max,
+            avgTemp: stats.mean,
+            dataPoints: stats.count,
+            coverage: 'Angola EEZ',
+            lastUpdate: apiData.metadata.timestamp,
+            source: 'bgapp-api-worker'
+          },
+          timestamp: new Date().toISOString(),
+          layer
+        });
+      } catch (error) {
+        console.error('Failed to fetch SST data:', error);
+        return NextResponse.json({
+          temperature: [],
+          metadata: {
+            error: 'API temporarily unavailable',
+            dataPoints: 0
+          },
+          timestamp: new Date().toISOString(),
+          layer
+        });
       }
-
-      // Add some interpolated points for smoother gradients
-      const interpolatedData = addInterpolatedPoints(temperatureData);
-      const finalData = [...temperatureData, ...interpolatedData];
-
-      return NextResponse.json({
-        temperature: finalData,
-        metadata: {
-          minTemp: Math.min(...finalData.map(d => d.temperature)),
-          maxTemp: Math.max(...finalData.map(d => d.temperature)),
-          avgTemp: finalData.reduce((sum, d) => sum + d.temperature, 0) / finalData.length,
-          dataPoints: finalData.length,
-          resolution: `${latStep}° x ${lonStep}°`,
-          coverage: 'Angola EEZ',
-          lastUpdate: new Date().toISOString()
-        },
-        timestamp: new Date().toISOString(),
-        layer
-      });
     }
 
-    // Generate chlorophyll data using scientific patterns
+    // Fetch real chlorophyll data from bgapp-api-worker
     if (layer === 'chloropleth' || layer === 'chlorophyll') {
-      const { generateChlorophyllGrid } = await import('@/services/chlorophyllService');
+      try {
+        const apiData = await fetchOceanographicDataWithRetry({
+          type: 'ocean_color',
+          limit: 5000,
+          minLat: -18.02,
+          maxLat: -5.55,
+          minLon: 8.9,
+          maxLon: 13.35
+        });
 
-      // Angola EEZ bounds
-      const bounds = {
-        minLat: -18.02,
-        maxLat: -5.55,
-        minLon: 8.9,
-        maxLon: 13.35
-      };
+        const chlorophyllData = transformChlorophyllData(apiData.ocean_color);
+        const stats = calculateStatistics(chlorophyllData);
 
-      // Generate high-resolution chlorophyll data
-      const { data, metadata } = generateChlorophyllGrid(bounds, 0.1); // 0.1° resolution
-
-      return NextResponse.json({
-        chloropleth: data,
-        metadata,
-        timestamp: new Date().toISOString(),
-        layer
-      });
+        return NextResponse.json({
+          chloropleth: chlorophyllData,
+          metadata: {
+            min: stats.min,
+            max: stats.max,
+            mean: stats.mean,
+            dataPoints: stats.count,
+            coverage: 'Angola EEZ',
+            lastUpdate: apiData.metadata.timestamp,
+            source: 'bgapp-api-worker'
+          },
+          timestamp: new Date().toISOString(),
+          layer
+        });
+      } catch (error) {
+        console.error('Failed to fetch chlorophyll data:', error);
+        return NextResponse.json({
+          chloropleth: [],
+          metadata: {
+            error: 'API temporarily unavailable',
+            dataPoints: 0
+          },
+          timestamp: new Date().toISOString(),
+          layer
+        });
+      }
     }
 
     // Return all real-time data

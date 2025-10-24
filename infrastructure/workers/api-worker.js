@@ -3,8 +3,229 @@
  * Fornece endpoints para o dashboard administrativo
  */
 
+// Import enhanced API endpoints
+import { handleEnhancedAPIRoute } from './api-endpoints-enhanced.js';
+
 // Real data management with KV Storage and external APIs
 const CACHE_TTL = 300; // 5 minutes cache TTL
+const REALTIME_CACHE_KEY = 'realtime:data:latest';
+const REALTIME_CACHE_TTL = 300; // 5 minutes for realtime data
+
+// 🔒 CORS Security Configuration - Enhanced Security Module Integration
+const ALLOWED_ORIGINS = [
+  // Produção BGAPP
+  'https://bgapp-frontend.pages.dev',
+  'https://bgapp-admin.pages.dev',
+  'https://bgapp.arcasadeveloping.org',
+  'https://arcasadeveloping.org',
+
+  // Desenvolvimento local - TODAS AS PORTAS BGAPP
+  'http://localhost:3000',  // Admin Dashboard / Realtime Angola
+  'http://localhost:8000',  // Admin API
+  'http://localhost:8080',  // Frontend Principal
+  'http://localhost:8081',  // STAC API
+  'http://localhost:8082',  // STAC Browser
+  'http://localhost:8083',  // Keycloak
+  'http://localhost:8085',  // Frontend Principal (alt)
+  'http://localhost:9001',  // MinIO Console
+  'http://localhost:5080',  // PyGeoAPI
+  'http://localhost:5555',  // Flower Monitor
+
+  // Workers Cloudflare (inter-worker communication)
+  'https://bgapp-admin-api-worker.majearcasa.workers.dev',
+  'https://bgapp-api-worker.majearcasa.workers.dev',
+  'https://bgapp-stac.majearcasa.workers.dev',
+  'https://bgapp-pygeoapi.majearcasa.workers.dev',
+  'https://bgapp-auth.majearcasa.workers.dev',
+  'https://bgapp-monitor.majearcasa.workers.dev',
+  'https://bgapp-storage.majearcasa.workers.dev',
+  'https://bgapp-workflow.majearcasa.workers.dev'
+];
+
+// Rate Limiting Configuration
+const RATE_LIMIT_REQUESTS = 1000; // requests per hour
+const RATE_LIMIT_WINDOW = 3600; // 1 hour in seconds
+
+/**
+ * Generate fallback vessel detection data for NASA VIIRS simulation
+ */
+function generateFallbackVesselData() {
+  const vessels = [];
+  const numVessels = 10 + Math.floor(Math.random() * 15);
+
+  // Angola EEZ boundaries
+  const bounds = {
+    minLat: -18.02,
+    maxLat: -5.55,
+    minLon: 8.9,
+    maxLon: 13.35
+  };
+
+  for (let i = 0; i < numVessels; i++) {
+    const lat = bounds.minLat + Math.random() * (bounds.maxLat - bounds.minLat);
+    const lon = bounds.minLon + Math.random() * (bounds.maxLon - bounds.minLon);
+
+    // Simulate different vessel types based on radiance
+    const typeRand = Math.random();
+    let radiance;
+    if (typeRand < 0.1) {
+      radiance = 100 + Math.random() * 50; // Industrial
+    } else if (typeRand < 0.3) {
+      radiance = 50 + Math.random() * 50; // Commercial
+    } else {
+      radiance = 10 + Math.random() * 40; // Small/Artisanal
+    }
+
+    vessels.push({
+      id: `vessel_fallback_${i}`,
+      lat: Math.round(lat * 1000) / 1000,
+      lon: Math.round(lon * 1000) / 1000,
+      radiance: Math.round(radiance * 10) / 10,
+      confidence: 0.5 + Math.random() * 0.5,
+      detectionTime: new Date().toISOString(),
+      source: 'fallback_simulation'
+    });
+  }
+
+  return vessels;
+}
+
+/**
+ * Get secure CORS headers
+ */
+function getSecureCORSHeaders(origin) {
+  const isAllowedOrigin = ALLOWED_ORIGINS.includes(origin) ||
+                         origin?.includes('localhost') ||
+                         origin?.includes('127.0.0.1') ||
+                         origin?.includes('.pages.dev') ||
+                         origin?.includes('.workers.dev');
+
+  return {
+    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : 'null',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, X-API-Key',
+    'Access-Control-Max-Age': '86400', // 24 hours
+    'Access-Control-Allow-Credentials': 'true',
+    'Vary': 'Origin',
+
+    // Security Headers
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(self)',
+
+    // Performance Headers
+    'Cache-Control': 'public, max-age=300',
+    'Pragma': 'no-cache'
+  };
+}
+
+/**
+ * Simple rate limiter using in-memory storage
+ */
+class BGAPPRateLimiter {
+  constructor() {
+    this.requests = new Map();
+  }
+
+  async checkLimit(clientId, path) {
+    const key = `${clientId}:${path}`;
+    const now = Date.now();
+    const windowStart = now - (RATE_LIMIT_WINDOW * 1000);
+
+    // Get existing requests for this client/path
+    let clientRequests = this.requests.get(key) || [];
+
+    // Remove old requests outside the window
+    clientRequests = clientRequests.filter(timestamp => timestamp > windowStart);
+
+    // Check if limit exceeded
+    if (clientRequests.length >= RATE_LIMIT_REQUESTS) {
+      return {
+        allowed: false,
+        retryAfter: Math.ceil((clientRequests[0] - windowStart) / 1000)
+      };
+    }
+
+    // Add current request
+    clientRequests.push(now);
+    this.requests.set(key, clientRequests);
+
+    return {
+      allowed: true,
+      retryAfter: 0
+    };
+  }
+}
+
+/**
+ * Enhanced security wrapper for worker requests
+ */
+async function enhanceWorkerSecurity(request, originalHandler, env) {
+  const startTime = Date.now();
+  const origin = request.headers.get('Origin');
+  const clientId = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+  try {
+    // 1. Handle CORS Preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: getSecureCORSHeaders(origin)
+      });
+    }
+
+    // 2. Rate Limiting
+    const rateLimiter = new BGAPPRateLimiter();
+    const rateCheck = await rateLimiter.checkLimit(clientId, new URL(request.url).pathname);
+
+    if (!rateCheck.allowed) {
+      return new Response(JSON.stringify({
+        error: 'Rate limit exceeded',
+        message: 'Too many requests. Please try again later.',
+        retryAfter: rateCheck.retryAfter
+      }), {
+        status: 429,
+        headers: {
+          ...getSecureCORSHeaders(origin),
+          'Content-Type': 'application/json',
+          'Retry-After': rateCheck.retryAfter.toString()
+        }
+      });
+    }
+
+    // 3. Process original request
+    const response = await originalHandler(request, env);
+
+    // 4. Add security headers to response
+    const secureHeaders = getSecureCORSHeaders(origin);
+    Object.entries(secureHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+
+    // 5. Add performance headers
+    response.headers.set('X-BGAPP-Response-Time', `${Date.now() - startTime}ms`);
+    response.headers.set('X-BGAPP-Cache-Status', 'enhanced');
+
+    return response;
+
+  } catch (error) {
+    console.error('BGAPP Security Error:', error);
+
+    return new Response(JSON.stringify({
+      error: 'Internal Server Error',
+      message: 'An error occurred processing your request',
+      requestId: crypto.randomUUID()
+    }), {
+      status: 500,
+      headers: {
+        ...getSecureCORSHeaders(origin),
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+}
 
 // Real Services Status Checker
 async function getRealServicesStatus(env) {
@@ -654,9 +875,18 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-// Handler principal
+// 🔒 Main Export with Enhanced Security Wrapper
 export default {
   async fetch(request, env, ctx) {
+    // Wrap the original handler with CORS security
+    return await enhanceWorkerSecurity(request, async (request, env) => {
+      return await originalFetchHandler(request, env, ctx);
+    }, env);
+  }
+};
+
+// 📋 Original fetch handler extracted for security wrapping
+async function originalFetchHandler(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
       // Debug Copernicus OData call
@@ -1213,6 +1443,20 @@ export default {
       // Real-time data with improved Copernicus integration
       if (path === '/realtime/data' || path === '/api/realtime/data') {
         try {
+          // 🚀 Performance: Try cache first
+          const cached = await env.BGAPP_KV?.get(REALTIME_CACHE_KEY, { type: 'json' });
+          if (cached && cached.cached_at) {
+            const cacheAge = Math.floor((Date.now() - cached.cached_at) / 1000);
+            if (cacheAge < REALTIME_CACHE_TTL) {
+              return jsonResponse({
+                ...cached.data,
+                cache_hit: true,
+                cache_age_seconds: cacheAge,
+                cached_at: new Date(cached.cached_at).toISOString()
+              });
+            }
+          }
+
           // First try to get data from Copernicus Data Space Ecosystem
           let data = await getCopernicusMarineData(env);
           
@@ -1315,8 +1559,20 @@ export default {
             timestamp: new Date().toISOString(),
             data_points: entries.length,
             source: raw.source || 'copernicus_authenticated_angola.json',
-            copernicus_status: raw.copernicus_status || 'unknown'
+            copernicus_status: raw.copernicus_status || 'unknown',
+            cache_hit: false
           };
+
+          // 🚀 Performance: Store in cache for next request
+          try {
+            await env.BGAPP_KV?.put(REALTIME_CACHE_KEY, JSON.stringify({
+              data: response,
+              cached_at: Date.now()
+            }), { expirationTtl: REALTIME_CACHE_TTL });
+          } catch (cacheErr) {
+            console.error('Failed to cache realtime data:', cacheErr);
+            // Continue even if caching fails
+          }
 
           return jsonResponse(response);
         } catch (err) {
@@ -2144,53 +2400,145 @@ export default {
         });
       }
 
-      // NASA Ocean Color Data
-      if (path === '/api/nasa/ocean-color') {
+      // NASA Data Routing - Proxy to dedicated NASA Earthdata Worker
+      // All NASA endpoints are handled by the nasa-earthdata-proxy worker
+      // which includes data retention integration for D1 database storage
+
+      if (path.startsWith('/api/nasa/') || path.startsWith('/nasa/')) {
         try {
-          // Tentar API real da NASA (requer token)
-          const nasaToken = env?.NASA_EARTHDATA_TOKEN;
-          if (nasaToken) {
-            const response = await fetch('https://oceandata.sci.gsfc.nasa.gov/api/file_search?sensor=MODISA&dtype=L3SMI&addurl=1&results_as_file=1&search=*.nc&bbox=8.5,-18.2,17.5,-4.2', {
-              headers: {
-                'Authorization': `Bearer ${nasaToken}`
-              }
+          // Use NASA Earthdata proxy worker if deployed
+          const nasaProxyUrl = env?.NASA_PROXY_URL || 'https://nasa-earthdata-proxy.majearcasa.workers.dev';
+
+          // Extract the NASA endpoint path
+          const nasaEndpoint = path.replace('/api/nasa/', '/nasa/')
+            .replace('/nasa/nasa/', '/nasa/'); // Avoid double /nasa/ prefix
+
+          // Build the full URL with query parameters
+          const targetUrl = new URL(`${nasaProxyUrl}${nasaEndpoint}`);
+          url.searchParams.forEach((value, key) => {
+            targetUrl.searchParams.append(key, value);
+          });
+
+          // Forward the request to NASA proxy worker
+          const proxyResponse = await fetch(targetUrl.toString(), {
+            method: request.method,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Cache-Control': request.headers.get('Cache-Control') || 'max-age=3600'
+            },
+            body: request.method !== 'GET' ? await request.text() : undefined
+          });
+
+          if (proxyResponse.ok) {
+            const nasaData = await proxyResponse.json();
+            return jsonResponse({
+              ...nasaData,
+              proxy_status: 'success',
+              proxy_url: nasaProxyUrl
             });
-            if (response.ok) {
-              const nasaData = await response.json();
-              return jsonResponse({
-                source: 'nasa_real_api',
-                data_type: 'ocean_color',
-                last_updated: new Date().toISOString(),
-                data: nasaData,
-                status: 'success'
-              });
-            }
           }
+
+          // If proxy fails, log and fall back
+          console.error('NASA proxy error:', proxyResponse.status);
         } catch (error) {
-          // NASA API Error - details omitted for security
+          console.error('NASA proxy routing error:', error);
         }
-        
-        // Dados baseados em padrões reais de clorofila para Angola
-        const currentMonth = new Date().getMonth();
-        const upwellingIntensity = currentMonth >= 5 && currentMonth <= 9 ? 1.5 : 0.8; // Upwelling season
-        
+
+        // Fallback for specific endpoints if proxy is not available
+        if (path === '/api/nasa/ocean-color' || path === '/nasa/ocean-color') {
+          // Dados baseados em padrões reais de clorofila para Angola
+          const currentMonth = new Date().getMonth();
+          const upwellingIntensity = currentMonth >= 5 && currentMonth <= 9 ? 1.5 : 0.8; // Upwelling season
+
+          return jsonResponse({
+            source: 'fallback_pattern',
+            data_type: 'ocean_color',
+            region: 'angola_benguela_current',
+            last_updated: new Date().toISOString(),
+            chlorophyll_a: {
+              coastal: (0.8 + Math.random() * 0.4) * upwellingIntensity,
+              offshore: (0.3 + Math.random() * 0.2) * upwellingIntensity,
+              upwelling_zone: (1.2 + Math.random() * 0.8) * upwellingIntensity
+            },
+            turbidity: {
+              river_mouths: 15.5 + Math.random() * 5.0,
+              coastal: 8.2 + Math.random() * 3.0,
+              offshore: 2.1 + Math.random() * 1.0
+            },
+            status: 'fallback_benguela_system',
+            message: 'NASA proxy not available, using pattern-based data'
+          });
+        }
+
+        // Fallback for vessel lights endpoint
+        if (path === '/api/nasa/vessel-lights' || path === '/nasa/vessel-lights') {
+          return jsonResponse({
+            source: 'fallback',
+            data_type: 'vessel_lights',
+            vessels: generateFallbackVesselData(),
+            metadata: {
+              message: 'NASA proxy not available, using simulated data'
+            },
+            timestamp: new Date().toISOString()
+          });
+        }
+
+        // Fallback for SST (Sea Surface Temperature) endpoint
+        if (path === '/api/nasa/sst' || path === '/nasa/sst') {
+          const currentMonth = new Date().getMonth();
+          const seasonalVariation = Math.sin((currentMonth - 2) * Math.PI / 6) * 2.5; // Peak in March
+
+          return jsonResponse({
+            source: 'fallback_pattern',
+            data_type: 'sea_surface_temperature',
+            region: 'angola_benguela_current',
+            last_updated: new Date().toISOString(),
+            temperature: {
+              surface: 22.5 + seasonalVariation + Math.random() * 0.5,
+              subsurface_10m: 21.8 + seasonalVariation * 0.8 + Math.random() * 0.3,
+              subsurface_50m: 19.5 + seasonalVariation * 0.5 + Math.random() * 0.2
+            },
+            anomaly: {
+              surface: -0.3 + Math.random() * 0.6, // Typical range: -0.3°C to +0.3°C
+              note: 'Relative to 30-year climatology'
+            },
+            status: 'fallback_benguela_system',
+            message: 'NASA proxy not available, using pattern-based data'
+          });
+        }
+
+        // Fallback for Salinity endpoint
+        if (path === '/api/nasa/salinity' || path === '/nasa/salinity') {
+          const currentMonth = new Date().getMonth();
+          const rainySeasonEffect = (currentMonth >= 10 || currentMonth <= 3) ? -0.2 : 0.1; // Rainy Oct-Mar
+
+          return jsonResponse({
+            source: 'fallback_pattern',
+            data_type: 'sea_surface_salinity',
+            region: 'angola_benguela_current',
+            last_updated: new Date().toISOString(),
+            salinity: {
+              surface: 35.3 + rainySeasonEffect + Math.random() * 0.15,
+              subsurface_10m: 35.5 + rainySeasonEffect * 0.5 + Math.random() * 0.1,
+              subsurface_50m: 35.7 + Math.random() * 0.05
+            },
+            freshwater_influence: {
+              coastal: 34.8 + rainySeasonEffect * 2 + Math.random() * 0.3,
+              river_plume: 32.5 + rainySeasonEffect * 3 + Math.random() * 0.5
+            },
+            status: 'fallback_benguela_system',
+            message: 'NASA proxy not available, using pattern-based data'
+          });
+        }
+
+        // Default fallback response for other NASA endpoints
         return jsonResponse({
-          source: 'nasa_pattern_based',
-          data_type: 'ocean_color',
-          region: 'angola_benguela_current',
-          last_updated: new Date().toISOString(),
-          chlorophyll_a: {
-            coastal: (0.8 + Math.random() * 0.4) * upwellingIntensity,
-            offshore: (0.3 + Math.random() * 0.2) * upwellingIntensity,
-            upwelling_zone: (1.2 + Math.random() * 0.8) * upwellingIntensity
-          },
-          turbidity: {
-            river_mouths: 15.5 + Math.random() * 5.0,
-            coastal: 8.2 + Math.random() * 3.0,
-            offshore: 2.1 + Math.random() * 1.0
-          },
-          status: 'pattern_based_benguela_system'
-        });
+          error: 'NASA endpoint not available',
+          endpoint: path,
+          fallback: true,
+          message: 'NASA proxy worker not deployed or accessible'
+        }, 503);
       }
 
       // OBIS Marine Biodiversity Data
@@ -2605,7 +2953,19 @@ export default {
           timestamp: new Date().toISOString()
         });
       }
-      
+
+      // Enhanced API Endpoints - New schema integration
+      if (path.startsWith('/api/environmental') ||
+          path.startsWith('/api/vessels') ||
+          path.startsWith('/api/fishing') ||
+          path.startsWith('/api/nasa') ||
+          path.startsWith('/api/maintenance') ||
+          path.startsWith('/api/batch') ||
+          path === '/api/metrics' ||
+          path === '/api/data-freshness') {
+        return await handleEnhancedAPIRoute(request, env, path, request.method);
+      }
+
       // 404 for unknown paths
       return jsonResponse({
         error: 'Endpoint não encontrado',
@@ -2619,5 +2979,4 @@ export default {
         message: error.message
       }, 500);
     }
-  }
-};
+}

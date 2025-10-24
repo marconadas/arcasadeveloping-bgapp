@@ -122,6 +122,10 @@
         "-y",
         "puppeteer-mcp-server"
       ]
+    },
+    "Notion": {
+      "url": "https://mcp.notion.com/mcp",
+      "headers": {}
     }
   }
 }

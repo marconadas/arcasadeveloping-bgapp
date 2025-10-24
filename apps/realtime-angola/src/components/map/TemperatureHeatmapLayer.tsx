@@ -5,6 +5,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import chroma from 'chroma-js';
 import * as turf from '@turf/turf';
+import { filterPointsInEEZ } from '@/utils/eezFilter';
 // Import regular leaflet heat for now until OptimizedHeatLayer is fully compatible
 // import { OptimizedHeatLayer } from '@/lib/leaflet-heat-optimized';
 import 'leaflet.heat';
@@ -40,6 +41,8 @@ export function TemperatureHeatmapLayer({
 }: TemperatureHeatmapLayerProps) {
   const map = useMap();
   const [heatLayer, setHeatLayer] = useState<any | null>(null);
+  const [filteredData, setFilteredData] = useState<TemperatureData[]>([]);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   // Performance monitoring
   const performance = useAnimationPerformance();
@@ -58,8 +61,63 @@ export function TemperatureHeatmapLayer({
     '#FF851B'  // Reserve warmer colors for future data expansion
   ]).domain([18, 25]);
 
+  // Filter data by Angola EEZ polygons
   useEffect(() => {
-    if (!map || !data || data.length === 0 || !visible) {
+    if (!data || data.length === 0) {
+      setFilteredData([]);
+      return;
+    }
+
+    const filterData = async () => {
+      setIsFiltering(true);
+      console.log('[TemperatureHeatmapLayer] Filtering', data.length, 'points by EEZ polygons...');
+
+      try {
+        // Transform data to match filter interface
+        const pointsToFilter = data.map(point => ({
+          ...point,
+          lat: point.lat,
+          lng: point.lon
+        }));
+
+        const filtered = await filterPointsInEEZ(pointsToFilter);
+
+        // Transform back to original interface
+        const filteredTemperatureData = filtered.map(point => ({
+          lat: point.lat,
+          lon: point.lng,
+          temperature: point.temperature
+        })) as TemperatureData[];
+
+        setFilteredData(filteredTemperatureData);
+        console.log('[TemperatureHeatmapLayer] Polygon filtering complete:', {
+          input: data.length,
+          output: filteredTemperatureData.length,
+          removed: data.length - filteredTemperatureData.length
+        });
+      } catch (error) {
+        console.error('[TemperatureHeatmapLayer] Error filtering by polygons:', error);
+        // Fallback to using all data if filtering fails
+        setFilteredData(data);
+      } finally {
+        setIsFiltering(false);
+      }
+    };
+
+    filterData();
+  }, [data]);
+
+  useEffect(() => {
+    console.log('[TemperatureHeatmapLayer] Rendering with:', {
+      hasMap: !!map,
+      visible,
+      originalDataLength: data?.length || 0,
+      filteredDataLength: filteredData?.length || 0,
+      isFiltering,
+      opacity
+    });
+
+    if (!map || !visible || !filteredData || filteredData.length === 0 || isFiltering) {
       // Remove existing layer using safe removal
       if (heatLayer) {
         heatLayer.remove();
@@ -74,21 +132,8 @@ export function TemperatureHeatmapLayer({
       setHeatLayer(null);
     }
 
-    // Filter data to only include points within EEZ if boundary is provided
-    // This handles both Polygon and MultiPolygon (including Cabinda)
-    let filteredData = data;
-    if (eezBoundary && eezBoundary.geometry) {
-      filteredData = data.filter(point => {
-        const pointFeature = turf.point([point.lon, point.lat]);
-        try {
-          // turf.booleanPointInPolygon handles both Polygon and MultiPolygon
-          return turf.booleanPointInPolygon(pointFeature, eezBoundary as any);
-        } catch (e) {
-          console.warn('Point-in-polygon check failed for point:', point, e);
-          return false; // Exclude point if check fails
-        }
-      });
-    }
+    // Data is now filtered by Angola EEZ POLYGONS (not just bounding box)
+    // Uses real geometry from angola_eez.json (Continental + Cabinda polygons)
 
     // Calculate min/max from actual data for better normalization
     const temperatures = filteredData.map(p => p.temperature);
@@ -118,23 +163,23 @@ export function TemperatureHeatmapLayer({
       }
 
       newHeatLayer = L.heatLayer(heatPoints, {
-        radius: 60,     // Larger radius for better coverage
-        blur: 40,       // More blur for seamless transitions
+        radius: 80,     // Increased radius for smoother coverage
+        blur: 60,       // Increased blur for more seamless gradients
         maxZoom: 18,
         max: 1.0,
-        minOpacity: opacity * 0.3,
+        minOpacity: opacity * 0.4,
         gradient: {
-          0.0:  '#000080',  // Navy blue - coldest
-          0.1:  '#0040FF',  // Blue
-          0.2:  '#0080FF',  // Light blue
-          0.3:  '#00C0FF',  // Cyan
-          0.4:  '#00FFFF',  // Pure cyan
-          0.5:  '#40FF80',  // Cyan-green
-          0.6:  '#80FF40',  // Green-yellow
-          0.7:  '#FFFF00',  // Yellow
-          0.8:  '#FF8000',  // Orange
-          0.9:  '#FF4000',  // Red-orange
-          1.0:  '#FF0000'   // Red - hottest
+          0.0:  '#0D0887',  // Deep purple-blue (viridis coldest)
+          0.15: '#4506A9',  // Dark purple
+          0.25: '#6A00A8',  // Purple
+          0.35: '#900DA4',  // Purple-magenta
+          0.45: '#B12A90',  // Magenta
+          0.55: '#CC4778',  // Pink-red
+          0.65: '#E16462',  // Coral
+          0.75: '#F1844B',  // Orange-coral
+          0.85: '#FCA636',  // Golden orange
+          0.95: '#FCCE25',  // Yellow
+          1.0:  '#F0F921'   // Bright yellow (viridis warmest)
         }
       });
 
@@ -155,7 +200,7 @@ export function TemperatureHeatmapLayer({
         newHeatLayer.remove();
       }
     };
-  }, [map, data, visible, opacity, eezBoundary]);
+  }, [map, filteredData, visible, opacity, isFiltering]);
 
   // Separate animation effect using the optimized hook
   useAnimationFrame(

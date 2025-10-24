@@ -1,0 +1,48 @@
+{
+  "agents": {
+    "api-data-monitor": {
+      "enabled": true,
+      "description": "Monitors incoming API data quality and performance",
+      "tools": {
+        "allowed": [
+          "Bash",
+          "Read",
+          "WebFetch",
+          "mcp__cloudflare__worker_list",
+          "mcp__cloudflare__kv_list",
+          "mcp__cloudflare__get_kvs",
+          "mcp__sentry__whoami",
+          "mcp__sentry__search_events"
+        ],
+        "disallowed": [
+          "Write",
+          "Edit",
+          "mcp__cloudflare__worker_deploy"
+        ]
+      },
+      "permissions": {
+        "mode": "allow_listed",
+        "requireApproval": false
+      }
+    }
+  },
+  "hooks": {
+    "api_monitor": {
+      "description": "Trigger API monitoring on specific events",
+      "enabled": true,
+      "events": ["tool_use"],
+      "filters": {
+        "toolNames": ["WebFetch", "Bash"]
+      },
+      "command": "echo 'API monitoring triggered: {toolName}' >> .claude/monitoring.log"
+    }
+  },
+  "monitoring": {
+    "logDirectory": ".claude/logs/",
+    "alertThresholds": {
+      "responseTime": 2000,
+      "errorRate": 0.01,
+      "dataFreshness": 86400
+    }
+  }
+}

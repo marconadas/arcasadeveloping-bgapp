@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer Visualization Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 20px;
+            background: #f0f4f8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .status-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-card h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .data-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        #console {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .log-entry {
+            margin: 4px 0;
+            padding: 2px 0;
+        }
+        .log-entry.success { color: #34d399; }
+        .log-entry.error { color: #f87171; }
+        .log-entry.warning { color: #fbbf24; }
+        .log-entry.info { color: #60a5fa; }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 BGAPP Layer Visualization Test</h1>
+
+        <div style="margin-bottom: 20px;">
+            <button onclick="checkAllAPIs()">Check All APIs</button>
+            <button onclick="testLayerData()">Test Layer Data Flow</button>
+            <button onclick="clearConsole()">Clear Console</button>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>🌡️ SST (Temperature)</h3>
+                <div id="sst-status">Loading...</div>
+            </div>
+
+            <div class="status-card">
+                <h3>🟢 Ocean Color (Chlorophyll)</h3>
+                <div id="ocean-color-status">Loading...</div>
+            </div>
+
+            <div class="status-card">
+                <h3>💧 Salinity</h3>
+                <div id="salinity-status">Loading...</div>
+            </div>
+
+            <div class="status-card">
+                <h3>🤖 ML Predictions</h3>
+                <div id="ml-status">Loading...</div>
+            </div>
+        </div>
+
+        <h2>Console Output</h2>
+        <div id="console"></div>
+
+        <h2>Layer Visibility Analysis</h2>
+        <div id="analysis" class="status-card"></div>
+    </div>
+
+    <script>
+        const ANGOLA_EEZ = {
+            minLat: -18.02,
+            maxLat: -5.55,
+            minLon: 8.9,
+            maxLon: 13.35
+        };
+
+        function log(message, type = 'info') {
+            const console = document.getElementById('console');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            console.appendChild(entry);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '';
+            log('Console cleared', 'info');
+        }
+
+        async function checkAPI(endpoint, name, statusId) {
+            const statusDiv = document.getElementById(statusId);
+            try {
+                log(`Fetching ${name} data...`, 'info');
+                const response = await fetch(`http://localhost:3002${endpoint}`);
+                const data = await response.json();
+
+                const count = data.data ? data.data.length : 0;
+                const metadata = data.metadata || {};
+
+                statusDiv.innerHTML = `
+                    <div class="data-item success">
+                        ✅ Status: ${response.status} OK
+                    </div>
+                    <div class="data-item">
+                        📊 Records: ${count}
+                    </div>
+                    <div class="data-item">
+                        📍 Source: ${metadata.source || 'Unknown'}
+                    </div>
+                    ${data.data && data.data[0] ? `
+                        <div class="data-item">
+                            🔍 Sample: Lat ${data.data[0].latitude?.toFixed(2)}, Lon ${data.data[0].longitude?.toFixed(2)}
+                        </div>
+                    ` : ''}
+                `;
+
+                log(`✅ ${name}: ${count} records fetched`, 'success');
+
+                // Check if data is within EEZ
+                if (data.data && data.data.length > 0) {
+                    const inEEZ = data.data.filter(point =>
+                        point.latitude >= ANGOLA_EEZ.minLat &&
+                        point.latitude <= ANGOLA_EEZ.maxLat &&
+                        point.longitude >= ANGOLA_EEZ.minLon &&
+                        point.longitude <= ANGOLA_EEZ.maxLon
+                    ).length;
+
+                    const percentage = ((inEEZ / data.data.length) * 100).toFixed(1);
+                    log(`📍 ${name}: ${inEEZ}/${data.data.length} points (${percentage}%) within Angola EEZ`, 'info');
+                }
+
+                return data;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="data-item error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+                log(`❌ ${name}: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function checkAllAPIs() {
+            log('Starting API checks...', 'info');
+
+            await checkAPI('/api/environmental/sst?limit=100&bbox=-18.02,8.9,-5.55,13.35', 'SST', 'sst-status');
+            await checkAPI('/api/environmental/ocean-color?limit=100&bbox=-18.02,8.9,-5.55,13.35', 'Ocean Color', 'ocean-color-status');
+            await checkAPI('/api/environmental/salinity?limit=100&bbox=-18.02,8.9,-5.55,13.35', 'Salinity', 'salinity-status');
+            await checkAPI('/api/ml/predictions?limit=100', 'ML Predictions', 'ml-status');
+
+            log('API checks complete!', 'success');
+        }
+
+        async function testLayerData() {
+            log('Testing layer data flow...', 'info');
+
+            // Fetch ocean color data and simulate transformation
+            const oceanColorResponse = await fetch('http://localhost:3002/api/environmental/ocean-color?limit=10&bbox=-18.02,8.9,-5.55,13.35');
+            const oceanColorResult = await oceanColorResponse.json();
+
+            if (oceanColorResult.data) {
+                // Simulate the transformation from RealTimeMap.tsx
+                const chlorophyllData = oceanColorResult.data.map(point => ({
+                    lat: point.latitude,
+                    lng: point.longitude,
+                    value: point.chlorophyll_a,
+                    chlorophyll: point.chlorophyll_a,
+                    timestamp: point.timestamp,
+                    quality: point.quality_flag && point.quality_flag > 0.8 ? 'high' :
+                             point.quality_flag && point.quality_flag > 0.5 ? 'medium' : 'low'
+                }));
+
+                log(`🔄 Ocean Color → Chlorophyll transformation: ${oceanColorResult.data.length} → ${chlorophyllData.length} points`, 'success');
+
+                // Log the console output that would appear in React
+                log('[RealTimeMap] Ocean Color Data: { hasData: true, length: ' + oceanColorResult.data.length + ' }', 'info');
+                log('[RealTimeMap] Transformed Chlorophyll Data: { length: ' + chlorophyllData.length + ' }', 'info');
+                log('[RealTimeMap] Rendering Chlorophyll Layer: { isActive: true, dataLength: ' + chlorophyllData.length + ' }', 'info');
+                log('[ChlorophyllCircleLayer] Creating layer group with ' + chlorophyllData.length + ' points', 'success');
+            }
+
+            // Test salinity data
+            const salinityResponse = await fetch('http://localhost:3002/api/environmental/salinity?limit=10&bbox=-18.02,8.9,-5.55,13.35');
+            const salinityResult = await salinityResponse.json();
+
+            if (salinityResult.data) {
+                log('[SalinityLayer] Rendering with: { dataLength: ' + salinityResult.data.length + ', visible: true }', 'info');
+                log('[SalinityLayer] Creating layer group with ' + salinityResult.data.length + ' points', 'success');
+            }
+
+            analyzeLayerVisibility();
+        }
+
+        function analyzeLayerVisibility() {
+            const analysisDiv = document.getElementById('analysis');
+
+            analysisDiv.innerHTML = `
+                <h3>🔍 Layer Visibility Analysis</h3>
+                <div class="data-item">
+                    <strong>Expected Behavior:</strong>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>✅ SST/Temperature layer: Should show heatmap with gradients</li>
+                        <li>✅ Ocean Color/Chlorophyll: Should show colored circles</li>
+                        <li>✅ Salinity: Should show circles with PSU color scale</li>
+                        <li>✅ ML Predictions: Should show prediction markers</li>
+                    </ul>
+                </div>
+                <div class="data-item warning">
+                    <strong>⚠️ Known Issues:</strong>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>EEZ filtering might be removing valid points</li>
+                        <li>Layer rendering depends on 'activeLayers' state</li>
+                        <li>Check if 'chloropleth' is in activeLayers (not 'chlorophyll')</li>
+                    </ul>
+                </div>
+                <div class="data-item info">
+                    <strong>💡 Debug Steps:</strong>
+                    <ol style="margin: 10px 0; padding-left: 20px;">
+                        <li>Open browser DevTools (F12)</li>
+                        <li>Go to Console tab</li>
+                        <li>Look for [ChlorophyllCircleLayer] and [SalinityLayer] logs</li>
+                        <li>Check for "After EEZ filtering: 0 points remain" warning</li>
+                        <li>Verify activeLayers includes correct layer IDs</li>
+                    </ol>
+                </div>
+            `;
+
+            log('Layer visibility analysis complete', 'success');
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            log('Test page loaded', 'info');
+            checkAllAPIs();
+        });
+    </script>
+</body>
+</html>

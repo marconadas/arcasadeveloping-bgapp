@@ -1,0 +1,46 @@
+name = "nasa-earthdata-proxy"
+main = "nasa-earthdata-proxy.js"
+compatibility_date = "2024-01-01"
+
+# Worker configuration
+workers_dev = true
+
+# Environment variables (non-sensitive)
+[vars]
+NASA_API_RATE_LIMIT = "1000"
+NASA_CACHE_TTL = "86400"
+NASA_API_VERSION = "1.0.0"
+
+# KV namespace bindings for caching
+[[kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+# D1 database binding for persistent storage
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# Routes configuration removed - worker will be accessible at nasa-earthdata-proxy.majearcasa.workers.dev
+# Routes will be handled by the main API worker proxy
+
+# Development environment
+[env.development]
+vars = { NASA_API_RATE_LIMIT = "100", NASA_CACHE_TTL = "3600" }
+
+# Production environment
+[env.production]
+vars = { NASA_API_RATE_LIMIT = "1000", NASA_CACHE_TTL = "86400" }
+
+# Build configuration
+[build]
+command = ""
+watch_paths = ["nasa-earthdata-proxy.js"]
+
+# Compatibility flags for latest features
+compatibility_flags = ["nodejs_compat"]
+
+# Limits configuration removed for Free plan compatibility
+# [limits]
+# cpu_ms = 50

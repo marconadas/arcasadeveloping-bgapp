@@ -1,0 +1,16 @@
+name = "diagnose-d1-data"
+main = "diagnose-d1-data.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+[env.production]
+name = "diagnose-d1-data"
+
+[env.development]
+name = "diagnose-d1-data-dev"
+

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { MAP_LAYERS, DEFAULT_LAYER, LAYER_DESCRIPTIONS, type MapLayerConfig } from '@/lib/map-layers';
+import { MAP_LAYERS, DEFAULT_LAYER, LAYER_DESCRIPTIONS } from '@/lib/map-layers';
 import { ChevronDown, ChevronUp, Map } from 'lucide-react';
 
 interface BaseMapSelectorProps {

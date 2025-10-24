@@ -3,11 +3,37 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { RealtimeState, MarineData, VesselData, ChloroplethData } from '@/lib/types';
 import { API_ENDPOINTS, REFRESH_INTERVALS } from '@/lib/constants';
+import {
+  fetchSSTData,
+  fetchOceanColorData,
+  fetchSalinityData,
+  fetchVesselLightsData,
+  fetchMLPredictions,
+  fetchVesselPresence,
+  fetchWeatherGrid,
+  fetchCurrentWeather,
+  EnhancedSSTData,
+  EnhancedOceanColorData,
+  EnhancedSalinityData,
+  VesselLightsData,
+  MLPrediction,
+  WeatherData,
+  WeatherGrid
+} from '@/services/enhancedDataService';
 
 interface RealtimeContextType extends RealtimeState {
   refreshData: () => Promise<void>;
   toggleLayer: (layerId: string) => void;
   activeLayers: string[];
+  // Enhanced data from D1 database
+  sstData: EnhancedSSTData[];
+  oceanColorData: EnhancedOceanColorData[];
+  salinityData: EnhancedSalinityData[];
+  vesselLightsData: VesselLightsData[];
+  mlPredictions: MLPrediction[];
+  // Weather data
+  weatherGrid: WeatherGrid[];
+  currentWeather: WeatherData | null;
 }
 
 const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined);
@@ -34,7 +60,25 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
     lastUpdate: null
   });
 
-  const [activeLayers, setActiveLayers] = useState<string[]>(['vessels', 'temperature']);
+  const [activeLayers, setActiveLayers] = useState<string[]>([
+    'vessels',
+    'temperature',
+    'salinity',
+    'ml-predictions',
+    'nasa-vessel-lights',
+    'boundaries'
+  ]);
+
+  // Enhanced data state
+  const [sstData, setSstData] = useState<EnhancedSSTData[]>([]);
+  const [oceanColorData, setOceanColorData] = useState<EnhancedOceanColorData[]>([]);
+  const [salinityData, setSalinityData] = useState<EnhancedSalinityData[]>([]);
+  const [vesselLightsData, setVesselLightsData] = useState<VesselLightsData[]>([]);
+  const [mlPredictions, setMlPredictions] = useState<MLPrediction[]>([]);
+
+  // Weather data state
+  const [weatherGrid, setWeatherGrid] = useState<WeatherGrid[]>([]);
+  const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
 
   const fetchMarineData = useCallback(async (): Promise<MarineData | null> => {
     try {
@@ -118,12 +162,35 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const [marineData, vessels, chloroplethData] = await Promise.all([
+      // Angola EEZ bounding box
+      const angolaEEZ = '-18.02,8.9,-5.55,13.35';
+
+      // Fetch all data types in parallel
+      const [
+        marineData,
+        vessels,
+        chloroplethData,
+        sst,
+        oceanColor,
+        salinity,
+        vesselLights,
+        mlPreds,
+        weather,
+        currentWeatherData
+      ] = await Promise.all([
         fetchMarineData(),
         fetchVesselData(),
-        fetchChloroplethData()
+        fetchChloroplethData(),
+        fetchSSTData(angolaEEZ, 2000),
+        fetchOceanColorData(angolaEEZ, 2000),
+        fetchSalinityData(angolaEEZ, 1000),
+        fetchVesselLightsData(angolaEEZ, 500),
+        fetchMLPredictions(undefined, 500),
+        fetchWeatherGrid(angolaEEZ),
+        fetchCurrentWeather(-12.5, 13.0) // Angola center point
       ]);
 
+      // Update all state
       setState(prev => ({
         ...prev,
         marineData,
@@ -132,6 +199,18 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
         isLoading: false,
         lastUpdate: new Date()
       }));
+
+      // Update enhanced data state
+      setSstData(sst);
+      setOceanColorData(oceanColor);
+      setSalinityData(salinity);
+      setVesselLightsData(vesselLights);
+      setMlPredictions(mlPreds);
+
+      // Update weather data state
+      setWeatherGrid(weather);
+      setCurrentWeather(currentWeatherData);
+
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -142,18 +221,20 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
   }, [fetchMarineData, fetchVesselData, fetchChloroplethData]);
 
   const toggleLayer = useCallback((layerId: string) => {
-    setActiveLayers(prev =>
-      prev.includes(layerId)
+    setActiveLayers(prev => {
+      const isActive = prev.includes(layerId);
+      const newLayers = isActive
         ? prev.filter(id => id !== layerId)
-        : [...prev, layerId]
-    );
+        : [...prev, layerId];
+      return newLayers;
+    });
   }, []);
 
   // Auto-refresh dos dados
   useEffect(() => {
     refreshData();
 
-    const marineInterval = setInterval(fetchMarineData, REFRESH_INTERVALS.realtime);
+    const marineInterval = setInterval(fetchMarineData, REFRESH_INTERVALS.marine);
     const vesselInterval = setInterval(fetchVesselData, REFRESH_INTERVALS.vessels);
 
     return () => {
@@ -166,7 +247,14 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
     ...state,
     refreshData,
     toggleLayer,
-    activeLayers
+    activeLayers,
+    sstData,
+    oceanColorData,
+    salinityData,
+    vesselLightsData,
+    mlPredictions,
+    weatherGrid,
+    currentWeather
   };
 
   return (
