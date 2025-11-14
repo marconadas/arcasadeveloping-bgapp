@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "include": [
+    "/BGAPP/*"
+  ],
+  "exclude": [
+    "/_next/*",
+    "/api/*"
+  ]
+}

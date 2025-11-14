@@ -1,6 +1,9 @@
 # BGAPP - Redirects para arcasadeveloping.org/BGAPP
 # Configuração para Cloudflare Pages
 
+# Servir arquivos estáticos do BGAPP diretamente
+/BGAPP/*                 /BGAPP/:splat          200!
+
 # Redirect root para BGAPP
 /                        /BGAPP/                301
 
