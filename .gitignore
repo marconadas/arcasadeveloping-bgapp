@@ -14,6 +14,8 @@ venv/
 out/
 dist/
 build/
+_next/
+_next.backup/
 
 # Environment files
 .env
