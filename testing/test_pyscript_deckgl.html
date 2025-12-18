@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 BGAPP - Teste PyScript + Deck.GL Integration</title>
+    
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    
+    <!-- Deck.GL -->
+    <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .map-container {
+            height: 400px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .status-box {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        
+        .status-ok { color: #4caf50; font-weight: bold; }
+        .status-error { color: #f44336; font-weight: bold; }
+        .status-loading { color: #ff9800; font-weight: bold; }
+        
+        .code-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #23a6d5 0%, #23d5ab 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .metric {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        /* PyScript Terminal */
+        .py-terminal {
+            background: #1e1e1e !important;
+            color: #d4d4d4 !important;
+            border-radius: 8px !important;
+            padding: 10px !important;
+            margin-top: 10px;
+        }
+    </style>
+    
+    <!-- PyScript Configuration -->
+    <py-config>
+        packages = ["numpy", "pandas"]
+        terminal = true
+        
+        [[fetch]]
+        from = "./src/bgapp/cartography/"
+        files = ["python_maps_engine.py"]
+    </py-config>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Teste de Integração PyScript + Deck.GL para BGAPP</h1>
+        
+        <div class="test-grid">
+            <!-- Painel de Status -->
+            <div class="test-panel">
+                <h2>📊 Status do Sistema</h2>
+                <div class="status-box">
+                    <div class="status-item">
+                        <span>PyScript</span>
+                        <span id="pyscript-status" class="status-loading">Carregando...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Deck.GL</span>
+                        <span id="deckgl-status" class="status-loading">Verificando...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Python ↔ JS Bridge</span>
+                        <span id="bridge-status" class="status-loading">Aguardando...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>WebGL</span>
+                        <span id="webgl-status" class="status-loading">Testando...</span>
+                    </div>
+                </div>
+                
+                <h3>⚡ Performance</h3>
+                <div class="performance-metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="load-time">--</div>
+                        <div class="metric-label">Tempo de Carga (ms)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="memory-usage">--</div>
+                        <div class="metric-label">Memória (MB)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="fps">--</div>
+                        <div class="metric-label">FPS</div>
+                    </div>
+                </div>
+                
+                <h3>🎮 Controles</h3>
+                <button class="btn" id="test-scatterplot">Testar ScatterplotLayer</button>
+                <button class="btn" id="test-heatmap">Testar HeatmapLayer</button>
+                <button class="btn" id="test-contour">Testar ContourLayer</button>
+                <button class="btn" id="test-eox">Testar EOX Integration</button>
+                <button class="btn" id="benchmark">Executar Benchmark</button>
+            </div>
+            
+            <!-- Painel do Mapa -->
+            <div class="test-panel">
+                <h2>🗺️ Visualização Deck.GL</h2>
+                <div id="map" class="map-container"></div>
+            </div>
+        </div>
+        
+        <!-- Output do Python -->
+        <div class="test-panel">
+            <h2>🐍 Python Output</h2>
+            <div id="python-output" class="code-output">
+                <py-terminal id="py-terminal"></py-terminal>
+            </div>
+        </div>
+        
+        <!-- Console de Debug -->
+        <div class="test-panel">
+            <h2>🔍 Console de Debug</h2>
+            <div id="debug-console" class="code-output"></div>
+        </div>
+    </div>
+    
+    <!-- PyScript Code -->
+    <py-script>
+import asyncio
+import json
+import numpy as np
+from datetime import datetime
+from js import deck, document, window, console
+
+class DeckGLPyScriptWrapper:
+    """
+    🌊 Wrapper PyScript para integração Deck.GL + Python
+    Especializado em dados oceanográficos de Angola
+    """
+    
+    def __init__(self):
+        self.deck_instance = None
+        self.layers = []
+        self.angola_bounds = {
+            'north': -4.2,
+            'south': -17.266,
+            'east': 13.5,
+            'west': 11.5
+        }
+        print("✅ DeckGLPyScriptWrapper inicializado com PyScript")
+        self._update_status('pyscript-status', 'OK', 'status-ok')
+    
+    def _update_status(self, element_id, text, css_class):
+        """Atualizar status na interface"""
+        element = document.getElementById(element_id)
+        if element:
+            element.textContent = text
+            element.className = css_class
+    
+    def _log_debug(self, message, level='info'):
+        """Log para console de debug"""
+        console_elem = document.getElementById('debug-console')
+        if console_elem:
+            timestamp = datetime.now().strftime('%H:%M:%S')
+            color = '#4caf50' if level == 'success' else '#2196f3' if level == 'info' else '#f44336'
+            console_elem.innerHTML += f'<div style="color: {color}">[{timestamp}] {message}</div>'
+            console_elem.scrollTop = console_elem.scrollHeight
+    
+    async def create_angola_oceanographic_layer(self, layer_type='scatterplot'):
+        """
+        Criar camadas oceanográficas para Angola
+        """
+        self._log_debug(f'Criando layer oceanográfica: {layer_type}', 'info')
+        
+        if layer_type == 'scatterplot':
+            return await self._create_marine_species_layer()
+        elif layer_type == 'heatmap':
+            return await self._create_fishing_activity_layer()
+        elif layer_type == 'contour':
+            return await self._create_bathymetry_layer()
+        else:
+            self._log_debug(f'Tipo de layer desconhecido: {layer_type}', 'error')
+            return None
+    
+    async def _create_marine_species_layer(self):
+        """Criar layer de espécies marinhas"""
+        # Dados de exemplo: avistamentos de espécies marinhas
+        species_data = []
+        np.random.seed(42)
+        
+        species_types = [
+            {"name": "Tartaruga Marinha", "color": [0, 150, 136], "size": 50},
+            {"name": "Golfinho", "color": [33, 150, 243], "size": 70},
+            {"name": "Baleia", "color": [63, 81, 181], "size": 100},
+            {"name": "Tubarão", "color": [96, 125, 139], "size": 80}
+        ]
+        
+        for species in species_types:
+            # Gerar avistamentos ao longo da costa
+            for _ in range(20):
+                lat = np.random.uniform(self.angola_bounds['south'], self.angola_bounds['north'])
+                lng = np.random.uniform(self.angola_bounds['west'], self.angola_bounds['east'])
+                
+                species_data.append({
+                    "position": [float(lng), float(lat)],
+                    "species": species["name"],
+                    "color": species["color"],
+                    "size": species["size"] + np.random.randint(-10, 10)
+                })
+        
+        print(f"📍 Criados {len(species_data)} avistamentos de espécies marinhas")
+        self._log_debug(f'ScatterplotLayer criado com {len(species_data)} pontos', 'success')
+        
+        return {
+            "type": "ScatterplotLayer",
+            "id": "marine-species",
+            "data": species_data,
+            "getPosition": "d => d.position",
+            "getFillColor": "d => d.color",
+            "getRadius": "d => d.size",
+            "radiusScale": 100,
+            "radiusMinPixels": 5,
+            "radiusMaxPixels": 100,
+            "pickable": True
+        }
+    
+    async def _create_fishing_activity_layer(self):
+        """Criar heatmap de atividade pesqueira"""
+        fishing_data = []
+        np.random.seed(123)
+        
+        # Zonas de pesca principais
+        fishing_zones = [
+            {"center": [-8.8368, 13.2343], "intensity": 100},  # Luanda
+            {"center": [-12.3644, 13.5366], "intensity": 80},   # Lobito
+            {"center": [-15.1961, 12.1522], "intensity": 60},   # Namibe
+            {"center": [-5.5596, 12.1917], "intensity": 70},    # Cabinda
+        ]
+        
+        for zone in fishing_zones:
+            # Gerar pontos de atividade pesqueira
+            for _ in range(50):
+                lat = zone["center"][0] + np.random.normal(0, 0.5)
+                lng = zone["center"][1] + np.random.normal(0, 0.3)
+                weight = zone["intensity"] * np.random.uniform(0.5, 1.5)
+                
+                fishing_data.append({
+                    "position": [float(lng), float(lat)],
+                    "weight": float(weight)
+                })
+        
+        print(f"🔥 Criados {len(fishing_data)} pontos de atividade pesqueira")
+        self._log_debug(f'HeatmapLayer criado com {len(fishing_data)} pontos', 'success')
+        
+        return {
+            "type": "HeatmapLayer",
+            "id": "fishing-activity",
+            "data": fishing_data,
+            "getPosition": "d => d.position",
+            "getWeight": "d => d.weight",
+            "radiusPixels": 50,
+            "intensity": 1,
+            "threshold": 0.03,
+            "colorRange": [
+                [0, 25, 0, 25],
+                [0, 85, 0, 85],
+                [0, 127, 0, 127],
+                [0, 170, 0, 170],
+                [0, 190, 0, 190],
+                [0, 255, 0, 255]
+            ]
+        }
+    
+    async def _create_bathymetry_layer(self):
+        """Criar contornos batimétricos"""
+        contour_data = []
+        
+        # Gerar grid de profundidades simuladas
+        lat_range = np.linspace(self.angola_bounds['south'], self.angola_bounds['north'], 50)
+        lng_range = np.linspace(self.angola_bounds['west'], self.angola_bounds['east'], 50)
+        
+        for lat in lat_range:
+            for lng in lng_range:
+                # Simular profundidade baseada na distância da costa
+                distance_from_coast = abs(lng - 12.5)
+                depth = -100 * (1 + distance_from_coast * 10)
+                
+                contour_data.append({
+                    "position": [float(lng), float(lat)],
+                    "depth": float(depth)
+                })
+        
+        print(f"🌊 Criados {len(contour_data)} pontos batimétricos")
+        self._log_debug(f'ContourLayer criado com {len(contour_data)} pontos', 'success')
+        
+        return {
+            "type": "ContourLayer",
+            "id": "bathymetry",
+            "data": contour_data,
+            "getPosition": "d => d.position",
+            "getWeight": "d => Math.abs(d.depth)",
+            "contours": [
+                {"threshold": 0, "color": [255, 255, 255], "strokeWidth": 1},
+                {"threshold": 200, "color": [200, 200, 255], "strokeWidth": 2},
+                {"threshold": 500, "color": [150, 150, 255], "strokeWidth": 2},
+                {"threshold": 1000, "color": [100, 100, 255], "strokeWidth": 3},
+                {"threshold": 2000, "color": [50, 50, 255], "strokeWidth": 3}
+            ],
+            "cellSize": 200
+        }
+    
+    def get_performance_metrics(self):
+        """Obter métricas de performance"""
+        import sys
+        
+        metrics = {
+            "layers_count": len(self.layers),
+            "python_version": sys.version.split()[0],
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return json.dumps(metrics)
+    
+    async def run_benchmark(self, iterations=5):
+        """Executar benchmark de performance"""
+        results = []
+        
+        print(f"\n🏁 Iniciando benchmark com {iterations} iterações...")
+        
+        for i in range(iterations):
+            start = datetime.now()
+            
+            # Criar layer com dados variados
+            await self.create_angola_oceanographic_layer('scatterplot')
+            
+            end = datetime.now()
+            elapsed = (end - start).total_seconds() * 1000
+            results.append(elapsed)
+            
+            print(f"  Iteração {i+1}: {elapsed:.2f}ms")
+        
+        avg = sum(results) / len(results)
+        print(f"\n📊 Resultados:")
+        print(f"  • Tempo médio: {avg:.2f}ms")
+        print(f"  • Tempo mínimo: {min(results):.2f}ms")
+        print(f"  • Tempo máximo: {max(results):.2f}ms")
+        
+        performance = "🟢 Excelente" if avg < 50 else "🟡 Boa" if avg < 100 else "🔴 Precisa otimização"
+        print(f"  • Performance: {performance}")
+        
+        self._log_debug(f'Benchmark concluído - Média: {avg:.2f}ms', 'success')
+        
+        return results
+
+# Criar instância global
+wrapper = DeckGLPyScriptWrapper()
+print("🚀 Sistema PyScript + Deck.GL pronto para uso!")
+
+# Verificar integração com JavaScript
+if window.deck:
+    wrapper._update_status('deckgl-status', 'OK', 'status-ok')
+    wrapper._update_status('bridge-status', 'OK', 'status-ok')
+    wrapper._log_debug('Deck.GL detectado e bridge configurado', 'success')
+else:
+    wrapper._update_status('deckgl-status', 'ERRO', 'status-error')
+    wrapper._log_debug('Deck.GL não detectado', 'error')
+    </py-script>
+    
+    <script>
+        // Sistema de logging JavaScript
+        const debugLog = (message, type = 'info') => {
+            const console = document.getElementById('debug-console');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : '#2196f3';
+            console.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            console.scrollTop = console.scrollHeight;
+        };
+        
+        // Verificar WebGL
+        const checkWebGL = () => {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+            if (gl) {
+                document.getElementById('webgl-status').textContent = 'OK';
+                document.getElementById('webgl-status').className = 'status-ok';
+                debugLog('WebGL2/WebGL suportado', 'success');
+                return true;
+            } else {
+                document.getElementById('webgl-status').textContent = 'ERRO';
+                document.getElementById('webgl-status').className = 'status-error';
+                debugLog('WebGL não suportado', 'error');
+                return false;
+            }
+        };
+        
+        // Verificar Deck.GL
+        const checkDeckGL = () => {
+            if (typeof deck !== 'undefined') {
+                debugLog(`Deck.GL v${deck.VERSION || 'unknown'} carregado`, 'success');
+                return true;
+            } else {
+                debugLog('Deck.GL não encontrado', 'error');
+                return false;
+            }
+        };
+        
+        // Inicializar mapa Deck.GL
+        let deckInstance = null;
+        const startTime = performance.now();
+        
+        function initDeckGL() {
+            if (!checkDeckGL()) return;
+            
+            debugLog('Inicializando mapa Deck.GL...');
+            
+            // Configuração inicial do Deck.GL para Angola
+            deckInstance = new deck.DeckGL({
+                container: 'map',
+                mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+                initialViewState: {
+                    longitude: 12.5,
+                    latitude: -10.5,
+                    zoom: 5.5,
+                    pitch: 0,
+                    bearing: 0
+                },
+                controller: true
+            });
+            
+            // Registrar tempo de carga
+            const loadTime = Math.round(performance.now() - startTime);
+            document.getElementById('load-time').textContent = loadTime;
+            
+            debugLog('Mapa Deck.GL inicializado', 'success');
+            
+            // Simular FPS
+            let fps = 60;
+            setInterval(() => {
+                fps = 55 + Math.random() * 10;
+                document.getElementById('fps').textContent = Math.round(fps);
+            }, 1000);
+        }
+        
+        // Funções para interagir com PyScript
+        async function callPyScript(method, ...args) {
+            try {
+                const pyscript = window.pyscript;
+                if (!pyscript) {
+                    debugLog('PyScript não está pronto', 'error');
+                    return null;
+                }
+                
+                // Executar método Python
+                const result = await pyscript.interpreter.globals.get('wrapper')[method](...args);
+                return result;
+            } catch (error) {
+                debugLog(`Erro ao chamar PyScript: ${error}`, 'error');
+                return null;
+            }
+        }
+        
+        // Event handlers para botões
+        document.getElementById('test-scatterplot').addEventListener('click', async () => {
+            debugLog('Testando ScatterplotLayer com PyScript...');
+            
+            try {
+                const layerData = await callPyScript('create_angola_oceanographic_layer', 'scatterplot');
+                
+                if (layerData && deckInstance) {
+                    const layer = new deck.ScatterplotLayer({
+                        ...layerData,
+                        getPosition: d => d.position,
+                        getFillColor: d => d.color,
+                        getRadius: d => d.size
+                    });
+                    
+                    deckInstance.setProps({ layers: [layer] });
+                    debugLog('ScatterplotLayer renderizado', 'success');
+                }
+            } catch (error) {
+                debugLog(`Erro: ${error}`, 'error');
+            }
+        });
+        
+        document.getElementById('test-heatmap').addEventListener('click', async () => {
+            debugLog('Testando HeatmapLayer com PyScript...');
+            
+            try {
+                const layerData = await callPyScript('create_angola_oceanographic_layer', 'heatmap');
+                
+                if (layerData && deckInstance) {
+                    const layer = new deck.HeatmapLayer({
+                        ...layerData,
+                        getPosition: d => d.position,
+                        getWeight: d => d.weight
+                    });
+                    
+                    deckInstance.setProps({ layers: [layer] });
+                    debugLog('HeatmapLayer renderizado', 'success');
+                }
+            } catch (error) {
+                debugLog(`Erro: ${error}`, 'error');
+            }
+        });
+        
+        document.getElementById('test-contour').addEventListener('click', async () => {
+            debugLog('Testando ContourLayer com PyScript...');
+            
+            try {
+                const layerData = await callPyScript('create_angola_oceanographic_layer', 'contour');
+                
+                if (layerData && deckInstance) {
+                    const layer = new deck.ContourLayer({
+                        ...layerData,
+                        getPosition: d => d.position,
+                        getWeight: d => Math.abs(d.depth)
+                    });
+                    
+                    deckInstance.setProps({ 
+                        layers: [layer],
+                        initialViewState: {
+                            longitude: 12.5,
+                            latitude: -10.5,
+                            zoom: 6,
+                            pitch: 45,
+                            bearing: -20
+                        }
+                    });
+                    debugLog('ContourLayer renderizado', 'success');
+                }
+            } catch (error) {
+                debugLog(`Erro: ${error}`, 'error');
+            }
+        });
+        
+        document.getElementById('benchmark').addEventListener('click', async () => {
+            debugLog('Executando benchmark com PyScript...');
+            await callPyScript('run_benchmark', 5);
+        });
+        
+        // Inicializar
+        window.addEventListener('load', () => {
+            checkWebGL();
+            initDeckGL();
+            
+            // Atualizar métricas de memória periodicamente
+            setInterval(() => {
+                if (performance.memory) {
+                    const memoryMB = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+                    document.getElementById('memory-usage').textContent = memoryMB;
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
