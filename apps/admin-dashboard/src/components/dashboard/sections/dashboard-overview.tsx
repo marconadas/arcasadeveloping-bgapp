@@ -550,7 +550,7 @@ export function DashboardOverview() {
                 animate={{ x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                BGAPP Enhanced Dashboard
+                Neptune(ANG) Enhanced Dashboard
               </motion.h1>
               <motion.p 
                 className="text-blue-100 text-lg"

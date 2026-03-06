@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <!-- Favicon BGAPP -->
+    <!-- Favicon Neptune -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#173c72">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BGAPP - Marine Angola | Painel Administrativo v2.0.0</title>
+    <title>Neptune - Marine Angola | Painel Administrativo v2.0.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/fontawesome-fallback.css">
     <link rel="stylesheet" href="assets/css/admin.css">
@@ -436,7 +436,7 @@
         }
     </style>
 
-    <meta name="description" content="Marine Angola - BGAPP: Painel administrativo para gestão completa da plataforma oceanográfica e meteorológica">
+    <meta name="description" content="Marine Angola - Neptune: Painel administrativo para gestão completa da plataforma oceanográfica e meteorológica">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <!-- Favicon e Ícones PWA -->
     
@@ -456,9 +456,9 @@
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <img src="/static/logo.png" alt="BGAPP - Marine Angola Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                    <img src="/static/logo.png" alt="Neptune - Marine Angola Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
                     <div>
-                        <h2 style="margin: 0; font-size: 16px;"><i class="fas fa-cog"></i> BGAPP</h2>
+                        <h2 style="margin: 0; font-size: 16px;"><i class="fas fa-cog"></i> Neptune</h2>
                         <small style="color: var(--text-secondary); font-weight: 500;">Marine Angola</small>
                     </div>
                 </div>
@@ -508,7 +508,7 @@
                 <!-- MAPAS E VISUALIZAÇÃO -->
                 <div class="nav-section">🗺️ Mapas e Visualização</div>
                 <li class="nav-item">
-                    <a href="/BGAPP/" target="_blank" class="nav-link">
+                    <a href="/index-neptune.html" target="_blank" class="nav-link">
                         <i class="fas fa-map"></i>
                         <span>Mapa Interativo Principal</span>
                     </a>
@@ -870,7 +870,7 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <i class="fas fa-rocket"></i>
-                                Acesso Rápido às Interfaces BGAPP
+                                Acesso Rápido às Interfaces Neptune
                             </div>
                         </div>
                         <div class="card-body">
@@ -894,7 +894,7 @@
                             <!-- Mapas e Visualização -->
                             <h6 class="quick-access-category">🗺️ Mapas e Visualização</h6>
                             <div class="quick-access-grid mb-4">
-                                <a href="/BGAPP/" target="_blank" class="quick-access-btn btn-outline">
+                                <a href="/index-neptune.html" target="_blank" class="quick-access-btn btn-outline">
                                     <i class="fas fa-map"></i>
                                     <span>Mapa Interativo</span>
                                 </a>
@@ -2755,7 +2755,7 @@
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // Nova versão disponível
-                                    if (confirm('Nova versão do BGAPP disponível. Recarregar?')) {
+                                    if (confirm('Nova versão do Neptune disponível. Recarregar?')) {
                                         window.location.reload();
                                     }
                                 }

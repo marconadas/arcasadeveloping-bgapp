@@ -4,16 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BGAPP (Biodiversity and Geographic Analysis Platform) is a comprehensive scientific platform for oceanographic analysis and marine biodiversity monitoring in Angola's Exclusive Economic Zone. The project consists of multiple Next.js applications deployed on Cloudflare infrastructure with advanced WebGL visualizations, machine learning models, and real-time oceanographic data integration.
+Neptune(ANG) is a comprehensive scientific platform for oceanographic analysis and marine biodiversity monitoring in Angola's Exclusive Economic Zone. The project consists of multiple Next.js applications deployed on Cloudflare infrastructure with advanced WebGL visualizations, machine learning models, and real-time oceanographic data integration.
 
 **Mission Critical**: December 2025 presentation to the Government of Angola
 **Organization**: MareDatum Consultoria e Gestão de Projectos Unipessoal LDA
 **Status**: Production-ready with 85% confidence level
 **Key Personnel**: Paulo Fernandes (Director), Marcos Santos (Tech Lead), Ludmilson Francisco (Software Engineer)
 
+### Recent Major Updates (October 2025)
+- **WoRMS API Integration**: 30 prioritized marine species from Angola's EEZ with complete taxonomic data
+- **Enhanced Database Schema**: 6 new D1 tables for biodiversity tracking
+- **Species Taxonomy Cache**: Performance-optimized caching system for marine species data
+- **4 Specialized Workers**: WoRMS proxy, species populator, taxonomy cache, and enhanced API endpoints
+
 ### Critical Context
 - **Government Presentation**: December 2025 - Must demonstrate real-time marine monitoring capabilities
-- **Current Focus**: Performance optimization for Admin Dashboard and Realtime Angola apps
+- **Current Focus**: Performance optimization for Admin Dashboard and Neptune(ANG) apps
 - **Infrastructure**: All deployed on Cloudflare (Pages for frontends, Workers for APIs, D1 for database)
 - **Data Sources**: NASA EarthData, Global Fishing Watch, Copernicus Marine Service
 - **Angola EEZ Coverage**: Two separate polygons (source: D1 `eez_boundaries` table)
@@ -27,7 +33,7 @@ BGAPP (Biodiversity and Geographic Analysis Platform) is a comprehensive scienti
 ```
 Client Layer:
 ├── apps/admin-dashboard/    → Next.js 14 admin interface (Radix UI)
-├── apps/realtime-angola/    → Real-time visualization (deck.gl 9.1.14)
+├── apps/realtime-angola/    → Neptune(ANG) - Real-time visualization (deck.gl 9.1.14)
 └── apps/frontend/          → Static scientific dashboard (WebGL)
      ↓
 API Layer:
@@ -78,12 +84,12 @@ wrangler login   # Re-authenticate
 ```bash
 # Quick start for each application
 npm run dev:admin          # Admin dashboard on :3000
-npm run dev:realtime       # Realtime Angola on :3000
+npm run dev:realtime       # Neptune(ANG) on :3000
 npm run dev                # Main frontend on :8080
 
 # Alternative ports to avoid conflicts (when port 3000 is busy)
 PORT=3002 npm run dev:admin       # Admin on :3002
-PORT=3002 npm run dev:realtime    # Realtime on :3002
+PORT=3002 npm run dev:realtime    # Neptune(ANG) on :3002
 PORT=4000 npm run dev              # Frontend on :4000
 
 # Worker development (run from project root)
@@ -108,7 +114,7 @@ cd apps/realtime-angola && npm run dev
 ```bash
 # Deploy individual apps
 npm run deploy:admin       # Deploy admin to bgapp-admin.pages.dev
-npm run deploy:realtime    # Deploy realtime to bgapp-realtime.pages.dev
+npm run deploy:realtime    # Deploy Neptune(ANG) to bgapp-realtime.pages.dev
 npm run deploy:workers     # Deploy all workers to production
 
 # Deploy everything
@@ -177,23 +183,24 @@ Both Next.js apps require careful configuration management:
 - Uses port 3000 by default, with alternatives at 3002, 4000, 8080
 - Build: `npm run build` creates static `out/` directory
 
-**Realtime Angola** (`apps/realtime-angola/`):
-- `next.config.mjs`: Development config (commented out static export)
+**Neptune(ANG)** (`apps/realtime-angola/`):
+- `next.config.mjs`: Development config (static export commented out)
 - `next.config.prod.mjs`: Production config with `output: 'export'`
 - Build production: `npm run build:prod` performs these steps:
   1. Copies `next.config.prod.mjs` → `next.config.mjs`
   2. Runs `next build` with static export enabled
   3. Creates `out/` directory ready for Cloudflare Pages
 - Development: `npm run dev` uses dev config (allows hot reload)
+- **Special webpack config**: Handles TensorFlow.js with fallbacks for fs, worker_threads, and child_process modules
 
 **Critical Architecture Constraints**:
 - Admin dashboard has `output: 'export'` **permanently enabled** (no API routes possible)
-- Realtime Angola **swaps configs** during build process via npm script
+- Neptune(ANG) **swaps configs** during build process via npm script
 - Both apps have TypeScript and ESLint errors temporarily ignored for urgent deployments
 - **Never create** `pages/api/*` files in Admin Dashboard - they will not work
 - **Always use** Cloudflare Workers at `infrastructure/workers/` for backend logic
 
-### deck.gl Visualization Layers (apps/realtime-angola/src/components/map/)
+### deck.gl Visualization Layers (Neptune(ANG): apps/realtime-angola/src/components/map/)
 Each data layer follows a consistent component pattern:
 - Props: `data`, `visible`, `opacity`, `colorScale`
 - Returns: deck.gl layer instance with WebGL optimizations
@@ -201,10 +208,21 @@ Each data layer follows a consistent component pattern:
 
 ### Database Schema (Enhanced)
 The D1 database uses an enhanced schema with these core tables:
+
+**Biodiversity Tables (WoRMS Integration)**:
+- `marine_species`: 30 priority species from Angola's EEZ
+- `species_taxonomy_cache`: Complete taxonomic hierarchy with caching
+- `angola_priority_species`: Conservation priority levels (1-5)
+- `species_occurrences`: Geospatial occurrence data
+- `species_relationships`: Ecological relationships between species
+- `species_data_quality`: Data quality metrics and validation
+
+**Oceanographic Tables**:
 - `vessel_data`: AIS vessel tracking with enhanced fields
 - `sst_data`, `ocean_color_data`, `salinity_data`: NASA/Copernicus oceanographic data
+- `vessel_lights_data`: VIIRS nighttime vessel detection
 - `ml_predictions`: Machine learning model outputs
-- `eez_boundaries`: Angola EEZ boundary definitions
+- `eez_boundaries`: Angola EEZ boundary definitions (Continental + Cabinda)
 - `fishing_events`, `marine_data`: Aggregated marine activity
 
 ### API Endpoints Structure
@@ -217,6 +235,8 @@ Main API worker endpoints follow RESTful patterns:
 - `/api/dashboard/overview` - Dashboard statistics
 - `/api/environmental/*` - Combined oceanographic data
 - `/api/database/*` - Direct D1 database queries
+- `/api/biodiversity/*` - WoRMS species data and taxonomy
+- `/api/species/*` - Marine species occurrences and relationships
 - `/admin-dashboard/system-health` - System health metrics
 - `/health` - Basic health check endpoint
 
@@ -227,8 +247,11 @@ Key workers in `infrastructure/workers/`:
 - `nasa-earthdata-proxy.js`: NASA data proxy with caching
 - `gfw-proxy.js`: Global Fishing Watch integration
 - `copernicus-webhook.js`: Copernicus data webhook handler
+- `worms-api-proxy.js`: WoRMS taxonomic data proxy
+- `worms-species-populator.js`: Automated species database population
+- `populate-taxonomy-cache.js`: Taxonomy caching for performance
 
-Each worker includes CORS handling, KV caching, and D1 database bindings.
+Each worker includes CORS handling, KV caching, and D1 database bindings. Worker configuration is defined in individual `.toml` files in the same directory (e.g., `api-worker.js` uses `wrangler.toml`).
 
 ## Performance Optimization Patterns
 
@@ -339,7 +362,7 @@ Worker environment bindings:
 4. Update CORS if new origin needed
 
 ### Creating New Visualization Layers
-1. Create component in `apps/realtime-angola/src/components/map/`
+1. Create component in `apps/realtime-angola/src/components/map/` (Neptune(ANG))
 2. Follow existing layer patterns (see TemperatureHeatmapLayer.tsx)
 3. Add to LayersPanel.tsx for UI control
 4. Optimize for mobile viewports
@@ -355,7 +378,7 @@ Worker environment bindings:
 | Service | URL | Purpose |
 |---------|-----|---------|
 | Admin Dashboard | bgapp-admin.pages.dev | Administrative interface |
-| Realtime Angola | bgapp-realtime.pages.dev | Real-time monitoring |
+| Neptune(ANG) | bgapp-realtime.pages.dev | Real-time monitoring |
 | Frontend | bgapp-frontend.pages.dev | Main platform |
 | API Worker | bgapp-api-worker.majearcasa.workers.dev | Primary API |
 | NASA Proxy | nasa-earthdata-proxy.majearcasa.workers.dev | NASA data proxy |
@@ -393,7 +416,7 @@ Deploy with: `wrangler deploy infrastructure/workers/<worker-name>.js --config <
 lsof -i :3000
 # Use alternative ports
 PORT=3002 npm run dev:admin
-PORT=4000 npm run dev:realtime
+PORT=4000 npm run dev:realtime  # Neptune(ANG)
 ```
 
 ### Worker Size Limits
@@ -404,7 +427,7 @@ Workers have 1MB limit. If you hit this:
 
 ### API Routes Not Working
 - Admin Dashboard: API routes never work (static export always enabled)
-- Realtime Angola: Check if `next.config.mjs` has correct configuration
+- Neptune(ANG): Check if `next.config.mjs` has correct configuration
 - Solution: Use Cloudflare Workers for all API functionality
 
 ### D1 Database Issues
@@ -428,7 +451,7 @@ Both Next.js apps have errors temporarily ignored. To check actual errors:
 ```bash
 # Remove ignoreDuringBuilds from next.config
 cd apps/admin-dashboard && npx tsc --noEmit
-cd apps/realtime-angola && npx tsc --noEmit
+cd apps/realtime-angola && npx tsc --noEmit  # Neptune(ANG)
 ```
 
 ## Documentation Resources
@@ -438,7 +461,7 @@ The project includes comprehensive C4 architecture diagrams located in `docs/arc
 - `c4-context.puml`: System context diagram showing BGAPP in the Angola marine ecosystem
 - `c4-container.puml`: Technical architecture with all frontend apps, workers, and data stores
 - `c4-admin-components.puml`: Admin Dashboard internal components
-- `c4-realtime-components.puml`: Realtime Angola specialized components
+- `c4-realtime-components.puml`: Neptune(ANG) specialized components
 - `data-flow.md`: Mermaid diagrams showing real-time data pipelines
 
 View PlantUML diagrams:
@@ -461,9 +484,9 @@ RACI Matrix defines clear responsibilities for each domain (Frontend, Admin, Rea
 
 ### Technical Inventory
 See `INVENTORY_APPS.md` for detailed app specifications:
-- Bundle sizes: Frontend (27MB), Admin (891MB dev), Realtime (1.3GB dev)
+- Bundle sizes: Frontend (27MB), Admin (891MB dev), Neptune(ANG) (1.3GB dev)
 - Performance targets: All apps < 2s load time
-- Current status: Frontend (1.8s ✅), Admin (2.3s 🔄), Realtime (2.1s 🔄)
+- Current status: Frontend (1.8s ✅), Admin (2.3s 🔄), Neptune(ANG) (2.1s 🔄)
 - December 2025 readiness: 85% confidence with planned optimizations
 
 ### API Monitoring
@@ -472,6 +495,12 @@ The `.claude/` directory contains monitoring tools and guides:
 - `.claude/API_MONITORING_GUIDE.md`: Comprehensive monitoring setup
 - `.claude/MONITORING_QUICKSTART.md`: Quick start for API monitoring
 
+### Roadmaps and Planning
+The `docs/roadmap/` directory contains strategic planning documents:
+- Implementation progress tracking
+- Deployment status and milestones
+- Feature roadmaps for ML enhancements and weather animations
+
 Run health checks:
 ```bash
 bash .claude/monitor-apis.sh
@@ -479,7 +508,8 @@ bash .claude/monitor-apis.sh
 
 **Prerequisites for monitoring script**:
 - `curl`: HTTP requests (pre-installed on macOS/Linux)
-- `jq`: JSON parsing (install: `brew install jq` or `apt-get install jq`)
+- `jq`: JSON parsing (install: `brew install jq` on macOS or `apt-get install jq` on Linux)
+  - Without `jq`: Script will still work but output won't be formatted
 - Internet connectivity to reach production URLs
 
 ## Security Best Practices
@@ -518,7 +548,7 @@ Critical metrics for government presentation:
 |--------|--------|---------|----------|
 | Frontend Load Time | < 2.0s | 1.8s ✅ | Maintain |
 | Admin Dashboard Load | < 2.0s | 2.3s 🔄 | **High** |
-| Realtime Angola Load | < 2.0s | 2.1s 🔄 | **Critical** |
+| Neptune(ANG) Load | < 2.0s | 2.1s 🔄 | **Critical** |
 | API Response Time | < 100ms | 95ms ✅ | Maintain |
 | Map Interactions | < 100ms | 85ms ✅ | Maintain |
 | WebSocket Latency | < 50ms | 45ms ✅ | Maintain |
@@ -526,7 +556,7 @@ Critical metrics for government presentation:
 
 **Focus Areas for Optimization**:
 1. Admin Dashboard bundle size reduction (high priority)
-2. Realtime Angola WebGL optimizations (critical)
+2. Neptune(ANG) WebGL optimizations (critical)
 3. Mobile responsive performance (medium)
 4. Offline demo capabilities (backup plan)
 
@@ -545,7 +575,7 @@ cd apps/realtime-angola && npm install
 
 # 3. Start the app you're working on
 npm run dev:admin      # Admin Dashboard
-npm run dev:realtime   # Realtime Angola
+npm run dev:realtime   # Neptune(ANG)
 npm run dev            # Main Frontend
 
 # 4. Start relevant workers (optional, for backend testing)
@@ -574,7 +604,7 @@ npm run deploy:all
 
 # Individual emergency deploys
 wrangler pages deploy apps/admin-dashboard/out --project-name bgapp-admin --commit-dirty=true
-wrangler pages deploy apps/realtime-angola/out --project-name bgapp-realtime --commit-dirty=true
+wrangler pages deploy apps/realtime-angola/out --project-name bgapp-realtime --commit-dirty=true  # Neptune(ANG)
 wrangler deploy infrastructure/workers/api-worker.js --env production
 ```
 
@@ -607,8 +637,8 @@ The project architecture uses Cloudflare Workers exclusively for backend logic d
 - ✅ Always create backend logic in `infrastructure/workers/*.js`
 - ✅ Frontend calls workers via fetch: `fetch('https://worker-name.workers.dev/endpoint')`
 
-### Realtime Angola Config Swap Mechanism
-The Realtime Angola app requires different configs for dev vs production:
+### Neptune(ANG) Config Swap Mechanism
+The Neptune(ANG) app (directory: `apps/realtime-angola/`) requires different configs for dev vs production:
 
 **Development** (`next.config.mjs`):
 - No static export (`output: 'export'` commented out)
@@ -629,7 +659,7 @@ npm run build:prod
 
 **Important**: After production build, `next.config.mjs` contains production settings. To return to development:
 ```bash
-cd apps/realtime-angola
+cd apps/realtime-angola  # Neptune(ANG)
 git checkout next.config.mjs  # Restore dev config
 npm run dev
 ```

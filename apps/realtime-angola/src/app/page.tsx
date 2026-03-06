@@ -4,26 +4,40 @@ import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { RealtimeProvider, useRealtime } from '@/providers/RealtimeProvider';
 import { ThemeProvider, useTheme } from '@/providers/ThemeProvider';
-import { Wifi, Thermometer, Droplets, Menu, X, ChevronLeft } from 'lucide-react';
+import { Wifi, Thermometer, Droplets, Menu, X } from 'lucide-react';
 import { formatTemperature, formatChlorophyll, formatTimestamp } from '@/lib/utils';
 import { getThemeStyles } from '@/lib/theme-utils';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { UnifiedControlPanel } from '@/components/map/UnifiedControlPanel';
 import { MobileLayersPanel } from '@/components/map/MobileLayersPanel';
+import { ApiErrorToast } from '@/components/ui/DataLoadingState';
 import { isMobileDevice } from '@/utils/mapPerformance';
+import { useMLModelStore } from '@/stores/mlModelStore';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 // Dynamic import para evitar problemas de SSR com Leaflet
 const RealTimeMap = dynamic(
   () => import('@/components/map/RealTimeMap').then(mod => ({ default: mod.RealTimeMap })),
   {
     ssr: false,
-    loading: () => (
-      <div className="w-full h-full bg-slate-900 animate-pulse flex items-center justify-center">
-        <div className="text-slate-400">Carregando mapa...</div>
-      </div>
-    )
+    loading: () => <MapLoadingFallback />
   }
 );
+
+// Theme-aware map loading fallback
+function MapLoadingFallback() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
+  return (
+    <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+      <LoadingSpinner 
+        size="lg" 
+        text="Carregando mapa..." 
+      />
+    </div>
+  );
+}
 
 function MainDashboard() {
   const {
@@ -33,6 +47,7 @@ function MainDashboard() {
     error,
     lastUpdate,
     refreshData,
+    isLoading,
     activeLayers,
     toggleLayer
   } = useRealtime();
@@ -40,13 +55,20 @@ function MainDashboard() {
   const { theme } = useTheme();
   const styles = getThemeStyles(theme);
 
+  // ML Store integration
+  const {
+    predictions,
+    filteredPredictions,
+    activeModels,
+    minConfidence,
+    initializeModels,
+    setPredictions
+  } = useMLModelStore();
+
   const [showSidebar, setShowSidebar] = useState(false);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [mlData, setMlData] = useState<any[]>([]);
-  const [activeMLModels, setActiveMLModels] = useState<string[]>(['biodiversityHotspots', 'conservationPriority']);
-  const [mlMinConfidence, setMlMinConfidence] = useState(0.7);
-  const [showMLPanel, setShowMLPanel] = useState(true);
+  const [showErrorToast, setShowErrorToast] = useState(true);
   const isConnected = !error && lastUpdate !== null;
 
   // Detect mobile device
@@ -72,9 +94,14 @@ function MainDashboard() {
     return () => clearInterval(interval);
   }, []); // Empty deps - interval only created once
 
+  // Initialize ML models on mount
+  useEffect(() => {
+    initializeModels();
+  }, [initializeModels]);
+
   // Fetch ML predictions
   useEffect(() => {
-    const fetchMLPredictions = async () => {
+    const fetchMLPredictionsData = async () => {
       try {
         // Angola EEZ bounding box with geographic bounds filtering
         const params = new URLSearchParams({
@@ -95,41 +122,43 @@ function MainDashboard() {
           }
         });
         const result = await response.json();
-        if (result.success && result.data) {
-          setMlData(result.data);
+
+        // Handle different response formats from API
+        if (result.data) {
+          // Format from /api/realtime/ml-predictions route
+          setPredictions(result.data);
+          console.log('✅ [ML PREDICTIONS FIX] Successfully loaded from D1:', result.data.length, 'predictions');
+        } else if (result.success && result.data) {
+          // Legacy format with success flag
+          setPredictions(result.data);
           console.log('✅ [ML PREDICTIONS FIX] Successfully loaded from D1:', result.data.length, 'predictions');
         } else if (result.predictions) {
-          setMlData(result.predictions);
+          // Alternative format
+          setPredictions(result.predictions);
           console.log('✅ [ML PREDICTIONS FIX] Loaded from D1:', result.predictions.length, 'predictions');
+        } else {
+          console.warn('⚠️ [ML PREDICTIONS FIX] Unexpected API response format:', result);
         }
       } catch (error) {
         console.error('❌ [ML PREDICTIONS FIX] Failed to fetch ML predictions:', error);
       }
     };
 
-    fetchMLPredictions();
-    const mlInterval = setInterval(fetchMLPredictions, 60000); // Update every minute
+    fetchMLPredictionsData();
+    const mlInterval = setInterval(fetchMLPredictionsData, 60000); // Update every minute
     return () => clearInterval(mlInterval);
-  }, []);
+  }, [setPredictions]);
 
-  // Filter ML data based on active models and confidence
-  const filteredMLData = mlData.filter(prediction =>
-    activeMLModels.includes(prediction.prediction_type) &&
-    (prediction.confidence || 0) >= mlMinConfidence
-  );
-
-  // Callbacks for ML model selector
-  const handleModelToggle = (modelType: string, active: boolean) => {
-    setActiveMLModels(prev =>
-      active
-        ? [...prev, modelType]
-        : prev.filter(t => t !== modelType)
-    );
-  };
-
-  const handleConfidenceFilter = (minConfidence: number) => {
-    setMlMinConfidence(minConfidence);
-  };
+  // Debug logs for ML data filtering (using store data)
+  useEffect(() => {
+    console.log(`📊 [ML Data] Total: ${predictions.length}, Filtered: ${filteredPredictions.length}`);
+    console.log(`🎯 [ML Data] Active models:`, activeModels);
+    console.log(`📈 [ML Data] Min confidence:`, minConfidence);
+    if (predictions.length > 0) {
+      const types = Array.from(new Set(predictions.map(p => p.prediction_type)));
+      console.log(`🏷️ [ML Data] Available types:`, types);
+    }
+  }, [predictions, filteredPredictions, activeModels, minConfidence]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -139,7 +168,9 @@ function MainDashboard() {
           key="realtime-map"
           vessels={vessels}
           chloroplethData={chloroplethData}
-          mlPredictions={filteredMLData}
+          mlPredictions={filteredPredictions}
+          activeMLModels={activeModels}
+          mlMinConfidence={minConfidence}
           className="w-full h-full"
         />
       </div>
@@ -155,8 +186,8 @@ function MainDashboard() {
               >
                 {showSidebar ? <X className={`w-4 h-4 sm:w-5 sm:h-5 ${styles.primaryText}`} /> : <Menu className={`w-4 h-4 sm:w-5 sm:h-5 ${styles.primaryText}`} />}
               </button>
-              <h1 className={`text-sm sm:text-lg md:text-xl font-bold ${styles.primaryText} truncate hidden xs:block`}>BGAPP Real-Time Angola</h1>
-              <h1 className={`text-sm font-bold ${styles.primaryText} truncate xs:hidden`}>BGAPP</h1>
+              <h1 className={`text-sm sm:text-lg md:text-xl font-bold ${styles.primaryText} truncate hidden xs:block`}>Neptune(ANG) Real-Time Angola</h1>
+              <h1 className={`text-sm font-bold ${styles.primaryText} truncate xs:hidden`}>Neptune(ANG)</h1>
               <div className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full ${theme === 'light' ? 'bg-gray-100 border border-gray-200' : 'bg-slate-800 border border-slate-700'} flex-shrink-0`}>
                 <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                 <span className={`text-xs sm:text-sm font-medium ${styles.primaryText}`}>
@@ -176,7 +207,7 @@ function MainDashboard() {
       </div>
 
       {/* Floating Stats Cards - Bottom Left */}
-      <div className="absolute bottom-16 sm:bottom-20 left-2 sm:left-3 md:left-6 z-[501] space-y-2 sm:space-y-3 max-w-[280px] xs:max-w-xs md:max-w-sm">
+      <div className="absolute bottom-16 sm:bottom-20 left-2 sm:left-3 md:left-6 z-[400] space-y-2 sm:space-y-3 max-w-[280px] xs:max-w-xs md:max-w-sm">
         {/* Connection Status Card */}
         <div className={`${styles.cardBackground} ${styles.cardBorder} rounded-lg sm:rounded-xl p-2.5 sm:p-3 md:p-4`}>
           <div className="flex items-center gap-2 sm:gap-2 md:gap-3">
@@ -190,6 +221,12 @@ function MainDashboard() {
               </div>
             </div>
           </div>
+          {isLoading && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="w-3 h-3 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+              <span className={`text-xs ${styles.mutedText}`}>Atualizando dados...</span>
+            </div>
+          )}
         </div>
 
         {/* Marine Data Card */}
@@ -264,23 +301,15 @@ function MainDashboard() {
         <UnifiedControlPanel
           activeLayers={activeLayers}
           toggleLayer={toggleLayer}
-          onModelToggle={handleModelToggle}
-          onConfidenceFilter={handleConfidenceFilter}
-          mlData={filteredMLData}
-          showMLStats={true}
           theme={theme}
         />
       )}
 
-
-      {/* Error Notification */}
-      {error && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
-          <div className={`${styles.errorBackground} backdrop-blur-xl rounded-xl px-6 py-3`}>
-            <div className={`${styles.errorText} text-sm`}>{error}</div>
-          </div>
-        </div>
-      )}
+      {/* API Error Toast */}
+      <ApiErrorToast 
+        error={showErrorToast ? error : null} 
+        onDismiss={() => setShowErrorToast(false)} 
+      />
     </div>
   );
 }

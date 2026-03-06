@@ -328,7 +328,7 @@ export function DashboardOverview() {
             
             <div>
               <h1 className="text-3xl font-bold mb-2">
-                BGAPP Enhanced Dashboard
+                Neptune(ANG) Enhanced Dashboard
               </h1>
               <p className="text-blue-100 text-lg">
                 Plataforma de Biodiversidade Marinha de Angola

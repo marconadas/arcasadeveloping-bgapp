@@ -1,14 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Production settings - uncomment for production builds
-  // output: 'export',
-  // trailingSlash: true,
-  // distDir: 'out',
+  output: 'export',
+  trailingSlash: true,
+  distDir: 'out',
   images: {
     unoptimized: true
   },
-  // assetPrefix: '',
-  // basePath: '',
+  assetPrefix: '',
+  basePath: '',
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.

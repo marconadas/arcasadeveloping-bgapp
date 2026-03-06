@@ -1,0 +1,30 @@
+name = "timeseries-api-worker"
+main = "timeseries-api-worker.js"
+compatibility_date = "2024-01-01"
+workers_dev = true
+
+# D1 Database binding
+[[d1_databases]]
+binding = "BGAPP_DATA"
+database_name = "bgapp-data"
+database_id = "46ed7435-1b25-498d-b832-7bef98061df3"
+
+# KV Namespace binding for frame caching
+[[kv_namespaces]]
+binding = "BGAPP_KV"
+id = "c7969eba99d2477d897608e71ceb9f56"
+
+# Environment variables
+[vars]
+ALLOWED_ORIGINS = "https://bgapp-admin.pages.dev,https://bgapp-realtime.pages.dev,https://bgapp-frontend.pages.dev"
+
+# Route configuration
+routes = [
+  { pattern = "timeseries-api-worker.majearcasa.workers.dev", zone_name = "majearcasa.workers.dev" }
+]
+
+# Limits and performance
+limits = { cpu_ms = 50 }
+
+# Observability
+observability = { enabled = true }

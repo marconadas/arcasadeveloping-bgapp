@@ -1,5 +1,5 @@
 {
-  "name": "realtime-angola-nextjs",
+  "name": "neptune-ang-realtime",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -39,7 +39,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "^1.56.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

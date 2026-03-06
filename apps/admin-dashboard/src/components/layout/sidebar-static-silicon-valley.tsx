@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { InterfaceCounter } from '@/lib/bgapp/interface-counter'
 
@@ -30,11 +31,11 @@ const navigationItems: NavItem[] = [
   // 🔬 SCIENTIFIC HUB - DESTAQUE (TODAS AS INTERFACES FUNCIONAIS AQUI)
   {
     id: 'scientific-hub',
-    label: '🔬 Hub Científico BGAPP',
+    label: '🔬 Hub Científico Neptune(ANG)',
     icon: '🔬',
     badge: InterfaceCounter.generateBadge(), // Contagem dinâmica automática
     children: [
-      { id: 'scientific-interfaces', label: `Portal Interfaces (${InterfaceCounter.getTotalCount()})`, icon: '🔬', badge: 'HUB' },
+      { id: 'scientific-hub', label: `Portal Interfaces (${InterfaceCounter.getTotalCount()})`, icon: '🔬', badge: 'HUB' },
       { id: 'enhanced-ocean-system', label: '🌊 Enhanced Ocean System', icon: '🌊', badge: 'NOVO' },
       // Interfaces individuais funcionam dentro do Hub - não precisam aparecer separadamente
     ]
@@ -149,7 +150,7 @@ const navigationItems: NavItem[] = [
     icon: '📱',
     children: [
       { id: 'mobile-pwa', label: 'Mobile PWA Avançado', icon: '📱' },
-      { id: 'demo-enhanced', label: 'Demo BGAPP Enhanced', icon: '🚀' },
+      { id: 'demo-enhanced', label: 'Demo Neptune(ANG) Enhanced', icon: '🚀' },
       { id: 'minpermar', label: 'Site MINPERMAR', icon: '🏛️' },
     ]
   }
@@ -164,6 +165,7 @@ interface SidebarProps {
 
 export function SidebarStaticSiliconValley({ activeSection, onSectionChange, open = false, onClose }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(['scientific-hub', 'ml-system', 'qgis-advanced'])
+  const router = useRouter()
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev => 
@@ -174,7 +176,14 @@ export function SidebarStaticSiliconValley({ activeSection, onSectionChange, ope
   }
 
   const handleSectionClick = (sectionId: string) => {
-    onSectionChange(sectionId)
+    // Navegação direta para páginas específicas
+    if (sectionId === 'scientific-interfaces' || sectionId === 'portal-interfaces' || sectionId === 'scientific-hub') {
+      router.push('/scientific-hub')
+    } else {
+      // Comportamento padrão para outras seções
+      onSectionChange(sectionId)
+    }
+    
     // Fechar sidebar no mobile após seleção
     if (window.innerWidth < 1024 && onClose) {
       onClose()
@@ -193,7 +202,7 @@ export function SidebarStaticSiliconValley({ activeSection, onSectionChange, ope
             <span className="text-2xl">🌊</span>
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-semibold text-white">BGAPP</h2>
+            <h2 className="text-lg font-semibold text-white">Neptune(ANG)</h2>
             <p className="text-sm text-slate-300">Marine Angola</p>
           </div>
           <div className="bg-blue-600 text-white px-2.5 py-0.5 rounded-full text-xs font-semibold">

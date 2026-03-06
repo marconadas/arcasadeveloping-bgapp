@@ -374,7 +374,7 @@ Mare Datum Consultoria - BGAPP Marine Angola v2.0.0`,
         <div className="flex items-center gap-4 mb-6">
           <ChartBarIcon className="h-8 w-8 text-indigo-600" />
           <div>
-            <h2 className="text-2xl font-bold">Relatórios BGAPP</h2>
+            <h2 className="text-2xl font-bold">Relatórios Neptune(ANG)</h2>
             <p className="text-slate-600 dark:text-slate-400">Sistema de gestão de relatórios técnicos</p>
           </div>
         </div>
@@ -392,7 +392,7 @@ Mare Datum Consultoria - BGAPP Marine Angola v2.0.0`,
         <div className="flex items-center gap-4 mb-6">
           <ChartBarIcon className="h-8 w-8 text-indigo-600" />
           <div>
-            <h2 className="text-2xl font-bold">Relatórios BGAPP</h2>
+            <h2 className="text-2xl font-bold">Relatórios Neptune(ANG)</h2>
             <p className="text-slate-600 dark:text-slate-400">Sistema de gestão de relatórios técnicos</p>
           </div>
         </div>
@@ -420,7 +420,7 @@ Mare Datum Consultoria - BGAPP Marine Angola v2.0.0`,
         <div className="flex items-center gap-4">
           <ChartBarIcon className="h-8 w-8 text-indigo-600" />
           <div>
-            <h2 className="text-2xl font-bold">Relatórios BGAPP</h2>
+            <h2 className="text-2xl font-bold">Relatórios Neptune(ANG)</h2>
             <p className="text-slate-600 dark:text-slate-400">Sistema de gestão de relatórios técnicos</p>
           </div>
         </div>

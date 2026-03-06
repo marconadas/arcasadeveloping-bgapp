@@ -87,7 +87,7 @@ export default function DashboardOverviewSSRSafe() {
       <div className="space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-6 rounded-lg">
-          <h1 className="text-3xl font-bold">🌊 BGAPP Dashboard - SSR Safe</h1>
+          <h1 className="text-3xl font-bold">🌊 Neptune(ANG) Dashboard - SSR Safe</h1>
           <p className="text-blue-100 mt-2">
             Plataforma Oceanográfica para ZEE Angola - Versão Silicon Valley
           </p>

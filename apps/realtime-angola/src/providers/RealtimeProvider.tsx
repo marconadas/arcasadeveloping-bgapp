@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import useSWR from 'swr';
 import { RealtimeState, MarineData, VesselData, ChloroplethData } from '@/lib/types';
 import { API_ENDPOINTS, REFRESH_INTERVALS } from '@/lib/constants';
 import {
@@ -37,6 +38,22 @@ interface RealtimeContextType extends RealtimeState {
 }
 
 const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined);
+
+const WORKER_API_BASE = process.env.NEXT_PUBLIC_BGAPP_WORKER_BASE || 'https://bgapp-api-worker.majearcasa.workers.dev';
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  process.env.NEXT_PUBLIC_BGAPP_API_BASE ||
+  (process.env.NODE_ENV === 'production' ? WORKER_API_BASE : '');
+const buildApiUrl = (path: string) => API_BASE ? `${API_BASE.replace(/\/$/, '')}${path}` : path;
+
+const DEFAULT_MARINE_DATA: MarineData = {
+  temperature: 25.5,
+  chlorophyll: 0.8,
+  salinity: 35.2,
+  timestamp: new Date(),
+  source: 'fallback',
+  quality: 'low'
+};
 
 export function useRealtime() {
   const context = useContext(RealtimeContext);
@@ -82,7 +99,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
 
   const fetchMarineData = useCallback(async (): Promise<MarineData | null> => {
     try {
-      const response = await fetch(API_ENDPOINTS.copernicus);
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.copernicus));
       if (!response.ok) throw new Error('Failed to fetch marine data');
 
       const data = await response.json();
@@ -111,7 +128,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
 
   const fetchVesselData = useCallback(async (): Promise<VesselData[]> => {
     try {
-      const response = await fetch(API_ENDPOINTS.vessels);
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.vessels));
       if (!response.ok) throw new Error('Failed to fetch vessel data');
 
       const data = await response.json();
@@ -147,7 +164,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
 
   const fetchChloroplethData = useCallback(async (): Promise<ChloroplethData[]> => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.realtime}?layer=chloropleth`);
+      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.realtime}?layer=chloropleth`));
       if (!response.ok) throw new Error('Failed to fetch chloropleth data');
 
       const data = await response.json();
@@ -158,14 +175,11 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
     }
   }, []);
 
-  const refreshData = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+  const fetchAllData = useCallback(async () => {
+    // Angola EEZ bounding box
+    const angolaEEZ = '-18.02,8.9,-5.55,13.35';
 
     try {
-      // Angola EEZ bounding box
-      const angolaEEZ = '-18.02,8.9,-5.55,13.35';
-
-      // Fetch all data types in parallel
       const [
         marineData,
         vessels,
@@ -190,35 +204,92 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
         fetchCurrentWeather(-12.5, 13.0) // Angola center point
       ]);
 
-      // Update all state
-      setState(prev => ({
-        ...prev,
-        marineData,
-        vessels,
-        chloroplethData,
-        isLoading: false,
-        lastUpdate: new Date()
-      }));
-
-      // Update enhanced data state
-      setSstData(sst);
-      setOceanColorData(oceanColor);
-      setSalinityData(salinity);
-      setVesselLightsData(vesselLights);
-      setMlPredictions(mlPreds);
-
-      // Update weather data state
-      setWeatherGrid(weather);
-      setCurrentWeather(currentWeatherData);
-
+      return {
+        marineData: marineData ?? DEFAULT_MARINE_DATA,
+        vessels: vessels ?? [],
+        chloroplethData: chloroplethData ?? [],
+        sst: sst ?? [],
+        oceanColor: oceanColor ?? [],
+        salinity: salinity ?? [],
+        vesselLights: vesselLights ?? [],
+        mlPredictions: mlPreds ?? [],
+        weatherGrid: weather ?? [],
+        currentWeather: currentWeatherData ?? null
+      };
     } catch (error) {
+      console.error('Error fetching realtime data bundle:', error);
+      return {
+        marineData: DEFAULT_MARINE_DATA,
+        vessels: [],
+        chloroplethData: [],
+        sst: [],
+        oceanColor: [],
+        salinity: [],
+        vesselLights: [],
+        mlPredictions: [],
+        weatherGrid: [],
+        currentWeather: null
+      };
+    }
+  }, [fetchMarineData, fetchVesselData, fetchChloroplethData]);
+
+  const { data, error, isLoading, mutate } = useSWR(
+    'realtime-data',
+    fetchAllData,
+    {
+      refreshInterval: REFRESH_INTERVALS.data,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      refreshWhenHidden: true,
+      dedupingInterval: 10000,
+      errorRetryCount: 3,
+      errorRetryInterval: 5000,
+      keepPreviousData: true,
+      onError: (err) => {
+        console.error('SWR realtime-data error:', err);
+      }
+    }
+  );
+
+  const refreshData = useCallback(async () => {
+    await mutate();
+  }, [mutate]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      return;
+    }
+
+    if (error) {
       setState(prev => ({
         ...prev,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred'
       }));
+      return;
     }
-  }, [fetchMarineData, fetchVesselData, fetchChloroplethData]);
+
+    if (data) {
+      setState(prev => ({
+        ...prev,
+        marineData: data.marineData ?? DEFAULT_MARINE_DATA,
+        vessels: data.vessels ?? [],
+        chloroplethData: data.chloroplethData ?? [],
+        isLoading: false,
+        error: null,
+        lastUpdate: new Date()
+      }));
+
+      setSstData(data.sst ?? []);
+      setOceanColorData(data.oceanColor ?? []);
+      setSalinityData(data.salinity ?? []);
+      setVesselLightsData(data.vesselLights ?? []);
+      setMlPredictions(data.mlPredictions ?? []);
+      setWeatherGrid(data.weatherGrid ?? []);
+      setCurrentWeather(data.currentWeather ?? null);
+    }
+  }, [data, error, isLoading]);
 
   const toggleLayer = useCallback((layerId: string) => {
     setActiveLayers(prev => {
@@ -229,19 +300,6 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
       return newLayers;
     });
   }, []);
-
-  // Auto-refresh dos dados
-  useEffect(() => {
-    refreshData();
-
-    const marineInterval = setInterval(fetchMarineData, REFRESH_INTERVALS.marine);
-    const vesselInterval = setInterval(fetchVesselData, REFRESH_INTERVALS.vessels);
-
-    return () => {
-      clearInterval(marineInterval);
-      clearInterval(vesselInterval);
-    };
-  }, [refreshData, fetchMarineData, fetchVesselData]);
 
   const contextValue: RealtimeContextType = {
     ...state,

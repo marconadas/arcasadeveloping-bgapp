@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000814;
+  --foreground: #ffffff;
+  --neptune-blue: #4facfe;
+  --neptune-cyan: #00f2fe;
+  --deep-ocean: #000814;
+  --tactical-bg: #001428;
+  --tactical-border: rgba(79, 172, 254, 0.3);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-neptune-blue: var(--neptune-blue);
+  --color-neptune-cyan: var(--neptune-cyan);
+  --color-tactical-bg: var(--tactical-bg);
+  --color-tactical-border: var(--tactical-border);
+}
+
+@utility tactical-glass {
+  background: rgba(0, 20, 40, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--tactical-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+@utility tactical-glow {
+  box-shadow: 0 0 15px var(--tactical-border);
+}
+
+@utility text-tactical {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Space Grotesk', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-ocean);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neptune-blue);
+  border-radius: 2px;
+}
+
+/* Map specific tweaks */
+.leaflet-container {
+  background: var(--deep-ocean) !important;
+}
+
+.deck-tooltip {
+  @apply tactical-glass p-3 rounded-lg text-sm;
+  color: white !important;
+}
