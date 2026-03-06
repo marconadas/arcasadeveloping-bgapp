@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neptune(ANG) - Plataforma Científica Avançada para Biodiversidade Marinha de Angola</title>
-    
+
     <!-- Bibliotecas Avançadas -->
     <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
     <script src="https://unpkg.com/@deck.gl/layers@9.1.14/dist.min.js"></script>
@@ -15,11 +16,11 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
+
     <link href="https://unpkg.com/mapbox-gl@3.0.0/dist/mapbox-gl.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -30,59 +31,73 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             /* 🌊 OCEANO UE5 FLUIDO - BASEADO NO TUTORIAL EPIC GAMES */
-            background: 
+            background:
                 /* FFT Ocean Simulation - Primary waves */
-                radial-gradient(ellipse 100% 70% at 25% 80%, 
-                    rgba(0, 140, 200, 0.95) 0%, 
-                    rgba(0, 140, 200, 0.7) 12%, 
-                    rgba(0, 120, 180, 0.5) 25%, 
-                    rgba(0, 100, 160, 0.3) 40%, 
+                radial-gradient(ellipse 100% 70% at 25% 80%,
+                    rgba(0, 140, 200, 0.95) 0%,
+                    rgba(0, 140, 200, 0.7) 12%,
+                    rgba(0, 120, 180, 0.5) 25%,
+                    rgba(0, 100, 160, 0.3) 40%,
                     rgba(0, 80, 140, 0.15) 60%,
                     transparent 80%),
                 /* Water Body Ocean - Secondary swells */
-                radial-gradient(ellipse 85% 55% at 75% 25%, 
-                    rgba(20, 160, 220, 0.9) 0%, 
-                    rgba(20, 160, 220, 0.65) 15%, 
-                    rgba(15, 140, 200, 0.4) 30%, 
-                    rgba(10, 120, 180, 0.25) 50%, 
+                radial-gradient(ellipse 85% 55% at 75% 25%,
+                    rgba(20, 160, 220, 0.9) 0%,
+                    rgba(20, 160, 220, 0.65) 15%,
+                    rgba(15, 140, 200, 0.4) 30%,
+                    rgba(10, 120, 180, 0.25) 50%,
                     rgba(5, 100, 160, 0.1) 70%,
                     transparent 85%),
                 /* Gerstner Waves - Detail ripples */
-                radial-gradient(ellipse 70% 45% at 50% 65%, 
-                    rgba(40, 180, 240, 0.8) 0%, 
-                    rgba(40, 180, 240, 0.55) 18%, 
-                    rgba(30, 160, 220, 0.35) 35%, 
+                radial-gradient(ellipse 70% 45% at 50% 65%,
+                    rgba(40, 180, 240, 0.8) 0%,
+                    rgba(40, 180, 240, 0.55) 18%,
+                    rgba(30, 160, 220, 0.35) 35%,
                     rgba(20, 140, 200, 0.2) 55%,
                     transparent 75%),
                 /* Water Waves Asset - Foam patterns */
-                radial-gradient(ellipse 90% 60% at 70% 45%, 
-                    rgba(120, 220, 255, 0.7) 0%, 
-                    rgba(100, 200, 235, 0.45) 20%, 
-                    rgba(80, 180, 215, 0.3) 40%, 
+                radial-gradient(ellipse 90% 60% at 70% 45%,
+                    rgba(120, 220, 255, 0.7) 0%,
+                    rgba(100, 200, 235, 0.45) 20%,
+                    rgba(80, 180, 215, 0.3) 40%,
                     rgba(60, 160, 195, 0.15) 65%,
                     transparent 85%),
                 /* Underwater depth gradient */
-                radial-gradient(ellipse 110% 80% at 60% 70%, 
-                    rgba(0, 80, 120, 0.6) 0%, 
-                    rgba(0, 60, 100, 0.35) 30%, 
+                radial-gradient(ellipse 110% 80% at 60% 70%,
+                    rgba(0, 80, 120, 0.6) 0%,
+                    rgba(0, 60, 100, 0.35) 30%,
                     rgba(0, 40, 80, 0.2) 60%,
                     transparent 90%),
                 /* Deep Ocean Foundation (UE5 Water Body) */
-                linear-gradient(135deg, 
-                    #000508 0%,    /* Abyssal depths */
-                    #000a10 8%,    /* Deep ocean floor */
-                    #001018 16%,   /* Deep water column */
-                    #001520 24%,   /* Mid-deep water */
-                    #002030 32%,   /* Transitional zone */
-                    #002540 40%,   /* Lower euphotic */
-                    #003050 48%,   /* Mid euphotic */
-                    #003560 56%,   /* Upper euphotic */
-                    #004070 64%,   /* Near surface */
-                    #004580 72%,   /* Surface approach */
-                    #005090 80%,   /* Surface layer */
-                    #0055a0 88%,   /* Bright surface */
-                    #0060b0 96%,   /* Surface reflection */
-                    #0070e0 100%); /* Brightest surface */
+                linear-gradient(135deg,
+                    #000508 0%,
+                    /* Abyssal depths */
+                    #000a10 8%,
+                    /* Deep ocean floor */
+                    #001018 16%,
+                    /* Deep water column */
+                    #001520 24%,
+                    /* Mid-deep water */
+                    #002030 32%,
+                    /* Transitional zone */
+                    #002540 40%,
+                    /* Lower euphotic */
+                    #003050 48%,
+                    /* Mid euphotic */
+                    #003560 56%,
+                    /* Upper euphotic */
+                    #004070 64%,
+                    /* Near surface */
+                    #004580 72%,
+                    /* Surface approach */
+                    #005090 80%,
+                    /* Surface layer */
+                    #0055a0 88%,
+                    /* Bright surface */
+                    #0060b0 96%,
+                    /* Surface reflection */
+                    #0070e0 100%);
+            /* Brightest surface */
             background-size: 130% 130%, 150% 150%, 110% 110%, 170% 170%, 125% 125%, 100% 100%;
             animation: ue5FluidOcean 40s cubic-bezier(0.4, 0.0, 0.6, 1.0) infinite;
             color: white;
@@ -100,40 +115,40 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: 
+            background:
                 /* God Rays - Primary light beams */
-                radial-gradient(ellipse 220% 180% at 35% 75%, 
-                    transparent 0%, 
-                    rgba(150, 220, 255, 0.25) 15%, 
-                    transparent 20%, 
-                    rgba(150, 220, 255, 0.18) 25%, 
-                    transparent 30%, 
-                    rgba(135, 206, 235, 0.12) 35%, 
+                radial-gradient(ellipse 220% 180% at 35% 75%,
+                    transparent 0%,
+                    rgba(150, 220, 255, 0.25) 15%,
+                    transparent 20%,
+                    rgba(150, 220, 255, 0.18) 25%,
+                    transparent 30%,
+                    rgba(135, 206, 235, 0.12) 35%,
                     transparent 40%),
                 /* Caustics Network - Secondary patterns */
-                radial-gradient(ellipse 200% 140% at 65% 25%, 
-                    transparent 3%, 
-                    rgba(120, 240, 255, 0.3) 12%, 
-                    transparent 17%, 
-                    rgba(120, 240, 255, 0.2) 22%, 
-                    transparent 27%, 
-                    rgba(100, 200, 235, 0.15) 32%, 
+                radial-gradient(ellipse 200% 140% at 65% 25%,
+                    transparent 3%,
+                    rgba(120, 240, 255, 0.3) 12%,
+                    transparent 17%,
+                    rgba(120, 240, 255, 0.2) 22%,
+                    transparent 27%,
+                    rgba(100, 200, 235, 0.15) 32%,
                     transparent 37%),
                 /* Underwater Scattering - Volumetric light */
-                linear-gradient(60deg, 
-                    transparent 25%, 
-                    rgba(0, 200, 255, 0.12) 30%, 
-                    transparent 35%, 
-                    rgba(0, 200, 255, 0.08) 40%, 
-                    transparent 45%, 
-                    rgba(0, 180, 235, 0.06) 50%, 
+                linear-gradient(60deg,
+                    transparent 25%,
+                    rgba(0, 200, 255, 0.12) 30%,
+                    transparent 35%,
+                    rgba(0, 200, 255, 0.08) 40%,
+                    transparent 45%,
+                    rgba(0, 180, 235, 0.06) 50%,
                     transparent 55%),
                 /* Surface Reflections - Sunlight */
-                radial-gradient(ellipse 180% 100% at 50% 0%, 
-                    rgba(255, 255, 255, 0.12) 0%, 
-                    rgba(255, 255, 255, 0.08) 20%, 
-                    rgba(255, 255, 255, 0.04) 40%, 
-                    rgba(255, 255, 255, 0.02) 60%, 
+                radial-gradient(ellipse 180% 100% at 50% 0%,
+                    rgba(255, 255, 255, 0.12) 0%,
+                    rgba(255, 255, 255, 0.08) 20%,
+                    rgba(255, 255, 255, 0.04) 40%,
+                    rgba(255, 255, 255, 0.02) 60%,
                     transparent 80%);
             background-size: 280% 280%, 260% 260%, 350% 350%, 100% 70%;
             animation: ue5FluidCaustics 35s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
@@ -141,107 +156,127 @@
 
         /* OCEANO FLUIDO UE5 - BASEADO NO TUTORIAL EPIC GAMES */
         @keyframes ue5FluidOcean {
-            0% { 
+            0% {
                 background-position: 0% 0%, 100% 100%, 50% 50%, 25% 75%, 0% 0%;
                 filter: hue-rotate(0deg) brightness(1.2) contrast(1.6) saturate(1.4);
                 transform: scale(1) rotate(0deg);
             }
-            5% { 
+
+            5% {
                 background-position: 8% 3%, 95% 92%, 52% 48%, 30% 70%, 0% 0%;
                 filter: hue-rotate(1deg) brightness(1.22) contrast(1.62) saturate(1.42);
                 transform: scale(1.005) rotate(0.1deg);
             }
-            10% { 
+
+            10% {
                 background-position: 15% 8%, 92% 88%, 58% 42%, 68% 22%, 0% 0%;
                 filter: hue-rotate(3deg) brightness(1.25) contrast(1.65) saturate(1.45);
                 transform: scale(1.01) rotate(0.2deg);
             }
-            15% { 
+
+            15% {
                 background-position: 22% 12%, 88% 85%, 62% 38%, 32% 78%, 0% 0%;
                 filter: hue-rotate(4deg) brightness(1.27) contrast(1.67) saturate(1.47);
                 transform: scale(1.015) rotate(0.3deg);
             }
-            20% { 
+
+            20% {
                 background-position: 30% 18%, 82% 78%, 68% 32%, 78% 25%, 0% 0%;
                 filter: hue-rotate(6deg) brightness(1.29) contrast(1.69) saturate(1.49);
                 transform: scale(1.02) rotate(0.4deg);
             }
-            25% { 
+
+            25% {
                 background-position: 38% 22%, 78% 75%, 72% 28%, 22% 82%, 0% 0%;
                 filter: hue-rotate(8deg) brightness(1.32) contrast(1.72) saturate(1.52);
                 transform: scale(1.025) rotate(0.5deg);
             }
-            30% { 
+
+            30% {
                 background-position: 45% 28%, 72% 68%, 78% 22%, 85% 18%, 0% 0%;
                 filter: hue-rotate(10deg) brightness(1.35) contrast(1.75) saturate(1.55);
                 transform: scale(1.03) rotate(0.6deg);
             }
-            35% { 
+
+            35% {
                 background-position: 52% 32%, 68% 65%, 82% 18%, 18% 88%, 0% 0%;
                 filter: hue-rotate(12deg) brightness(1.37) contrast(1.77) saturate(1.57);
                 transform: scale(1.035) rotate(0.7deg);
             }
-            40% { 
+
+            40% {
                 background-position: 58% 38%, 62% 58%, 85% 15%, 78% 25%, 0% 0%;
                 filter: hue-rotate(15deg) brightness(1.4) contrast(1.8) saturate(1.6);
                 transform: scale(1.04) rotate(0.8deg);
             }
-            45% { 
+
+            45% {
                 background-position: 65% 42%, 58% 55%, 88% 12%, 25% 78%, 0% 0%;
                 filter: hue-rotate(17deg) brightness(1.37) contrast(1.82) saturate(1.62);
                 transform: scale(1.042) rotate(0.9deg);
             }
-            50% { 
+
+            50% {
                 background-position: 72% 48%, 52% 48%, 25% 75%, 45% 65%, 0% 0%;
                 filter: hue-rotate(20deg) brightness(1.35) contrast(1.85) saturate(1.65);
                 transform: scale(1.045) rotate(1deg);
             }
-            55% { 
+
+            55% {
                 background-position: 78% 52%, 48% 45%, 75% 25%, 65% 45%, 0% 0%;
                 filter: hue-rotate(18deg) brightness(1.32) contrast(1.82) saturate(1.62);
                 transform: scale(1.04) rotate(0.9deg);
             }
-            60% { 
+
+            60% {
                 background-position: 85% 58%, 42% 38%, 65% 35%, 88% 15%, 0% 0%;
                 filter: hue-rotate(16deg) brightness(1.3) contrast(1.8) saturate(1.6);
                 transform: scale(1.035) rotate(0.8deg);
             }
-            65% { 
+
+            65% {
                 background-position: 88% 62%, 38% 35%, 55% 45%, 15% 85%, 0% 0%;
                 filter: hue-rotate(14deg) brightness(1.27) contrast(1.77) saturate(1.57);
                 transform: scale(1.03) rotate(0.7deg);
             }
-            70% { 
+
+            70% {
                 background-position: 92% 68%, 32% 28%, 45% 55%, 85% 25%, 0% 0%;
                 filter: hue-rotate(12deg) brightness(1.25) contrast(1.75) saturate(1.55);
                 transform: scale(1.025) rotate(0.6deg);
             }
-            75% { 
+
+            75% {
                 background-position: 95% 72%, 28% 25%, 35% 65%, 25% 75%, 0% 0%;
                 filter: hue-rotate(10deg) brightness(1.22) contrast(1.72) saturate(1.52);
                 transform: scale(1.02) rotate(0.5deg);
             }
-            80% { 
+
+            80% {
                 background-position: 98% 78%, 22% 18%, 25% 75%, 75% 35%, 0% 0%;
                 filter: hue-rotate(8deg) brightness(1.2) contrast(1.69) saturate(1.49);
                 transform: scale(1.015) rotate(0.4deg);
             }
-            85% { 
+
+            85% {
                 background-position: 95% 82%, 18% 15%, 18% 82%, 35% 65%, 0% 0%;
                 filter: hue-rotate(6deg) brightness(1.18) contrast(1.67) saturate(1.47);
                 transform: scale(1.01) rotate(0.3deg);
             }
-            90% { 
+
+            90% {
                 background-position: 92% 88%, 12% 8%, 12% 88%, 88% 15%, 0% 0%;
                 filter: hue-rotate(4deg) brightness(1.16) contrast(1.65) saturate(1.45);
                 transform: scale(1.005) rotate(0.2deg);
             }
-            95% { 
+
+            95% {
                 background-position: 88% 92%, 8% 5%, 8% 92%, 15% 88%, 0% 0%;
                 filter: hue-rotate(2deg) brightness(1.14) contrast(1.62) saturate(1.42);
                 transform: scale(1.002) rotate(0.1deg);
             }
-            100% { 
+
+            100% {
                 background-position: 0% 0%, 100% 100%, 50% 50%, 25% 75%, 0% 0%;
                 filter: hue-rotate(0deg) brightness(1.2) contrast(1.6) saturate(1.4);
                 transform: scale(1) rotate(0deg);
@@ -250,89 +285,130 @@
 
         /* CAUSTICS FLUIDAS UE5 - EPIC GAMES TUTORIAL */
         @keyframes ue5FluidCaustics {
-            0% { 
+            0% {
                 background-position: 0% 0%, 0% 0%, 0% 0%;
-                opacity: 0.8; filter: brightness(1.1) contrast(1.3);
+                opacity: 0.8;
+                filter: brightness(1.1) contrast(1.3);
             }
-            5% { 
+
+            5% {
                 background-position: 12% 8%, -8% 12%, 10% 20%;
-                opacity: 0.85; filter: brightness(1.15) contrast(1.35);
+                opacity: 0.85;
+                filter: brightness(1.15) contrast(1.35);
             }
-            10% { 
+
+            10% {
                 background-position: 25% 15%, -15% 25%, 20% 40%;
-                opacity: 0.9; filter: brightness(1.2) contrast(1.4);
+                opacity: 0.9;
+                filter: brightness(1.2) contrast(1.4);
             }
-            15% { 
+
+            15% {
                 background-position: 37% 22%, -22% 37%, 30% 8%;
-                opacity: 0.95; filter: brightness(1.25) contrast(1.45);
+                opacity: 0.95;
+                filter: brightness(1.25) contrast(1.45);
             }
-            20% { 
+
+            20% {
                 background-position: 50% 30%, -30% 50%, 40% 25%;
-                opacity: 1.0; filter: brightness(1.3) contrast(1.5);
+                opacity: 1.0;
+                filter: brightness(1.3) contrast(1.5);
             }
-            25% { 
+
+            25% {
                 background-position: 62% 37%, -37% 62%, 50% 42%;
-                opacity: 1.05; filter: brightness(1.35) contrast(1.55);
+                opacity: 1.05;
+                filter: brightness(1.35) contrast(1.55);
             }
-            30% { 
+
+            30% {
                 background-position: 75% 45%, -45% 75%, 60% 5%;
-                opacity: 1.1; filter: brightness(1.4) contrast(1.6);
+                opacity: 1.1;
+                filter: brightness(1.4) contrast(1.6);
             }
-            35% { 
+
+            35% {
                 background-position: 87% 52%, -52% 87%, 70% 22%;
-                opacity: 1.15; filter: brightness(1.45) contrast(1.65);
+                opacity: 1.15;
+                filter: brightness(1.45) contrast(1.65);
             }
-            40% { 
+
+            40% {
                 background-position: 100% 60%, -60% 100%, 80% 40%;
-                opacity: 1.2; filter: brightness(1.5) contrast(1.7);
+                opacity: 1.2;
+                filter: brightness(1.5) contrast(1.7);
             }
-            45% { 
+
+            45% {
                 background-position: 112% 67%, -67% 112%, 90% 57%;
-                opacity: 1.15; filter: brightness(1.45) contrast(1.65);
+                opacity: 1.15;
+                filter: brightness(1.45) contrast(1.65);
             }
-            50% { 
+
+            50% {
                 background-position: 125% 75%, -75% 125%, 100% 75%;
-                opacity: 1.1; filter: brightness(1.4) contrast(1.6);
+                opacity: 1.1;
+                filter: brightness(1.4) contrast(1.6);
             }
-            55% { 
+
+            55% {
                 background-position: 137% 82%, -82% 137%, 110% 92%;
-                opacity: 1.05; filter: brightness(1.35) contrast(1.55);
+                opacity: 1.05;
+                filter: brightness(1.35) contrast(1.55);
             }
-            60% { 
+
+            60% {
                 background-position: 150% 90%, -90% 150%, 120% 10%;
-                opacity: 1.0; filter: brightness(1.3) contrast(1.5);
+                opacity: 1.0;
+                filter: brightness(1.3) contrast(1.5);
             }
-            65% { 
+
+            65% {
                 background-position: 162% 97%, -97% 162%, 130% 27%;
-                opacity: 0.95; filter: brightness(1.25) contrast(1.45);
+                opacity: 0.95;
+                filter: brightness(1.25) contrast(1.45);
             }
-            70% { 
+
+            70% {
                 background-position: 175% 105%, -105% 175%, 140% 45%;
-                opacity: 0.9; filter: brightness(1.2) contrast(1.4);
+                opacity: 0.9;
+                filter: brightness(1.2) contrast(1.4);
             }
-            75% { 
+
+            75% {
                 background-position: 187% 112%, -112% 187%, 150% 62%;
-                opacity: 0.85; filter: brightness(1.15) contrast(1.35);
+                opacity: 0.85;
+                filter: brightness(1.15) contrast(1.35);
             }
-            80% { 
+
+            80% {
                 background-position: 200% 120%, -120% 200%, 160% 80%;
-                opacity: 0.8; filter: brightness(1.1) contrast(1.3);
+                opacity: 0.8;
+                filter: brightness(1.1) contrast(1.3);
             }
-            85% { 
+
+            85% {
                 background-position: 175% 105%, -105% 175%, 140% 97%;
-                opacity: 0.85; filter: brightness(1.15) contrast(1.35);
+                opacity: 0.85;
+                filter: brightness(1.15) contrast(1.35);
             }
-            90% { 
+
+            90% {
                 background-position: 150% 90%, -90% 150%, 120% 15%;
-                opacity: 0.9; filter: brightness(1.2) contrast(1.4);
+                opacity: 0.9;
+                filter: brightness(1.2) contrast(1.4);
             }
-            95% { 
+
+            95% {
                 background-position: 75% 45%, -45% 75%, 60% 32%;
-                opacity: 0.85; filter: brightness(1.15) contrast(1.35);
+                opacity: 0.85;
+                filter: brightness(1.15) contrast(1.35);
             }
-            100% { 
+
+            100% {
                 background-position: 0% 0%, 0% 0%, 0% 0%;
-                opacity: 0.8; filter: brightness(1.1) contrast(1.3);
+                opacity: 0.8;
+                filter: brightness(1.1) contrast(1.3);
             }
         }
 
@@ -766,8 +842,15 @@
 
         /* Animações */
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         .floating {
@@ -775,8 +858,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         .pulsing {
@@ -788,24 +878,24 @@
             .hero-title {
                 font-size: 2.5rem;
             }
-            
+
             .hero-subtitle {
                 font-size: 1.2rem;
             }
-            
+
             .visualization-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .capabilities-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header-content {
                 flex-direction: column;
                 gap: 20px;
             }
-            
+
             .stats-header {
                 justify-content: center;
             }
@@ -829,8 +919,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Tooltip Styles */
@@ -847,12 +942,20 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header Profissional -->
     <header class="header">
         <div class="header-content">
             <div class="logo-section">
-                <div class="logo">🌊</div>
+                <div style="position:relative; display:inline-block;">
+                    <div class="logo">🌊</div>
+                    <img src="assets/images/milo_logo.png"
+                        style="position:absolute; bottom:-5px; right:-10px; width:28px; height:28px; z-index:10; filter: drop-shadow(0px 0px 4px rgba(0, 188, 212, 0.8)); transition: transform 0.3s;"
+                        onmouseover="this.style.transform='scale(1.2) rotate(10deg)'"
+                        onmouseout="this.style.transform='scale(1) rotate(0deg)'" title="Powered by Agentic Logic"
+                        alt="Baby Milo">
+                </div>
                 <div class="title-section">
                     <h1>Neptune(ANG)</h1>
                     <div class="subtitle">Plataforma Científica Avançada - Biodiversidade Marinha de Angola</div>
@@ -890,7 +993,8 @@
                 integrando Machine Learning, visualizações 3D e dados oceanográficos em tempo real.
             </p>
             <div class="hero-stats">
-                <strong>2.4M+ linhas de código Python | 36.5K arquivos JavaScript | Arquitetura Modular Avançada</strong>
+                <strong>2.4M+ linhas de código Python | 36.5K arquivos JavaScript | Arquitetura Modular
+                    Avançada</strong>
             </div>
         </div>
     </section>
@@ -899,13 +1003,14 @@
     <section class="capabilities">
         <h2 class="section-title" data-aos="fade-up">Capacidades Avançadas</h2>
         <p class="section-subtitle" data-aos="fade-up">Tecnologia de ponta para análise científica marinha</p>
-        
+
         <div class="capabilities-grid">
             <div class="capability-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="capability-icon"><i class="fas fa-brain"></i></div>
                 <h3 class="capability-title">Sistema ML Avançado</h3>
                 <p class="capability-description">
-                    5 modelos de Machine Learning com precisão superior a 95% para análise de biodiversidade e predições oceanográficas.
+                    5 modelos de Machine Learning com precisão superior a 95% para análise de biodiversidade e predições
+                    oceanográficas.
                 </p>
                 <ul class="capability-features">
                     <li>Preditor de Biodiversidade (95.2% precisão)</li>
@@ -1012,36 +1117,37 @@
             </div>
 
             <div class="metric-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="metric-value" style="color: #ff9800;">< 1s</div>
-                <div class="metric-label">Latência API</div>
-                <div class="metric-trend trend-up">83% Melhoria</div>
-            </div>
+                <div class="metric-value" style="color: #ff9800;">
+                    < 1s</div>
+                        <div class="metric-label">Latência API</div>
+                        <div class="metric-trend trend-up">83% Melhoria</div>
+                </div>
 
-            <div class="metric-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="metric-value" style="color: #9c27b0;">518K</div>
-                <div class="metric-label">km² ZEE Monitorizada</div>
-                <div class="metric-trend trend-stable">Cobertura Total</div>
-            </div>
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="metric-value" style="color: #9c27b0;">518K</div>
+                    <div class="metric-label">km² ZEE Monitorizada</div>
+                    <div class="metric-trend trend-stable">Cobertura Total</div>
+                </div>
 
-            <div class="metric-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="metric-value" style="color: #00bcd4;">99.99%</div>
-                <div class="metric-label">Disponibilidade</div>
-                <div class="metric-trend trend-up">SLA Garantido</div>
-            </div>
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="metric-value" style="color: #00bcd4;">99.99%</div>
+                    <div class="metric-label">Disponibilidade</div>
+                    <div class="metric-trend trend-up">SLA Garantido</div>
+                </div>
 
-            <div class="metric-card" data-aos="fade-up" data-aos-delay="600">
-                <div class="metric-value" style="color: #4caf50;">35+</div>
-                <div class="metric-label">Espécies Catalogadas</div>
-                <div class="metric-trend trend-up">Base Crescente</div>
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="metric-value" style="color: #4caf50;">35+</div>
+                    <div class="metric-label">Espécies Catalogadas</div>
+                    <div class="metric-trend trend-up">Base Crescente</div>
+                </div>
             </div>
-        </div>
     </section>
 
     <!-- ML Models Showcase -->
     <section class="ml-showcase">
         <h2 class="section-title" data-aos="fade-up">Modelos de Machine Learning</h2>
         <p class="section-subtitle" data-aos="fade-up">Algoritmos avançados com precisão superior a 95%</p>
-        
+
         <div class="ml-models-grid">
             <div class="ml-model-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="accuracy-badge">95.2% Precisão</div>
@@ -1080,10 +1186,10 @@
         <div class="footer-content">
             <h3 class="footer-title">Neptune(ANG) - Transformando a Ciência Marinha em Angola</h3>
             <p class="footer-description">
-                Plataforma científica avançada desenvolvida com tecnologias de ponta para apoiar a investigação, 
+                Plataforma científica avançada desenvolvida com tecnologias de ponta para apoiar a investigação,
                 conservação e gestão sustentável da biodiversidade marinha na Zona Econômica Exclusiva de Angola.
             </p>
-            
+
             <div class="contact-info">
                 <div class="contact-item">
                     <i class="fas fa-building"></i>
@@ -1098,7 +1204,7 @@
                     <span>bgapp-frontend.pages.dev</span>
                 </div>
             </div>
-            
+
             <p style="margin-top: 30px; color: #b0bec5; font-size: 0.9rem;">
                 © 2025 Neptune(ANG) - Todos os direitos reservados | Tecnologia de Classe Mundial para Angola
             </p>
@@ -1125,25 +1231,25 @@
 
         // Dados simulados para demonstração
         const angolaSpeciesData = [
-            {name: 'Thunnus albacares', common: 'Atum-amarelo', lat: -8.8, lng: 13.2, abundance: 85},
-            {name: 'Sardina pilchardus', common: 'Sardinha', lat: -9.2, lng: 13.1, abundance: 92},
-            {name: 'Tursiops truncatus', common: 'Golfinho-roaz', lat: -8.5, lng: 13.5, abundance: 78},
-            {name: 'Merluccius capensis', common: 'Pescada-do-cabo', lat: -10.1, lng: 13.8, abundance: 71},
-            {name: 'Dentex angolensis', common: 'Dentão-angolano', lat: -9.8, lng: 13.4, abundance: 66}
+            { name: 'Thunnus albacares', common: 'Atum-amarelo', lat: -8.8, lng: 13.2, abundance: 85 },
+            { name: 'Sardina pilchardus', common: 'Sardinha', lat: -9.2, lng: 13.1, abundance: 92 },
+            { name: 'Tursiops truncatus', common: 'Golfinho-roaz', lat: -8.5, lng: 13.5, abundance: 78 },
+            { name: 'Merluccius capensis', common: 'Pescada-do-cabo', lat: -10.1, lng: 13.8, abundance: 71 },
+            { name: 'Dentex angolensis', common: 'Dentão-angolano', lat: -9.8, lng: 13.4, abundance: 66 }
         ];
 
         const oceanographicData = {
             temperature: [
-                {lat: -8.0, lng: 12.5, value: 26.2, timestamp: new Date()},
-                {lat: -9.0, lng: 13.0, value: 25.8, timestamp: new Date()},
-                {lat: -10.0, lng: 13.5, value: 24.9, timestamp: new Date()},
-                {lat: -11.0, lng: 14.0, value: 23.7, timestamp: new Date()}
+                { lat: -8.0, lng: 12.5, value: 26.2, timestamp: new Date() },
+                { lat: -9.0, lng: 13.0, value: 25.8, timestamp: new Date() },
+                { lat: -10.0, lng: 13.5, value: 24.9, timestamp: new Date() },
+                { lat: -11.0, lng: 14.0, value: 23.7, timestamp: new Date() }
             ],
             salinity: [
-                {lat: -8.0, lng: 12.5, value: 35.2},
-                {lat: -9.0, lng: 13.0, value: 35.8},
-                {lat: -10.0, lng: 13.5, value: 36.1},
-                {lat: -11.0, lng: 14.0, value: 36.4}
+                { lat: -8.0, lng: 12.5, value: 35.2 },
+                { lat: -9.0, lng: 13.0, value: 35.8 },
+                { lat: -10.0, lng: 13.5, value: 36.1 },
+                { lat: -11.0, lng: 14.0, value: 36.4 }
             ]
         };
 
@@ -1170,25 +1276,25 @@
         function toggleUnrealFeature(featureType) {
             event.target.classList.toggle('active');
             unrealFeatures[featureType] = !unrealFeatures[featureType];
-            
+
             const messages = {
                 '3d': 'Visualização 3D Unreal Engine',
                 'particles': 'Sistema de Partículas',
                 'lighting': 'Iluminação Volumétrica'
             };
-            
+
             showNotification(`${messages[featureType]} ${unrealFeatures[featureType] ? 'ativado' : 'desativado'}`, 'info');
         }
 
         function showQGISAnalysis(analysisType) {
             event.target.classList.toggle('active');
-            
+
             const messages = {
                 'buffers': 'Análise de Buffer Zones QGIS',
                 'hotspots': 'Hotspots de Biodiversidade identificados',
                 'corridors': 'Corredores Ecológicos mapeados'
             };
-            
+
             showNotification(messages[analysisType], 'success');
         }
 
@@ -1213,15 +1319,15 @@
                 transform: translateX(400px);
                 transition: all 0.3s ease;
             `;
-            
+
             notification.textContent = message;
             document.body.appendChild(notification);
-            
+
             // Animar entrada
             setTimeout(() => {
                 notification.style.transform = 'translateX(0)';
             }, 100);
-            
+
             // Remover após 3 segundos
             setTimeout(() => {
                 notification.style.transform = 'translateX(400px)';
@@ -1234,10 +1340,10 @@
         // Animações avançadas - SEM ALTERAR MÉTRICAS
         function startAdvancedAnimations() {
             console.log('🎨 Iniciando animações (sem afetar métricas)...');
-            
+
             // NÃO animar métricas para evitar zerar valores
             console.log('⚠️ Animação de métricas desativada para preservar valores');
-            
+
             // Apenas animar cards flutuantes se existirem
             const capabilityCards = document.querySelectorAll('.capability-card');
             if (capabilityCards.length > 0 && typeof gsap !== 'undefined') {
@@ -1251,7 +1357,7 @@
                 });
                 console.log('✅ Animação de cards ativada');
             }
-            
+
             // Animar elementos que não são métricas
             const otherElements = document.querySelectorAll('.hero-title, .section-title');
             if (otherElements.length > 0 && typeof gsap !== 'undefined') {
@@ -1269,24 +1375,24 @@
         // 🔧 FORÇAR MÉTRICAS E OCEANO - FUNÇÃO CRÍTICA
         function forceMetricsAndOceanDisplay() {
             console.log('🔧 Forçando exibição de métricas e oceano...');
-            
+
             // 📊 Valores corretos das métricas (fixos)
             const correctMetricValues = ['13', '2.4M+', '< 1s', '518K', '99.99%', '35+'];
-            
+
             // 📊 Forçar métricas a aparecerem
             const metricValues = document.querySelectorAll('.metric-value');
             const metricCards = document.querySelectorAll('.metric-card');
             const metricsSection = document.querySelector('.metrics-dashboard');
-            
+
             console.log(`📊 Encontradas ${metricValues.length} métricas`);
-            
+
             // Aplicar estilos forçados E RESTAURAR VALORES CORRETOS
             metricValues.forEach((metric, index) => {
                 // Restaurar valor correto ANTES de aplicar estilos
                 if (correctMetricValues[index]) {
                     metric.textContent = correctMetricValues[index];
                 }
-                
+
                 metric.style.cssText = `
                     font-size: 3rem !important;
                     font-weight: bold !important;
@@ -1296,16 +1402,16 @@
                     color: ${metric.style.color || '#ffffff'} !important;
                     text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
                 `;
-                
+
                 // Proteger contra alterações futuras
                 Object.defineProperty(metric, 'textContent', {
                     value: correctMetricValues[index] || metric.textContent,
                     writable: false
                 });
-                
+
                 console.log(`✅ Métrica ${index + 1}: ${metric.textContent}`);
             });
-            
+
             metricCards.forEach(card => {
                 card.style.cssText += `
                     background: rgba(255, 255, 255, 0.2) !important;
@@ -1315,7 +1421,7 @@
                     display: block !important;
                 `;
             });
-            
+
             if (metricsSection) {
                 metricsSection.style.cssText += `
                     opacity: 1 !important;
@@ -1323,7 +1429,7 @@
                     display: block !important;
                 `;
             }
-            
+
             // 🌊 Forçar oceano no background
             document.body.style.cssText += `
                 background: 
@@ -1334,7 +1440,7 @@
                 background-size: 150% 150%, 120% 120%, 180% 180%, 100% 100% !important;
                 animation: oceanWavesForced 20s ease-in-out infinite !important;
             `;
-            
+
             // Adicionar animação oceânica
             const oceanAnimation = document.createElement('style');
             oceanAnimation.textContent = `
@@ -1350,20 +1456,20 @@
                 }
             `;
             document.head.appendChild(oceanAnimation);
-            
+
             console.log('✅ Métricas e oceano forçados a aparecer!');
         }
 
         // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('🚀 BGAPP Demo carregado!');
-            
+
             // 🔧 FORÇAR MÉTRICAS E OCEANO IMEDIATAMENTE
             forceMetricsAndOceanDisplay();
-            
+
             initializeMap();
             startAdvancedAnimations();
-            
+
             // Simular carregamento de dados
             setTimeout(() => {
                 showNotification('Sistema BGAPP totalmente carregado!', 'success');
@@ -1373,7 +1479,7 @@
         });
 
         // Tooltip interativo
-        document.addEventListener('mousemove', function(e) {
+        document.addEventListener('mousemove', function (e) {
             const tooltip = document.querySelector('.tooltip');
             if (tooltip) {
                 tooltip.style.left = e.clientX + 15 + 'px';
@@ -1383,15 +1489,15 @@
 
         // Efeitos de hover avançados
         document.querySelectorAll('.capability-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
+            card.addEventListener('mouseenter', function () {
                 gsap.to(this, {
                     scale: 1.05,
                     duration: 0.3,
                     ease: "power2.out"
                 });
             });
-            
-            card.addEventListener('mouseleave', function() {
+
+            card.addEventListener('mouseleave', function () {
                 gsap.to(this, {
                     scale: 1,
                     duration: 0.3,
@@ -1401,4 +1507,5 @@
         });
     </script>
 </body>
+
 </html>
