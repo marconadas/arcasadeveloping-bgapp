@@ -1,14 +1,14 @@
 {
-  "name": "bgapp-scientific-dashboard",
+  "name": "neptune-ang-scientific-dashboard",
   "version": "2.0.0",
-  "description": "BGAPP - Advanced Scientific Dashboard with Unreal Engine & deck.gl integration",
+  "description": "Neptune(ANG) - Advanced Scientific Dashboard with Unreal Engine & deck.gl integration",
   "main": "apps/frontend/index.html",
   "scripts": {
     "start": "npx http-server apps/frontend -p 8000 -c-1",
     "dev": "npx http-server apps/frontend -p 8080 -c-1 --cors",
     "dev:admin": "cd apps/admin-dashboard && npm run dev",
     "dev:realtime": "cd apps/realtime-angola && npm run dev",
-    "build": "echo 'Building BGAPP...' && npm run optimize",
+    "build": "echo 'Building Neptune(ANG)...' && npm run optimize",
     "optimize": "node src/scripts/optimize-assets.js",
     "deploy": "wrangler pages deploy apps/frontend --project-name bgapp-frontend",
     "deploy:admin": "cd apps/admin-dashboard && npm run build && wrangler pages deploy out --project-name bgapp-admin",
@@ -54,7 +54,7 @@
     "wrangler": "^3.19.0"
   },
   "keywords": [
-    "bgapp",
+    "neptune-ang",
     "scientific-dashboard",
     "oceanographic",
     "visualization",

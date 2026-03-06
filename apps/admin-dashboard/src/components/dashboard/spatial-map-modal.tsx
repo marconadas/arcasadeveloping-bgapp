@@ -423,11 +423,11 @@ export default function SpatialMapModal({ isOpen, onClose, data }: SpatialMapMod
                   </div>
                 )}
 
-                {/* Mapa BGAPP em IFrame */}
+                {/* Mapa Neptune(ANG) em IFrame */}
                 <iframe
                   src={BGAPP_MAPS[selectedMapType as keyof typeof BGAPP_MAPS]?.url}
                   className="w-full h-full border-0"
-                  title={`Mapa BGAPP - ${BGAPP_MAPS[selectedMapType as keyof typeof BGAPP_MAPS]?.name}`}
+                  title={`Mapa Neptune(ANG) - ${BGAPP_MAPS[selectedMapType as keyof typeof BGAPP_MAPS]?.name}`}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                 />

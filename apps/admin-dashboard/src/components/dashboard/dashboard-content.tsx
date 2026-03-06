@@ -20,7 +20,7 @@
 import { DashboardOverview } from './sections/dashboard-overview-clean'
 import { IframeWrapper } from './sections/iframe-wrapper'
 import { ReportsManagement } from './reports-management'
-import BGAPPIntegrationBulletproof from './bgapp-integration-bulletproof'
+import NeptuneAngIntegrationBulletproof from './neptune-ang-integration-bulletproof'
 import ServicesIntegrationComplete from './services-integration-complete'
 import ServicesIntegrationCloudflare from './services-integration-cloudflare'
 import { ServicesStatus } from './services-status'
@@ -30,13 +30,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-// 🚀 BGAPP Native Components - Silicon Valley Grade A+
-import MLSystemDashboard from '../bgapp-native/ml-system/ml-system-dashboard'
-import PredictiveFiltersManager from '../bgapp-native/ml-system/predictive-filters-manager'
+// 🚀 Neptune(ANG) Native Components - Silicon Valley Grade A+
+import MLSystemDashboard from '../neptune-ang-native/ml-system/ml-system-dashboard'
+import PredictiveFiltersManager from '../neptune-ang-native/ml-system/predictive-filters-manager'
 import MLRetentionDashboard from '../ml-retention/MLRetentionDashboard'
-import QGISAdvancedPanel from '../bgapp-native/qgis-advanced/qgis-advanced-panel'
-import DataConnectorsManager from '../bgapp-native/data-processing/data-connectors-manager'
-import ScientificInterfacesHub from '../bgapp-native/scientific-tools/scientific-interfaces-hub'
+import QGISAdvancedPanel from '../neptune-ang-native/qgis-advanced/qgis-advanced-panel'
+import DataConnectorsManager from '../neptune-ang-native/data-processing/data-connectors-manager'
+import ScientificInterfacesHub from '../neptune-ang-native/scientific-tools/scientific-interfaces-hub'
 
 // 🗺️ QGIS Specific Components - Implementações Completas
 import QGISSpatialAnalysis from './qgis-spatial-analysis'
@@ -87,7 +87,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
         return <DashboardOverview />
       
       case 'bgapp-integration':
-        return <BGAPPIntegrationBulletproof />
+        return <NeptuneAngIntegrationBulletproof />
       
       case 'services-integration':
         return <ServicesIntegrationCloudflare />
@@ -128,6 +128,7 @@ export function DashboardContent({ section }: DashboardContentProps) {
       // 🔬 SCIENTIFIC INTERFACES HUB
       case 'scientific-hub':
       case 'scientific-interfaces':
+      case 'portal-interfaces': // ID usado no sidebar-simplified
         return <ScientificInterfacesHub />
       
       // 🌊 ENHANCED OCEAN SYSTEM
@@ -818,8 +819,8 @@ export function DashboardContent({ section }: DashboardContentProps) {
       // Demos and Tests
       case 'demo-enhanced':
         return <IframeWrapper
-          title="Demo BGAPP Enhanced"
-          description="Demonstração das funcionalidades avançadas do BGAPP"
+          title="Demo Neptune(ANG) Enhanced"
+          description="Demonstração das funcionalidades avançadas do Neptune(ANG)"
           src="https://bgapp-frontend.pages.dev/bgapp-enhanced-demo.html"
           icon={RocketLaunchIcon}
           height="900px"

@@ -1,5 +1,5 @@
 /**
- * 🌐 BGAPP Environment Configuration - Simplified & Fixed
+ * 🌐 Neptune Environment Configuration - Simplified & Fixed
  * Configuração centralizada de URLs sem loops e problemas
  *
  * CORREÇÕES v2.2.0:
@@ -103,5 +103,5 @@ export const fetchWithFallback = async (endpoint: string, options: RequestInit =
 
 // 🔧 Debug info (apenas em desenvolvimento)
 if (ENV.isDevelopment && typeof console !== 'undefined') {
-  console.log('🌐 BGAPP Environment Config:', ENV);
+  console.log('🌐 Neptune Environment Config:', ENV);
 }

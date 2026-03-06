@@ -46,7 +46,7 @@ export function DashboardOverview() {
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">BGAPP Enhanced Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-2">Neptune(ANG) Enhanced Dashboard</h1>
             <p className="text-blue-100">Plataforma de Biodiversidade Marinha de Angola - Deployado e Pronto para Clientes</p>
           </div>
           <div className="text-right">

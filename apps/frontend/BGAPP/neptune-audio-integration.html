@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neptune - Audio Integration Template</title>
+    <style>
+        /* CONTROLES DE ÁUDIO NEPTUNE */
+        .audio-controls-wrapper {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .audio-toggle-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.9), rgba(0, 242, 254, 0.9));
+            border: 2px solid rgba(79, 172, 254, 0.5);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.4);
+            position: relative;
+        }
+
+        .audio-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(79, 172, 254, 0.6);
+        }
+
+        .audio-toggle-btn.playing {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-color: #22c55e;
+            animation: pulse-audio 2s infinite;
+        }
+
+        .audio-toggle-btn.playing::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            animation: ripple 1.5s infinite;
+        }
+
+        @keyframes pulse-audio {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            }
+            50% { 
+                box-shadow: 0 8px 30px rgba(34, 197, 94, 0.6);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        .volume-control {
+            background: rgba(0, 8, 20, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            min-width: 200px;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .volume-control.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .volume-control h4 {
+            color: #4facfe;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-slider {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 10px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #4facfe;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: #4facfe;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .volume-value {
+            color: #cbd5e1;
+            font-size: 11px;
+            text-align: center;
+            display: block;
+        }
+
+        .audio-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audio-status.show {
+            transform: translateX(0);
+        }
+
+        .audio-visualizer {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 16px;
+        }
+
+        .audio-bar {
+            width: 3px;
+            background: white;
+            border-radius: 2px;
+            animation: audio-wave 0.8s ease-in-out infinite;
+        }
+
+        .audio-bar:nth-child(1) { animation-delay: 0s; }
+        .audio-bar:nth-child(2) { animation-delay: 0.1s; }
+        .audio-bar:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes audio-wave {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+
+        /* Welcome Audio Modal */
+        .audio-welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .audio-welcome-modal.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .audio-welcome-content {
+            background: rgba(0, 8, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .audio-welcome-modal.visible .audio-welcome-content {
+            transform: scale(1);
+        }
+
+        .audio-welcome-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .audio-welcome-title {
+            color: #4facfe;
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .audio-welcome-text {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .audio-welcome-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .audio-welcome-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            border: none;
+        }
+
+        .audio-welcome-btn.primary {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .audio-welcome-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .audio-welcome-btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            color: #94a3b8;
+        }
+
+        .audio-welcome-btn.secondary:hover {
+            border-color: #94a3b8;
+            color: #cbd5e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .audio-controls-wrapper {
+                bottom: 80px;
+                right: 10px;
+            }
+
+            .audio-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .volume-control {
+                min-width: 180px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body style="background: #000814; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px;">
+    
+    <h1 style="text-align: center; color: #4facfe; margin-bottom: 30px;">
+        🌊 Neptune Audio Integration Template
+    </h1>
+
+    <div style="max-width: 800px; margin: 0 auto; background: rgba(79, 172, 254, 0.05); padding: 30px; border-radius: 15px; border: 1px solid rgba(79, 172, 254, 0.2);">
+        <h2 style="color: #4facfe; margin-bottom: 20px;">📋 Instruções de Integração</h2>
+        
+        <div style="color: #cbd5e1; line-height: 1.8;">
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">1️⃣ Adicionar o arquivo de áudio</h3>
+            <p>Coloque seu arquivo de música oceânica em:</p>
+            <code style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 5px; display: block; margin: 10px 0; color: #22c55e;">
+                /apps/frontend/BGAPP/assets/audio/neptune-ambient.mp3
+            </code>
+            
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">2️⃣ Copiar o HTML Audio</h3>
+            <p>Adicione este código no body do index-neptune.html (antes do fechamento do body):</p>
+            <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 12px;">
+&lt;!-- NEPTUNE BACKGROUND AUDIO --&gt;
+&lt;audio id="neptune-bg-music" loop preload="auto"&gt;
+  &lt;source src="/assets/audio/neptune-ambient.mp3" type="audio/mpeg"&gt;
+  &lt;source src="/assets/audio/neptune-ambient.ogg" type="audio/ogg"&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;</pre>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">3️⃣ Adicionar os Controles de Áudio</h3>
+            <p>Copie todo o HTML dos controles (veja no código-fonte deste arquivo)</p>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">4️⃣ Copiar o CSS</h3>
+            <p>Adicione os estilos CSS no &lt;style&gt; do index-neptune.html</p>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">5️⃣ Adicionar o JavaScript</h3>
+            <p>Copie o código JavaScript completo no &lt;script&gt; do index-neptune.html</p>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">📁 Estrutura de Diretórios</h3>
+            <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; color: #cbd5e1; font-size: 12px;">
+apps/frontend/BGAPP/
+├── index-neptune.html
+└── assets/
+    └── audio/
+        ├── neptune-ambient.mp3
+        └── neptune-ambient.ogg (opcional, para fallback)</pre>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">🎵 Recomendações de Música</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>Estilo:</strong> Ambient oceânico, científico, relaxante</li>
+                <li><strong>BPM:</strong> 60-80 (profissional e calmo)</li>
+                <li><strong>Duração:</strong> 3-5 minutos (loop seamless)</li>
+                <li><strong>Formato:</strong> MP3 192kbps</li>
+                <li><strong>Volume inicial:</strong> 30-40% (não intrusivo)</li>
+            </ul>
+
+            <h3 style="color: #4facfe; font-size: 18px; margin-top: 25px;">🎨 Fontes de Música Gratuita</h3>
+            <ul style="margin-left: 20px;">
+                <li><a href="https://www.bensound.com" style="color: #4facfe;">Bensound.com</a> - Música livre de royalties</li>
+                <li><a href="https://freemusicarchive.org" style="color: #4facfe;">Free Music Archive</a> - Arquivo de música gratuita</li>
+                <li><a href="https://incompetech.com" style="color: #4facfe;">Incompetech</a> - Kevin MacLeod (CC BY)</li>
+                <li><a href="https://ccmixter.org" style="color: #4facfe;">ccMixter</a> - Remixes Creative Commons</li>
+            </ul>
+
+            <div style="background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; padding: 15px; margin-top: 25px; border-radius: 5px;">
+                <strong style="color: #22c55e;">✅ Funcionalidades Incluídas:</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Modal de boas-vindas com opção de ativar áudio</li>
+                    <li>Botão toggle play/pause com animação</li>
+                    <li>Controle de volume com slider</li>
+                    <li>Fade in/out suave</li>
+                    <li>Persistência de preferências (localStorage)</li>
+                    <li>Indicador visual quando áudio está tocando</li>
+                    <li>Responsivo para mobile</li>
+                    <li>Compliance com Chrome autoplay policy</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMO: NEPTUNE AUDIO CONTROLS -->
+    
+    <!-- Audio Element -->
+    <audio id="neptune-bg-music" loop preload="auto">
+        <!-- Substitua com o caminho real do seu arquivo de áudio -->
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+
+    <!-- Audio Controls Wrapper -->
+    <div class="audio-controls-wrapper">
+        <!-- Volume Control Panel -->
+        <div class="volume-control" id="volume-control">
+            <h4>🔊 Volume</h4>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="35">
+            <span class="volume-value" id="volume-value">35%</span>
+        </div>
+
+        <!-- Audio Toggle Button -->
+        <button class="audio-toggle-btn" id="audio-toggle-btn" title="Controlar música ambiente">
+            🎵
+        </button>
+    </div>
+
+    <!-- Audio Status Notification -->
+    <div class="audio-status" id="audio-status">
+        <div class="audio-visualizer">
+            <div class="audio-bar"></div>
+            <div class="audio-bar"></div>
+            <div class="audio-bar"></div>
+        </div>
+        <span>Música ambiente ativa</span>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="audio-welcome-modal" id="audio-welcome-modal">
+        <div class="audio-welcome-content">
+            <div class="audio-welcome-icon">🌊</div>
+            <h3 class="audio-welcome-title">Bem-vindo ao Neptune</h3>
+            <p class="audio-welcome-text">
+                Gostaria de ativar a música ambiente oceânica para uma experiência mais imersiva?
+            </p>
+            <div class="audio-welcome-buttons">
+                <button class="audio-welcome-btn primary" id="audio-enable-btn">
+                    🎵 Sim, ativar
+                </button>
+                <button class="audio-welcome-btn secondary" id="audio-disable-btn">
+                    Não, obrigado
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        /**
+         * NEPTUNE AUDIO SYSTEM
+         * Sistema completo de áudio ambiente para a plataforma Neptune
+         * Features: Auto-play com user gesture, fade in/out, volume control, localStorage persistence
+         */
+
+        class NeptuneAudioSystem {
+            constructor() {
+                this.audio = document.getElementById('neptune-bg-music');
+                this.toggleBtn = document.getElementById('audio-toggle-btn');
+                this.volumeControl = document.getElementById('volume-control');
+                this.volumeSlider = document.getElementById('volume-slider');
+                this.volumeValue = document.getElementById('volume-value');
+                this.audioStatus = document.getElementById('audio-status');
+                this.welcomeModal = document.getElementById('audio-welcome-modal');
+                this.enableBtn = document.getElementById('audio-enable-btn');
+                this.disableBtn = document.getElementById('audio-disable-btn');
+                
+                this.isPlaying = false;
+                this.volumeControlVisible = false;
+                this.fadeDuration = 2000; // 2 segundos
+                
+                this.init();
+            }
+
+            init() {
+                console.log('🎵 Inicializando Neptune Audio System...');
+                
+                // Carregar preferências salvas
+                this.loadPreferences();
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Mostrar welcome modal se for primeira visita
+                this.checkFirstVisit();
+            }
+
+            loadPreferences() {
+                const savedVolume = localStorage.getItem('neptune-audio-volume');
+                const audioEnabled = localStorage.getItem('neptune-audio-enabled');
+                
+                if (savedVolume !== null) {
+                    const volume = parseInt(savedVolume);
+                    this.volumeSlider.value = volume;
+                    this.audio.volume = volume / 100;
+                    this.updateVolumeDisplay(volume);
+                }
+                
+                if (audioEnabled === 'true') {
+                    // Não auto-play aqui - requer user gesture
+                    this.isPlaying = false;
+                }
+            }
+
+            checkFirstVisit() {
+                const hasVisited = localStorage.getItem('neptune-audio-welcomed');
+                
+                if (!hasVisited) {
+                    setTimeout(() => {
+                        this.showWelcomeModal();
+                    }, 1000);
+                }
+            }
+
+            showWelcomeModal() {
+                this.welcomeModal.classList.add('visible');
+            }
+
+            hideWelcomeModal() {
+                this.welcomeModal.classList.remove('visible');
+                localStorage.setItem('neptune-audio-welcomed', 'true');
+            }
+
+            setupEventListeners() {
+                // Toggle button
+                this.toggleBtn.addEventListener('click', () => {
+                    this.toggleAudio();
+                });
+
+                // Volume control visibility
+                this.toggleBtn.addEventListener('mouseenter', () => {
+                    this.showVolumeControl();
+                });
+
+                const controlsWrapper = document.querySelector('.audio-controls-wrapper');
+                controlsWrapper.addEventListener('mouseleave', () => {
+                    this.hideVolumeControl();
+                });
+
+                // Volume slider
+                this.volumeSlider.addEventListener('input', (e) => {
+                    const volume = parseInt(e.target.value);
+                    this.setVolume(volume);
+                });
+
+                // Welcome modal buttons
+                this.enableBtn.addEventListener('click', () => {
+                    this.hideWelcomeModal();
+                    this.playAudio();
+                });
+
+                this.disableBtn.addEventListener('click', () => {
+                    this.hideWelcomeModal();
+                    localStorage.setItem('neptune-audio-enabled', 'false');
+                });
+
+                // Audio events
+                this.audio.addEventListener('play', () => {
+                    this.onAudioPlay();
+                });
+
+                this.audio.addEventListener('pause', () => {
+                    this.onAudioPause();
+                });
+
+                this.audio.addEventListener('error', (e) => {
+                    console.error('❌ Erro ao carregar áudio:', e);
+                });
+            }
+
+            async toggleAudio() {
+                if (this.isPlaying) {
+                    await this.pauseAudio();
+                } else {
+                    await this.playAudio();
+                }
+            }
+
+            async playAudio() {
+                try {
+                    // Fade in
+                    this.audio.volume = 0;
+                    await this.audio.play();
+                    
+                    await this.fadeIn();
+                    
+                    this.isPlaying = true;
+                    localStorage.setItem('neptune-audio-enabled', 'true');
+                    
+                    console.log('✅ Áudio iniciado com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro ao reproduzir áudio:', error);
+                    this.showNotification('Erro ao reproduzir áudio. Clique para tentar novamente.', 'error');
+                }
+            }
+
+            async pauseAudio() {
+                try {
+                    await this.fadeOut();
+                    this.audio.pause();
+                    
+                    this.isPlaying = false;
+                    localStorage.setItem('neptune-audio-enabled', 'false');
+                    
+                    console.log('⏸️ Áudio pausado');
+                } catch (error) {
+                    console.error('❌ Erro ao pausar áudio:', error);
+                }
+            }
+
+            fadeIn() {
+                return new Promise((resolve) => {
+                    const targetVolume = this.volumeSlider.value / 100;
+                    const steps = 50;
+                    const stepDuration = this.fadeDuration / steps;
+                    const volumeIncrement = targetVolume / steps;
+                    
+                    let currentStep = 0;
+                    
+                    const fadeInterval = setInterval(() => {
+                        currentStep++;
+                        this.audio.volume = Math.min(volumeIncrement * currentStep, targetVolume);
+                        
+                        if (currentStep >= steps) {
+                            clearInterval(fadeInterval);
+                            resolve();
+                        }
+                    }, stepDuration);
+                });
+            }
+
+            fadeOut() {
+                return new Promise((resolve) => {
+                    const startVolume = this.audio.volume;
+                    const steps = 30;
+                    const stepDuration = (this.fadeDuration / 2) / steps; // Fade out mais rápido
+                    const volumeDecrement = startVolume / steps;
+                    
+                    let currentStep = 0;
+                    
+                    const fadeInterval = setInterval(() => {
+                        currentStep++;
+                        this.audio.volume = Math.max(startVolume - (volumeDecrement * currentStep), 0);
+                        
+                        if (currentStep >= steps) {
+                            clearInterval(fadeInterval);
+                            resolve();
+                        }
+                    }, stepDuration);
+                });
+            }
+
+            setVolume(volume) {
+                this.audio.volume = volume / 100;
+                this.updateVolumeDisplay(volume);
+                localStorage.setItem('neptune-audio-volume', volume);
+            }
+
+            updateVolumeDisplay(volume) {
+                this.volumeValue.textContent = volume + '%';
+            }
+
+            showVolumeControl() {
+                this.volumeControl.classList.add('visible');
+                this.volumeControlVisible = true;
+            }
+
+            hideVolumeControl() {
+                setTimeout(() => {
+                    this.volumeControl.classList.remove('visible');
+                    this.volumeControlVisible = false;
+                }, 300);
+            }
+
+            onAudioPlay() {
+                this.toggleBtn.classList.add('playing');
+                this.toggleBtn.innerHTML = '🔊';
+                this.showAudioStatus();
+            }
+
+            onAudioPause() {
+                this.toggleBtn.classList.remove('playing');
+                this.toggleBtn.innerHTML = '🎵';
+                this.hideAudioStatus();
+            }
+
+            showAudioStatus() {
+                this.audioStatus.classList.add('show');
+                
+                setTimeout(() => {
+                    this.audioStatus.classList.remove('show');
+                }, 3000);
+            }
+
+            hideAudioStatus() {
+                this.audioStatus.classList.remove('show');
+            }
+
+            showNotification(message, type = 'success') {
+                // Implementar sistema de notificações se necessário
+                console.log(`📢 ${message}`);
+            }
+        }
+
+        // Inicializar quando a página carregar
+        window.addEventListener('load', () => {
+            const neptuneAudio = new NeptuneAudioSystem();
+            
+            // Expor globalmente para debug (opcional)
+            window.neptuneAudio = neptuneAudio;
+            
+            console.log('✅ Neptune Audio System carregado');
+        });
+    </script>
+
+</body>
+</html>
+

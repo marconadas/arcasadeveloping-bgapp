@@ -1,5 +1,5 @@
 /**
- * BGAPP API Worker - Cloudflare Worker para APIs serverless
+ * Neptune(ANG) API Worker - Cloudflare Worker para APIs serverless
  * Fornece endpoints para o dashboard administrativo
  */
 
@@ -1651,7 +1651,7 @@ async function originalFetchHandler(request, env, ctx) {
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
-                'User-Agent': 'BGAPP/1.0 (Cloudflare-Worker)'
+                'User-Agent': 'Neptune-ANG/1.0 (Cloudflare-Worker)'
               }
             });
             
@@ -1725,7 +1725,7 @@ async function originalFetchHandler(request, env, ctx) {
                 headers: {
                   'Authorization': `Bearer ${token}`,
                   'Accept': 'application/json',
-                  'User-Agent': 'BGAPP/1.0 (Cloudflare-Worker)',
+                  'User-Agent': 'Neptune-ANG/1.0 (Cloudflare-Worker)',
                   'X-Requested-With': 'XMLHttpRequest'
                 }
               });
@@ -2014,7 +2014,7 @@ async function originalFetchHandler(request, env, ctx) {
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
-                'User-Agent': 'BGAPP-Angola/1.0'
+                'User-Agent': 'Neptune-ANG-Angola/1.0'
               },
               timeout: 5000 // 5 second timeout
             });
@@ -2343,7 +2343,7 @@ async function originalFetchHandler(request, env, ctx) {
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'image/png',
-                'User-Agent': 'BGAPP-4Wings/1.0'
+                'User-Agent': 'Neptune-ANG-4Wings/1.0'
               }
             });
             if (!t.ok) {
@@ -2362,7 +2362,7 @@ async function originalFetchHandler(request, env, ctx) {
       // NOAA Real-Time Ocean Data
       if (path === '/api/noaa/ocean-data') {
         try {
-          const response = await fetch('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_temperature&application=BGAPP&format=json&units=metric&time_zone=gmt&datum=msl&range=24&station=8518750');
+          const response = await fetch('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_temperature&application=Neptune-ANG&format=json&units=metric&time_zone=gmt&datum=msl&range=24&station=8518750');
           if (response.ok) {
             const noaaData = await response.json();
             return jsonResponse({

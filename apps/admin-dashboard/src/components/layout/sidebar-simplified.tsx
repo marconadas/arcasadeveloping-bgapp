@@ -197,7 +197,7 @@ export function SidebarSimplified({
             <span className="text-2xl">🌊</span>
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-bold text-white">BGAPP</h2>
+            <h2 className="text-lg font-bold text-white">Neptune(ANG)</h2>
             <p className="text-xs text-slate-400">Marine Angola v2.0</p>
           </div>
         </div>

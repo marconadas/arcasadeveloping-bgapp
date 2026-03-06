@@ -1,7 +1,7 @@
 {
-  "name": "bgapp-admin-dashboard",
+  "name": "neptune-ang-admin-dashboard",
   "version": "2.0.0",
-  "description": "BGAPP Marine Angola - Dashboard Administrativo Next.js",
+  "description": "Neptune(ANG) - Dashboard Administrativo Next.js",
   "private": true,
   "author": {
     "name": "MareDatum Consultoria e Gestão de Projectos Unipessoal LDA",

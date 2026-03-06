@@ -1,4 +1,4 @@
-# 🌊 BGAPP Marine Angola - Plataforma Científica Oceanográfica
+# 🌊 Neptune(ANG) - Plataforma Científica Oceanográfica de Angola
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Cloudflare Pages](https://img.shields.io/badge/Deployed%20on-Cloudflare%20Pages-00ADD8?logo=cloudflare)](https://bgapp-admin.pages.dev)
@@ -25,7 +25,7 @@
 
 ## 🎯 **Visão Geral**
 
-O **BGAPP (Biodiversity and Geographic Analysis Platform)** é uma plataforma científica de última geração desenvolvida especificamente para análise oceanográfica e monitorização da biodiversidade marinha na Zona Económica Exclusiva de Angola.
+O **Neptune(ANG)** é uma plataforma científica de última geração desenvolvida especificamente para análise oceanográfica e monitorização da biodiversidade marinha na Zona Económica Exclusiva de Angola.
 
 ### 🌟 **Características Principais**
 - **43 interfaces científicas** integradas
@@ -151,7 +151,7 @@ npm run dev
 # http://localhost:3000
 
 # Backend (APIs)
-python -m src.bgapp.api.ml_endpoints
+python -m src.neptune_ang.api.ml_endpoints
 # http://localhost:8000
 ```
 

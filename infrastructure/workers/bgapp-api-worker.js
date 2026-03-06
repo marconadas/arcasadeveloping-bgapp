@@ -1,5 +1,5 @@
 /**
- * BGAPP API Worker - Oceanographic Data Service
+ * Neptune(ANG) API Worker - Oceanographic Data Service
  * Serves real oceanographic data from D1 database for realtime-angola application
  * Replaces synthetic data with actual NASA, Copernicus, and ML prediction data
  */
@@ -216,9 +216,12 @@ export default {
           result.vessel_lights = vesselLightsResults.results || [];
         }
 
-        // Query ML Predictions
+        // Query ML Predictions with optional filters
         if (dataType === 'all' || dataType === 'ml_predictions') {
-          const mlQuery = `
+          const minConfidence = parseFloat(params.get('minConfidence')) || 0;
+          const predictionTypes = params.get('prediction_type');
+
+          let mlQuery = `
             SELECT
               latitude, longitude, prediction_type,
               confidence, model_name, prediction_value,
@@ -226,12 +229,24 @@ export default {
             FROM ml_predictions
             WHERE latitude BETWEEN ? AND ?
               AND longitude BETWEEN ? AND ?
-            ORDER BY timestamp DESC
-            LIMIT ?
+              AND confidence >= ?
           `;
 
+          const mlParams = [bounds.minLat, bounds.maxLat, bounds.minLon, bounds.maxLon, minConfidence];
+
+          // Filter by prediction types if specified (comma-separated list)
+          if (predictionTypes) {
+            const types = predictionTypes.split(',').map(t => t.trim());
+            const placeholders = types.map(() => '?').join(',');
+            mlQuery += ` AND prediction_type IN (${placeholders})`;
+            mlParams.push(...types);
+          }
+
+          mlQuery += ' ORDER BY timestamp DESC LIMIT ?';
+          mlParams.push(limit);
+
           const mlResults = await env.BGAPP_DATA.prepare(mlQuery)
-            .bind(bounds.minLat, bounds.maxLat, bounds.minLon, bounds.maxLon, limit)
+            .bind(...mlParams)
             .all();
 
           result.ml_predictions = mlResults.results || [];
@@ -273,6 +288,7 @@ export default {
         const radius = parseFloat(url.searchParams.get('radius') || '0.5');
         const limit = parseInt(url.searchParams.get('limit') || '100');
         const predictionType = url.searchParams.get('type');
+        const minConfidence = parseFloat(url.searchParams.get('minConfidence')) || 0;
 
         // Calculate bounds from center point and radius
         const minLat = lat - radius;
@@ -293,9 +309,10 @@ export default {
           FROM ml_predictions
           WHERE latitude BETWEEN ? AND ?
             AND longitude BETWEEN ? AND ?
+            AND confidence >= ?
         `;
 
-        const params = [minLat, maxLat, minLon, maxLon];
+        const params = [minLat, maxLat, minLon, maxLon, minConfidence];
 
         if (predictionType) {
           query += ' AND prediction_type = ?';

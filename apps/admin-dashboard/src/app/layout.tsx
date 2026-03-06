@@ -8,35 +8,35 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bgapp-admin.pages.dev'),
-  title: 'BGAPP - Marine Angola | Painel Administrativo v2.0.0',
-  description: 'Dashboard administrativo para gestão completa da plataforma oceanográfica e meteorológica BGAPP Marine Angola',
+  title: 'Neptune(ANG) - Marine Angola | Painel Administrativo v2.0.0',
+  description: 'Dashboard administrativo para gestão completa da plataforma oceanográfica e meteorológica Neptune(ANG) Marine Angola',
   authors: [{ name: 'Mare Datum Consultoria' }],
   manifest: '/manifest.json',
-  keywords: ['BGAPP', 'Marine Angola', 'Dashboard', 'Oceanografia', 'Biodiversidade', 'Machine Learning', 'Administração'],
+  keywords: ['Neptune(ANG)', 'Marine Angola', 'Dashboard', 'Oceanografia', 'Biodiversidade', 'Machine Learning', 'Administração'],
   creator: 'Mare Datum Consultoria',
-  publisher: 'BGAPP Marine Angola',
+  publisher: 'Neptune(ANG) Marine Angola',
   formatDetection: {
     telephone: false,
     address: false,
     email: false,
   },
   openGraph: {
-    title: 'BGAPP - Dashboard Administrativo',
+    title: 'Neptune(ANG) - Dashboard Administrativo',
     description: 'Plataforma de gestão oceanográfica e meteorológica para Angola',
-    siteName: 'BGAPP Marine Angola',
+    siteName: 'Neptune(ANG) Marine Angola',
     images: [
       {
         url: 'https://bgapp-admin.pages.dev/logo.png',
         width: 800,
         height: 600,
-        alt: 'BGAPP Marine Angola Logo',
+        alt: 'Neptune(ANG) Marine Angola Logo',
       },
     ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BGAPP - Dashboard Administrativo',
+    title: 'Neptune(ANG) - Dashboard Administrativo',
     description: 'Plataforma de gestão oceanográfica e meteorológica para Angola',
     images: ['https://bgapp-admin.pages.dev/logo.png'],
   },
