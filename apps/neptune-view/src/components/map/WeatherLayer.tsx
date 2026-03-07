@@ -115,7 +115,7 @@ export function WeatherLayer({
       transitions: {
         getPosition: 300,
         getFillColor: 300
-      }
+      } as any
     });
   }, [data, visible, opacity, getTemperatureColor, temperatureColorScale]);
 
@@ -167,7 +167,7 @@ export function WeatherLayer({
         getPosition: 300,
         getAngle: 300,
         getSize: 300
-      }
+      } as any
     });
   }, [data, visible, showWindVectors, opacity]);
 
