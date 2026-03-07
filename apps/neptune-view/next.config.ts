@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
+  basePath: '/arcasadeveloping-bgapp',
+  images: {
+    unoptimized: true
+  },
   transpilePackages: [
     "deck.gl",
     "@deck.gl/core",
@@ -14,9 +19,6 @@ const nextConfig: NextConfig = {
     "lucide-react",
     "react-leaflet-cluster"
   ],
-  images: {
-    unoptimized: true
-  },
   experimental: {
     // Potential fixes for monorepo resolution if needed
   }
