@@ -106,9 +106,9 @@ export function WeatherLayer({
       radiusScale: 1,
       radiusMinPixels: 15,
       radiusMaxPixels: 50,
-      getPosition: (d: WeatherGrid) => [d.center_lon, d.center_lat],
+      getPosition: (d: any) => [d.center_lon, d.center_lat] as [number, number],
       getRadius: () => 25000, // 25km radius for 0.5° grid cells
-      getFillColor: (d: WeatherGrid) => getTemperatureColor(d.avg_temperature || 25),
+      getFillColor: (d: any) => getTemperatureColor(d.avg_temperature || 25),
       updateTriggers: {
         getFillColor: [temperatureColorScale, opacity]
       },
@@ -135,19 +135,19 @@ export function WeatherLayer({
         arrow: { x: 0, y: 0, width: 128, height: 128, mask: true }
       },
       getIcon: () => 'arrow',
-      getPosition: (d: WeatherGrid) => [d.center_lon, d.center_lat],
-      getSize: (d: WeatherGrid) => {
+      getPosition: (d: any) => [d.center_lon, d.center_lat] as [number, number],
+      getSize: (d: any) => {
         // Scale arrow size based on wind speed (0-30 km/h typical)
         const speed = d.avg_wind_speed || 0;
         const sizeScale = Math.min(speed / 30, 1);
         return 20 + sizeScale * 20; // 20-40 pixels
       },
-      getAngle: (d: WeatherGrid) => {
+      getAngle: (d: any) => {
         // Convert wind direction (degrees) to rotation angle
         // Wind direction is "from" direction, we want arrow pointing "to" direction
         return (d.dominant_wind_direction || 0) + 180;
       },
-      getColor: (d: WeatherGrid) => {
+      getColor: (d: any) => {
         // Color based on wind speed: Light blue → Dark blue
         const speed = d.avg_wind_speed || 0;
         const intensity = Math.min(speed / 30, 1);
