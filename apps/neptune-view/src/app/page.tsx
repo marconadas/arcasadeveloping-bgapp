@@ -66,8 +66,17 @@ function NeptuneDashboard() {
       {/* TOP HEADER - TACTICAL OVERLAY */}
       <header className="absolute top-0 left-0 right-0 z-20 tactical-glass border-b-neptune-blue/20 flex items-center justify-between px-6 py-3 h-16">
         <div className="flex items-center gap-4">
-          <div className="p-2 bg-neptune-blue/10 rounded-lg border border-neptune-blue/30 tactical-glow">
-            <Shield className="w-6 h-6 text-neptune-blue" />
+          <div className="relative">
+            <div className="p-2 bg-neptune-blue/10 rounded-lg border border-neptune-blue/30 tactical-glow">
+              <Shield className="w-6 h-6 text-neptune-blue" />
+            </div>
+            {/* Milo Mascot Easter Egg */}
+            <img
+              src="/arcasadeveloping-bgapp/images/milo_logo.png"
+              alt="Baby Milo"
+              title="Powered by Agentic Logic"
+              className="absolute -bottom-1 -right-2 w-7 h-7 z-10 drop-shadow-[0_0_4px_rgba(0,188,212,0.8)] transition-transform duration-300 hover:scale-125 hover:rotate-12"
+            />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-tactical">
@@ -109,8 +118,8 @@ function NeptuneDashboard() {
                   key={module.id}
                   onClick={() => setActiveTab(module.id)}
                   className={`flex items-center justify-between p-3 rounded-lg border transition-all ${activeTab === module.id
-                      ? 'bg-neptune-blue/20 border-neptune-blue text-white tactical-glow'
-                      : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
+                    ? 'bg-neptune-blue/20 border-neptune-blue text-white tactical-glow'
+                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
                     }`}
                 >
                   <div className="flex items-center gap-3">
