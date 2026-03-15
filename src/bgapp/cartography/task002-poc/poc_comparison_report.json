@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-09-05T00:46:46.803541",
+  "poc_1_pyodide": {
+    "status": "completed",
+    "file": "pyodide_test.html",
+    "sanity_checks": "passed",
+    "pros": [
+      "Compatibilidade total com bibliotecas Python",
+      "Integra\u00e7\u00e3o direta com JavaScript",
+      "Suporte WebGL atrav\u00e9s de PyOpenGL",
+      "Performance otimizada para browser"
+    ],
+    "cons": [
+      "Tamanho do bundle (50MB+)",
+      "Lat\u00eancia de inicializa\u00e7\u00e3o",
+      "Depend\u00eancias complexas"
+    ]
+  },
+  "poc_2_pyscript": {
+    "status": "completed",
+    "file": "pyscript_deckgl_poc.html",
+    "sanity_checks": "pending",
+    "pros": [
+      "Sintaxe moderna Python 3.11+",
+      "Integra\u00e7\u00e3o nativa com HTML/CSS",
+      "Performance melhorada vs Pyodide",
+      "Desenvolvimento ativo (2025)"
+    ],
+    "cons": [
+      "Ecosistema ainda em desenvolvimento",
+      "Documenta\u00e7\u00e3o limitada",
+      "Debugging complexo"
+    ]
+  }
+}
