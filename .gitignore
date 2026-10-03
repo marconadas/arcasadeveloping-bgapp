@@ -55,3 +55,16 @@ Thumbs.db
 
 .encryption_key
 SETUP_CREDENTIALS.md
+
+# Secrets (never commit)
+.env.*
+!.env.example
+!.env.*.example
+*.env
+!example.env
+!*example*.env
+.master.key
+*.key
+.mcp.json
+.mcp.json.backup*
+*.enc
