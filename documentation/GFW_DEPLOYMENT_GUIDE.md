@@ -31,7 +31,7 @@ wrangler deploy --env production
    - Name: `GFW_API_TOKEN`
    - Value:
    ```
-   ***REMOVED***
+   <your-gfw-api-token>
    ```
 
 3. **Add Admin Access Key (Optional)**

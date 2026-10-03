@@ -5,7 +5,7 @@ echo "🎣 Configuring Global Fishing Watch API Token"
 echo "==========================================="
 
 # GFW API Token
-export GFW_API_TOKEN="***REMOVED***"
+export GFW_API_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 # Generate admin access key
 export ADMIN_ACCESS_KEY="bgapp-admin-$(date +%s)-$(openssl rand -hex 16)"

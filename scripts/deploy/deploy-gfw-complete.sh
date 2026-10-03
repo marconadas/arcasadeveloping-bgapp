@@ -22,7 +22,7 @@ if ! command -v wrangler &> /dev/null; then
 fi
 
 # GFW API Token
-GFW_TOKEN="***REMOVED***"
+GFW_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 # Generate admin key
 ADMIN_KEY="bgapp-admin-$(date +%s)-$(openssl rand -hex 16)"

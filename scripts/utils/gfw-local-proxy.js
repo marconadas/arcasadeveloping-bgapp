@@ -9,7 +9,7 @@ const https = require('https');
 const url = require('url');
 
 const PORT = process.env.PORT || 8080;
-const GFW_TOKEN = process.env.GFW_TOKEN || '***REMOVED***';
+const GFW_TOKEN = process.env.GFW_TOKEN || process.env.GFW_API_TOKEN;
 
 const server = http.createServer((req, res) => {
   // Enable CORS

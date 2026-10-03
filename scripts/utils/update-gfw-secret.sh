@@ -5,7 +5,7 @@ echo "🔄 Updating GFW API Token Secret"
 echo "================================"
 
 # GFW API Token
-GFW_TOKEN="***REMOVED***"
+GFW_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 cd workers
 

@@ -12,7 +12,7 @@ from src.bgapp.core.config import settings
 router = APIRouter(prefix="/api/config", tags=["configuration"])
 
 # Token GFW armazenado de forma segura
-GFW_TOKEN = os.getenv("GFW_API_TOKEN", "***REMOVED***")
+GFW_TOKEN = os.getenv("GFW_API_TOKEN")
 
 @router.get("/gfw-token")
 async def get_gfw_token(current_user: Dict = Depends(get_current_user)) -> Dict[str, str]:

@@ -79,7 +79,7 @@ cat > .mcp.json.tmp <<'EOF'
       "command": "npx",
       "args": ["@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "***REMOVED***"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<your-github-token>"
       }
     },
     "cloudflare": {
@@ -102,7 +102,7 @@ cat > .mcp.json.tmp <<'EOF'
       "command": "npx",
       "args": ["firecrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "***REMOVED***"
+        "FIRECRAWL_API_KEY": "<your-firecrawl-key>"
       }
     },
     "playwright": {

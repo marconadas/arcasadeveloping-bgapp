@@ -71,7 +71,7 @@ cp /dev/null .env.production
 
 # 2. Configurar variáveis
 cat >> .env.production << EOF
-GFW_API_TOKEN=***REMOVED***
+GFW_API_TOKEN=<your-gfw-api-token>
 ADMIN_ACCESS_KEY=bgapp-admin-1758038846-57490e5d46c0e985998c0c45db0eb5b5
 EOF
 
@@ -207,7 +207,7 @@ POSTGRES_URL=postgresql://postgres:postgres2024@localhost:5432/geo
 REDIS_URL=redis://localhost:6379
 
 # External APIs
-GFW_API_TOKEN=***REMOVED***
+GFW_API_TOKEN=<your-gfw-api-token>
 
 # Machine Learning
 ML_API_PORT=8000

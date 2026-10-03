@@ -68,3 +68,6 @@ SETUP_CREDENTIALS.md
 .mcp.json
 .mcp.json.backup*
 *.enc
+.claude/mcp.json
+.cursor/mcp.json
+.claude/settings.local.json

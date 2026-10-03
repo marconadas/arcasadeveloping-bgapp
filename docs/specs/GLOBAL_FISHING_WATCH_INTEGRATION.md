@@ -25,7 +25,7 @@ Integrar a Global Fishing Watch (GFW) API no BGAPP para enriquecer os mapas com 
 
 ```javascript
 const GFW_API_CONFIG = {
-  token: '***REMOVED***',
+  token: '<your-gfw-api-token>',
   baseUrl: 'https://api.globalfishingwatch.org/v3',
   endpoints: {
     vessels: '/vessels',

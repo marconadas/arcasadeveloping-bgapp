@@ -4,7 +4,7 @@
 echo "🔧 Configurando variáveis de ambiente para Global Fishing Watch..."
 
 # Token GFW
-export GFW_API_TOKEN="***REMOVED***"
+export GFW_API_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 # Chave de acesso administrativa (gerar uma nova para produção)
 export ADMIN_ACCESS_KEY="bgapp-admin-$(date +%s)-$(openssl rand -hex 16)"

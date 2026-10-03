@@ -5,7 +5,7 @@ echo "🎣 Updating Global Fishing Watch API Token"
 echo "=========================================="
 
 # GFW API Token
-export GFW_API_TOKEN="***REMOVED***"
+export GFW_API_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 echo "📝 Updating Cloudflare Worker secret..."
 echo ""

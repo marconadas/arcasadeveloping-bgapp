@@ -5,7 +5,7 @@ echo "🎣 Generating GFW Cache Data"
 echo "==========================="
 
 # GFW API Token
-GFW_TOKEN="***REMOVED***"
+GFW_TOKEN="${GFW_API_TOKEN:?Set GFW_API_TOKEN in your environment}"
 
 # Create data directory
 mkdir -p infra/frontend/data
